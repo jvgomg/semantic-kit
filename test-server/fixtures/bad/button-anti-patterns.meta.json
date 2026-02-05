@@ -1,0 +1,4 @@
+{
+  "description": "Anti-pattern: interactive element mistakes (divs as buttons, links without href, icon-only buttons)",
+  "testCases": ["structure", "validate:a11y"]
+}

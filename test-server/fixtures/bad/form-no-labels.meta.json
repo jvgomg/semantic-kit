@@ -1,0 +1,4 @@
+{
+  "description": "Anti-pattern: form accessibility violations (missing labels, placeholder as label, div as button)",
+  "testCases": ["structure", "validate:a11y"]
+}

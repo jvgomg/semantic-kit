@@ -1,0 +1,4 @@
+{
+  "description": "Well-structured blog post with skip links, multiple navs, search landmark, article structure, and JSON-LD",
+  "testCases": ["ai", "structure", "schema", "validate:html", "validate:a11y"]
+}

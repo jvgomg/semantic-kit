@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Form</title>
+
+  <!--
+    Anti-pattern: Form accessibility violations
+    Source: Adapted from WebAIM form controls and Pope Tech form accessibility guide
+    https://webaim.org/techniques/forms/controls
+    https://blog.pope.tech/2022/10/03/a-beginners-guide-to-form-accessibility/
+
+    Problems demonstrated:
+    - Inputs without associated labels
+    - Label element without `for` attribute
+    - Placeholder used as label (insufficient)
+    - Checkbox without label
+    - Radio buttons not in fieldset with legend
+    - Div used as submit button (not keyboard accessible)
+    - Missing autocomplete attributes
+  -->
+</head>
+<body>
+  <main>
+    <h1>Contact Us</h1>
+
+    <form action="/contact" method="post">
+      <div>
+        Name:
+        <input type="text" name="name">  <!-- No label association -->
+      </div>
+
+      <div>
+        <label>Email</label>  <!-- Label not associated (missing for) -->
+        <input type="email" name="email">
+      </div>
+
+      <div>
+        <input type="text" placeholder="Phone Number">  <!-- Placeholder as label -->
+      </div>
+
+      <div>
+        Subject:
+        <select name="subject">  <!-- No label -->
+          <option>General</option>
+          <option>Support</option>
+          <option>Billing</option>
+        </select>
+      </div>
+
+      <div>
+        <textarea placeholder="Your message"></textarea>  <!-- No label, no name -->
+      </div>
+
+      <div>
+        <input type="checkbox" name="newsletter">  <!-- Checkbox without label -->
+        Subscribe to newsletter
+      </div>
+
+      <div>
+        Preferred contact method:  <!-- Radio group without fieldset/legend -->
+        <input type="radio" name="method" value="email"> Email
+        <input type="radio" name="method" value="phone"> Phone
+      </div>
+
+      <div onclick="submitForm()">Submit</div>  <!-- Div as button -->
+    </form>
+  </main>
+</body>
+</html>

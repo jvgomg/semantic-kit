@@ -1,0 +1,4 @@
+{
+  "description": "Accessible form with labels, fieldsets, legends, aria-describedby, and autocomplete attributes",
+  "testCases": ["structure", "validate:html", "validate:a11y"]
+}

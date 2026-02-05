@@ -1,0 +1,4 @@
+{
+  "description": "Edge case: valid complex landmark nesting (header/footer inside article, sections with/without names)",
+  "testCases": ["structure", "validate:a11y"]
+}

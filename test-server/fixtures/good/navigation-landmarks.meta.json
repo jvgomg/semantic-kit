@@ -1,0 +1,4 @@
+{
+  "description": "Complex landmark structure with multiple skip links, navs, search, breadcrumbs, and visually hidden content",
+  "testCases": ["structure", "validate:html", "validate:a11y"]
+}

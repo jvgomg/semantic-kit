@@ -1,0 +1,4 @@
+{
+  "description": "Anti-pattern: heading hierarchy violations (skipped levels, empty headings, multiple h1s)",
+  "testCases": ["structure", "validate:a11y"]
+}

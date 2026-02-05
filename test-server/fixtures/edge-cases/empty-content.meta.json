@@ -1,0 +1,4 @@
+{
+  "description": "Edge case: page with valid structure but no actual content",
+  "testCases": ["ai", "structure"]
+}

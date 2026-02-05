@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Heading Problems</title>
+
+  <!--
+    Anti-pattern: Heading hierarchy violations
+    Source: Adapted from WebAIM heading guidelines and W3C WAI tutorials
+    https://webaim.org/techniques/semanticstructure/
+    https://www.w3.org/WAI/tutorials/page-structure/headings/
+
+    Problems demonstrated:
+    - No h1 for the main page title
+    - Skipped heading levels (h3 to h4, h4 to h2, h2 to h6)
+    - Multiple h1 elements
+    - Empty headings
+    - Headings used for styling (small h2)
+  -->
+</head>
+<body>
+  <header>
+    <h3>My Website</h3>  <!-- Should be h1 in header, or no heading here -->
+  </header>
+
+  <main>
+    <h4>Welcome</h4>  <!-- Skipped h1, h2, h3 -->
+
+    <p>Some content here.</p>
+
+    <h2>About Us</h2>  <!-- Goes backwards from h4 -->
+
+    <p>More content.</p>
+
+    <h1>Our Services</h1>  <!-- Multiple h1s, not the main heading -->
+
+    <p>Even more content.</p>
+
+    <h6>Contact</h6>  <!-- Skipped h3, h4, h5 -->
+
+    <h2 style="font-size: 14px;">Fine Print</h2>  <!-- Using h2 for small text -->
+
+    <h3></h3>  <!-- Empty heading -->
+
+    <h4>   </h4>  <!-- Whitespace-only heading -->
+  </main>
+</body>
+</html>

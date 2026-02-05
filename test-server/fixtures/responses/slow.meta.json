@@ -1,0 +1,5 @@
+{
+  "delay": 3000,
+  "description": "Tests timeout handling with 3-second response delay",
+  "testCases": ["ai"]
+}

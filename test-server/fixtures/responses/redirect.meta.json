@@ -1,0 +1,6 @@
+{
+  "redirect": "/good/semantic-article.html",
+  "redirectStatus": 301,
+  "description": "Tests redirect handling (301 to /good/semantic-article.html)",
+  "testCases": ["ai", "structure"]
+}

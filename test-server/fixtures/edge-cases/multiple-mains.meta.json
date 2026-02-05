@@ -1,0 +1,4 @@
+{
+  "description": "Edge case: SPA pattern with multiple main elements (valid when only one visible via hidden attribute)",
+  "testCases": ["structure", "validate:a11y"]
+}

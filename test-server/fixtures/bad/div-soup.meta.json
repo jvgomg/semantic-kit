@@ -1,0 +1,4 @@
+{
+  "description": "Anti-pattern: uses divs instead of semantic HTML elements",
+  "testCases": ["structure", "validate:a11y"]
+}

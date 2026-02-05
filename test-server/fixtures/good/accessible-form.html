@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - Accessible Form Example</title>
+  <meta name="description" content="A properly accessible contact form demonstrating best practices.">
+
+  <!--
+    Source: Adapted from W3C WAI Forms Tutorial and WebAIM Form Controls
+    https://www.w3.org/WAI/tutorials/forms/
+    https://webaim.org/techniques/forms/
+  -->
+</head>
+<body>
+  <main>
+    <h1>Contact Us</h1>
+
+    <form action="/contact" method="post" novalidate>
+      <fieldset>
+        <legend>Your Information</legend>
+
+        <div class="form-group">
+          <label for="name">
+            Full Name
+            <span aria-hidden="true">*</span>
+          </label>
+          <input type="text" id="name" name="name"
+                 required aria-required="true"
+                 autocomplete="name">
+        </div>
+
+        <div class="form-group">
+          <label for="email">
+            Email Address
+            <span aria-hidden="true">*</span>
+          </label>
+          <input type="email" id="email" name="email"
+                 required aria-required="true"
+                 autocomplete="email"
+                 aria-describedby="email-hint">
+          <p id="email-hint" class="hint">We'll never share your email.</p>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number (optional)</label>
+          <input type="tel" id="phone" name="phone"
+                 autocomplete="tel">
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>How can we help?</legend>
+
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <select id="subject" name="subject" required aria-required="true">
+            <option value="">Please select...</option>
+            <option value="general">General Inquiry</option>
+            <option value="support">Technical Support</option>
+            <option value="billing">Billing Question</option>
+            <option value="feedback">Feedback</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="message">
+            Message
+            <span aria-hidden="true">*</span>
+          </label>
+          <textarea id="message" name="message" rows="5"
+                    required aria-required="true"
+                    aria-describedby="message-hint"></textarea>
+          <p id="message-hint" class="hint">Maximum 500 characters.</p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Contact Preferences</legend>
+
+        <div class="form-group">
+          <p id="contact-method-label">Preferred contact method:</p>
+          <div role="group" aria-labelledby="contact-method-label">
+            <label>
+              <input type="radio" name="contact-method" value="email" checked>
+              Email
+            </label>
+            <label>
+              <input type="radio" name="contact-method" value="phone">
+              Phone
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="newsletter">
+            Subscribe to our newsletter
+          </label>
+        </div>
+      </fieldset>
+
+      <button type="submit">Send Message</button>
+    </form>
+  </main>
+</body>
+</html>

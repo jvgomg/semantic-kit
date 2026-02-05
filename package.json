@@ -1,0 +1,90 @@
+{
+  "name": "semantic-kit",
+  "version": "0.0.16",
+  "license": "MIT",
+  "description": "Developer toolkit for understanding how websites are interpreted by search engines, AI crawlers, screen readers, and content extractors",
+  "author": "James Greenaway",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jvgomg/semantic-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jvgomg/semantic-kit/issues"
+  },
+  "homepage": "https://github.com/jvgomg/semantic-kit#readme",
+  "type": "module",
+  "bin": {
+    "semantic-kit": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun run build.ts",
+    "build:global": "bun run build-global.ts",
+    "link:global": "ln -sf $(pwd)/dist/semantic-kit ~/.local/bin/semantic-kit",
+    "dev": "bun --watch src/cli.ts",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "bun run test:unit && bun run test:integration",
+    "test:unit": "bun test src/",
+    "test:unit:watch": "bun test --watch src/",
+    "test:integration": "bun test --preload ./integration-tests/setup.ts integration-tests/",
+    "test:integration:watch": "bun test --watch --preload ./integration-tests/setup.ts integration-tests/",
+    "semantic-kit": "bun ./dist/cli.js",
+    "semantic-kit:dev": "bun src/cli.ts",
+    "test-server": "bun test-server/server.ts",
+    "test-server:verbose": "bun test-server/server.ts --verbose"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@mozilla/readability": "^0.6.0",
+    "axe-core": "^4.11.1",
+    "commander": "^14.0.2",
+    "emphasize": "^7.0.0",
+    "html-validate": "^10.7.0",
+    "ink": "^6.6.0",
+    "ink-scroll-view": "^0.3.5",
+    "ink-tab": "^5.2.0",
+    "ink-text-input": "^6.0.0",
+    "jotai": "^2.16.2",
+    "jotai-family": "^1.0.1",
+    "jsdom": "^27.4.0",
+    "linkedom": "^0.18.12",
+    "marked": "^15.0.12",
+    "marked-terminal": "^7.3.0",
+    "prettier": "^3.8.1",
+    "react": "^19.2.4",
+    "sitemap": "^9.0.0",
+    "structured-data-testing-tool": "^4.5.0",
+    "turndown": "^7.2.2",
+    "web-auto-extractor": "^1.0.17"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@types/bun": "latest",
+    "@types/jsdom": "^27.0.0",
+    "@types/marked-terminal": "^6.1.1",
+    "@types/node": "^24.10.9",
+    "@types/react": "^19.2.10",
+    "@types/turndown": "^5.0.6",
+    "eslint": "^9.28.0",
+    "eslint-import-resolver-typescript": "^4.4.3",
+    "eslint-plugin-import-x": "^4.15.0",
+    "playwright": "^1.58.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.33.1"
+  },
+  "peerDependencies": {
+    "playwright": "^1.40.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
+  }
+}

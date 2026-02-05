@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Understanding Semantic HTML - My Blog</title>
+  <meta name="description" content="A comprehensive guide to semantic HTML and why it matters for accessibility, SEO, and maintainability.">
+  <meta name="author" content="Jane Smith">
+  <link rel="canonical" href="http://localhost:3456/good/semantic-article.html">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Understanding Semantic HTML">
+  <meta property="og:description" content="A comprehensive guide to semantic HTML and why it matters.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="http://localhost:3456/good/semantic-article.html">
+
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Understanding Semantic HTML",
+    "description": "A comprehensive guide to semantic HTML and why it matters for accessibility, SEO, and maintainability.",
+    "author": {
+      "@type": "Person",
+      "name": "Jane Smith"
+    },
+    "datePublished": "2026-02-04",
+    "dateModified": "2026-02-04"
+  }
+  </script>
+
+  <!--
+    Source: Adapted from W3C WAI Tutorials and WebAIM best practices
+    https://www.w3.org/WAI/tutorials/page-structure/
+    https://webaim.org/techniques/semanticstructure/
+  -->
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <form role="search" action="/search">
+      <label for="search">Search</label>
+      <input type="search" id="search" name="q">
+      <button type="submit">Search</button>
+    </form>
+  </header>
+
+  <main id="main-content">
+    <article>
+      <header>
+        <h1>Understanding Semantic HTML</h1>
+        <p>Published on <time datetime="2026-02-04">February 4, 2026</time>
+           by <a href="/authors/jane">Jane Smith</a></p>
+      </header>
+
+      <p>Semantic HTML uses elements that convey meaning about the content
+         they contain, rather than just how it should look.</p>
+
+      <h2>Why It Matters</h2>
+
+      <p>Using semantic elements provides benefits for:</p>
+
+      <ul>
+        <li>Screen reader users who navigate by landmarks and headings</li>
+        <li>Search engines that understand content structure</li>
+        <li>Content extraction tools that identify main content</li>
+      </ul>
+
+      <h3>For Accessibility</h3>
+
+      <p>Screen readers announce element roles. A <code>&lt;nav&gt;</code> is
+         announced as "navigation" while a <code>&lt;div class="nav"&gt;</code>
+         is just "group" or nothing at all.</p>
+
+      <figure>
+        <img src="/images/semantic-comparison.png"
+             alt="Side-by-side comparison showing semantic elements on the left
+                  with clear structure labels, and div-based markup on the right
+                  with no visible structure">
+        <figcaption>Semantic elements communicate structure; divs do not.</figcaption>
+      </figure>
+
+      <h3>For SEO</h3>
+
+      <p>Search engines use heading hierarchy and landmarks to understand
+         content importance and page organization.</p>
+
+      <h2>Key Elements to Know</h2>
+
+      <p>The most important semantic elements include:</p>
+
+      <dl>
+        <dt><code>&lt;header&gt;</code></dt>
+        <dd>Introductory content, typically containing navigation</dd>
+
+        <dt><code>&lt;main&gt;</code></dt>
+        <dd>The dominant content of the document body</dd>
+
+        <dt><code>&lt;article&gt;</code></dt>
+        <dd>Self-contained composition that could be distributed independently</dd>
+
+        <dt><code>&lt;section&gt;</code></dt>
+        <dd>Thematic grouping of content, typically with a heading</dd>
+
+        <dt><code>&lt;aside&gt;</code></dt>
+        <dd>Content tangentially related to the surrounding content</dd>
+
+        <dt><code>&lt;footer&gt;</code></dt>
+        <dd>Footer for its nearest sectioning content or root</dd>
+      </dl>
+
+      <h2>Conclusion</h2>
+
+      <p>Semantic HTML is the foundation of accessible, SEO-friendly, and
+         maintainable web pages. Start with semantics; add ARIA only when needed.</p>
+
+      <footer>
+        <p>Tags: <a href="/tags/html" rel="tag">HTML</a>,
+           <a href="/tags/accessibility" rel="tag">Accessibility</a>,
+           <a href="/tags/seo" rel="tag">SEO</a></p>
+      </footer>
+    </article>
+
+    <aside aria-labelledby="related-heading">
+      <h2 id="related-heading">Related Posts</h2>
+      <ul>
+        <li><a href="/blog/aria-basics">ARIA Basics</a></li>
+        <li><a href="/blog/heading-hierarchy">Heading Hierarchy</a></li>
+        <li><a href="/blog/landmarks">Understanding Landmarks</a></li>
+      </ul>
+    </aside>
+  </main>
+
+  <footer>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="/privacy">Privacy Policy</a></li>
+        <li><a href="/terms">Terms of Service</a></li>
+      </ul>
+    </nav>
+    <p><small>&copy; 2026 My Blog. All rights reserved.</small></p>
+  </footer>
+</body>
+</html>

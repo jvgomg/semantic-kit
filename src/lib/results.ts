@@ -1,0 +1,426 @@
+/**
+ * Explicit result types for all semantic-kit commands.
+ *
+ * These types define the structure of JSON output for each command,
+ * establishing the foundation for programmatic usage and future TUI support.
+ *
+ * Design principles:
+ * - Result types wrap existing lib types rather than duplicating them
+ * - All results include the target URL/path for context
+ * - Timeout and error states are captured consistently
+ */
+
+import type { AriaNode, SnapshotDiff } from './aria-snapshot.js'
+import type { StructureAnalysis, StructureComparison } from './structure.js'
+
+// ============================================================================
+// A11y Command Results
+// ============================================================================
+
+/**
+ * Result for `a11y` and `a11y:js` commands.
+ * Shows accessibility tree snapshot with parsed structure.
+ */
+export interface A11yResult {
+  /** Target URL analyzed */
+  url: string
+  /** Raw ARIA snapshot string (YAML format) */
+  snapshot: string
+  /** Parsed accessibility nodes */
+  parsed: AriaNode[]
+  /** Count of each ARIA role */
+  counts: Record<string, number>
+  /** Whether the page load timed out */
+  timedOut: boolean
+}
+
+/**
+ * Snapshot state for one version (static or hydrated)
+ */
+export interface A11ySnapshotState {
+  /** Raw ARIA snapshot string */
+  snapshot: string
+  /** Count of each ARIA role */
+  counts: Record<string, number>
+  /** Whether this fetch timed out */
+  timedOut: boolean
+}
+
+/**
+ * Result for `a11y:compare` command.
+ * Compares accessibility trees between static and hydrated states.
+ */
+export interface A11yCompareResult {
+  /** Target URL analyzed */
+  url: string
+  /** Whether differences were detected */
+  hasDifferences: boolean
+  /** Static HTML accessibility state */
+  static: A11ySnapshotState
+  /** JavaScript-rendered accessibility state */
+  hydrated: A11ySnapshotState
+  /** Detailed differences between snapshots */
+  diff: SnapshotDiff
+}
+
+// ============================================================================
+// Structure Command Results
+// ============================================================================
+
+/**
+ * Result for `structure` command.
+ * Wraps StructureAnalysis with target URL.
+ */
+export interface StructureResult {
+  /** Target URL or file path */
+  target: string
+  /** Complete structure analysis */
+  analysis: StructureAnalysis
+}
+
+/**
+ * Result for `structure:js` command.
+ * Compares static and hydrated structure.
+ */
+export interface StructureJsResult {
+  /** Static HTML structure analysis */
+  static: StructureAnalysis
+  /** JavaScript-rendered structure analysis */
+  hydrated: StructureAnalysis
+  /** Comparison between static and hydrated */
+  comparison: StructureComparison
+  /** Whether the page load timed out */
+  timedOut: boolean
+}
+
+/**
+ * Result for `structure:compare` command.
+ * Uses StructureComparison directly (already well-typed in lib/structure.ts)
+ */
+export type StructureCompareResult = StructureComparison
+
+// ============================================================================
+// Bot Command Results
+// ============================================================================
+
+/**
+ * Content extracted from a page using Readability
+ */
+export interface ExtractedContent {
+  /** Source URL */
+  url: string
+  /** Page title */
+  title: string | null
+  /** Author/byline */
+  author: string | null
+  /** Brief excerpt */
+  excerpt: string | null
+  /** Site name */
+  siteName: string | null
+  /** Word count of extracted content */
+  wordCount: number
+  /** Whether Readability considers page suitable for extraction */
+  isReaderable: boolean
+  /** Extracted content as markdown */
+  markdown: string
+  /** Extracted content as HTML */
+  html: string
+}
+
+/**
+ * Section heading information
+ */
+export interface SectionInfo {
+  /** Heading text */
+  heading: string
+  /** Heading level (1-6) */
+  level: number
+  /** Approximate word count of section content */
+  wordCount: number
+}
+
+/**
+ * Comparison between static and rendered content
+ */
+export interface BotComparisonResult {
+  /** Word count in static HTML */
+  staticWordCount: number
+  /** Word count after JavaScript rendering */
+  renderedWordCount: number
+  /** Words only visible after JavaScript execution */
+  jsDependentWordCount: number
+  /** Percentage of content that requires JavaScript */
+  jsDependentPercentage: number
+  /** Sections that only appear after JavaScript */
+  sectionsOnlyInRendered: SectionInfo[]
+}
+
+/**
+ * Result for `bot` command.
+ * Compares static vs JavaScript-rendered content from bot perspective.
+ */
+export interface BotResult {
+  /** Target URL analyzed */
+  url: string
+  /** Extracted content from rendered page */
+  content: ExtractedContent
+  /** Static vs rendered comparison */
+  comparison: BotComparisonResult
+  /** Whether the page load timed out */
+  timedOut?: boolean
+}
+
+// ============================================================================
+// AI Command Results
+// ============================================================================
+
+/**
+ * Detected framework information
+ */
+export interface FrameworkDetection {
+  /** Framework name (e.g., "Next.js") */
+  name: string
+  /** Detection confidence level */
+  confidence: 'detected' | 'likely'
+}
+
+/**
+ * Hidden content analysis results
+ */
+export interface HiddenContentAnalysis {
+  /** Total words in hidden elements */
+  hiddenWordCount: number
+  /** Words visible without JavaScript */
+  visibleWordCount: number
+  /** Percentage of content that is hidden (0-100) */
+  hiddenPercentage: number
+  /** Severity level based on ratio */
+  severity: 'none' | 'low' | 'high'
+  /** Specific framework detected, if any */
+  framework: FrameworkDetection | null
+  /** Whether any streaming/hidden content was detected */
+  hasStreamingContent: boolean
+}
+
+/**
+ * Result for `ai` command.
+ * Shows what AI crawlers see when fetching static HTML.
+ */
+export interface AiResult {
+  /** Target URL or file path */
+  url: string
+  /** Page title */
+  title: string | null
+  /** Author/byline */
+  author: string | null
+  /** Brief excerpt */
+  excerpt: string | null
+  /** Site name */
+  siteName: string | null
+  /** Word count of extracted content */
+  wordCount: number
+  /** Whether Readability considers page suitable for extraction */
+  isReaderable: boolean
+  /** Extracted content as markdown */
+  markdown: string
+  /** Extracted content as HTML */
+  html: string
+  /** Hidden content analysis */
+  hiddenContentAnalysis: HiddenContentAnalysis
+}
+
+// ============================================================================
+// Schema Command Results
+// ============================================================================
+
+/**
+ * Metatag group analysis (Open Graph, Twitter Cards)
+ */
+export interface MetatagGroupResult {
+  /** Tags found as key-value pairs */
+  tags: Record<string, string>
+  /** Required tags that are missing */
+  missingRequired: string[]
+  /** Recommended tags that are missing */
+  missingRecommended: string[]
+  /** Whether all required tags are present */
+  isComplete: boolean
+}
+
+/**
+ * Result for `schema` command.
+ * Shows all structured data found on a page.
+ */
+export interface SchemaResult {
+  /** Target URL or file path */
+  target: string
+  /** JSON-LD schemas by type */
+  jsonld: Record<string, unknown[]>
+  /** Microdata schemas by type */
+  microdata: Record<string, unknown[]>
+  /** RDFa schemas by type */
+  rdfa: Record<string, unknown[]>
+  /** Open Graph metatags (null if not present) */
+  openGraph: MetatagGroupResult | null
+  /** Twitter Card metatags (null if not present) */
+  twitter: MetatagGroupResult | null
+  /** Other metatags as key-value pairs */
+  metatags: Record<string, string>
+}
+
+// ============================================================================
+// Validation Command Results
+// ============================================================================
+
+/**
+ * Result entry from html-validate
+ */
+export interface HtmlValidateResultEntry {
+  filePath: string
+  messages: Array<{
+    ruleId: string
+    severity: number
+    message: string
+    line: number
+    column: number
+  }>
+  errorCount: number
+  warningCount: number
+}
+
+/**
+ * Result for `validate:html` command.
+ * HTML markup validation results.
+ */
+export interface ValidateHtmlResult {
+  /** Target URL or file path */
+  target: string
+  /** Whether validation passed (no errors) */
+  valid: boolean
+  /** Total error count */
+  errorCount: number
+  /** Total warning count */
+  warningCount: number
+  /** Detailed results by file */
+  results: HtmlValidateResultEntry[]
+}
+
+/**
+ * Test result from structured-data-testing-tool
+ */
+export interface SchemaTestResult {
+  /** Test identifier */
+  test: string
+  /** Schema type tested */
+  type: string
+  /** Test group (e.g., "Facebook", "Twitter") */
+  group: string
+  /** Human-readable description */
+  description: string
+  /** Whether the test passed */
+  passed: boolean
+  /** Whether the test is optional */
+  optional?: boolean
+  /** Whether this is a warning (not failure) */
+  warning?: boolean
+  /** Schema name if applicable */
+  schema?: string
+  /** Actual value found */
+  value?: unknown
+  /** Error details if failed */
+  error?: {
+    type: string
+    message: string
+    expected?: unknown
+    found?: unknown
+  }
+}
+
+/**
+ * Result for `validate:schema` command.
+ * Structured data validation results.
+ */
+export interface ValidateSchemaResult {
+  /** Target URL or file path */
+  target: string
+  /** Schema types found */
+  schemas: string[]
+  /** Number of passed tests */
+  passed: number
+  /** Number of failed tests (in required groups) */
+  failed: number
+  /** Number of warnings */
+  warnings: number
+  /** Groups that were required (affect exit code) */
+  requiredGroups: string[]
+  /** Groups that were informational only */
+  infoGroups: string[]
+  /** All test results */
+  tests: SchemaTestResult[]
+  /** Raw structured data */
+  structuredData: {
+    metatags: Record<string, string[]>
+    jsonld: Record<string, unknown[]>
+    microdata: Record<string, unknown[]>
+    rdfa: Record<string, unknown[]>
+  }
+}
+
+/**
+ * Axe-core violation node
+ */
+export interface AxeNodeResult {
+  /** HTML snippet of the element */
+  html: string
+  /** CSS selector path to element */
+  target: string[]
+  /** Summary of how to fix */
+  failureSummary?: string
+}
+
+/**
+ * Axe-core violation
+ */
+export interface AxeViolationResult {
+  /** Rule identifier */
+  id: string
+  /** Severity: critical, serious, moderate, minor */
+  impact: 'critical' | 'serious' | 'moderate' | 'minor' | null
+  /** Brief description */
+  description: string
+  /** Help text */
+  help: string
+  /** URL to documentation */
+  helpUrl: string
+  /** Affected elements */
+  nodes: AxeNodeResult[]
+  /** WCAG and other tags */
+  tags: string[]
+}
+
+/**
+ * Result for `validate:a11y` command.
+ * WCAG accessibility validation results.
+ */
+export interface ValidateA11yResult {
+  /** Target URL */
+  url: string
+  /** WCAG conformance level tested */
+  level: 'A' | 'AA' | 'AAA'
+  /** Whether the page load timed out */
+  timedOut: boolean
+  /** Number of violations found */
+  violations: number
+  /** Number of passing rules */
+  passes: number
+  /** Number of incomplete checks (need manual review) */
+  incomplete: number
+  /** Whether incomplete checks were ignored */
+  incompleteIgnored: boolean
+  /** Detailed results */
+  results: {
+    violations: AxeViolationResult[]
+    passes: unknown[]
+    incomplete: unknown[]
+  }
+}
