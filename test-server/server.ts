@@ -8,7 +8,7 @@
 
 import { join, dirname } from 'path'
 import { parseArgs } from 'util'
-import { mounts } from './config'
+import { getMounts, type MountConfig } from './config'
 import { discoverFixtures, serveFixture } from './lib/fixtures'
 import { proxyRequest, matchesMount } from './lib/proxy'
 import { generateSitemap } from './lib/sitemap'
@@ -19,7 +19,7 @@ const __dirname = dirname(new URL(import.meta.url).pathname)
 // Parse CLI arguments
 const { values: args } = parseArgs({
   options: {
-    port: { type: 'string', short: 'p', default: process.env['TEST_SERVER_PORT'] || '3456' },
+    port: { type: 'string', short: 'p', default: process.env['TEST_SERVER_PORT'] || '4000' },
     host: { type: 'string', short: 'h', default: 'localhost' },
     'no-mount': { type: 'boolean', default: false },
     fixtures: { type: 'string', default: join(__dirname, 'fixtures') },
@@ -35,7 +35,7 @@ semantic-kit test server
 Usage: bun test-server/server.ts [options]
 
 Options:
-  -p, --port <number>     Port (default: 3456, env: TEST_SERVER_PORT)
+  -p, --port <number>     Port (default: 4000, env: TEST_SERVER_PORT)
   -h, --host <string>     Host (default: localhost)
   --no-mount              Skip app mounting
   --fixtures <path>       Custom fixtures path
@@ -47,6 +47,7 @@ Options:
 
 const port = parseInt(args.port as string, 10)
 const host = args.host as string
+const mounts: MountConfig[] = getMounts(port)
 const fixturesPath = args.fixtures as string
 const verbose = args.verbose as boolean
 const enableMounts = !args['no-mount']

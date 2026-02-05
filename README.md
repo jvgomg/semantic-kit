@@ -153,12 +153,12 @@ bun run test
 A local test server serves HTML fixtures for testing commands:
 
 ```bash
-# Start the test server (localhost:3456)
+# Start the test server (localhost:4000)
 bun run test-server
 
 # Test commands against fixtures
-bun run dev ai http://localhost:3456/good/semantic-article.html
-bun run dev validate:a11y http://localhost:3456/bad/div-soup.html
+bun run dev ai http://localhost:4000/good/semantic-article.html
+bun run dev validate:a11y http://localhost:4000/bad/div-soup.html
 ```
 
 Fixtures are organized by category (`good/`, `bad/`, `edge-cases/`, `responses/`) and support configurable response behaviors via `.meta.json` sidecar files.

@@ -12,7 +12,7 @@ bun run test-server
 bun run test-server:verbose
 
 # Test with semantic-kit
-bun run semantic-kit:dev ai http://localhost:3456/good/semantic-article.html
+bun run semantic-kit:dev ai http://localhost:4000/good/semantic-article.html
 ```
 
 ## CLI Options
@@ -21,7 +21,7 @@ bun run semantic-kit:dev ai http://localhost:3456/good/semantic-article.html
 Usage: bun test-server/server.ts [options]
 
 Options:
-  -p, --port <number>     Port (default: 3456, env: TEST_SERVER_PORT)
+  -p, --port <number>     Port (default: 4000, env: TEST_SERVER_PORT)
   -h, --host <string>     Host (default: localhost)
   --no-mount              Skip app mounting
   --fixtures <path>       Custom fixtures path
@@ -71,8 +71,8 @@ Valid but complex patterns that test tool capabilities:
 | `empty-content.html` | Intentionally empty main content |
 
 Fixtures are served via both flat and nested URLs:
-- `http://localhost:3456/semantic-article.html` (flat)
-- `http://localhost:3456/good/semantic-article.html` (nested)
+- `http://localhost:4000/semantic-article.html` (flat)
+- `http://localhost:4000/good/semantic-article.html` (nested)
 
 ## Response Configuration
 
@@ -109,7 +109,7 @@ Override response behavior without creating meta files:
 | `redirect` | `?redirect=/other.html` | Force redirect |
 | `contentType` | `?contentType=text/plain` | Override content type |
 
-Example: `http://localhost:3456/any.html?delay=1000&status=201`
+Example: `http://localhost:4000/any.html?delay=1000&status=201`
 
 ## Special Endpoints
 
@@ -160,25 +160,25 @@ fixtures/
 
 ```bash
 # Test fixture serving
-curl http://localhost:3456/good/semantic-article.html
+curl http://localhost:4000/good/semantic-article.html
 
 # Test sitemap
-curl http://localhost:3456/sitemap.xml
+curl http://localhost:4000/sitemap.xml
 
 # Test delay (via meta file)
-curl http://localhost:3456/responses/slow.html
+curl http://localhost:4000/responses/slow.html
 
 # Test delay (via query param)
-curl http://localhost:3456/any.html?delay=2000
+curl http://localhost:4000/any.html?delay=2000
 
 # Test status override
-curl -I http://localhost:3456/any.html?status=500
+curl -I http://localhost:4000/any.html?status=500
 
 # Test redirect
-curl -L http://localhost:3456/responses/redirect.html
+curl -L http://localhost:4000/responses/redirect.html
 
 # Use with semantic-kit
-bun run semantic-kit:dev structure http://localhost:3456/good/semantic-article.html
-bun run semantic-kit:dev ai http://localhost:3456/good/semantic-article.html
-bun run semantic-kit:dev validate:a11y http://localhost:3456/bad/div-soup.html
+bun run semantic-kit:dev structure http://localhost:4000/good/semantic-article.html
+bun run semantic-kit:dev ai http://localhost:4000/good/semantic-article.html
+bun run semantic-kit:dev validate:a11y http://localhost:4000/bad/div-soup.html
 ```

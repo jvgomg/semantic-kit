@@ -4,7 +4,7 @@
 
 import type { Subprocess } from 'bun'
 
-const TEST_PORT = 3456
+const TEST_PORT = 4050
 let serverProcess: Subprocess | null = null
 let serverReadyPromise: Promise<void> | null = null
 
@@ -21,6 +21,7 @@ export async function startTestServer(): Promise<void> {
       stdout: 'inherit',
       stderr: 'inherit',
       cwd: process.cwd(),
+      env: { ...process.env, TEST_SERVER_PORT: String(TEST_PORT) },
     })
 
     // Wait for main server to be ready

@@ -92,11 +92,11 @@ bun run typecheck
 # Build
 bun run build
 
-# Start test server (serves fixtures on localhost:3456)
+# Start test server (serves fixtures on localhost:4000)
 bun run test-server
 
 # Test with fixtures
-bun run dev ai http://localhost:3456/good/semantic-article.html
+bun run dev ai http://localhost:4000/good/semantic-article.html
 
 # Integration tests (test server starts automatically via bunfig.toml preload)
 bun run test:integration         # Run integration tests

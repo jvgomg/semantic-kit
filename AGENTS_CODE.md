@@ -117,8 +117,8 @@ bun run test-server
 bun run test-server:verbose
 
 # Test commands against fixtures
-bun run semantic-kit:dev structure http://localhost:3456/good/semantic-article.html
-bun run semantic-kit:dev validate:a11y http://localhost:3456/bad/div-soup.html
+bun run semantic-kit:dev structure http://localhost:4000/good/semantic-article.html
+bun run semantic-kit:dev validate:a11y http://localhost:4000/bad/div-soup.html
 ```
 
 ### Fixture Organization
@@ -143,7 +143,7 @@ test-server/fixtures/
      "testCases": ["ai", "structure"]
    }
    ```
-3. The fixture appears on the index page at `http://localhost:3456/`
+3. The fixture appears on the index page at `http://localhost:4000/`
 
 ### Query Parameter Overrides
 

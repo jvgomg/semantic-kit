@@ -2,6 +2,9 @@
   "name": "semantic-kit",
   "version": "0.0.16",
   "license": "MIT",
+  "workspaces": [
+    "test-server/apps/nextjs-streaming"
+  ],
   "description": "Developer toolkit for understanding how websites are interpreted by search engines, AI crawlers, screen readers, and content extractors",
   "author": "James Greenaway",
   "repository": {

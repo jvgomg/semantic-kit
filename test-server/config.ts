@@ -18,28 +18,21 @@ export interface MountConfig {
 }
 
 /**
- * Configured mounts for external applications
+ * Get mount configurations with ports relative to the base server port
  *
- * Example:
- * ```typescript
- * export const mounts: MountConfig[] = [
- *   {
- *     path: '/nextjs',
- *     command: 'bun run dev',
- *     port: 3000,
- *     readyPattern: /ready in/,
- *     cwd: '../demo-nextjs',
- *   },
- * ]
- * ```
+ * @param basePort - The main server port (mounts use basePort + 1, +2, etc.)
  */
-export const mounts: MountConfig[] = [
-  {
-    path: '/nextjs',
-    command: 'bun run dev --port 3100',
-    port: 3100,
-    readyPattern: /Ready in/i,
-    cwd: './test-server/apps/nextjs-streaming',
-    timeout: 60000,
-  },
-]
+export function getMounts(basePort: number): MountConfig[] {
+  const nextjsPort = basePort + 1
+
+  return [
+    {
+      path: '/nextjs',
+      command: `bun run dev --port ${nextjsPort}`,
+      port: nextjsPort,
+      readyPattern: /Ready in/i,
+      cwd: './test-server/apps/nextjs-streaming',
+      timeout: 60000,
+    },
+  ]
+}
