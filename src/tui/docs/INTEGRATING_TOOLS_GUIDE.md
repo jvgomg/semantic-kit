@@ -564,7 +564,7 @@ function LandmarksSection({ landmarks }: Props) {
 
 ### Pattern: Comparison/Diff
 
-For compare views (structure:compare, a11y:compare):
+For compare views (structure:compare, a11y-tree:compare):
 
 ```tsx
 function ComparisonSection({ before, after, diff }: Props) {
@@ -621,8 +621,8 @@ The following commands have data structures ready but no TUI views:
 | `validate:schema` | ValidateSchemaResult | Schema test results | Grouped by schema type |
 | `schema` | SchemaResult | Extracted schemas | JSON-LD, Open Graph, etc. |
 | `bot` | BotResult | Content comparison | Static vs rendered diff |
-| `a11y` | A11yResult | Accessibility tree | Tree display |
-| `a11y:compare` | A11yCompareResult | Tree diff | Comparison pattern |
+| `a11y-tree` | A11yTreeResult | Accessibility tree | Tree display |
+| `a11y-tree:compare` | A11yTreeCompareResult | Tree diff | Comparison pattern |
 | `structure:js` | StructureJsResult | Structure comparison | Comparison pattern |
 | `structure:compare` | StructureCompareResult | Focused diff | Comparison pattern |
 

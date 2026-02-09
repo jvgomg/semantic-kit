@@ -1,9 +1,9 @@
 import { Command } from 'commander'
 import {
-  a11yCommand,
-  a11yJsCommand,
-  a11yCompareCommand,
-} from './commands/a11y/index.js'
+  a11yTreeCommand,
+  a11yTreeJsCommand,
+  a11yTreeCompareCommand,
+} from './commands/a11y-tree/index.js'
 import { aiCommand } from './commands/ai/index.js'
 import { botCommand } from './commands/bot/index.js'
 import { fetchCommand } from './commands/fetch/index.js'
@@ -204,7 +204,7 @@ program
   .action(withGlobalOptions(structureCompareCommand))
 
 program
-  .command('a11y')
+  .command('a11y-tree')
   .description(
     'Show accessibility tree from static HTML (JavaScript disabled, requires Playwright)',
   )
@@ -214,10 +214,10 @@ program
     '--timeout <ms>',
     'Timeout in milliseconds for page to load (default: 5000)',
   )
-  .action(withGlobalOptions(a11yCommand))
+  .action(withGlobalOptions(a11yTreeCommand))
 
 program
-  .command('a11y:js')
+  .command('a11y-tree:js')
   .description(
     'Show accessibility tree after JavaScript rendering (requires Playwright)',
   )
@@ -227,10 +227,10 @@ program
     '--timeout <ms>',
     'Timeout in milliseconds for page to load (default: 5000)',
   )
-  .action(withGlobalOptions(a11yJsCommand))
+  .action(withGlobalOptions(a11yTreeJsCommand))
 
 program
-  .command('a11y:compare')
+  .command('a11y-tree:compare')
   .description(
     'Compare accessibility tree differences between static and hydrated page',
   )
@@ -243,7 +243,7 @@ program
     '--timeout <ms>',
     'Timeout in milliseconds for page to load (default: 5000)',
   )
-  .action(withGlobalOptions(a11yCompareCommand))
+  .action(withGlobalOptions(a11yTreeCompareCommand))
 
 program
   .command('tui')
