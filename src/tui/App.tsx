@@ -1,26 +1,23 @@
 /**
- * Semantic-Kit TUI Prototype
+ * Semantic-Kit TUI - OpenTUI Implementation
  *
- * This is a prototype focused on layout and navigation.
+ * Main application component managing layout, focus, and navigation.
  * See UI_GLOSSARY.md for terminology definitions.
  */
-import React, { useCallback, useEffect, useMemo } from 'react'
-import { Box, Text, useApp, useInput, useFocusManager } from 'ink'
+import { useCallback, useEffect, useMemo } from 'react'
+import { useKeyboard, useRenderer, useTerminalDimensions } from '@opentui/react'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { useMouseClick } from './hooks/useMouse.js'
-import { useTerminalSize } from './hooks/useTerminalSize.js'
 import {
   urlAtom,
   setUrlAtom,
   menuItemsAtom,
   menuWidthAtom,
   activeMenuIndexAtom,
-  navigateMenuAtom,
   activeModalAtom,
   focusedRegionAtom,
-  invalidateAllViewsAtom,
-  urlListIndexAtom,
+  invalidateAllViewDataAtom,
   recentUrlsAtom,
+  useFocusManager,
   type ModalType,
 } from './state/index.js'
 import {
@@ -35,13 +32,15 @@ import {
   URL_BAR_HEIGHT,
 } from './components/chrome/index.js'
 import { colors } from './theme.js'
-import { getDefaultSitemapUrl } from '../lib/sitemap.js'
+import { getDefaultSitemapUrl, isSitemapUrl } from '../lib/sitemap.js'
+// Import views to trigger registration
+import './views/index.js'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-interface AppProps {
+export interface AppProps {
   initialUrl?: string
 }
 
@@ -50,28 +49,44 @@ interface AppProps {
 // ============================================================================
 
 export function App({ initialUrl }: AppProps) {
-  const { exit } = useApp()
-  const { focus, disableFocus, enableFocus } = useFocusManager()
-  const { columns, rows } = useTerminalSize()
+  const renderer = useRenderer()
+  const { focus, focusNext, focusPrevious, disableFocus, enableFocus } =
+    useFocusManager()
+  const { width, height } = useTerminalDimensions()
 
   // Atoms
   const [url, setUrlState] = useAtom(urlAtom)
   const setUrl = useSetAtom(setUrlAtom)
   const menuItems = useAtomValue(menuItemsAtom)
   const menuWidth = useAtomValue(menuWidthAtom)
-  const [activeMenuIndex, setActiveMenuIndex] = useAtom(activeMenuIndexAtom)
-  const navigateMenu = useSetAtom(navigateMenuAtom)
+  const activeMenuIndex = useAtomValue(activeMenuIndexAtom)
   const [activeModal, setActiveModal] = useAtom(activeModalAtom)
   const focusedRegion = useAtomValue(focusedRegionAtom)
-  const invalidateAllViews = useSetAtom(invalidateAllViewsAtom)
-  const setUrlListIndex = useSetAtom(urlListIndexAtom)
+  const invalidateAllViewData = useSetAtom(invalidateAllViewDataAtom)
   const recentUrls = useAtomValue(recentUrlsAtom)
 
   // Set initial URL and focus on mount
   useEffect(() => {
+    // If state was restored from persistence
+    if (url) {
+      // If a modal was open, keep focus disabled
+      if (activeModal) {
+        disableFocus()
+      } else {
+        focus('main')
+      }
+      return
+    }
+
     if (initialUrl) {
-      setUrlState(initialUrl)
-      focus('main')
+      // If it's a sitemap URL, open URL list modal on sitemap tab
+      if (isSitemapUrl(initialUrl)) {
+        setActiveModal('url-list')
+        disableFocus()
+      } else {
+        setUrlState(initialUrl)
+        focus('main')
+      }
     } else {
       focus('url')
     }
@@ -94,53 +109,71 @@ export function App({ initialUrl }: AppProps) {
   }, [setActiveModal, enableFocus])
 
   // Global key bindings (these work when no modal is open)
-  useInput(
-    (input, key) => {
-      // Quit
-      if (input === 'q' || (key.ctrl && input === 'c')) {
-        exit()
+  useKeyboard((event) => {
+    // Skip if modal is open
+    if (activeModal !== null) return
+
+    // When URL bar is focused, only handle Tab and Ctrl+C (let input handle the rest)
+    const urlBarFocused = focusedRegion === 'url'
+    if (urlBarFocused) {
+      // Tab navigation still works
+      if (event.name === 'tab') {
+        if (event.shift) {
+          focusPrevious()
+        } else {
+          focusNext()
+        }
         return
       }
-
-      // Handle Escape - Ink clears focus on Escape by design, so we re-focus
-      // the current region to maintain focus state
-      if (key.escape) {
-        setTimeout(() => focus(focusedRegion), 0)
+      // Ctrl+C still quits
+      if (event.ctrl && event.name === 'c') {
+        renderer.destroy()
         return
       }
+      // All other keys go to the input
+      return
+    }
 
-      // Help modal
-      if (input === '?') {
-        openModal('help')
-        return
+    // Quit
+    if (event.name === 'q' || (event.ctrl && event.name === 'c')) {
+      renderer.destroy()
+      return
+    }
+
+    // Help modal
+    if (event.name === '?') {
+      openModal('help')
+      return
+    }
+
+    // Jump to URL bar
+    if (event.name === 'g' && !event.shift) {
+      focus('url')
+      return
+    }
+
+    // Open URL list (Shift+G)
+    if (event.name === 'G' || (event.name === 'g' && event.shift)) {
+      openModal('url-list')
+      return
+    }
+
+    // Reload
+    if (event.name === 'r') {
+      invalidateAllViewData()
+      return
+    }
+
+    // Tab navigation
+    if (event.name === 'tab') {
+      if (event.shift) {
+        focusPrevious()
+      } else {
+        focusNext()
       }
-
-      // Jump to URL bar
-      if (input === 'g' && !key.shift) {
-        focus('url')
-        return
-      }
-
-      // Open URL list (Shift+G)
-      if (input === 'G' || (input === 'g' && key.shift)) {
-        openModal('url-list')
-        setUrlListIndex(0)
-        return
-      }
-
-      // Reload
-      if (input === 'r') {
-        invalidateAllViews()
-        return
-      }
-    },
-    { isActive: activeModal === null },
-  )
-
-  // Handlers
-  const handleUrlSubmit = useCallback(() => {
-    focus('menu')
-  }, [focus])
+      return
+    }
+  })
 
   const handleUrlListSelect = useCallback(
     (selectedUrl: string) => {
@@ -164,161 +197,111 @@ export function App({ initialUrl }: AppProps) {
   }, [url, recentUrls])
 
   // Layout calculations
-  const contentHeight = Math.max(1, rows - URL_BAR_HEIGHT - STATUS_BAR_HEIGHT)
+  const contentHeight = Math.max(1, height - URL_BAR_HEIGHT - STATUS_BAR_HEIGHT)
+  const contentWidth = Math.max(1, width - menuWidth)
   const activeItem = menuItems[activeMenuIndex]
-
-  // Mouse click handling - focus regions based on click position
-  useMouseClick({
-    isActive: activeModal === null,
-    onClick: useCallback(
-      ({ x, y }) => {
-        // URL Bar region: rows 1-3 (1-indexed from terminal)
-        if (y >= 1 && y <= URL_BAR_HEIGHT) {
-          focus('url')
-          return
-        }
-
-        // Menu region: below URL bar, within menu width
-        const menuStartY = URL_BAR_HEIGHT + 1
-        const menuEndY = menuStartY + contentHeight
-        const menuStartX = 1
-        const menuEndX = menuWidth
-
-        if (
-          y >= menuStartY &&
-          y < menuEndY &&
-          x >= menuStartX &&
-          x <= menuEndX
-        ) {
-          // Calculate which menu item was clicked
-          const clickedIndex = y - menuStartY - 1 // -1 for border
-          if (clickedIndex >= 0 && clickedIndex < menuItems.length) {
-            setActiveMenuIndex(clickedIndex)
-            focus('menu')
-          }
-          return
-        }
-
-        // Main content region: to the right of menu
-        if (y >= menuStartY && x > menuEndX) {
-          focus('main')
-          return
-        }
-      },
-      [menuWidth, contentHeight, menuItems.length, focus, setActiveMenuIndex],
-    ),
-  })
 
   // Info panel position: after URL bar (3 rows), relative to menu
   const infoPanelMenuOffset = 0 // Menu starts at top of content area
 
   return (
-    <Box flexDirection="column" width={columns} height={rows}>
+    <box flexDirection="column" width={width} height={height}>
       {/* URL Bar */}
-      <UrlBar
-        url={url}
-        onUrlChange={setUrl}
-        onSubmit={handleUrlSubmit}
-        width={columns}
-      />
+      <UrlBar width={width} />
 
-      {/* Main layout: Menu + Content + Info Panel overlay */}
-      <Box flexDirection="row" height={contentHeight} position="relative">
-        {/* Menu (Sidebar) */}
-        <Menu
-          items={menuItems}
-          activeIndex={activeMenuIndex}
-          onNavigate={navigateMenu}
-          width={menuWidth}
+      {/* URL List (inline, replaces main content when shown) */}
+      {activeModal === 'url-list' ? (
+        <UrlList
+          onSelect={handleUrlListSelect}
+          onClose={closeModal}
+          columns={width}
+          rows={contentHeight}
+          defaultSitemapUrl={defaultSitemapUrl}
+          autoFetchSitemapUrl={
+            initialUrl && isSitemapUrl(initialUrl) ? initialUrl : undefined
+          }
         />
+      ) : (
+        /* Main layout: Menu + Content + Info Panel overlay */
+        <box flexDirection="row" height={contentHeight} position="relative">
+          {/* Menu (Sidebar) - uses <select> for built-in keyboard navigation */}
+          <Menu width={menuWidth} />
 
-        {/* Main Content */}
-        <MainContent viewId={activeItem?.id ?? ''} height={contentHeight} />
+          {/* Main Content */}
+          <MainContent height={contentHeight} width={contentWidth} />
 
-        {/* Info Panel (Overlay) - only shown when menu is focused */}
-        {focusedRegion === 'menu' &&
-          (() => {
-            const innerWidth = INFO_PANEL_WIDTH - 2
-            const bg = colors.modalBackground
-            const title = activeItem?.label ?? 'No Selection'
-            const desc = `Description for ${activeItem?.label ?? 'the selected view'}. This panel follows the currently selected menu item.`
+          {/* Info Panel (Overlay) - only shown when menu is focused */}
+          {focusedRegion === 'menu' &&
+            (() => {
+              const innerWidth = INFO_PANEL_WIDTH - 2
+              const bg = colors.modalBackground
+              const title = activeItem?.label ?? 'No Selection'
+              const desc = `Description for ${activeItem?.label ?? 'the selected view'}. This panel follows the currently selected menu item.`
 
-            // Word wrap helper
-            const wrapText = (text: string, width: number): string[] => {
-              const words = text.split(' ')
-              const lines: string[] = []
-              let line = ''
-              for (const word of words) {
-                if (line.length + word.length + 1 <= width) {
-                  line += (line ? ' ' : '') + word
-                } else {
-                  if (line) lines.push(line)
-                  line = word
+              // Word wrap helper
+              const wrapText = (text: string, width: number): string[] => {
+                const words = text.split(' ')
+                const lines: string[] = []
+                let line = ''
+                for (const word of words) {
+                  if (line.length + word.length + 1 <= width) {
+                    line += (line ? ' ' : '') + word
+                  } else {
+                    if (line) lines.push(line)
+                    line = word
+                  }
                 }
+                if (line) lines.push(line)
+                return lines
               }
-              if (line) lines.push(line)
-              return lines
-            }
-            const descLines = wrapText(desc, innerWidth - 2)
+              const descLines = wrapText(desc, innerWidth - 2)
 
-            const blank = () => (
-              <Text backgroundColor={bg}>{' '.repeat(innerWidth)}</Text>
-            )
-            const row = (content: string, color?: string, bold?: boolean) => (
-              <Text color={color} bold={bold} backgroundColor={bg}>
-                {(' ' + content).padEnd(innerWidth)}
-              </Text>
-            )
+              const blank = () => <text bg={bg}>{' '.repeat(innerWidth)}</text>
+              const row = (content: string, color?: string, bold?: boolean) => (
+                <text fg={color} bg={bg}>
+                  {bold ? (
+                    <strong>{(' ' + content).padEnd(innerWidth)}</strong>
+                  ) : (
+                    (' ' + content).padEnd(innerWidth)
+                  )}
+                </text>
+              )
 
-            return (
-              <Box
-                position="absolute"
-                marginLeft={menuWidth}
-                marginTop={infoPanelMenuOffset + activeMenuIndex}
-              >
-                <Box flexDirection="row" alignItems="flex-start">
-                  <Text color={colors.muted}>─</Text>
-                  <Box
-                    borderStyle="round"
-                    borderColor={colors.muted}
-                    flexDirection="column"
-                  >
-                    {blank()}
-                    {row(title, colors.text, true)}
-                    {blank()}
-                    {descLines.map((line, idx) => (
-                      <Text
-                        key={idx}
-                        color={colors.textHint}
-                        backgroundColor={bg}
-                      >
-                        {(' ' + line).padEnd(innerWidth)}
-                      </Text>
-                    ))}
-                    {blank()}
-                  </Box>
-                </Box>
-              </Box>
-            )
-          })()}
-      </Box>
+              return (
+                <box
+                  position="absolute"
+                  left={menuWidth}
+                  top={infoPanelMenuOffset + activeMenuIndex}
+                >
+                  <box flexDirection="row" alignItems="flex-start">
+                    <text fg={colors.muted}>─</text>
+                    <box
+                      borderStyle="rounded"
+                      borderColor={colors.muted}
+                      flexDirection="column"
+                    >
+                      {blank()}
+                      {row(title, colors.text, true)}
+                      {blank()}
+                      {descLines.map((line, idx) => (
+                        <text key={idx} fg={colors.textHint} bg={bg}>
+                          {(' ' + line).padEnd(innerWidth)}
+                        </text>
+                      ))}
+                      {blank()}
+                    </box>
+                  </box>
+                </box>
+              )
+            })()}
+        </box>
+      )}
 
       {/* Status Bar */}
       <StatusBar />
 
       {/* Modals */}
-      {activeModal === 'help' && (
-        <HelpModal onClose={closeModal} columns={columns} rows={rows} />
-      )}
-      {activeModal === 'url-list' && (
-        <UrlList
-          onSelect={handleUrlListSelect}
-          onClose={closeModal}
-          columns={columns}
-          rows={rows}
-          defaultSitemapUrl={defaultSitemapUrl}
-        />
-      )}
-    </Box>
+      {activeModal === 'help' && <HelpModal onClose={closeModal} />}
+    </box>
   )
 }

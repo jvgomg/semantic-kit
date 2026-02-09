@@ -1,63 +1,46 @@
-import React from 'react'
-import { render } from 'ink'
+/**
+ * TUI Entry Point - OpenTUI Migration
+ *
+ * This is the OpenTUI version of the entry point.
+ * See index.ink.tsx for the original React Ink implementation.
+ */
+import { createCliRenderer } from '@opentui/core'
+import { createRoot } from '@opentui/react'
+import { Provider } from 'jotai'
 import { App } from './App.js'
-import {
-  patchStdinForMouseFiltering,
-  ENABLE_MOUSE,
-  DISABLE_MOUSE,
-} from './mouse.js'
+import { createPersistedStore, flushPersistedState } from './state/index.js'
 
-// Re-export mouse utilities for use by hooks
-export { registerScrollHandler, registerClickHandler } from './mouse.js'
-
-// ANSI escape codes for alternate screen buffer
-const ENTER_ALT_SCREEN = '\x1b[?1049h'
-const EXIT_ALT_SCREEN = '\x1b[?1049l'
-const HIDE_CURSOR = '\x1b[?25l'
-const SHOW_CURSOR = '\x1b[?25h'
-const CLEAR_SCREEN = '\x1b[2J\x1b[H'
+// Mouse handling is built into OpenTUI via component props:
+// - onMouseDown, onMouseUp, onMouseScroll, etc.
+// No need for manual stdin patching like with Ink.
 
 export interface TuiOptions {
   initialUrl?: string
 }
 
-export function startTui(options: TuiOptions = {}): void {
-  // Enter alternate screen buffer, hide cursor, enable mouse tracking
-  process.stdout.write(
-    ENTER_ALT_SCREEN + HIDE_CURSOR + CLEAR_SCREEN + ENABLE_MOUSE,
-  )
+export async function startTui(options: TuiOptions = {}): Promise<void> {
+  // Create store with persisted state loaded from disk
+  // This happens before React mounts, so state is immediately available
+  const store = await createPersistedStore(options.initialUrl)
 
-  // Patch stdin to filter mouse escape sequences before Ink sees them
-  const unpatchStdin = patchStdinForMouseFiltering()
-
-  const { unmount, waitUntilExit } = render(
-    <App initialUrl={options.initialUrl} />,
-    {
+  return new Promise<void>((resolve) => {
+    createCliRenderer({
       exitOnCtrlC: true,
-    },
-  )
-
-  // Restore terminal on exit
-  const cleanup = () => {
-    unmount()
-    unpatchStdin()
-    process.stdout.write(DISABLE_MOUSE + SHOW_CURSOR + EXIT_ALT_SCREEN)
-  }
-
-  // Handle various exit signals
-  process.on('exit', cleanup)
-  process.on('SIGINT', () => {
-    cleanup()
-    process.exit(0)
-  })
-  process.on('SIGTERM', () => {
-    cleanup()
-    process.exit(0)
-  })
-
-  // Wait for the app to exit
-  waitUntilExit().then(() => {
-    cleanup()
-    process.exit(0)
+      useAlternateScreen: true,
+      useMouse: true,
+      enableMouseMovement: false, // Only track clicks and scrolls, not hover
+      onDestroy: () => {
+        // Flush any pending persisted state before exit (sync)
+        flushPersistedState()
+        resolve()
+      },
+    }).then((renderer) => {
+      const root = createRoot(renderer)
+      root.render(
+        <Provider store={store}>
+          <App initialUrl={options.initialUrl} />
+        </Provider>,
+      )
+    })
   })
 }

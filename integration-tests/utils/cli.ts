@@ -2,13 +2,29 @@
  * CLI test utilities for running semantic-kit commands
  */
 
+import type { Issue } from '../../src/lib/cli-formatting/index.js'
+import type { JsonEnvelope } from '../../src/lib/json-envelope.js'
 import type { AiResult, StructureResult } from '../../src/lib/results.js'
 
 interface CliResult<T> {
   data: T | null
+  issues: Issue[]
   exitCode: number
   stderr: string
   stdout: string
+}
+
+/**
+ * Type guard to check if parsed JSON is a JsonEnvelope
+ */
+function isJsonEnvelope<T>(obj: unknown): obj is JsonEnvelope<T> {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'command' in obj &&
+    'result' in obj &&
+    'issues' in obj
+  )
 }
 
 /**
@@ -32,9 +48,22 @@ export async function runCommand<T>(
   const exitCode = await proc.exited
 
   let data: T | null = null
+  let issues: Issue[] = []
   if (exitCode === 0 && stdout.trim()) {
     try {
-      data = JSON.parse(stdout)
+      // Extract JSON from stdout (may include splash text before JSON)
+      const jsonMatch = stdout.match(/\{[\s\S]*\}/)
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0])
+        // Handle new JsonEnvelope format
+        if (isJsonEnvelope<T>(parsed)) {
+          data = parsed.result
+          issues = parsed.issues
+        } else {
+          // Fallback for legacy format (if any)
+          data = parsed as T
+        }
+      }
     } catch {
       // JSON parse failed, data stays null
     }
@@ -42,6 +71,7 @@ export async function runCommand<T>(
 
   return {
     data,
+    issues,
     exitCode,
     stderr,
     stdout,

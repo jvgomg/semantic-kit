@@ -1,11 +1,10 @@
 /**
- * Table component for Ink
- * Based on ink-table by maticzav, adapted for ESM compatibility
+ * Table component for OpenTUI
+ *
+ * Renders data as a simple bordered table with headers.
  */
-import React from 'react'
-import { Box, Text } from 'ink'
-
-/* Types */
+import type { ReactNode } from 'react'
+import { colors } from '../../theme.js'
 
 type Scalar = string | number | boolean | null | undefined
 
@@ -13,148 +12,33 @@ type ScalarDict = {
   [key: string]: Scalar
 }
 
-export type CellProps = React.PropsWithChildren<{ column: number }>
+export type TableVariant = 'bordered' | 'borderless'
 
-export type TableProps<T extends ScalarDict> = {
+export interface TableProps<T extends ScalarDict> {
   data: T[]
   columns?: (keyof T)[]
   padding?: number
-  header?: (props: React.PropsWithChildren<object>) => React.ReactNode
-  cell?: (props: CellProps) => React.ReactNode
-  skeleton?: (props: React.PropsWithChildren<object>) => React.ReactNode
+  /** Table style variant: 'bordered' (default) or 'borderless' */
+  variant?: TableVariant
+  /** Width of the first column (for borderless variant with 2 columns) */
+  labelWidth?: number
 }
 
-type Column<T> = {
+interface Column<T> {
   key: string
   column: keyof T
   width: number
 }
 
-type RowConfig = {
-  cell: (props: CellProps) => React.ReactNode
-  padding: number
-  skeleton: {
-    component: (props: React.PropsWithChildren<object>) => React.ReactNode
-    left: string
-    right: string
-    cross: string
-    line: string
-  }
-}
-
-type RowProps<T extends ScalarDict> = {
-  rowKey: string
-  data: Partial<T>
-  columns: Column<T>[]
-}
-
-/* Helper components */
-
-function Header(props: React.PropsWithChildren<object>) {
-  return (
-    <Text bold color="blue">
-      {props.children}
-    </Text>
-  )
-}
-
-function Cell(props: CellProps) {
-  return <Text>{props.children}</Text>
-}
-
-function Skeleton(props: React.PropsWithChildren<object>) {
-  return <Text bold>{props.children}</Text>
-}
-
-/* Utility functions */
-
-function intersperse<T, I>(
-  intersperser: (index: number) => I,
-  elements: T[],
-): (T | I)[] {
-  const interspersed: (T | I)[] = elements.reduce(
-    (acc, element, index) => {
-      if (acc.length === 0) return [element]
-      return [...acc, intersperser(index), element]
-    },
-    [] as (T | I)[],
-  )
-  return interspersed
-}
-
-/* Row builder */
-
-function createRow<T extends ScalarDict>(config: RowConfig) {
-  const { skeleton } = config
-
-  return function Row(props: RowProps<T>) {
-    return (
-      <Box flexDirection="row">
-        <skeleton.component>{skeleton.left}</skeleton.component>
-        {intersperse(
-          (i) => (
-            <skeleton.component key={`${props.rowKey}-sep-${i}`}>
-              {skeleton.cross}
-            </skeleton.component>
-          ),
-          props.columns.map((column, colI) => {
-            const value = props.data[column.column]
-
-            if (value == undefined || value == null) {
-              return (
-                <config.cell
-                  key={`${props.rowKey}-empty-${column.key}`}
-                  column={colI}
-                >
-                  {skeleton.line.repeat(column.width)}
-                </config.cell>
-              )
-            } else {
-              const ml = config.padding
-              const mr = column.width - String(value).length - config.padding
-
-              return (
-                <config.cell
-                  key={`${props.rowKey}-cell-${column.key}`}
-                  column={colI}
-                >
-                  {`${skeleton.line.repeat(ml)}${String(value)}${skeleton.line.repeat(mr)}`}
-                </config.cell>
-              )
-            }
-          }),
-        )}
-        <skeleton.component>{skeleton.right}</skeleton.component>
-      </Box>
-    )
-  }
-}
-
-/* Main Table component */
-
-export function Table<T extends ScalarDict>({
-  data,
-  columns: columnsProp,
-  padding = 1,
-  header = Header,
-  cell = Cell,
-  skeleton = Skeleton,
-}: TableProps<T>) {
-  // Get all keys from data if columns not provided
-  const columns =
-    columnsProp ??
-    (() => {
-      const keys = new Set<keyof T>()
-      for (const row of data) {
-        for (const key in row) {
-          keys.add(key)
-        }
-      }
-      return Array.from(keys)
-    })()
-
-  // Calculate column widths
-  const columnWidths: Column<T>[] = columns.map((key) => {
+/**
+ * Calculate column widths based on content
+ */
+function calculateColumnWidths<T extends ScalarDict>(
+  data: T[],
+  columns: (keyof T)[],
+  padding: number,
+): Column<T>[] {
+  return columns.map((key) => {
     const headerWidth = String(key).length
     const dataWidths = data.map((row) => {
       const value = row[key]
@@ -169,6 +53,56 @@ export function Table<T extends ScalarDict>({
       key: String(key),
     }
   })
+}
+
+/**
+ * Generate a row of the table
+ */
+function generateRow<T extends ScalarDict>(
+  columns: Column<T>[],
+  data: Partial<T>,
+  padding: number,
+  left: string,
+  right: string,
+  cross: string,
+  fill: string,
+): string {
+  const cells = columns.map((column) => {
+    const value = data[column.column]
+    if (value == undefined || value == null) {
+      return fill.repeat(column.width)
+    }
+    const ml = padding
+    const mr = column.width - String(value).length - padding
+    return `${fill.repeat(ml)}${String(value)}${fill.repeat(mr)}`
+  })
+  return `${left}${cells.join(cross)}${right}`
+}
+
+/**
+ * Table component
+ */
+export function Table<T extends ScalarDict>({
+  data,
+  columns: columnsProp,
+  padding = 1,
+  variant = 'bordered',
+  labelWidth,
+}: TableProps<T>): ReactNode {
+  // Get all keys from data if columns not provided
+  const columns =
+    columnsProp ??
+    (() => {
+      const keys = new Set<keyof T>()
+      for (const row of data) {
+        for (const key in row) {
+          keys.add(key)
+        }
+      }
+      return Array.from(keys)
+    })()
+
+  const columnWidths = calculateColumnWidths(data, columns, padding)
 
   // Create headings row data
   const headings: Partial<T> = columns.reduce(
@@ -176,82 +110,68 @@ export function Table<T extends ScalarDict>({
     {},
   )
 
-  // Row renderers
-  const HeaderRow = createRow<T>({
-    cell: skeleton,
-    padding,
-    skeleton: {
-      component: skeleton,
-      line: '─',
-      left: '┌',
-      right: '┐',
-      cross: '┬',
-    },
-  })
+  // Borderless variant: flex layout with text wrapping
+  if (variant === 'borderless') {
+    // Calculate label width from first column if not provided
+    const effectiveLabelWidth = labelWidth ?? columnWidths[0]?.width ?? 10
 
-  const HeadingRow = createRow<T>({
-    cell: header,
-    padding,
-    skeleton: {
-      component: skeleton,
-      line: ' ',
-      left: '│',
-      right: '│',
-      cross: '│',
-    },
-  })
+    return (
+      <box flexDirection="column">
+        {data.map((row, index) => {
+          const values = columns.map((col) => row[col])
+          const label = String(values[0] ?? '')
+          const value = String(values[1] ?? '')
 
-  const SeparatorRow = createRow<T>({
-    cell: skeleton,
-    padding,
-    skeleton: {
-      component: skeleton,
-      line: '─',
-      left: '├',
-      right: '┤',
-      cross: '┼',
-    },
-  })
+          return (
+            <box key={index} flexDirection="row">
+              <text width={effectiveLabelWidth} fg={colors.muted}>
+                {label.padEnd(effectiveLabelWidth)}
+              </text>
+              <text flexShrink={1}>{value}</text>
+            </box>
+          )
+        })}
+      </box>
+    )
+  }
 
-  const DataRow = createRow<T>({
-    cell,
+  // Bordered variant (default): full box drawing
+  const topBorder = generateRow(columnWidths, {}, padding, '┌', '┐', '┬', '─')
+  const headingRow = generateRow(
+    columnWidths,
+    headings,
     padding,
-    skeleton: {
-      component: skeleton,
-      line: ' ',
-      left: '│',
-      right: '│',
-      cross: '│',
-    },
-  })
-
-  const FooterRow = createRow<T>({
-    cell: skeleton,
+    '│',
+    '│',
+    '│',
+    ' ',
+  )
+  const separator = generateRow(columnWidths, {}, padding, '├', '┤', '┼', '─')
+  const bottomBorder = generateRow(
+    columnWidths,
+    {},
     padding,
-    skeleton: {
-      component: skeleton,
-      line: '─',
-      left: '└',
-      right: '┘',
-      cross: '┴',
-    },
-  })
+    '└',
+    '┘',
+    '┴',
+    '─',
+  )
 
   return (
-    <Box flexDirection="column">
-      <HeaderRow rowKey="header" columns={columnWidths} data={{}} />
-      <HeadingRow rowKey="heading" columns={columnWidths} data={headings} />
+    <box flexDirection="column">
+      <text>{topBorder}</text>
+      <text fg={colors.accent}>
+        <strong>{headingRow}</strong>
+      </text>
       {data.map((row, index) => (
-        <Box flexDirection="column" key={`row-${index}`}>
-          <SeparatorRow
-            rowKey={`sep-${index}`}
-            columns={columnWidths}
-            data={{}}
-          />
-          <DataRow rowKey={`data-${index}`} columns={columnWidths} data={row} />
-        </Box>
+        <box key={index} flexDirection="column">
+          <text>{separator}</text>
+          <text>
+            {generateRow(columnWidths, row, padding, '│', '│', '│', ' ')}
+          </text>
+        </box>
       ))}
-      <FooterRow rowKey="footer" columns={columnWidths} data={{}} />
-    </Box>
+      <text>{bottomBorder}</text>
+    </box>
   )
 }

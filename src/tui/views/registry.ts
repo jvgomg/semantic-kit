@@ -1,3 +1,9 @@
+/**
+ * View registry for the TUI.
+ *
+ * Manages registration and lookup of views.
+ * Views self-register by calling registerView() when their module is imported.
+ */
 import type { ViewDefinition } from './types.js'
 
 // Internal registry storage
@@ -18,9 +24,11 @@ export function registerView<T>(view: ViewDefinition<T>): void {
 }
 
 /**
- * Get a view by ID
+ * Get a view definition by ID.
+ * Returns the static view definition (id, label, description, fetch, Component).
+ * For the full view with data, use viewAtomFamily from views/atoms.ts.
  */
-export function getView(id: string): ViewDefinition | undefined {
+export function getViewDefinition(id: string): ViewDefinition | undefined {
   return viewRegistry.get(id)
 }
 

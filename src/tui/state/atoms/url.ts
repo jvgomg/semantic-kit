@@ -2,8 +2,7 @@
  * URL-related atoms for managing the current URL and recent URLs history.
  */
 import { atom } from 'jotai'
-import type { ViewState } from '../types.js'
-import { viewIdsAtom, viewStateAtomFamily } from './views.js'
+import { viewDataAtomFamily, viewDataIdsAtom, type ViewData } from '../view-data/index.js'
 
 /** The current URL being analyzed */
 export const urlAtom = atom('')
@@ -15,20 +14,19 @@ export const recentUrlsAtom = atom([
   'https://github.com',
 ])
 
-const initialViewState: ViewState = {
+const initialViewData: ViewData = {
   status: 'idle',
   data: null,
   error: null,
   fetchedUrl: null,
-  activeSubTab: null,
 }
 
 /** Write-only atom that sets URL and invalidates all views */
 export const setUrlAtom = atom(null, (get, set, newUrl: string) => {
   set(urlAtom, newUrl)
-  // Invalidate all views
-  const viewIds = get(viewIdsAtom)
+  // Invalidate all views - section state (expanded, selection) is preserved
+  const viewIds = get(viewDataIdsAtom)
   for (const id of viewIds) {
-    set(viewStateAtomFamily(id), initialViewState)
+    set(viewDataAtomFamily(id), initialViewData)
   }
 })

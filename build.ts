@@ -1,4 +1,5 @@
 import { $ } from 'bun'
+import pkg from './package.json'
 
 await Bun.build({
   entrypoints: ['./src/cli.ts', './src/index.ts'],
@@ -6,17 +7,20 @@ await Bun.build({
   format: 'esm',
   target: 'bun',
   sourcemap: 'external',
+  define: {
+    __VERSION__: JSON.stringify(pkg.version),
+  },
   // External packages that should not be bundled
   external: [
     // All dependencies should be external - they're installed via bun
     '@axe-core/playwright',
     '@mozilla/readability',
+    '@opentui/core',
+    '@opentui/react',
     'axe-core',
     'commander',
     'emphasize',
     'html-validate',
-    'ink',
-    'ink-text-input',
     'jsdom',
     'linkedom',
     'prettier',

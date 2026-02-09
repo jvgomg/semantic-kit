@@ -1,12 +1,17 @@
 /**
- * Sidebar Menu component with arrow key navigation.
- * Uses Ink's focus system for focus management.
+ * Sidebar Menu component with keyboard and mouse support.
+ *
+ * Uses SelectWithClick for navigation with click support.
+ * Wraps with custom focus system built on Jotai atoms.
  */
-import React from 'react'
-import { Box, Text, useInput } from 'ink'
-import { useTrackedFocus } from '../../state/index.js'
-import { MENU_PADDING_X } from './constants.js'
-import { borderColor, itemStyleWithBackground } from '../../theme.js'
+import { useAtom, useAtomValue } from 'jotai'
+import {
+  activeMenuIndexAtom,
+  menuItemsAtom,
+  useFocus,
+} from '../../state/index.js'
+import { colors } from '../../theme.js'
+import { SelectWithClick } from '../ui/index.js'
 
 export interface MenuItem {
   id: string
@@ -14,44 +19,45 @@ export interface MenuItem {
 }
 
 export interface MenuProps {
-  items: MenuItem[]
-  activeIndex: number
-  onNavigate: (direction: 'up' | 'down') => void
   width: number
 }
 
-export function Menu({ items, activeIndex, onNavigate, width }: MenuProps) {
-  const { isFocused, isActive } = useTrackedFocus('menu')
+export function Menu({ width }: MenuProps) {
+  const { isFocused, isInputActive, focus } = useFocus('menu')
+  const [activeMenuIndex, setActiveMenuIndex] = useAtom(activeMenuIndexAtom)
+  const items = useAtomValue(menuItemsAtom)
 
-  useInput(
-    (_input, key) => {
-      if (key.upArrow) {
-        onNavigate('up')
-      } else if (key.downArrow) {
-        onNavigate('down')
-      }
-    },
-    { isActive },
-  )
+  // Convert MenuItem[] to select options format
+  const options = items.map((item) => ({
+    name: item.label,
+    description: '',
+    value: item.id,
+  }))
 
   return (
-    <Box
+    <box
       flexDirection="column"
-      borderStyle="round"
-      borderColor={borderColor(isFocused)}
-      paddingX={MENU_PADDING_X}
       width={width}
-      flexShrink={0}
+      borderStyle="rounded"
+      borderColor={colors.borderUnfocused}
+      focusedBorderColor={colors.borderFocused}
+      focusable
+      focused={isFocused}
+      onMouseDown={() => focus()}
     >
-      {items.map((item, index) => {
-        const isActiveItem = index === activeIndex
-        return (
-          <Text key={item.id} {...itemStyleWithBackground(isActiveItem)}>
-            {isActiveItem ? '▸ ' : '  '}
-            {item.label}
-          </Text>
-        )
-      })}
-    </Box>
+      <SelectWithClick
+        options={options}
+        selectedIndex={activeMenuIndex}
+        focused={isInputActive}
+        height="100%"
+        selectedBackgroundColor={colors.backgroundSelected}
+        selectedTextColor={colors.textSelected}
+        textColor={colors.text}
+        showDescription={false}
+        wrapSelection
+        onChange={setActiveMenuIndex}
+        onSelect={setActiveMenuIndex}
+      />
+    </box>
   )
 }

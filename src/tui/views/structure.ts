@@ -1,8 +1,8 @@
-import {
-  fetchStructure,
-  renderStructureLines,
-  type TuiStructureResult,
-} from '../../commands/structure.js'
+/**
+ * Structure View - Shows page structure (landmarks, headings, links).
+ */
+import { fetchStructure, type TuiStructureResult } from '../../commands/structure/index.js'
+import { StructureViewContent } from './components/StructureViewContent.js'
 import { registerView } from './registry.js'
 import type { ViewDefinition } from './types.js'
 
@@ -10,9 +10,9 @@ export const structureView: ViewDefinition<TuiStructureResult> = {
   id: 'structure',
   label: 'Structure',
   description:
-    'Analyzes the semantic structure of the page including landmarks, headings hierarchy, links, skip links, and language attributes. Helps ensure proper document outline and navigation.',
+    'Analyzes page structure including landmarks, headings hierarchy, and navigation links.',
   fetch: fetchStructure,
-  render: renderStructureLines,
+  Component: StructureViewContent,
 }
 
 // Self-register

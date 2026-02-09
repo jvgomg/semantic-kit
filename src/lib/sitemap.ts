@@ -116,6 +116,14 @@ export function getDefaultSitemapUrl(url: string): string {
 }
 
 /**
+ * Check if a URL looks like a sitemap URL.
+ * Uses simple pattern matching for "sitemap.xml" in the URL.
+ */
+export function isSitemapUrl(url: string): boolean {
+  return url.toLowerCase().includes('sitemap.xml')
+}
+
+/**
  * Extract path from a URL
  */
 function extractPath(url: string): string {

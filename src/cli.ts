@@ -1,18 +1,25 @@
 import { Command } from 'commander'
-import { a11yCompareView } from './commands/a11y-compare.js'
-import { a11yJsView } from './commands/a11y-js.js'
-import { a11yView } from './commands/a11y.js'
-import { aiCrawlerView } from './commands/ai.js'
-import { botView } from './commands/bot.js'
-import { fetchHtml } from './commands/fetch.js'
-import { schemaView } from './commands/schema.js'
-import { structureCompareView } from './commands/structure-compare.js'
-import { structureJsView } from './commands/structure-js.js'
-import { structureView } from './commands/structure.js'
+import {
+  a11yCommand,
+  a11yJsCommand,
+  a11yCompareCommand,
+} from './commands/a11y/index.js'
+import { aiCommand } from './commands/ai/index.js'
+import { botCommand } from './commands/bot/index.js'
+import { fetchCommand } from './commands/fetch/index.js'
+import { schemaCommand } from './commands/schema/index.js'
+import {
+  structureCommand,
+  structureJsCommand,
+  structureCompareCommand,
+} from './commands/structure/index.js'
 import { tuiCommand } from './commands/tui.js'
-import { validateA11y } from './commands/validate-a11y.js'
-import { validateHtml } from './commands/validate-html.js'
-import { validateSchema } from './commands/validate-schema.js'
+import { validateA11yCommand } from './commands/validate-a11y/index.js'
+import { validateHtmlCommand } from './commands/validate-html/index.js'
+import { validateSchemaCommand } from './commands/validate-schema/index.js'
+import type { OutputModeOptions } from './lib/output-mode.js'
+import { handleCommandError } from './lib/run-command.js'
+import { VERSION } from './lib/version.js'
 
 const program = new Command()
 
@@ -21,7 +28,36 @@ program
   .description(
     'Developer toolkit for understanding how websites are interpreted by search engines, AI crawlers, screen readers, and content extractors',
   )
-  .version('0.0.16')
+  .version(VERSION)
+  .option('--plain', 'Disable rich output (no spinners, plain text)')
+  .option('--ci', 'CI mode (alias for --plain)')
+
+/**
+ * Get global output mode options from program
+ */
+function getGlobalOptions(): OutputModeOptions {
+  const opts = program.opts()
+  return {
+    plain: opts['plain'],
+    ci: opts['ci'],
+  }
+}
+
+/**
+ * Wrap a command action to merge global options and handle errors
+ */
+function withGlobalOptions<T extends object>(
+  action: (target: string, options: T & OutputModeOptions) => Promise<void>,
+): (target: string, options: T) => Promise<void> {
+  return async (target: string, options: T) => {
+    const merged = { ...options, ...getGlobalOptions() }
+    try {
+      await action(target, merged)
+    } catch (error) {
+      handleCommandError(error)
+    }
+  }
+}
 
 program
   .command('validate:html')
@@ -32,7 +68,7 @@ program
     '--format <type>',
     'Output format: full (default, with code context), brief (minimal), compact (grouped), json',
   )
-  .action(validateHtml)
+  .action(withGlobalOptions(validateHtmlCommand))
 
 program
   .command('fetch')
@@ -40,7 +76,7 @@ program
   .argument('<target>', 'URL to fetch')
   .option('-o, --out <path>', 'Save to file instead of terminal')
   .option('--stream', 'Show in terminal even when saving to file')
-  .action(fetchHtml)
+  .action(withGlobalOptions(fetchCommand))
 
 program
   .command('ai')
@@ -53,7 +89,7 @@ program
     '--format <type>',
     'Output format: full (default), compact (summary), json',
   )
-  .action(aiCrawlerView)
+  .action(withGlobalOptions(aiCommand))
 
 program
   .command('bot')
@@ -68,7 +104,7 @@ program
     '--format <type>',
     'Output format: full (default), compact (summary), json',
   )
-  .action(botView)
+  .action(withGlobalOptions(botCommand))
 
 program
   .command('schema')
@@ -80,7 +116,7 @@ program
     '--format <type>',
     'Output format: full (default), compact (summary), json',
   )
-  .action(schemaView)
+  .action(withGlobalOptions(schemaCommand))
 
 program
   .command('validate:schema')
@@ -94,7 +130,7 @@ program
     '--format <type>',
     'Output format: full (default), compact (summary), json',
   )
-  .action(validateSchema)
+  .action(withGlobalOptions(validateSchemaCommand))
 
 program
   .command('validate:a11y')
@@ -113,7 +149,7 @@ program
     '--ignore-incomplete',
     'Do not exit with error for incomplete checks (still displayed)',
   )
-  .action(validateA11y)
+  .action(withGlobalOptions(validateA11yCommand))
 
 program
   .command('structure')
@@ -129,7 +165,7 @@ program
     '--all-rules',
     'Run all JSDOM-safe accessibility rules (68 rules) instead of just structure rules (14 rules)',
   )
-  .action(structureView)
+  .action(withGlobalOptions(structureCommand))
 
 program
   .command('structure:js')
@@ -149,7 +185,7 @@ program
     '--all-rules',
     'Run all JSDOM-safe accessibility rules (68 rules) instead of just structure rules (14 rules)',
   )
-  .action(structureJsView)
+  .action(withGlobalOptions(structureJsCommand))
 
 program
   .command('structure:compare')
@@ -165,7 +201,7 @@ program
     '--timeout <ms>',
     'Timeout in milliseconds for page to load (default: 5000)',
   )
-  .action(structureCompareView)
+  .action(withGlobalOptions(structureCompareCommand))
 
 program
   .command('a11y')
@@ -178,7 +214,7 @@ program
     '--timeout <ms>',
     'Timeout in milliseconds for page to load (default: 5000)',
   )
-  .action(a11yView)
+  .action(withGlobalOptions(a11yCommand))
 
 program
   .command('a11y:js')
@@ -191,7 +227,7 @@ program
     '--timeout <ms>',
     'Timeout in milliseconds for page to load (default: 5000)',
   )
-  .action(a11yJsView)
+  .action(withGlobalOptions(a11yJsCommand))
 
 program
   .command('a11y:compare')
@@ -207,7 +243,7 @@ program
     '--timeout <ms>',
     'Timeout in milliseconds for page to load (default: 5000)',
   )
-  .action(a11yCompareView)
+  .action(withGlobalOptions(a11yCompareCommand))
 
 program
   .command('tui')

@@ -1,12 +1,17 @@
-// Import all views to trigger self-registration
-// Order of imports determines menu order
-import './structure.js'
-import './schema.js'
+/**
+ * Views module - imports all views to trigger self-registration.
+ * Import order determines menu order.
+ */
+
+// Import views to trigger registration (order determines menu order)
 import './ai-view.js'
-import './bot.js'
-import './accessibility.js'
-import './validation.js'
+import './structure.js'
 
 // Re-export registry functions
-export { getMenuItems, getView, getAllViews } from './registry.js'
-export type { ViewDefinition } from './types.js'
+export { getMenuItems, getViewDefinition, getAllViews } from './registry.js'
+
+// Re-export view atoms
+export { viewAtomFamily, activeViewAtom, type View } from './atoms.js'
+
+// Re-export types
+export type { ViewDefinition, ViewComponentProps } from './types.js'

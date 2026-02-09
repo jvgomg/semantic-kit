@@ -1,11 +1,15 @@
 /**
- * Modal state atoms for managing modal visibility.
+ * Modal state management.
  */
 import { atom } from 'jotai'
 import type { ModalType } from '../types.js'
 
-/** Currently active modal (null = no modal) */
+/**
+ * The currently active modal, or null if no modal is open.
+ */
 export const activeModalAtom = atom<ModalType>(null)
 
-/** Derived: is any modal currently open? */
+/**
+ * Derived atom: whether any modal is currently open.
+ */
 export const isModalOpenAtom = atom((get) => get(activeModalAtom) !== null)

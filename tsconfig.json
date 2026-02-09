@@ -5,7 +5,8 @@
     "lib": ["ES2022"],
     "module": "preserve",
     "moduleResolution": "bundler",
-    "jsx": "preserve",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@opentui/react",
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -34,5 +35,5 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*", "integration-tests/**/*", "test-server/**/*"],
-  "exclude": ["node_modules", "dist", "test-server/apps"]
+  "exclude": ["node_modules", "dist", "test-server/apps", "src/tui/_ink_backup"]
 }

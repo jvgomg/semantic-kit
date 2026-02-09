@@ -2,7 +2,7 @@
 // Developer toolkit for understanding how websites are interpreted by
 // search engines, AI crawlers, screen readers, and content extractors
 
-export { validateHtml } from './commands/validate-html.js'
+export { validateHtmlCommand } from './commands/validate-html/index.js'
 
 // Result types for programmatic usage
 export type {

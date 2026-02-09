@@ -1,5 +1,4 @@
 /**
- * Re-exports all state hooks.
+ * Re-export all state hooks.
  */
-export { useTrackedFocus } from './useTrackedFocus.js'
-export { useViewData } from './useViewData.js'
+export { useFocus, useFocusManager } from './useFocus.js'

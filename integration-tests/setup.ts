@@ -3,12 +3,13 @@
  * Configured via bunfig.toml preload
  */
 
+import { afterAll } from 'bun:test'
 import { startTestServer, stopTestServer } from './utils/server.js'
 
 // Start server before all tests
 await startTestServer()
 
-// Cleanup when process exits
-process.on('beforeExit', () => {
+// Stop server after all tests
+afterAll(() => {
   stopTestServer()
 })

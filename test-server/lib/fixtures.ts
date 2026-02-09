@@ -84,14 +84,20 @@ async function applyDelay(delay?: number): Promise<void> {
   }
 }
 
+export interface ServeFixtureOptions {
+  verbose?: boolean
+  defaultDelay?: number
+}
+
 /**
  * Serve a fixture file with meta configuration applied
  */
 export async function serveFixture(
   request: Request,
   fixturesPath: string,
-  verbose?: boolean
+  options: ServeFixtureOptions = {}
 ): Promise<Response | null> {
+  const { verbose, defaultDelay } = options
   const url = new URL(request.url)
   const filePath = await resolveFixture(url.pathname, fixturesPath)
 
@@ -103,6 +109,11 @@ export async function serveFixture(
   const baseMeta = await loadMeta(filePath)
   const overrides = parseQueryOverrides(url)
   const meta = mergeMeta(baseMeta, overrides)
+
+  // Apply default delay if no delay specified via meta or query param
+  if (meta.delay === undefined && defaultDelay !== undefined) {
+    meta.delay = defaultDelay
+  }
 
   if (verbose) {
     console.log(`[fixture] ${url.pathname} -> ${relative(fixturesPath, filePath)}`)

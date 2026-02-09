@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
 import { $ } from 'bun'
+import pkg from './package.json'
 
 const stubsDir = resolve(import.meta.dir, 'stubs')
 
@@ -11,6 +12,9 @@ const result = await Bun.build({
   naming: 'semantic-kit-temp.js',
   target: 'bun',
   minify: true,
+  define: {
+    __VERSION__: JSON.stringify(pkg.version),
+  },
   // Replace optional dependencies with stub modules
   plugins: [
     {

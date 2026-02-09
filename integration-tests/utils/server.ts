@@ -21,7 +21,11 @@ export async function startTestServer(): Promise<void> {
       stdout: 'inherit',
       stderr: 'inherit',
       cwd: process.cwd(),
-      env: { ...process.env, TEST_SERVER_PORT: String(TEST_PORT) },
+      env: {
+        ...process.env,
+        TEST_SERVER_PORT: String(TEST_PORT),
+        TEST_SERVER_DELAY: '0',
+      },
     })
 
     // Wait for main server to be ready

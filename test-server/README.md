@@ -23,6 +23,7 @@ Usage: bun test-server/server.ts [options]
 Options:
   -p, --port <number>     Port (default: 4000, env: TEST_SERVER_PORT)
   -h, --host <string>     Host (default: localhost)
+  -d, --delay <ms>        Response delay in ms (default: 3000, env: TEST_SERVER_DELAY)
   --no-mount              Skip app mounting
   --fixtures <path>       Custom fixtures path
   --verbose               Log requests
@@ -103,13 +104,15 @@ Override response behavior without creating meta files:
 
 | Parameter | Example | Description |
 |-----------|---------|-------------|
-| `delay` | `?delay=5000` | Response delay in ms |
+| `delay` | `?delay=5000` | Response delay in ms (overrides server default) |
 | `status` | `?status=500` | HTTP status code |
 | `header-*` | `?header-X-Custom=value` | Add response header |
 | `redirect` | `?redirect=/other.html` | Force redirect |
 | `contentType` | `?contentType=text/plain` | Override content type |
 
 Example: `http://localhost:4000/any.html?delay=1000&status=201`
+
+Use `?delay=0` to disable the default delay for a specific request.
 
 ## Special Endpoints
 

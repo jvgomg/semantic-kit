@@ -1,12 +1,32 @@
 /**
- * Chrome components barrel export.
+ * Chrome components - application shell UI elements.
  */
-export * from './constants.js'
-export * from './UrlBar.js'
-export * from './UrlList.js'
-export * from './Menu.js'
-export * from './MainContent.js'
-export * from './ViewRenderer.js'
-export * from './ViewContent.js'
-export * from './HelpModal.js'
-export * from './StatusBar.js'
+export { Menu } from './Menu.js'
+export type { MenuItem, MenuProps } from './Menu.js'
+
+export { UrlBar } from './UrlBar.js'
+export type { UrlBarProps } from './UrlBar.js'
+
+export { MainContent } from './MainContent.js'
+export type { MainContentProps } from './MainContent.js'
+
+export { StatusBar } from './StatusBar.js'
+
+export { HelpModal } from './HelpModal.js'
+export type { HelpModalProps } from './HelpModal.js'
+
+export { UrlList } from './UrlList.js'
+export type { UrlListProps } from './UrlList.js'
+
+export {
+  MENU_PADDING_X,
+  MENU_BORDER_WIDTH,
+  MENU_INDICATOR_WIDTH,
+  INFO_PANEL_WIDTH,
+  URL_BAR_HEIGHT,
+  STATUS_BAR_HEIGHT,
+  URL_LIST_WIDTH,
+  HELP_MODAL_WIDTH,
+  HELP_MODAL_HEIGHT,
+} from './constants.js'
+export type { ModalType } from './constants.js'

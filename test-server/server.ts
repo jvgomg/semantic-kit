@@ -21,6 +21,7 @@ const { values: args } = parseArgs({
   options: {
     port: { type: 'string', short: 'p', default: process.env['TEST_SERVER_PORT'] || '4000' },
     host: { type: 'string', short: 'h', default: 'localhost' },
+    delay: { type: 'string', short: 'd', default: process.env['TEST_SERVER_DELAY'] || '3000' },
     'no-mount': { type: 'boolean', default: false },
     fixtures: { type: 'string', default: join(__dirname, 'fixtures') },
     verbose: { type: 'boolean', default: false },
@@ -37,6 +38,7 @@ Usage: bun test-server/server.ts [options]
 Options:
   -p, --port <number>     Port (default: 4000, env: TEST_SERVER_PORT)
   -h, --host <string>     Host (default: localhost)
+  -d, --delay <ms>        Response delay in ms (default: 3000, env: TEST_SERVER_DELAY)
   --no-mount              Skip app mounting
   --fixtures <path>       Custom fixtures path
   --verbose               Log requests
@@ -47,6 +49,7 @@ Options:
 
 const port = parseInt(args.port as string, 10)
 const host = args.host as string
+const defaultDelay = parseInt(args.delay as string, 10)
 const mounts: MountConfig[] = getMounts(port)
 const fixturesPath = args.fixtures as string
 const verbose = args.verbose as boolean
@@ -152,7 +155,7 @@ ${mountRows}
   <div class="section">
     <h2>Query Parameter Overrides</h2>
     <ul>
-      <li><code>?delay=ms</code> - Response delay</li>
+      <li><code>?delay=ms</code> - Response delay (overrides default: ${defaultDelay}ms)</li>
       <li><code>?status=code</code> - HTTP status code</li>
       <li><code>?header-Name=value</code> - Add header</li>
       <li><code>?redirect=url</code> - Force redirect</li>
@@ -234,7 +237,7 @@ async function handleRequest(request: Request): Promise<Response> {
   }
 
   // Try to serve fixture
-  const fixtureResponse = await serveFixture(request, fixturesPath, verbose)
+  const fixtureResponse = await serveFixture(request, fixturesPath, { verbose, defaultDelay })
   if (fixtureResponse) {
     return fixtureResponse
   }
@@ -255,6 +258,7 @@ async function main(): Promise<void> {
 
   console.log(`[server] Listening on http://${host}:${port}`)
   console.log(`[server] Fixtures: ${fixturesPath}`)
+  console.log(`[server] Default delay: ${defaultDelay}ms`)
   if (verbose) {
     console.log('[server] Verbose logging enabled')
   }

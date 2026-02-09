@@ -1,29 +1,17 @@
+/**
+ * View type definitions for the TUI.
+ */
 import type { ReactNode } from 'react'
 
 /**
  * Props passed to a view's Component
+ * Note: Components should read focus state from atoms if needed
  */
 export interface ViewComponentProps<T = unknown> {
   /** The fetched data */
   data: T
   /** Available height for the content area */
   height: number
-  /** Whether the view is focused */
-  isFocused: boolean
-  /** Whether the view is receiving input */
-  isActive: boolean
-}
-
-/**
- * Sub-tab definition for views with multiple tabs
- */
-export interface SubTabDefinition<T = unknown> {
-  /** Unique identifier within the view */
-  id: string
-  /** Tab label displayed in tab bar */
-  label: string
-  /** Render this sub-tab's content */
-  render: (data: T) => string[]
 }
 
 /**
@@ -38,10 +26,6 @@ export interface ViewDefinition<T = unknown> {
   description: string
   /** Data fetcher - takes URL and returns data */
   fetch: (url: string) => Promise<T>
-  /** Render data to lines for display (used when Component is not provided) */
-  render: (data: T) => string[]
-  /** Optional React component for rich rendering (takes precedence over render) */
-  Component?: (props: ViewComponentProps<T>) => ReactNode
-  /** Optional sub-tabs for views with multiple content panes */
-  subTabs?: SubTabDefinition<T>[]
+  /** React component for rendering the view */
+  Component: (props: ViewComponentProps<T>) => ReactNode
 }

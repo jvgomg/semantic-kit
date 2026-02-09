@@ -1,57 +1,70 @@
 /**
- * Go to modal - combines Recent URLs and Sitemap browsing via tabs.
+ * URL list panel - combines Recent URLs and Sitemap browsing via tabs.
+ * Shown inline below the URL bar (replaces main content when open).
  *
  * Two tabs:
- * 1. Recent URLs - quick selection from history
+ * 1. Recent URLs - quick selection from history (using native <select>)
  * 2. Sitemap - load and browse site structure
  *
  * Tab key cycles focus, left/right arrows switch tabs when tab bar is focused.
+ *
+ * Focus state is managed via Jotai atoms for consistency across the app.
  */
-import React, { useState } from 'react'
-import { Box, Text, useInput } from 'ink'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { URL_LIST_WIDTH } from './constants.js'
+import { useEffect } from 'react'
+import { useKeyboard } from '@opentui/react'
+import { useAtomValue, useAtom, useSetAtom } from 'jotai'
 import { colors } from '../../theme.js'
 import { TabBar } from '../ui/TabBar.js'
-import { Input } from '../ui/Input.js'
-import { SitemapBrowser, useSitemapBrowserHandlers } from '../ui/SitemapBrowser.js'
+import { SitemapBrowser } from '../ui/SitemapBrowser.js'
 import {
   recentUrlsAtom,
-  urlListIndexAtom,
-  urlListActiveTabAtom,
-  sitemapCacheAtom,
   sitemapLoadingAtom,
+  activeSitemapDataAtom,
+  sitemapSelectedIndexAtom,
+  sitemapExpandedPathsAtom,
   fetchSitemapAtom,
+  resetSitemapSelectionAtom,
+  // UrlList focus atoms
+  urlListActiveTabAtom,
+  urlListFocusAtom,
+  urlListSitemapInputAtom,
+  urlListHasTreeDataAtom,
+  setUrlListTabAtom,
+  urlListFocusNextAtom,
+  urlListFocusPrevAtom,
+  urlListFocusTreeIfAvailableAtom,
+  resetUrlListStateAtom,
+  initUrlListSitemapInputAtom,
 } from '../../state/index.js'
-import type { SubTabDefinition } from '../../views/types.js'
+import type { TabItem } from '../ui/TabBar.js'
+import type { UrlListTab } from '../../state/types.js'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-type ActiveTab = 'recent' | 'sitemap'
-type FocusedElement = 'tabs' | 'list' | 'input' | 'tree'
-
 export interface UrlListProps {
   /** Callback when a URL is selected */
   onSelect: (url: string) => void
-  /** Callback to close the modal */
+  /** Callback to close the panel */
   onClose: () => void
   /** Terminal columns */
   columns: number
-  /** Terminal rows */
+  /** Available height for the URL list panel */
   rows: number
   /** Default sitemap URL (computed from current URL) */
   defaultSitemapUrl: string
+  /** If provided, start on sitemap tab and auto-fetch this URL */
+  autoFetchSitemapUrl?: string
 }
 
 // ============================================================================
 // Tab Definitions
 // ============================================================================
 
-const TAB_DEFINITIONS: SubTabDefinition[] = [
-  { id: 'recent', label: 'Recent URLs', render: () => [] },
-  { id: 'sitemap', label: 'Sitemap', render: () => [] },
+const TAB_DEFINITIONS: TabItem[] = [
+  { id: 'recent', label: 'Recent URLs' },
+  { id: 'sitemap', label: 'Sitemap' },
 ]
 
 // ============================================================================
@@ -61,293 +74,225 @@ const TAB_DEFINITIONS: SubTabDefinition[] = [
 export function UrlList({
   onSelect,
   onClose,
-  columns,
+  columns: _columns,
   rows,
   defaultSitemapUrl,
+  autoFetchSitemapUrl,
 }: UrlListProps) {
-  // Atoms
+  // Atoms - Recent URLs
   const urls = useAtomValue(recentUrlsAtom)
-  const [selectedIndex, setSelectedIndex] = useAtom(urlListIndexAtom)
-  const [activeTab, setActiveTab] = useAtom(urlListActiveTabAtom)
-  const sitemapCache = useAtomValue(sitemapCacheAtom)
+
+  // Atoms - Sitemap data
   const sitemapLoading = useAtomValue(sitemapLoadingAtom)
-  const fetchSitemapAction = useSetAtom(fetchSitemapAtom)
+  const sitemapData = useAtomValue(activeSitemapDataAtom)
+  const [selectedIndex, setSelectedIndex] = useAtom(sitemapSelectedIndexAtom)
+  const [expandedPaths, setExpandedPaths] = useAtom(sitemapExpandedPathsAtom)
+  const fetchSitemap = useSetAtom(fetchSitemapAtom)
+  const resetSitemapSelection = useSetAtom(resetSitemapSelectionAtom)
 
-  // Focus state (tab state is controlled by atoms)
-  const [focusedElement, setFocusedElement] = useState<FocusedElement>(
-    activeTab === 'recent' ? 'list' : 'input'
+  // Atoms - UrlList focus state
+  const activeTab = useAtomValue(urlListActiveTabAtom)
+  const [focusedElement, setFocusedElement] = useAtom(urlListFocusAtom)
+  const [sitemapInputValue, setSitemapInputValue] = useAtom(
+    urlListSitemapInputAtom,
   )
+  const hasTreeData = useAtomValue(urlListHasTreeDataAtom)
 
-  // Sitemap input state
-  const [sitemapInputValue, setSitemapInputValue] = useState(defaultSitemapUrl)
-  const [sitemapInputCursor, setSitemapInputCursor] = useState(defaultSitemapUrl.length)
+  // Action atoms
+  const setUrlListTab = useSetAtom(setUrlListTabAtom)
+  const focusNext = useSetAtom(urlListFocusNextAtom)
+  const focusPrev = useSetAtom(urlListFocusPrevAtom)
+  const focusTreeIfAvailable = useSetAtom(urlListFocusTreeIfAvailableAtom)
+  const resetUrlListState = useSetAtom(resetUrlListStateAtom)
+  const initSitemapInput = useSetAtom(initUrlListSitemapInputAtom)
+  const setFocus = useSetAtom(urlListFocusAtom)
 
-  // Sitemap browser state
-  const [sitemapSelectedIndex, setSitemapSelectedIndex] = useState(0)
-  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
+  // Initialize state on mount
+  useEffect(() => {
+    const startOnSitemap = !!autoFetchSitemapUrl
+    resetUrlListState(startOnSitemap)
+    initSitemapInput(autoFetchSitemapUrl || defaultSitemapUrl)
 
-  // Get current sitemap data from cache
-  const currentSitemapData = sitemapCache.get(sitemapInputValue) ?? null
+    if (autoFetchSitemapUrl) {
+      resetSitemapSelection()
+      fetchSitemap(autoFetchSitemapUrl)
+    }
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  // Sitemap browser handlers
-  const {
-    flatNodes,
-    handleNavigate: handleSitemapNavigate,
-    handleSelect: handleSitemapSelect,
-    handleExpandCurrent,
-    handleCollapseCurrent,
-  } = useSitemapBrowserHandlers({
-    sitemapData: currentSitemapData,
-    expandedPaths,
-    selectedIndex: sitemapSelectedIndex,
-    onExpandedPathsChange: setExpandedPaths,
-    onSelectedIndexChange: setSitemapSelectedIndex,
-    onSelect,
-  })
+  // Auto-focus tree when sitemap data loads
+  useEffect(() => {
+    focusTreeIfAvailable()
+  }, [hasTreeData, focusTreeIfAvailable])
 
-  // Navigate recent URLs list
-  const handleNavigateRecent = (direction: 'up' | 'down') => {
-    if (direction === 'up') {
-      setSelectedIndex((prev) => Math.max(0, prev - 1))
-    } else {
-      setSelectedIndex((prev) => Math.min(urls.length - 1, prev + 1))
+  // Handle tab change
+  const handleTabChange = (newTab: UrlListTab) => {
+    setUrlListTab(newTab)
+  }
+
+  // Handle sitemap fetch
+  const handleFetchSitemap = () => {
+    if (sitemapInputValue.trim()) {
+      resetSitemapSelection()
+      fetchSitemap(sitemapInputValue.trim())
     }
   }
 
-  // Determine what focus elements are available in each tab
-  const getNextFocus = (current: FocusedElement, direction: 'next' | 'prev'): FocusedElement => {
-    if (activeTab === 'recent') {
-      // Recent tab: tabs <-> list
-      if (current === 'tabs') return direction === 'next' ? 'list' : 'list'
-      return 'tabs'
-    } else {
-      // Sitemap tab: tabs <-> input <-> tree (if data loaded)
-      const hasTree = currentSitemapData && currentSitemapData.type !== 'error' && flatNodes.length > 0
-      const elements: FocusedElement[] = hasTree ? ['tabs', 'input', 'tree'] : ['tabs', 'input']
-      const idx = elements.indexOf(current)
-      if (direction === 'next') {
-        return elements[(idx + 1) % elements.length]
-      } else {
-        return elements[(idx - 1 + elements.length) % elements.length]
-      }
-    }
-  }
+  // Keyboard handling for global shortcuts and focus navigation
+  useKeyboard((event) => {
+    const { name, shift } = event
 
-  // Handle tab change - reset focus to appropriate element
-  const handleTabChange = (newTab: ActiveTab) => {
-    setActiveTab(newTab)
-    if (newTab === 'recent') {
-      setFocusedElement('list')
-    } else {
-      setFocusedElement('input')
-    }
-  }
-
-  // Input handling
-  useInput((input, key) => {
-    // Global: close modal
-    if (key.escape || (input === 'q' && focusedElement !== 'input')) {
+    // Global: close panel
+    if (name === 'escape' || (name === 'q' && focusedElement !== 'input')) {
       onClose()
       return
     }
 
     // Tab: cycle focus
-    if (key.tab) {
-      setFocusedElement(getNextFocus(focusedElement, key.shift ? 'prev' : 'next'))
+    if (name === 'tab') {
+      if (shift) {
+        focusPrev()
+      } else {
+        focusNext()
+      }
       return
     }
 
-    // Tab bar focused: left/right to switch tabs
+    // Arrow navigation between focus regions
     if (focusedElement === 'tabs') {
-      if (key.leftArrow || key.rightArrow) {
-        handleTabChange(activeTab === 'recent' ? 'sitemap' : 'recent')
+      if (name === 'down') {
+        focusNext()
         return
       }
-      if (key.downArrow) {
-        setFocusedElement(getNextFocus('tabs', 'next'))
-        return
-      }
-    }
-
-    // Recent URLs list focused
-    if (focusedElement === 'list' && activeTab === 'recent') {
-      if (key.upArrow) {
-        handleNavigateRecent('up')
-      } else if (key.downArrow) {
-        handleNavigateRecent('down')
-      } else if (key.return && urls[selectedIndex]) {
-        onSelect(urls[selectedIndex])
-      }
-      return
     }
 
     // Sitemap input focused
     if (focusedElement === 'input' && activeTab === 'sitemap') {
-      if (key.return) {
-        // Fetch sitemap
-        fetchSitemapAction(sitemapInputValue)
-        // Reset sitemap browser state for new URL
-        setSitemapSelectedIndex(0)
-        setExpandedPaths(new Set())
-      } else if (key.backspace || key.delete) {
-        if (sitemapInputCursor > 0) {
-          const newValue =
-            sitemapInputValue.slice(0, sitemapInputCursor - 1) +
-            sitemapInputValue.slice(sitemapInputCursor)
-          setSitemapInputValue(newValue)
-          setSitemapInputCursor(sitemapInputCursor - 1)
-        }
-      } else if (key.leftArrow) {
-        setSitemapInputCursor(Math.max(0, sitemapInputCursor - 1))
-      } else if (key.rightArrow) {
-        setSitemapInputCursor(Math.min(sitemapInputValue.length, sitemapInputCursor + 1))
-      } else if (key.upArrow) {
-        setFocusedElement('tabs')
-      } else if (key.downArrow && flatNodes.length > 0) {
-        setFocusedElement('tree')
-      } else if (input && !key.ctrl && !key.meta) {
-        const newValue =
-          sitemapInputValue.slice(0, sitemapInputCursor) +
-          input +
-          sitemapInputValue.slice(sitemapInputCursor)
-        setSitemapInputValue(newValue)
-        setSitemapInputCursor(sitemapInputCursor + input.length)
+      if (name === 'return') {
+        handleFetchSitemap()
+        return
+      } else if (name === 'up') {
+        setFocus('tabs')
+        return
+      } else if (name === 'down' && hasTreeData) {
+        setFocus('tree')
+        return
       }
-      return
     }
 
-    // Sitemap tree focused
+    // Tree focused - up from tree can go to input
     if (focusedElement === 'tree' && activeTab === 'sitemap') {
-      if (key.upArrow) {
-        if (sitemapSelectedIndex === 0) {
-          setFocusedElement('input')
-        } else {
-          handleSitemapNavigate('up')
-        }
-      } else if (key.downArrow) {
-        handleSitemapNavigate('down')
-      } else if (key.rightArrow) {
-        handleExpandCurrent()
-      } else if (key.leftArrow) {
-        handleCollapseCurrent()
-      } else if (key.return) {
-        handleSitemapSelect()
+      if (name === 'up' && selectedIndex === 0) {
+        setFocus('input')
       }
-      return
+      // Other tree navigation handled by SitemapBrowser component
     }
   })
 
-  // Layout calculations
-  const innerWidth = URL_LIST_WIDTH - 2
-  const bg = colors.modalBackground
+  // Calculate content height - select needs explicit height
+  const listHeight = Math.max(urls.length, 1)
 
-  // Calculate content height
-  const contentHeight = activeTab === 'recent'
-    ? Math.max(urls.length, 1) + 2
-    : 12 // input + tree area
+  // Convert URLs to select options
+  const urlOptions = urls.map((url) => ({
+    name: url,
+    description: '',
+    value: url,
+  }))
 
-  const headerFooterHeight = 6 // Title, tab bar, hint row, padding
-  const totalHeight = contentHeight + headerFooterHeight
-  const marginLeft = Math.max(0, Math.floor((columns - URL_LIST_WIDTH) / 2))
-  const marginTop = Math.max(0, Math.floor((rows - totalHeight) / 2))
+  // Render sitemap URL input
+  const inputFocused = focusedElement === 'input'
 
-  // Helpers
-  const blank = () => <Text backgroundColor={bg}>{' '.repeat(innerWidth)}</Text>
-
-  const row = (content: string, color?: string, bold?: boolean) => (
-    <Text color={color} bold={bold} backgroundColor={bg}>
-      {(' ' + content).padEnd(innerWidth)}
-    </Text>
+  const sitemapInput = (
+    <box
+      paddingLeft={1}
+      flexDirection="row"
+      borderStyle="single"
+      borderColor={inputFocused ? colors.borderFocused : colors.borderUnfocused}
+      onMouseDown={() => setFocusedElement('input')}
+    >
+      <text fg={colors.textHint}>URL: </text>
+      <input
+        value={sitemapInputValue}
+        onChange={setSitemapInputValue}
+        focused={inputFocused}
+        placeholder="Enter sitemap URL..."
+        textColor={colors.text}
+        placeholderColor={colors.textHint}
+        cursorColor={colors.accent}
+      />
+    </box>
   )
 
-  // Calculate tree height (content area minus input)
-  const treeHeight = 8
+  // Calculate available height for list/tree content
+  // rows is total height available, subtract: title(1) + tabs(1) + footer(2) + padding(2) = 6
+  const contentAreaHeight = Math.max(1, rows - 6)
 
   return (
-    <Box position="absolute" marginLeft={marginLeft} marginTop={marginTop}>
-      <Box borderStyle="round" borderColor={colors.modalBorder} flexDirection="column">
-        {/* Title */}
-        {blank()}
-        {row('Go to', colors.modalTitle, true)}
-        {blank()}
+    <box
+      flexDirection="column"
+      height={rows}
+      borderStyle="rounded"
+      borderColor={colors.borderUnfocused}
+      paddingLeft={1}
+      paddingRight={1}
+    >
+      <text marginBottom={1}>
+        <strong>Go to</strong>
+      </text>
 
-        {/* Tab Bar */}
-        <Box backgroundColor={bg} paddingLeft={1}>
-          <TabBar
-            tabs={TAB_DEFINITIONS}
-            activeTab={activeTab}
-            onSelect={(id) => handleTabChange(id as ActiveTab)}
-            isFocused={focusedElement === 'tabs'}
-          />
-        </Box>
-        {blank()}
+      {/* Tab Bar - handles its own keyboard navigation */}
+      <box>
+        <TabBar
+          tabs={TAB_DEFINITIONS}
+          activeTab={activeTab}
+          onSelect={(id) => handleTabChange(id as UrlListTab)}
+          isFocused={focusedElement === 'tabs'}
+        />
+      </box>
 
-        {/* Tab Content */}
-        {activeTab === 'recent' ? (
-          // Recent URLs content
-          <>
-            {urls.length === 0 ? (
-              row('No recent URLs', colors.textHint)
-            ) : (
-              urls.map((urlItem, index) => {
-                const isSelected = index === selectedIndex && focusedElement === 'list'
-                const prefix = isSelected ? '▸ ' : '  '
-                const content = (prefix + urlItem).slice(0, innerWidth - 2)
-                const itemBg = isSelected ? colors.modalBackgroundSelected : bg
-                return (
-                  <Text
-                    key={urlItem}
-                    color={isSelected ? colors.textSelected : colors.text}
-                    backgroundColor={itemBg}
-                  >
-                    {(' ' + content).padEnd(innerWidth)}
-                  </Text>
-                )
-              })
-            )}
-          </>
-        ) : (
-          // Sitemap content
-          <>
-            <Input
-              label="URL"
-              labelPosition="inline"
-              value={sitemapInputValue}
-              cursorPosition={sitemapInputCursor}
-              isFocused={focusedElement === 'input'}
-              width={innerWidth}
-              backgroundColor={bg}
-            />
-            {blank()}
-            <SitemapBrowser
-              sitemapUrl={sitemapInputValue}
-              sitemapData={currentSitemapData}
-              isLoading={sitemapLoading}
-              selectedIndex={focusedElement === 'tree' ? sitemapSelectedIndex : -1}
-              expandedPaths={expandedPaths}
-              onSelect={onSelect}
-              onNavigate={handleSitemapNavigate}
-              onToggleExpand={(path) => {
-                const newPaths = new Set(expandedPaths)
-                if (newPaths.has(path)) {
-                  newPaths.delete(path)
-                } else {
-                  newPaths.add(path)
+      {/* Tab Content */}
+      {activeTab === 'recent' ? (
+        // Recent URLs content - using native <select>
+        <box flexGrow={1}>
+          {urls.length === 0 ? (
+            <text fg={colors.textHint}>No recent URLs</text>
+          ) : (
+            <select
+              options={urlOptions}
+              focused={focusedElement === 'list'}
+              height={Math.min(listHeight + 2, contentAreaHeight)}
+              showDescription={false}
+              onSelect={(_index, option) => {
+                if (option?.value) {
+                  onSelect(option.value as string)
                 }
-                setExpandedPaths(newPaths)
               }}
-              height={treeHeight}
-              width={innerWidth}
-              backgroundColor={bg}
             />
-          </>
-        )}
+          )}
+        </box>
+      ) : (
+        // Sitemap content
+        <box flexDirection="column" flexGrow={1}>
+          {sitemapInput}
+          <text />
+          <SitemapBrowser
+            sitemapData={sitemapData}
+            isLoading={sitemapLoading}
+            selectedIndex={selectedIndex}
+            expandedPaths={expandedPaths}
+            onSelectedIndexChange={setSelectedIndex}
+            onExpandedPathsChange={setExpandedPaths}
+            onSelect={onSelect}
+            height={Math.max(1, contentAreaHeight - 2)}
+            isFocused={focusedElement === 'tree'}
+          />
+        </box>
+      )}
 
-        {/* Footer hints */}
-        {blank()}
-        {row('Tab: switch | Enter: select | Esc: close', colors.textHint)}
-        {blank()}
-      </Box>
-    </Box>
+      {/* Footer hints */}
+      <text />
+      <text fg={colors.textHint}>Tab: switch | Enter: select | Esc: close</text>
+    </box>
   )
 }

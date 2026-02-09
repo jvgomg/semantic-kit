@@ -1,103 +1,55 @@
 /**
- * Centralized Theme Configuration for Semantic-Kit TUI
+ * Centralized Theme Configuration for Semantic-Kit TUI (OpenTUI)
  *
- * ## Color Philosophy: ANSI Colors Over Hex Values
+ * ## Color Philosophy
  *
- * This theme uses ANSI color names (e.g., 'cyan', 'gray', 'black') rather than
- * hardcoded hex values (e.g., '#1a1a1a'). This approach has several benefits:
+ * OpenTUI requires explicit hex colors rather than ANSI color names.
+ * We define a palette that works well in both light and dark terminals,
+ * using colors that have good contrast in common themes.
  *
- * ### Why ANSI Colors?
+ * ## OpenTUI Color Props
  *
- * 1. **Respects User Preferences**: Terminal emulators map ANSI color names to
- *    user-configured values. When we use `color="cyan"`, the terminal displays
- *    whatever cyan the user has chosen in their theme. This means our TUI
- *    automatically adapts to light themes, dark themes, and custom palettes.
+ * Unlike Ink which uses `color` and `backgroundColor` on Text:
+ * - OpenTUI uses `fg` (foreground) and `bg` (background) for text
+ * - Box components use `backgroundColor` and `borderColor`
  *
- * 2. **Consistent Contrast**: Users configure their terminal colors to work well
- *    together. By using semantic color names, we inherit their contrast choices
- *    rather than imposing our own that may clash.
+ * ## Text Attributes
  *
- * 3. **Accessibility**: Users with visual impairments often customize terminal
- *    colors for better visibility. Hardcoded hex values override these settings.
- *
- * ### The 16 Standard ANSI Colors
- *
- * | Normal    | Bright        |
- * |-----------|---------------|
- * | black     | blackBright   |
- * | red       | redBright     |
- * | green     | greenBright   |
- * | yellow    | yellowBright  |
- * | blue      | blueBright    |
- * | magenta   | magentaBright |
- * | cyan      | cyanBright    |
- * | white     | whiteBright   |
- *
- * These names are supported by Ink (via chalk) and map to the user's terminal
- * configuration. The actual RGB values are determined by the terminal emulator.
- *
- * ### When Hex Colors Might Be Acceptable
- *
- * - Brand colors that must be exact (use sparingly)
- * - Gradients or data visualizations requiring precise color control
- * - When the terminal's color profile is known (rare)
- *
- * Even in these cases, consider providing fallbacks for terminals with limited
- * color support (16-color, 256-color, vs true color).
- *
- * ### Modal Background Strategy
- *
- * Modals use `backgroundColor="black"` to create a distinct overlay layer.
- * The terminal's configured "black" provides appropriate contrast regardless
- * of whether the user has a light or dark theme. This works because:
- *
- * - Dark themes: black bg blends naturally, content stands out
- * - Light themes: black bg creates strong contrast, clearly modal
- *
- * We must set a background because terminal rendering has no z-index or
- * clipping - absolutely positioned elements overlay but don't occlude.
- * Filling with a background color prevents underlying content from showing.
- *
- * ### References
- *
- * - ANSI escape codes: https://en.wikipedia.org/wiki/ANSI_escape_code
- * - Terminal colors explained: https://jvns.ca/blog/2024/10/01/terminal-colours/
- * - Chalk color support: https://github.com/chalk/chalk
+ * OpenTUI uses numeric attributes instead of boolean props:
+ * - Instead of `<Text bold>`, use `<text attributes={TextAttributes.BOLD}>`
+ * - Import TextAttributes from @opentui/core
  */
-
-import type { TextProps, BoxProps } from 'ink'
 
 // =============================================================================
 // Color Definitions
 // =============================================================================
 
 /**
- * ANSI color names supported by Ink/chalk.
- * These map to user's terminal theme configuration.
+ * Color palette using hex values.
+ * These are chosen to work well in common terminal themes.
  */
-export type AnsiColor =
-  | 'black'
-  | 'red'
-  | 'green'
-  | 'yellow'
-  | 'blue'
-  | 'magenta'
-  | 'cyan'
-  | 'white'
-  | 'blackBright'
-  | 'redBright'
-  | 'greenBright'
-  | 'yellowBright'
-  | 'blueBright'
-  | 'magentaBright'
-  | 'cyanBright'
-  | 'whiteBright'
-  | 'gray' // Alias for blackBright
-  | 'grey' // Alias for blackBright
+export const palette = {
+  // Primary colors
+  cyan: '#00CED1', // Dark cyan - good visibility
+  yellow: '#FFD700', // Gold/yellow for highlights
+  green: '#32CD32', // Lime green for success
+  red: '#FF6B6B', // Soft red for errors
+  blue: '#4169E1', // Royal blue
+
+  // Grays
+  white: '#FFFFFF',
+  gray: '#808080',
+  darkGray: '#4A4A4A',
+  black: '#000000',
+
+  // Alternate/bright variants
+  cyanBright: '#00FFFF',
+  yellowBright: '#FFFF00',
+} as const
 
 /**
  * Semantic color roles used throughout the TUI.
- * Maps UI intent to ANSI colors.
+ * Maps UI intent to palette colors.
  */
 export const colors = {
   // ---------------------------------------------------------------------------
@@ -105,62 +57,54 @@ export const colors = {
   // ---------------------------------------------------------------------------
 
   /** Primary accent color - used for focus indicators and active elements */
-  accent: 'cyan' as AnsiColor,
+  accent: palette.cyan,
 
   /** Muted/secondary color - used for inactive elements and hints */
-  muted: 'gray' as AnsiColor,
+  muted: palette.gray,
 
   /** Primary text color */
-  text: 'white' as AnsiColor,
+  text: palette.white,
 
   /** Highlight color for keyboard shortcuts and important callouts */
-  highlight: 'yellow' as AnsiColor,
+  highlight: palette.yellow,
 
   // ---------------------------------------------------------------------------
   // Component-Specific
   // ---------------------------------------------------------------------------
 
   /** Border color when a region has keyboard focus */
-  borderFocused: 'cyan' as AnsiColor,
+  borderFocused: palette.cyan,
 
   /** Border color when a region does not have focus */
-  borderUnfocused: 'gray' as AnsiColor,
+  borderUnfocused: palette.gray,
 
   /** Text color for the currently selected item */
-  textSelected: 'cyan' as AnsiColor,
+  textSelected: palette.cyan,
 
   /** Background color for the currently selected item */
-  backgroundSelected: 'gray' as AnsiColor,
+  backgroundSelected: palette.darkGray,
 
   /** Text color for hint/help text */
-  textHint: 'gray' as AnsiColor,
+  textHint: palette.gray,
 
   /** Text color for keyboard shortcut indicators */
-  textShortcut: 'yellow' as AnsiColor,
+  textShortcut: palette.yellow,
 
   // ---------------------------------------------------------------------------
   // Modal/Overlay
   // ---------------------------------------------------------------------------
 
-  /**
-   * Background color for modal overlays.
-   *
-   * Uses ANSI 'black' which maps to the user's configured black.
-   * This provides appropriate contrast on both light and dark themes.
-   */
-  modalBackground: 'black' as AnsiColor,
+  /** Background color for modal overlays */
+  modalBackground: palette.black,
 
-  /**
-   * Background color for selected items within modals.
-   * Uses 'gray' to provide subtle differentiation from modal background.
-   */
-  modalBackgroundSelected: 'gray' as AnsiColor,
+  /** Background color for selected items within modals */
+  modalBackgroundSelected: palette.darkGray,
 
   /** Border color for modal dialogs */
-  modalBorder: 'cyan' as AnsiColor,
+  modalBorder: palette.cyan,
 
   /** Title text color in modals */
-  modalTitle: 'cyan' as AnsiColor,
+  modalTitle: palette.cyan,
 } as const
 
 // =============================================================================
@@ -168,25 +112,30 @@ export const colors = {
 // =============================================================================
 
 /**
- * Returns border color based on focus state.
- * Use this for consistent focus indication across all bordered components.
- *
- * @example
- * <Box borderColor={borderColor(isFocused)}>
+ * OpenTUI text style props.
  */
-export function borderColor(isFocused: boolean): AnsiColor {
-  return isFocused ? colors.borderFocused : colors.borderUnfocused
+export interface TextStyle {
+  fg?: string
+  bg?: string
+}
+
+/**
+ * OpenTUI box style props.
+ */
+export interface BoxStyle {
+  borderColor?: string
+  backgroundColor?: string
 }
 
 /**
  * Returns text props for a selected/unselected item.
  *
  * @example
- * <Text {...itemStyle(isSelected)}>Item text</Text>
+ * <text {...itemStyle(isSelected)}>Item text</text>
  */
-export function itemStyle(isSelected: boolean): Pick<TextProps, 'color'> {
+export function itemStyle(isSelected: boolean): TextStyle {
   return {
-    color: isSelected ? colors.textSelected : colors.text,
+    fg: isSelected ? colors.textSelected : colors.text,
   }
 }
 
@@ -195,47 +144,46 @@ export function itemStyle(isSelected: boolean): Pick<TextProps, 'color'> {
  * Use in lists where selection needs strong visual distinction.
  *
  * @example
- * <Text {...itemStyleWithBackground(isSelected)}>Item text</Text>
+ * <text {...itemStyleWithBackground(isSelected)}>Item text</text>
  */
-export function itemStyleWithBackground(
-  isSelected: boolean,
-): Pick<TextProps, 'color' | 'backgroundColor'> {
+export function itemStyleWithBackground(isSelected: boolean): TextStyle {
   return {
-    color: isSelected ? colors.textSelected : colors.text,
-    backgroundColor: isSelected ? colors.backgroundSelected : undefined,
+    fg: isSelected ? colors.textSelected : colors.text,
+    bg: isSelected ? colors.backgroundSelected : undefined,
   }
 }
 
 /**
- * Returns style props for modal content areas.
- * Ensures consistent modal appearance across the application.
+ * Returns style props for modal container.
  *
  * @example
- * <Box {...modalContainerStyle()}>
- *   <Text {...modalTextStyle()}>Content</Text>
- * </Box>
+ * <box {...modalContainerStyle()}>
  */
-export function modalContainerStyle(): Pick<BoxProps, 'borderColor'> {
+export function modalContainerStyle(): BoxStyle {
   return {
     borderColor: colors.modalBorder,
   }
 }
 
-export function modalTextStyle(): Pick<TextProps, 'backgroundColor'> {
+/**
+ * Returns style props for modal text with background.
+ *
+ * @example
+ * <text {...modalTextStyle()}>Content</text>
+ */
+export function modalTextStyle(): TextStyle {
   return {
-    backgroundColor: colors.modalBackground,
+    bg: colors.modalBackground,
   }
 }
 
 /**
  * Returns style props for selected items within modals.
  */
-export function modalSelectedStyle(
-  isSelected: boolean,
-): Pick<TextProps, 'color' | 'backgroundColor'> {
+export function modalSelectedStyle(isSelected: boolean): TextStyle {
   return {
-    color: isSelected ? colors.textSelected : colors.text,
-    backgroundColor: isSelected ? colors.modalBackgroundSelected : colors.modalBackground,
+    fg: isSelected ? colors.textSelected : colors.text,
+    bg: isSelected ? colors.modalBackgroundSelected : colors.modalBackground,
   }
 }
 
@@ -244,3 +192,4 @@ export function modalSelectedStyle(
 // =============================================================================
 
 export type ThemeColors = typeof colors
+export type ThemePalette = typeof palette

@@ -75,3 +75,30 @@ export {
   type SitemapFetchResult,
   type SitemapTreeNode,
 } from './sitemap.js'
+export {
+  createJsonEnvelope,
+  formatJsonEnvelope,
+  type CommandInfo,
+  type JsonEnvelope,
+  type CreateEnvelopeOptions,
+} from './json-envelope.js'
+// CLI formatting (mode-aware)
+export {
+  colorize,
+  colors,
+  createFormatterContext,
+  formatIssue,
+  formatIssues,
+  formatTable,
+  formatTableGroups,
+  getTerminalWidth,
+  indent,
+  wrapText,
+  type FormatterContext,
+  type FormatTableOptions,
+  type Issue,
+  type IssueSeverity,
+  type IssueType,
+  type TableGroup,
+  type TableRow,
+} from './cli-formatting/index.js'

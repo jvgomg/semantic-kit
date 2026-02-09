@@ -1,4 +1,7 @@
-import { fetchAi, renderAiLines } from '../../commands/ai.js'
+/**
+ * AI View - Shows how AI crawlers see the page content.
+ */
+import { fetchAi } from '../../commands/ai/index.js'
 import type { AiResult } from '../../lib/results.js'
 import { AiViewContent } from './components/AiViewContent.js'
 import { registerView } from './registry.js'
@@ -8,9 +11,8 @@ export const aiView: ViewDefinition<AiResult> = {
   id: 'ai-view',
   label: 'AI Bot',
   description:
-    'Shows how AI crawlers see your page content. Extracts the main content as markdown, similar to how LLMs and AI assistants process web pages.',
+    'Shows how AI crawlers see your page content. Extracts the main content as markdown.',
   fetch: fetchAi,
-  render: renderAiLines,
   Component: AiViewContent,
 }
 

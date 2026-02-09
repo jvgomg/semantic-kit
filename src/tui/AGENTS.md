@@ -28,23 +28,32 @@ src/tui/
 ├── AGENTS.md             # This file
 ├── state/
 │   ├── index.ts          # Re-exports all atoms, hooks, and types
-│   ├── types.ts          # Shared types (ViewState, FocusRegion, etc.)
+│   ├── types.ts          # Shared types (ViewData, FocusRegion, etc.)
+│   ├── store.ts          # createAppStore() - base store with effects
 │   ├── atoms/
 │   │   ├── index.ts      # Re-exports all atoms
 │   │   ├── url.ts        # urlAtom, recentUrlsAtom, setUrlAtom
 │   │   ├── menu.ts       # activeMenuIndexAtom, menuItemsAtom, navigateMenuAtom
-│   │   ├── views.ts      # viewStateAtomFamily, invalidation logic
 │   │   ├── modal.ts      # activeModalAtom, isModalOpenAtom
 │   │   ├── sitemap.ts    # sitemapCacheAtom, sitemapLoadingAtom
 │   │   ├── focus.ts      # focusedRegionAtom
 │   │   └── url-list.ts   # urlListIndexAtom, urlListActiveTabAtom
+│   ├── view-data/        # View data fetching module
+│   │   ├── types.ts      # ViewData, ViewDataStatus
+│   │   ├── atoms.ts      # viewDataAtomFamily, setViewDataAtom
+│   │   ├── effect.ts     # viewDataFetchEffect
+│   │   └── index.ts      # Re-exports
+│   ├── persistence/      # State persistence module
+│   │   ├── store.ts      # createPersistedStore()
+│   │   ├── effect.ts     # persistStateEffect
+│   │   └── ...
 │   └── hooks/
 │       ├── index.ts      # Re-exports all hooks
-│       ├── useTrackedFocus.ts  # Focus tracking with Ink integration
-│       └── useViewData.ts      # Lazy-loading hook for view data
+│       └── useFocus.ts   # Focus tracking with Ink integration
 ├── views/
-│   ├── types.ts          # ViewDefinition<T>, SubTabDefinition interfaces
-│   ├── registry.ts       # registerView(), getView(), getAllViews()
+│   ├── types.ts          # ViewDefinition<T> interface
+│   ├── registry.ts       # registerView(), getViewDefinition()
+│   ├── atoms.ts          # viewAtomFamily, activeViewAtom (view + data)
 │   ├── index.ts          # Imports all views (triggers registration)
 │   └── *.ts              # Individual view implementations
 ├── hooks/
@@ -114,25 +123,61 @@ State is managed with **Jotai atoms**. No React Context or prop drilling require
 | `setUrlAtom` | write-only | Sets URL and invalidates all views |
 | `activeMenuIndexAtom` | `number` | Selected menu index |
 | `navigateMenuAtom` | write-only | Move menu selection up/down |
-| `viewStateAtomFamily` | `atomFamily` | Per-view state (status, data, error) |
+| `viewDataAtomFamily` | `atomFamily` | Per-view data state (status, data, error) |
+| `activeViewAtom` | derived | Active view with data (`View` interface) |
+| `viewAtomFamily` | `atomFamily` | View by ID with data (`View` interface) |
 | `activeModalAtom` | `ModalType` | Currently open modal |
 | `focusedRegionAtom` | `FocusRegion` | Which region has focus |
 
-### ViewState
+### View and ViewData
 
-Each view has its own state via `viewStateAtomFamily`:
+Views combine static definitions with dynamic data:
 
 ```typescript
-interface ViewState<T = unknown> {
+// View definition (static, from registry)
+interface ViewDefinition<T = unknown> {
+  id: string
+  label: string
+  description: string
+  fetch: (url: string) => Promise<T>
+  Component: (props: ViewComponentProps<T>) => ReactNode
+}
+
+// View data (dynamic, fetched per-URL)
+interface ViewData<T = unknown> {
   status: 'idle' | 'loading' | 'success' | 'error'
   data: T | null
   error: string | null
   fetchedUrl: string | null
-  activeSubTab: string | null
+}
+
+// Combined view (definition + data)
+interface View<T = unknown> extends ViewDefinition<T> {
+  data: ViewData<T>
 }
 ```
 
-### Using Atoms in Components
+### Using View Atoms
+
+```typescript
+import { useAtomValue } from 'jotai'
+import { activeViewAtom, viewAtomFamily } from '../views/index.js'
+
+function MyComponent() {
+  // Get the active view with its data
+  const view = useAtomValue(activeViewAtom)
+
+  if (view?.data.status === 'success') {
+    // Access the fetched data
+    console.log(view.data.data)
+  }
+
+  // Or get a specific view by ID
+  const aiView = useAtomValue(viewAtomFamily('ai-view'))
+}
+```
+
+### Using Other Atoms
 
 ```typescript
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -148,14 +193,21 @@ function MyComponent() {
 
   // Write-only (actions)
   const setUrl = useSetAtom(setUrlAtom)
-  const invalidateAll = useSetAtom(invalidateAllViewsAtom)
+  const invalidateAll = useSetAtom(invalidateAllViewDataAtom)
 }
 ```
 
 ### Built-in Hooks
 
-- `useTrackedFocus(region)` - Wraps Ink's focus system, syncs with `focusedRegionAtom`
-- `useViewData(viewId)` - Returns `ViewState`, triggers fetch when needed
+- `useFocus(region)` - Focus management with Ink integration, syncs with `focusedRegionAtom`
+
+### View Data Fetching
+
+View data is fetched automatically via the `viewDataFetchEffect` atom effect, which is subscribed in `createAppStore()`. When the active view or URL changes, data is fetched and stored in `viewDataAtomFamily`.
+
+The store factory pattern separates concerns:
+- `createAppStore()` - Creates store with data fetching effect
+- `createPersistedStore()` - Adds persistence on top of the base store
 
 ## Input Handling
 
