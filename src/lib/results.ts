@@ -230,6 +230,49 @@ export interface AiResult {
 }
 
 // ============================================================================
+// Reader Command Results
+// ============================================================================
+
+/**
+ * Readability extraction metrics.
+ */
+export interface ReadabilityMetrics {
+  /** Word count of extracted content */
+  wordCount: number
+  /** Character count of extracted content */
+  characterCount: number
+  /** Number of paragraphs in extracted content */
+  paragraphCount: number
+  /** Whether Readability considers page suitable for extraction */
+  isReaderable: boolean
+}
+
+/**
+ * Result for `reader` command.
+ * Shows how browser reader modes see the page content.
+ */
+export interface ReaderResult {
+  /** Target URL or file path */
+  url: string
+  /** Page title */
+  title: string | null
+  /** Author/byline */
+  byline: string | null
+  /** Brief excerpt */
+  excerpt: string | null
+  /** Site name */
+  siteName: string | null
+  /** Published time (if detected) */
+  publishedTime: string | null
+  /** Readability extraction metrics */
+  metrics: ReadabilityMetrics
+  /** Extracted content as markdown */
+  markdown: string
+  /** Extracted content as HTML */
+  html: string
+}
+
+// ============================================================================
 // Schema Command Results
 // ============================================================================
 

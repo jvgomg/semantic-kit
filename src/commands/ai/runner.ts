@@ -1,13 +1,12 @@
-import { Readability, isProbablyReaderable } from '@mozilla/readability'
 import { parseHTML } from 'linkedom'
 
 import { fetchHtmlContent } from '../../lib/fetch.js'
+import { extractReadability } from '../../lib/readability.js'
 import type {
   AiResult,
   FrameworkDetection,
   HiddenContentAnalysis,
 } from '../../lib/results.js'
-import { createTurndownService } from '../../lib/turndown.js'
 import { countWords } from '../../lib/words.js'
 import type { FrameworkDetector, HiddenContentSeverity } from './types.js'
 
@@ -140,63 +139,29 @@ function analyzeHiddenContent(
 
 /**
  * Extract content using Readability and convert to markdown.
- * Also analyzes hidden content patterns.
+ * Also analyzes hidden content patterns (specific to AI crawler use case).
  */
 function extractContent(html: string, url: string): AiResult {
-  // Parse HTML with linkedom
-  const { document } = parseHTML(html)
+  // Use shared Readability extraction
+  const { extraction, metrics, markdown } = extractReadability(html)
 
-  // Check if page is suitable for content extraction
-  const isReaderable = isProbablyReaderable(document)
-
-  // Clone document for Readability (it modifies the DOM)
-  const { document: docClone } = parseHTML(html)
-
-  // Run Readability on the document AS-IS (no preprocessing)
-  // This shows what AI crawlers actually see
-  const reader = new Readability(docClone)
-  const article = reader.parse()
-
-  // Get visible word count
-  const visibleWordCount = article ? countWords(article.textContent ?? '') : 0
-
-  // Analyze hidden content (needs fresh document parse)
+  // Analyze hidden content (specific to AI command - detects streaming SSR)
   const { document: docForAnalysis } = parseHTML(html)
   const hiddenContentAnalysis = analyzeHiddenContent(
     docForAnalysis,
-    visibleWordCount,
+    metrics.wordCount,
   )
-
-  if (!article) {
-    return {
-      url,
-      title: null,
-      author: null,
-      excerpt: null,
-      siteName: null,
-      wordCount: 0,
-      isReaderable,
-      markdown: '',
-      html: '',
-      hiddenContentAnalysis,
-    }
-  }
-
-  // Convert to markdown
-  const turndown = createTurndownService()
-  const contentHtml = article.content ?? ''
-  const markdown = turndown.turndown(contentHtml)
 
   return {
     url,
-    title: article.title ?? null,
-    author: article.byline ?? null,
-    excerpt: article.excerpt ?? null,
-    siteName: article.siteName ?? null,
-    wordCount: visibleWordCount,
-    isReaderable,
+    title: extraction?.title ?? null,
+    author: extraction?.byline ?? null,
+    excerpt: extraction?.excerpt ?? null,
+    siteName: extraction?.siteName ?? null,
+    wordCount: metrics.wordCount,
+    isReaderable: metrics.isReaderable,
     markdown,
-    html: contentHtml,
+    html: extraction?.html ?? '',
     hiddenContentAnalysis,
   }
 }

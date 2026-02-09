@@ -4,7 +4,10 @@
  */
 
 // Import views to trigger registration (order determines menu order)
+// Lenses
 import './ai-view.js'
+import './reader-view.js'
+// Tools
 import './structure.js'
 
 // Re-export registry functions

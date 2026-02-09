@@ -7,6 +7,7 @@ import {
 import { aiCommand } from './commands/ai/index.js'
 import { botCommand } from './commands/bot/index.js'
 import { fetchCommand } from './commands/fetch/index.js'
+import { readerCommand } from './commands/reader/index.js'
 import { schemaCommand } from './commands/schema/index.js'
 import {
   structureCommand,
@@ -40,6 +41,7 @@ program
     `
 Lenses (How consumers see your page):
   ai                   Show how AI crawlers extract and see your content
+  reader               Show how browser reader modes see your content
 
 Analysis Tools:
   schema               View structured data (JSON-LD, Microdata, Open Graph)
@@ -121,6 +123,18 @@ program
     'Output format: full (default), compact (summary), json',
   )
   .action(withGlobalOptions(aiCommand))
+
+program
+  .command('reader')
+  .description(
+    'Show how browser reader modes see your page (Safari Reader, Pocket, etc.)',
+  )
+  .argument('<target>', 'URL or file path to analyze')
+  .option(
+    '--format <type>',
+    'Output format: full (default), compact (summary), json',
+  )
+  .action(withGlobalOptions(readerCommand))
 
 program
   .command('bot')
