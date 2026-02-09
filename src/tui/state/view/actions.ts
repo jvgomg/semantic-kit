@@ -5,7 +5,7 @@
  * so callers don't need to pass viewId.
  */
 import { atom } from 'jotai'
-import { activeViewIdAtom } from '../atoms/menu.js'
+import { activeViewIdAtom } from '../tool-navigation.js'
 import { viewUIStateAtomFamily } from './atoms.js'
 
 // ============================================================================

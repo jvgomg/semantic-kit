@@ -12,6 +12,7 @@ export const aiView: ViewDefinition<AiResult> = {
   label: 'AI Bot',
   description:
     'Shows how AI crawlers see your page content. Extracts the main content as markdown.',
+  category: 'lens',
   fetch: fetchAi,
   Component: AiViewContent,
 }

@@ -4,6 +4,13 @@
 import type { ReactNode } from 'react'
 
 /**
+ * View categories for menu grouping.
+ * - 'lens': Shows how a specific consumer "sees" a webpage (AI, reader modes, etc.)
+ * - 'tool': Task-oriented analysis and validation utilities
+ */
+export type ViewCategory = 'lens' | 'tool'
+
+/**
  * Props passed to a view's Component
  * Note: Components should read focus state from atoms if needed
  */
@@ -24,6 +31,12 @@ export interface ViewDefinition<T = unknown> {
   label: string
   /** Description shown in the info panel */
   description: string
+  /**
+   * Category for menu grouping.
+   * - 'lens': Consumer-perspective views (how X sees your page)
+   * - 'tool': Analysis and validation utilities
+   */
+  category: ViewCategory
   /** Data fetcher - takes URL and returns data */
   fetch: (url: string) => Promise<T>
   /** React component for rendering the view */

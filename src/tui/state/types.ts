@@ -2,10 +2,12 @@
  * Shared types for TUI state management.
  */
 
-export interface MenuItem {
-  id: string
-  label: string
-}
+/**
+ * Grouped menu item - either a section header or a selectable view
+ */
+export type GroupedMenuItem =
+  | { type: 'header'; label: string }
+  | { type: 'view'; id: string; label: string }
 
 export type FocusRegion = 'url' | 'menu' | 'main'
 

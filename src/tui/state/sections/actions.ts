@@ -7,7 +7,7 @@
  * Navigation actions receive sectionCount from the caller (via context).
  */
 import { atom } from 'jotai'
-import { activeViewIdAtom } from '../atoms/menu.js'
+import { activeViewIdAtom } from '../tool-navigation.js'
 import { navigateSelectionAtom } from '../view/actions.js'
 import { sectionsAtomFamily } from './atoms.js'
 

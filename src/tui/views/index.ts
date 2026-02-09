@@ -8,10 +8,7 @@ import './ai-view.js'
 import './structure.js'
 
 // Re-export registry functions
-export { getMenuItems, getViewDefinition, getAllViews } from './registry.js'
-
-// Re-export view atoms
-export { viewAtomFamily, activeViewAtom, type View } from './atoms.js'
+export { getGroupedMenuItems, getViewDefinition, getAllViews } from './registry.js'
 
 // Re-export types
-export type { ViewDefinition, ViewComponentProps } from './types.js'
+export type { ViewDefinition, ViewComponentProps, ViewCategory } from './types.js'

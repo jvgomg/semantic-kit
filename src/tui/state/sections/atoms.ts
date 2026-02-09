@@ -7,7 +7,7 @@
 import { atom } from 'jotai'
 import { atomFamily } from 'jotai-family'
 import { focusAtom } from 'jotai-optics'
-import { activeViewIdAtom } from '../atoms/menu.js'
+import { activeViewIdAtom } from '../tool-navigation.js'
 import { DEFAULT_SECTIONS_STATE, type SectionsState } from './types.js'
 
 /**

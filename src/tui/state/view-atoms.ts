@@ -6,10 +6,10 @@
  */
 import { atom } from 'jotai'
 import { atomFamily } from 'jotai-family'
-import { activeViewIdAtom } from '../state/atoms/menu.js'
-import { viewDataAtomFamily, type ViewData } from '../state/view-data/index.js'
-import { getViewDefinition } from './registry.js'
-import type { ViewDefinition } from './types.js'
+import { getViewDefinition } from '../views/registry.js'
+import type { ViewDefinition } from '../views/types.js'
+import { activeViewIdAtom } from './tool-navigation.js'
+import { viewDataAtomFamily, type ViewData } from './view-data/index.js'
 
 /**
  * A view with its fetched data.

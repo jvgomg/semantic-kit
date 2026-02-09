@@ -11,6 +11,7 @@ export const structureView: ViewDefinition<TuiStructureResult> = {
   label: 'Structure',
   description:
     'Analyzes page structure including landmarks, headings hierarchy, and navigation links.',
+  category: 'tool',
   fetch: fetchStructure,
   Component: StructureViewContent,
 }

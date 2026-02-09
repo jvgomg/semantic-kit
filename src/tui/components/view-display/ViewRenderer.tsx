@@ -6,8 +6,7 @@
  */
 import type { ReactNode } from 'react'
 import { useAtomValue } from 'jotai'
-import { urlAtom, useFocus } from '../../state/index.js'
-import { activeViewAtom } from '../../views/index.js'
+import { urlAtom, useFocus, activeViewAtom } from '../../state/index.js'
 import { colors } from '../../theme.js'
 import { ViewEmpty } from './ViewEmpty.js'
 import { ViewError } from './ViewError.js'

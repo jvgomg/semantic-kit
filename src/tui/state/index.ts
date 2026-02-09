@@ -6,13 +6,30 @@
 
 // Types
 export type {
-  MenuItem,
+  GroupedMenuItem,
   ViewData,
   ViewDataStatus,
   FocusRegion,
   ModalType,
   UrlListTab,
 } from './types.js'
+
+// Tool Navigation (sidebar menu)
+export {
+  groupedMenuItemsAtom,
+  menuWidthAtom,
+  activeMenuIndexAtom,
+  activeViewIdAtom,
+  navigateMenuAtom,
+  initializeMenuIndexAtom,
+} from './tool-navigation.js'
+
+// View Atoms (combines view definitions with fetched data)
+export {
+  viewAtomFamily,
+  activeViewAtom,
+  type View,
+} from './view-atoms.js'
 
 // Atoms
 export {
@@ -31,12 +48,6 @@ export {
   urlAtom,
   recentUrlsAtom,
   setUrlAtom,
-  // Menu
-  menuItemsAtom,
-  menuWidthAtom,
-  activeMenuIndexAtom,
-  activeViewIdAtom,
-  navigateMenuAtom,
   // View Data
   viewDataAtomFamily,
   viewDataIdsAtom,

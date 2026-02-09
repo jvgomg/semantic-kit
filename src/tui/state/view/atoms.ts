@@ -3,7 +3,7 @@
  */
 import { atom } from 'jotai'
 import { atomFamily } from 'jotai-family'
-import { activeViewIdAtom } from '../atoms/menu.js'
+import { activeViewIdAtom } from '../tool-navigation.js'
 import { DEFAULT_VIEW_UI_STATE, type ViewUIState } from './types.js'
 
 /**

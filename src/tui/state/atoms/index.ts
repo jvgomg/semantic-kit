@@ -15,13 +15,7 @@ export { activeModalAtom, isModalOpenAtom } from './modal.js'
 
 export { urlAtom, recentUrlsAtom, setUrlAtom } from './url.js'
 
-export {
-  menuItemsAtom,
-  menuWidthAtom,
-  activeMenuIndexAtom,
-  activeViewIdAtom,
-  navigateMenuAtom,
-} from './menu.js'
+// Tool navigation atoms are in state/tool-navigation.ts (not in atoms/)
 
 // View data
 export {

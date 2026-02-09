@@ -10,13 +10,14 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import {
   urlAtom,
   setUrlAtom,
-  menuItemsAtom,
+  groupedMenuItemsAtom,
   menuWidthAtom,
   activeMenuIndexAtom,
   activeModalAtom,
   focusedRegionAtom,
   invalidateAllViewDataAtom,
   recentUrlsAtom,
+  initializeMenuIndexAtom,
   useFocusManager,
   type ModalType,
 } from './state/index.js'
@@ -57,16 +58,20 @@ export function App({ initialUrl }: AppProps) {
   // Atoms
   const [url, setUrlState] = useAtom(urlAtom)
   const setUrl = useSetAtom(setUrlAtom)
-  const menuItems = useAtomValue(menuItemsAtom)
+  const groupedMenuItems = useAtomValue(groupedMenuItemsAtom)
   const menuWidth = useAtomValue(menuWidthAtom)
   const activeMenuIndex = useAtomValue(activeMenuIndexAtom)
   const [activeModal, setActiveModal] = useAtom(activeModalAtom)
   const focusedRegion = useAtomValue(focusedRegionAtom)
   const invalidateAllViewData = useSetAtom(invalidateAllViewDataAtom)
   const recentUrls = useAtomValue(recentUrlsAtom)
+  const initializeMenuIndex = useSetAtom(initializeMenuIndexAtom)
 
   // Set initial URL and focus on mount
   useEffect(() => {
+    // Initialize menu selection to first selectable item
+    initializeMenuIndex()
+
     // If state was restored from persistence
     if (url) {
       // If a modal was open, keep focus disabled
@@ -199,7 +204,12 @@ export function App({ initialUrl }: AppProps) {
   // Layout calculations
   const contentHeight = Math.max(1, height - URL_BAR_HEIGHT - STATUS_BAR_HEIGHT)
   const contentWidth = Math.max(1, width - menuWidth)
-  const activeItem = menuItems[activeMenuIndex]
+  // Get the active menu item (should always be a 'view' type due to navigation logic)
+  const activeGroupedItem = groupedMenuItems[activeMenuIndex]
+  const activeItem =
+    activeGroupedItem?.type === 'view'
+      ? { id: activeGroupedItem.id, label: activeGroupedItem.label }
+      : null
 
   // Info panel position: after URL bar (3 rows), relative to menu
   const infoPanelMenuOffset = 0 // Menu starts at top of content area

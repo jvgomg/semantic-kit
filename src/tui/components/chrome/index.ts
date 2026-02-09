@@ -2,7 +2,7 @@
  * Chrome components - application shell UI elements.
  */
 export { Menu } from './Menu.js'
-export type { MenuItem, MenuProps } from './Menu.js'
+export type { MenuProps } from './Menu.js'
 
 export { UrlBar } from './UrlBar.js'
 export type { UrlBarProps } from './UrlBar.js'

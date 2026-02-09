@@ -3,8 +3,8 @@
  */
 import { atomEffect } from 'jotai-effect'
 import { getViewDefinition } from '../../views/registry.js'
-import { activeViewIdAtom } from '../atoms/menu.js'
 import { urlAtom } from '../atoms/url.js'
+import { activeViewIdAtom } from '../tool-navigation.js'
 import { setViewDataAtom, viewDataAtomFamily } from './atoms.js'
 
 /**

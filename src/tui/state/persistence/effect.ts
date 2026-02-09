@@ -5,12 +5,9 @@
  * to disk with throttling. It runs at the store level, not React level.
  */
 import { atomEffect } from 'jotai-effect'
-import {
-  activeMenuIndexAtom,
-  activeModalAtom,
-  urlAtom,
-} from '../atoms/index.js'
+import { activeModalAtom, urlAtom } from '../atoms/index.js'
 import { sectionsAtomFamily } from '../sections/atoms.js'
+import { activeMenuIndexAtom } from '../tool-navigation.js'
 import { viewDataIdsAtom } from '../view-data/index.js'
 import { getPersistWriter } from './store.js'
 import { PERSISTED_STATE_VERSION, type PersistedState } from './types.js'

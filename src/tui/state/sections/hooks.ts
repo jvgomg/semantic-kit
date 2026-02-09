@@ -7,7 +7,7 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 import { SectionPriority } from '../../components/view-display/priorities.js'
-import { activeViewIdAtom } from '../atoms/menu.js'
+import { activeViewIdAtom } from '../tool-navigation.js'
 import { activeFocusDepthAtom, activeSelectedIndexAtom } from '../view/atoms.js'
 import {
   collapseAllSectionsAtom,

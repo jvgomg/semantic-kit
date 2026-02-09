@@ -1,9 +1,10 @@
 /**
  * Jotai store initialization with pre-loaded persisted state.
  */
-import { urlAtom, activeMenuIndexAtom, activeModalAtom } from '../atoms/index.js'
+import { urlAtom, activeModalAtom } from '../atoms/index.js'
 import { sectionsAtomFamily } from '../sections/atoms.js'
 import { createAppStore } from '../store.js'
+import { activeMenuIndexAtom } from '../tool-navigation.js'
 import { persistStateEffect } from './effect.js'
 import { loadPersistedState, createPersistedStateWriter } from './storage.js'
 import type { PersistedState } from './types.js'

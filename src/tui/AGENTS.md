@@ -12,11 +12,25 @@ The TUI uses **Ink** (React for CLI) with a **self-registering view pattern**. V
 
 ### Key Concepts
 
-- **View Registry**: Views self-register on import. Order of imports in `views/index.ts` determines menu order.
+- **View Categories**: Views are organized into two groups: **Lenses** (consumer perspectives) and **Tools** (analysis utilities). This grouping is reflected in the sidebar menu.
+- **View Registry**: Views self-register on import. Each view specifies its `category` ('lens' or 'tool').
 - **Lazy Loading**: Views fetch data only when they become active.
 - **URL-based Cache**: When URL changes, all cached view data is invalidated.
 - **Focus vs Active**: Focus is visual highlighting; Active means receiving input (see glossary).
 - **Jotai Atoms**: State is managed via atoms, not React Context. Components access state directly via hooks.
+
+### View Categories
+
+Views are organized into two conceptual groups:
+
+| Category | Purpose | Examples |
+|----------|---------|----------|
+| **Lenses** | Show how a specific consumer "sees" your page | AI Bot, Reader, Google, Social, Screen Reader |
+| **Tools** | Task-oriented analysis and validation utilities | Structure, Schema, Validate |
+
+This distinction helps users understand what each view does:
+- **Lenses** answer "How does X see my page?"
+- **Tools** answer "What does my page contain?" or "Is my page valid?"
 
 ## File Structure
 
@@ -28,12 +42,13 @@ src/tui/
 ├── AGENTS.md             # This file
 ├── state/
 │   ├── index.ts          # Re-exports all atoms, hooks, and types
-│   ├── types.ts          # Shared types (ViewData, FocusRegion, etc.)
+│   ├── types.ts          # Shared types (GroupedMenuItem, ViewData, FocusRegion, etc.)
 │   ├── store.ts          # createAppStore() - base store with effects
+│   ├── tool-navigation.ts # Sidebar navigation (activeMenuIndexAtom, navigateMenuAtom, etc.)
+│   ├── view-atoms.ts     # viewAtomFamily, activeViewAtom (view definition + data)
 │   ├── atoms/
 │   │   ├── index.ts      # Re-exports all atoms
 │   │   ├── url.ts        # urlAtom, recentUrlsAtom, setUrlAtom
-│   │   ├── menu.ts       # activeMenuIndexAtom, menuItemsAtom, navigateMenuAtom
 │   │   ├── modal.ts      # activeModalAtom, isModalOpenAtom
 │   │   ├── sitemap.ts    # sitemapCacheAtom, sitemapLoadingAtom
 │   │   ├── focus.ts      # focusedRegionAtom
@@ -53,7 +68,6 @@ src/tui/
 ├── views/
 │   ├── types.ts          # ViewDefinition<T> interface
 │   ├── registry.ts       # registerView(), getViewDefinition()
-│   ├── atoms.ts          # viewAtomFamily, activeViewAtom (view + data)
 │   ├── index.ts          # Imports all views (triggers registration)
 │   └── *.ts              # Individual view implementations
 ├── hooks/
@@ -88,25 +102,27 @@ export const myView: ViewDefinition<MyResult> = {
   id: 'my-view',
   label: 'My View',
   description: 'What this view shows',
+  category: 'tool',  // or 'lens' - determines menu grouping
   fetch: async (url: string): Promise<MyResult> => {
     // Fetch and process data
   },
-  render: (data: MyResult): string[] => {
-    // Return array of lines to display
-    return ['Line 1', 'Line 2']
-  },
+  Component: MyViewContent,  // React component for rendering
 }
 
 // Self-register
 registerView(myView)
 ```
 
-2. Import in `src/tui/views/index.ts` (order determines menu position):
+**Choosing the right category:**
+- Use `'lens'` for views that show how a specific consumer (AI crawler, screen reader, etc.) sees the page
+- Use `'tool'` for analysis utilities, validators, and inspection tools
+
+2. Import in `src/tui/views/index.ts` (order within category is preserved):
 
 ```typescript
-import './structure.js'
-import './schema.js'
-import './my-view.js'  // Add here
+import './ai-view.js'    // lens
+import './structure.js'  // tool
+import './my-view.js'    // Add here
 ```
 
 3. Run `bun run typecheck`
@@ -121,8 +137,9 @@ State is managed with **Jotai atoms**. No React Context or prop drilling require
 |------|------|-------------|
 | `urlAtom` | `string` | Current URL being analyzed |
 | `setUrlAtom` | write-only | Sets URL and invalidates all views |
-| `activeMenuIndexAtom` | `number` | Selected menu index |
-| `navigateMenuAtom` | write-only | Move menu selection up/down |
+| `groupedMenuItemsAtom` | `GroupedMenuItem[]` | Menu items with section headers |
+| `activeMenuIndexAtom` | `number` | Selected menu index (points to a view item, never a header) |
+| `navigateMenuAtom` | write-only | Move menu selection up/down (skips headers) |
 | `viewDataAtomFamily` | `atomFamily` | Per-view data state (status, data, error) |
 | `activeViewAtom` | derived | Active view with data (`View` interface) |
 | `viewAtomFamily` | `atomFamily` | View by ID with data (`View` interface) |
@@ -139,6 +156,7 @@ interface ViewDefinition<T = unknown> {
   id: string
   label: string
   description: string
+  category: 'lens' | 'tool'  // Determines menu grouping
   fetch: (url: string) => Promise<T>
   Component: (props: ViewComponentProps<T>) => ReactNode
 }
@@ -161,7 +179,7 @@ interface View<T = unknown> extends ViewDefinition<T> {
 
 ```typescript
 import { useAtomValue } from 'jotai'
-import { activeViewAtom, viewAtomFamily } from '../views/index.js'
+import { activeViewAtom, viewAtomFamily } from '../state/index.js'
 
 function MyComponent() {
   // Get the active view with its data
