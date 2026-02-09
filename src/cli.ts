@@ -9,6 +9,7 @@ import { botCommand } from './commands/bot/index.js'
 import { fetchCommand } from './commands/fetch/index.js'
 import { readerCommand } from './commands/reader/index.js'
 import { schemaCommand } from './commands/schema/index.js'
+import { screenReaderCommand } from './commands/screen-reader/index.js'
 import {
   structureCommand,
   structureJsCommand,
@@ -42,6 +43,7 @@ program
 Lenses (How consumers see your page):
   ai                   Show how AI crawlers extract and see your content
   reader               Show how browser reader modes see your content
+  screen-reader        Show how screen readers interpret your page
 
 Analysis Tools:
   schema               View structured data (JSON-LD, Microdata, Open Graph)
@@ -135,6 +137,22 @@ program
     'Output format: full (default), compact (summary), json',
   )
   .action(withGlobalOptions(readerCommand))
+
+program
+  .command('screen-reader')
+  .description(
+    'Show how screen readers interpret your page (accessibility tree analysis)',
+  )
+  .argument('<target>', 'URL to analyze')
+  .option(
+    '--format <type>',
+    'Output format: full (default), compact (summary), json',
+  )
+  .option(
+    '--timeout <ms>',
+    'Timeout in milliseconds for page to load (default: 5000)',
+  )
+  .action(withGlobalOptions(screenReaderCommand))
 
 program
   .command('bot')

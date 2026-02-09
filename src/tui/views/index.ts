@@ -7,6 +7,7 @@
 // Lenses
 import './ai-view.js'
 import './reader-view.js'
+import './screen-reader-view.js'
 // Tools
 import './structure.js'
 

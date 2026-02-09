@@ -273,6 +273,81 @@ export interface ReaderResult {
 }
 
 // ============================================================================
+// Screen Reader Command Results
+// ============================================================================
+
+/**
+ * Summary of accessibility features for screen reader users.
+ */
+export interface ScreenReaderSummary {
+  /** Page title (from document or first h1) */
+  pageTitle: string | null
+  /** Number of landmark regions */
+  landmarkCount: number
+  /** Number of headings */
+  headingCount: number
+  /** Number of links */
+  linkCount: number
+  /** Number of form controls */
+  formControlCount: number
+  /** Number of images */
+  imageCount: number
+  /** Whether page has main landmark */
+  hasMainLandmark: boolean
+  /** Whether page has navigation landmark */
+  hasNavigation: boolean
+  /** Whether page has skip link */
+  hasSkipLink: boolean
+}
+
+/**
+ * A landmark region as experienced by screen reader users.
+ */
+export interface ScreenReaderLandmark {
+  /** Landmark role (banner, navigation, main, contentinfo, etc.) */
+  role: string
+  /** Accessible name (if any) */
+  name: string | null
+  /** Number of headings in this landmark */
+  headingCount: number
+  /** Number of links in this landmark */
+  linkCount: number
+}
+
+/**
+ * A heading as experienced by screen reader users.
+ */
+export interface ScreenReaderHeading {
+  /** Heading level (1-6) */
+  level: number
+  /** Heading text */
+  text: string
+}
+
+/**
+ * Result for `screen-reader` command.
+ * Shows how screen readers interpret the page.
+ */
+export interface ScreenReaderResult {
+  /** Target URL */
+  url: string
+  /** Whether the page load timed out */
+  timedOut: boolean
+  /** High-level summary of accessibility features */
+  summary: ScreenReaderSummary
+  /** Landmark regions found */
+  landmarks: ScreenReaderLandmark[]
+  /** Heading outline */
+  headings: ScreenReaderHeading[]
+  /** Raw ARIA snapshot for reference */
+  snapshot: string
+  /** Parsed accessibility nodes */
+  parsed: import('./aria-snapshot.js').AriaNode[]
+  /** Role counts */
+  counts: Record<string, number>
+}
+
+// ============================================================================
 // Schema Command Results
 // ============================================================================
 

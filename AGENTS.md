@@ -17,6 +17,8 @@ Developers use it to answer questions like:
 | Command             | Purpose                                                              |
 | ------------------- | -------------------------------------------------------------------- |
 | `ai`                | Show what AI crawlers extract (static HTML → Readability → markdown) |
+| `reader`            | Show how browser reader modes see your page (Safari Reader, etc.)    |
+| `screen-reader`     | Show how screen readers interpret your page (accessibility tree)     |
 | `structure`         | Analyze page structure (landmarks, headings, links)                  |
 | `structure:js`      | Same as above, but after JavaScript execution                        |
 | `structure:compare` | Compare static vs hydrated structure                                 |
