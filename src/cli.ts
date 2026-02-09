@@ -31,6 +31,37 @@ program
   .version(VERSION)
   .option('--plain', 'Disable rich output (no spinners, plain text)')
   .option('--ci', 'CI mode (alias for --plain)')
+  .configureHelp({
+    // Hide default command list - we'll show grouped commands in custom help text
+    visibleCommands: () => [],
+  })
+  .addHelpText(
+    'after',
+    `
+Lenses (How consumers see your page):
+  ai                   Show how AI crawlers extract and see your content
+
+Analysis Tools:
+  schema               View structured data (JSON-LD, Microdata, Open Graph)
+  structure            Show page structure (landmarks, headings, links)
+  structure:js         Show structure after JavaScript rendering
+  structure:compare    Compare static vs hydrated structure
+  a11y-tree            Show accessibility tree from static HTML
+  a11y-tree:js         Show accessibility tree after JavaScript rendering
+  a11y-tree:compare    Compare static vs hydrated accessibility tree
+  bot                  Compare static HTML vs JavaScript-rendered content
+
+Validation Tools:
+  validate:html        Validate HTML markup against W3C standards
+  validate:schema      Validate structured data against platform requirements
+  validate:a11y        Validate accessibility against WCAG guidelines
+
+Other:
+  fetch                Fetch and prettify HTML from a URL
+  tui                  Launch interactive terminal UI
+
+Run 'semantic-kit <command> --help' for command-specific options.`,
+  )
 
 /**
  * Get global output mode options from program

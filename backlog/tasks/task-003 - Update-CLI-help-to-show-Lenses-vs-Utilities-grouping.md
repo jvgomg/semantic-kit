@@ -1,10 +1,10 @@
 ---
 id: TASK-003
 title: Update CLI help to show Lenses vs Utilities grouping
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-02-09 14:21'
-updated_date: '2026-02-09 14:43'
+updated_date: '2026-02-09 16:19'
 labels: []
 milestone: Command API Restructure
 dependencies:
@@ -50,9 +50,9 @@ OTHER
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 --help output shows Lenses and Utilities sections
-- [ ] #2 Commands are grouped logically
-- [ ] #3 Descriptions are clear and consistent
+- [x] #1 --help output shows Lenses and Utilities sections
+- [x] #2 Commands are grouped logically
+- [x] #3 Descriptions are clear and consistent
 <!-- AC:END -->
 
 ## Implementation Notes
@@ -64,3 +64,37 @@ Per TASK-001 decision #2: Use **"Tools"** instead of "Utilities" in CLI help and
 - Lenses
 - Tools (not "Utilities")
 <!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## Summary
+
+Updated CLI help output to organize commands into logical groups:
+
+**Lenses** (How consumers see your page):
+- `ai` - Show how AI crawlers extract and see your content
+
+**Analysis Tools**:
+- `schema` - View structured data
+- `structure`, `structure:js`, `structure:compare` - Page structure analysis
+- `a11y-tree`, `a11y-tree:js`, `a11y-tree:compare` - Accessibility tree
+- `bot` - Compare static vs JavaScript-rendered content
+
+**Validation Tools**:
+- `validate:html`, `validate:schema`, `validate:a11y`
+
+**Other**:
+- `fetch`, `tui`
+
+## Changes
+
+Modified `src/cli.ts`:
+- Added `configureHelp({ visibleCommands: () => [] })` to hide default command list
+- Added custom help text with grouped commands using `addHelpText('after', ...)`
+- Individual command help (`semantic-kit <command> --help`) still works normally
+
+## Notes
+
+Used "Analysis Tools" and "Validation Tools" instead of "Utilities" per TASK-001 decision to use "Tools" terminology.
+<!-- SECTION:FINAL_SUMMARY:END -->
