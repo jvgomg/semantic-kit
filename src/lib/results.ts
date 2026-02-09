@@ -212,7 +212,7 @@ export interface AiResult {
   /** Page title */
   title: string | null
   /** Author/byline */
-  author: string | null
+  byline: string | null
   /** Brief excerpt */
   excerpt: string | null
   /** Site name */

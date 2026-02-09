@@ -6,7 +6,7 @@
  * Sections:
  * 1. Warnings - Hidden content issues (if any)
  * 2. Summary - Quick stats (word count, readerable)
- * 3. Metadata - Page info (title, author, site)
+ * 3. Metadata - Page info (title, byline, site)
  * 4. Content - Extracted markdown body
  */
 import type { ReactNode } from 'react'
@@ -166,7 +166,7 @@ export function AiViewContent({
   const { hiddenContentAnalysis } = data
   const hasWarning = hiddenContentAnalysis.severity !== 'none'
   const hasContent = data.markdown && data.wordCount > 0
-  const hasMetadata = data.title || data.author || data.siteName || data.excerpt
+  const hasMetadata = data.title || data.byline || data.siteName || data.excerpt
 
   // Compute warning section props
   const warningSeverity =
@@ -188,7 +188,7 @@ export function AiViewContent({
   const metadataItems = hasMetadata
     ? [
         { field: 'Title', value: data.title ?? '(not found)' },
-        { field: 'Author', value: data.author ?? '(not found)' },
+        { field: 'Byline', value: data.byline ?? '(not found)' },
         { field: 'Site', value: data.siteName ?? '(not found)' },
         { field: 'Excerpt', value: data.excerpt ?? '(not found)' },
       ]

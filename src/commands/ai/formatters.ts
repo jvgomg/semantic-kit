@@ -138,7 +138,7 @@ function buildTableGroups(result: AiResult): TableGroup[] {
   // META group
   const metaRows = [
     { key: 'Title', value: result.title ?? undefined },
-    { key: 'Author', value: result.author ?? undefined },
+    { key: 'Byline', value: result.byline ?? undefined },
     { key: 'Site', value: result.siteName ?? undefined },
     {
       key: 'Excerpt',

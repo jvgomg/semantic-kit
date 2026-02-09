@@ -7,18 +7,3 @@ export interface AiOptions extends OutputModeOptions {
   raw?: boolean
   format?: string
 }
-
-/**
- * Severity level for hidden content warnings
- */
-export type HiddenContentSeverity = 'none' | 'low' | 'high'
-
-/**
- * Framework detector interface.
- * Add new framework detectors by implementing this interface.
- */
-export interface FrameworkDetector {
-  name: string
-  detect: (document: Document) => boolean
-  getHiddenContentSelector: () => string
-}
