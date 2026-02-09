@@ -2,8 +2,10 @@
 # Metadata (keep at top of file)
 researchVersion: research-v0.3.0
 toolVersion: null
-status: pending
+status: migrated
 created: 2026-02-04
+migratedTo: backlog/tasks/task-016
+migratedDate: 2026-02-09
 ```
 
 # Add `reader` command for Readability preview and analysis
