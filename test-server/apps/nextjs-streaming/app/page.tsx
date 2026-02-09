@@ -1,34 +1,53 @@
 /**
- * Static page - no streaming, no Suspense
+ * Index page - links to all streaming test examples
  *
- * This page should show severity: 'none' in hidden content analysis
- * because all content is immediately available in the static HTML.
+ * This page serves as a navigation hub for all streaming test fixtures.
+ * It is fully static with no Suspense boundaries.
  */
-export default function HomePage() {
+export default function IndexPage() {
   return (
     <main>
-      <h1>Static Home Page</h1>
+      <h1>Next.js Streaming Test Fixtures</h1>
       <p>
-        This is a completely static page with no streaming or Suspense boundaries.
-        All content is rendered synchronously and available immediately in the
-        initial HTML response.
+        Test fixtures demonstrating various streaming patterns and their impact
+        on content visibility for AI crawlers and search engines.
       </p>
+
       <section>
-        <h2>About This Page</h2>
-        <p>
-          This page serves as a baseline for testing Next.js SSR detection.
-          When semantic-kit analyzes this page, it should detect Next.js as
-          the framework but report no hidden content issues because everything
-          is statically rendered.
-        </p>
-      </section>
-      <section>
-        <h2>Features</h2>
+        <h2>Article Fixtures</h2>
+        <p>Compare content visibility with different streaming patterns:</p>
         <ul>
-          <li>No Suspense boundaries</li>
-          <li>No streaming SSR</li>
-          <li>All content immediately available</li>
-          <li>AI crawlers see complete content</li>
+          <li>
+            <a href="/article-static">Static Article</a> - Full article with no
+            streaming (severity: none)
+          </li>
+          <li>
+            <a href="/article-streaming">Streaming Article</a> - Article body
+            wrapped in Suspense (severity: high)
+          </li>
+          <li>
+            <a href="/article-mixed">Mixed Article</a> - First half static,
+            second half streamed (severity: low)
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Navigation Fixtures</h2>
+        <p>Demonstrate partial streaming patterns for navigation:</p>
+        <ul>
+          <li>
+            <a href="/nav-static">Static Navigation</a> - All components static
+            (severity: none)
+          </li>
+          <li>
+            <a href="/nav-streaming">Streaming Navigation</a> - Both nav links
+            and user menu streamed
+          </li>
+          <li>
+            <a href="/nav-mixed">Mixed Navigation</a> - Nav links static, user
+            menu streamed
+          </li>
         </ul>
       </section>
     </main>
