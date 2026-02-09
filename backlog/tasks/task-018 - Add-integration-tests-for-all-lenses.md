@@ -4,7 +4,7 @@ title: Add integration tests for all lenses
 status: To Do
 assignee: []
 created_date: '2026-02-09 14:34'
-updated_date: '2026-02-09 14:35'
+updated_date: '2026-02-09 14:43'
 labels: []
 milestone: Command API Restructure
 dependencies:
@@ -58,3 +58,13 @@ After all lenses are complete, add comprehensive integration tests.
 - [ ] #4 Tests cover edge cases and error handling
 - [ ] #5 Tests are documented and follow established patterns
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Decision Context
+
+Per TASK-001 decision #5: **Test new names only**.
+
+Since old command names are removed immediately (no deprecation period), integration tests only need to cover the canonical new command names. No need to test deprecated aliases.
+<!-- SECTION:NOTES:END -->

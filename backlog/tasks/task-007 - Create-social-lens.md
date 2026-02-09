@@ -4,7 +4,7 @@ title: Create social lens
 status: To Do
 assignee: []
 created_date: '2026-02-09 14:21'
-updated_date: '2026-02-09 14:34'
+updated_date: '2026-02-09 14:43'
 labels: []
 milestone: Command API Restructure
 dependencies:
@@ -52,3 +52,17 @@ New lens showing how social media platforms see a page for link previews.
 - [ ] #5 Integration tests cover command functionality
 - [ ] #6 Documentation updated (AGENTS.md command table)
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Decision Context
+
+Per TASK-001 decision #4: **Context-dependent output**
+
+- **Plain mode (`--plain`)**: Simple data list of OG/Twitter meta tags
+- **TTY mode (default)**: Raw data + ASCII mockup showing card structure
+- **TUI**: Raw data + ASCII mockup with visual formatting
+
+Ascii mockup should show title, description, and image URL in a card-like layout.
+<!-- SECTION:NOTES:END -->

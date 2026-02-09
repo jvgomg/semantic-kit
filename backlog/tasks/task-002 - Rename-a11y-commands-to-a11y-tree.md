@@ -4,6 +4,7 @@ title: Rename a11y commands to a11y-tree
 status: To Do
 assignee: []
 created_date: '2026-02-09 14:21'
+updated_date: '2026-02-09 14:43'
 labels: []
 milestone: Command API Restructure
 dependencies:
@@ -45,3 +46,11 @@ Rename the accessibility tree commands to clarify their purpose and distinguish 
 - [ ] #5 TUI updated to use new command names
 - [ ] #6 Tests pass
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Decision Context
+
+Per TASK-001 decision #1: **Remove old names immediately (no deprecation period)**. When renaming `a11y` → `a11y-tree`, do not keep `a11y` as an alias. Clean removal.
+<!-- SECTION:NOTES:END -->

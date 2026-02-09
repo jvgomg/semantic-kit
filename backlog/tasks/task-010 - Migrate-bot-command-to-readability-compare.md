@@ -4,7 +4,7 @@ title: 'Migrate bot command to readability:compare'
 status: To Do
 assignee: []
 created_date: '2026-02-09 14:22'
-updated_date: '2026-02-09 14:35'
+updated_date: '2026-02-09 14:43'
 labels: []
 milestone: Command API Restructure
 dependencies:
@@ -56,3 +56,11 @@ Rename the `bot` command to `readability:compare` and update its behavior.
 - [ ] #5 Integration tests cover command functionality
 - [ ] #6 Documentation updated
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Decision Context
+
+Per TASK-001 decision #1: **Remove old names immediately (no deprecation period)**. When migrating `bot` → `readability:compare`, do not keep `bot` as an alias. Clean removal.
+<!-- SECTION:NOTES:END -->

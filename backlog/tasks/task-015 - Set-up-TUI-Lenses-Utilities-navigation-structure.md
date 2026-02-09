@@ -4,6 +4,7 @@ title: Set up TUI Lenses/Utilities navigation structure
 status: To Do
 assignee: []
 created_date: '2026-02-09 14:34'
+updated_date: '2026-02-09 14:43'
 labels: []
 milestone: Command API Restructure
 dependencies:
@@ -52,3 +53,16 @@ Create the foundational TUI structure for the Lenses vs Utilities organization b
 - [ ] #4 JSON output structure conventions are defined
 - [ ] #5 Existing commands are reorganized into appropriate sections
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Decision Context
+
+Per TASK-001 decision #2: **Sidebar menu with 2 groups**
+
+- Group 1: **Lenses** (ai, reader, google, social, screen-reader)
+- Group 2: **Tools** (not "Utilities" - user preference)
+
+Use sidebar navigation pattern, not tabs.
+<!-- SECTION:NOTES:END -->

@@ -4,6 +4,7 @@ title: Update CLI help to show Lenses vs Utilities grouping
 status: To Do
 assignee: []
 created_date: '2026-02-09 14:21'
+updated_date: '2026-02-09 14:43'
 labels: []
 milestone: Command API Restructure
 dependencies:
@@ -53,3 +54,13 @@ OTHER
 - [ ] #2 Commands are grouped logically
 - [ ] #3 Descriptions are clear and consistent
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Decision Context
+
+Per TASK-001 decision #2: Use **"Tools"** instead of "Utilities" in CLI help and TUI navigation. The grouping should be:
+- Lenses
+- Tools (not "Utilities")
+<!-- SECTION:NOTES:END -->

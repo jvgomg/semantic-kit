@@ -4,7 +4,7 @@ title: Create google lens
 status: To Do
 assignee: []
 created_date: '2026-02-09 14:21'
-updated_date: '2026-02-09 14:34'
+updated_date: '2026-02-09 14:43'
 labels: []
 milestone: Command API Restructure
 dependencies:
@@ -54,3 +54,18 @@ New lens showing how Googlebot sees a page.
 - [ ] #6 Integration tests cover command functionality
 - [ ] #7 Documentation updated (AGENTS.md command table)
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Decision Context
+
+Per TASK-001 decision #3: **Metadata/schema only**
+
+The google lens should show:
+- Page title, meta description, canonical URL
+- Google-relevant JSON-LD schema types (Article, Product, FAQ, HowTo, BreadcrumbList, etc.)
+- Heading structure signals
+
+Do NOT attempt to render content as Google sees it.
+<!-- SECTION:NOTES:END -->

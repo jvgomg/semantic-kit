@@ -4,6 +4,7 @@ title: Remove deprecated command aliases
 status: To Do
 assignee: []
 created_date: '2026-02-09 14:22'
+updated_date: '2026-02-09 14:43'
 labels: []
 milestone: Command API Restructure
 dependencies:
@@ -43,3 +44,13 @@ Remove the deprecated command aliases after transition period.
 - [ ] #3 All tests use new command names
 - [ ] #4 Documentation only references new names
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Decision Context
+
+Per TASK-001 decision #1: **Remove old names immediately (no deprecation period)**.
+
+This task is now simpler: just ensure old command names (`bot`, `a11y`, `a11y:js`, `a11y:compare`) are fully removed from CLI registration. No deprecation aliases to manage.
+<!-- SECTION:NOTES:END -->
