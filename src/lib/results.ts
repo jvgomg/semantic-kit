@@ -273,6 +273,59 @@ export interface ReaderResult {
 }
 
 // ============================================================================
+// Readability Utility Command Results
+// ============================================================================
+
+/**
+ * Full Readability extraction metrics (includes link density).
+ */
+export interface ReadabilityFullMetrics {
+  /** Word count of extracted content */
+  wordCount: number
+  /** Character count of extracted content */
+  characterCount: number
+  /** Number of paragraphs in extracted content */
+  paragraphCount: number
+  /** Link density (links / total text length) - lower is better */
+  linkDensity: number
+  /** Whether Readability considers page suitable for extraction */
+  isReaderable: boolean
+}
+
+/**
+ * Extraction metadata from Readability.
+ */
+export interface ReadabilityExtractionData {
+  /** Page title */
+  title: string | null
+  /** Author/byline */
+  byline: string | null
+  /** Brief excerpt */
+  excerpt: string | null
+  /** Site name */
+  siteName: string | null
+  /** Published time (if detected) */
+  publishedTime: string | null
+}
+
+/**
+ * Result for `readability` utility command.
+ * Shows raw Readability extraction with full metrics.
+ */
+export interface ReadabilityUtilityResult {
+  /** Target URL or file path */
+  url: string
+  /** Extraction metadata (null if extraction failed) */
+  extraction: ReadabilityExtractionData | null
+  /** Full Readability metrics including link density */
+  metrics: ReadabilityFullMetrics
+  /** Extracted content as markdown */
+  markdown: string
+  /** Extracted content as HTML */
+  html: string
+}
+
+// ============================================================================
 // Google Lens Command Results
 // ============================================================================
 

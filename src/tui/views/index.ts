@@ -11,6 +11,7 @@ import './google-view.js'
 import './social-view.js'
 import './screen-reader-view.js'
 // Tools
+import './readability-view.js'
 import './structure.js'
 
 // Re-export registry functions

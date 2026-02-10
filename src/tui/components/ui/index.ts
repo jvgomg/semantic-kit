@@ -1,6 +1,8 @@
 /**
  * Reusable UI components for OpenTUI.
  */
+export { ContentMarkdown } from './ContentMarkdown.js'
+export type { ContentMarkdownProps } from './ContentMarkdown.js'
 export { Markdown } from './Markdown.js'
 export type { MarkdownProps } from './Markdown.js'
 export { SelectWithClick } from './SelectWithClick.js'

@@ -10,8 +10,8 @@
  * 4. Content - Extracted markdown body
  */
 import type { ReactNode } from 'react'
-import { SyntaxStyle, RGBA } from '@opentui/core'
 import {
+  ContentMarkdown,
   SectionContainer,
   Section,
   SectionPriority,
@@ -22,32 +22,6 @@ import {
 import { palette } from '../../theme.js'
 import type { AiResult, HiddenContentAnalysis } from '../../../lib/results.js'
 import type { ViewComponentProps } from '../types.js'
-
-/**
- * Markdown syntax style for the content section.
- */
-const markdownSyntaxStyle = SyntaxStyle.fromStyles({
-  'markup.heading.1': {
-    fg: RGBA.fromHex(palette.cyanBright),
-    bold: true,
-    underline: true,
-  },
-  'markup.heading.2': { fg: RGBA.fromHex(palette.cyan), bold: true },
-  'markup.heading.3': { fg: RGBA.fromHex(palette.cyan), bold: true },
-  'markup.heading.4': { fg: RGBA.fromHex(palette.cyan), bold: true },
-  'markup.heading.5': { fg: RGBA.fromHex(palette.cyan), bold: true },
-  'markup.heading.6': { fg: RGBA.fromHex(palette.cyan), bold: true },
-  'markup.bold': { fg: RGBA.fromHex(palette.white), bold: true },
-  'markup.strong': { fg: RGBA.fromHex(palette.white), bold: true },
-  'markup.italic': { fg: RGBA.fromHex(palette.white), italic: true },
-  'markup.list': { fg: RGBA.fromHex(palette.yellow) },
-  'markup.quote': { fg: RGBA.fromHex(palette.gray), italic: true },
-  'markup.raw': { fg: RGBA.fromHex(palette.green) },
-  'markup.raw.block': { fg: RGBA.fromHex(palette.green) },
-  'markup.link': { fg: RGBA.fromHex(palette.blue), underline: true },
-  'markup.link.url': { fg: RGBA.fromHex(palette.blue), underline: true },
-  default: { fg: RGBA.fromHex(palette.white) },
-})
 
 /**
  * Warning card content for hidden content issues
@@ -268,14 +242,9 @@ export function AiViewContent({
       >
         {hasContent ? (
           <scrollbox flexGrow={1} paddingTop={1}>
-            <markdown
-              content={
-                data.title
-                  ? `# ${data.title}\n\n${data.markdown}`
-                  : data.markdown
-              }
-              syntaxStyle={markdownSyntaxStyle}
-              conceal={false}
+            <ContentMarkdown
+              content={data.markdown}
+              title={data.title ?? undefined}
             />
           </scrollbox>
         ) : (

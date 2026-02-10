@@ -8,6 +8,7 @@ import { aiCommand } from './commands/ai/index.js'
 import { botCommand } from './commands/bot/index.js'
 import { fetchCommand } from './commands/fetch/index.js'
 import { googleCommand } from './commands/google/index.js'
+import { readabilityCommand } from './commands/readability/index.js'
 import { readerCommand } from './commands/reader/index.js'
 import { schemaCommand } from './commands/schema/index.js'
 import { screenReaderCommand } from './commands/screen-reader/index.js'
@@ -50,6 +51,7 @@ Lenses (How consumers see your page):
   screen-reader        Show how screen readers interpret your page
 
 Analysis Tools:
+  readability          Raw Readability extraction with full metrics
   schema               View structured data (JSON-LD, Microdata, Open Graph)
   structure            Show page structure (landmarks, headings, links)
   structure:js         Show structure after JavaScript rendering
@@ -196,6 +198,16 @@ program
     'Output format: full (default), compact (summary), json',
   )
   .action(withGlobalOptions(botCommand))
+
+program
+  .command('readability')
+  .description('Raw Readability extraction with full metrics (link density, etc.)')
+  .argument('<target>', 'URL or file path to analyze')
+  .option(
+    '--format <type>',
+    'Output format: full (default), compact (summary), json',
+  )
+  .action(withGlobalOptions(readabilityCommand))
 
 program
   .command('schema')

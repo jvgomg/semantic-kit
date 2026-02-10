@@ -5,7 +5,7 @@
 import type { SocialResult } from '../../src/commands/social/types.js'
 import type { Issue } from '../../src/lib/cli-formatting/index.js'
 import type { JsonEnvelope } from '../../src/lib/json-envelope.js'
-import type { AiResult, GoogleResult, StructureResult } from '../../src/lib/results.js'
+import type { AiResult, GoogleResult, ReadabilityUtilityResult, StructureResult } from '../../src/lib/results.js'
 
 interface CliResult<T> {
   data: T | null
@@ -91,3 +91,6 @@ export const runStructure = (url: string, options: string[] = []) =>
 
 export const runSocial = (url: string, options: string[] = []) =>
   runCommand<SocialResult>('social', url, options)
+
+export const runReadability = (url: string, options: string[] = []) =>
+  runCommand<ReadabilityUtilityResult>('readability', url, options)
