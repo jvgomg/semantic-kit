@@ -2,6 +2,7 @@
  * CLI test utilities for running semantic-kit commands
  */
 
+import type { SocialResult } from '../../src/commands/social/types.js'
 import type { Issue } from '../../src/lib/cli-formatting/index.js'
 import type { JsonEnvelope } from '../../src/lib/json-envelope.js'
 import type { AiResult, GoogleResult, StructureResult } from '../../src/lib/results.js'
@@ -87,3 +88,6 @@ export const runGoogle = (url: string, options: string[] = []) =>
 
 export const runStructure = (url: string, options: string[] = []) =>
   runCommand<StructureResult>('structure', url, options)
+
+export const runSocial = (url: string, options: string[] = []) =>
+  runCommand<SocialResult>('social', url, options)

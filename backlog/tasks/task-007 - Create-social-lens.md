@@ -1,10 +1,10 @@
 ---
 id: TASK-007
 title: Create social lens
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-02-09 14:21'
-updated_date: '2026-02-09 14:43'
+updated_date: '2026-02-10 00:55'
 labels: []
 milestone: Command API Restructure
 dependencies:
@@ -45,12 +45,12 @@ New lens showing how social media platforms see a page for link previews.
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 social command exists and works
-- [ ] #2 Shows Open Graph and Twitter Card tags
-- [ ] #3 Reports missing required/recommended tags
-- [ ] #4 TUI includes social in Lenses section
-- [ ] #5 Integration tests cover command functionality
-- [ ] #6 Documentation updated (AGENTS.md command table)
+- [x] #1 social command exists and works
+- [x] #2 Shows Open Graph and Twitter Card tags
+- [x] #3 Reports missing required/recommended tags
+- [x] #4 TUI includes social in Lenses section
+- [x] #5 Integration tests cover command functionality
+- [x] #6 Documentation updated (AGENTS.md command table)
 <!-- AC:END -->
 
 ## Implementation Notes
@@ -66,3 +66,37 @@ Per TASK-001 decision #4: **Context-dependent output**
 
 Ascii mockup should show title, description, and image URL in a card-like layout.
 <!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## Summary
+
+Implemented the `social` lens command that shows how social media platforms see a page for link previews.
+
+### Features
+- Extracts Open Graph tags (og:title, og:description, og:image, og:url, og:type, og:site_name, og:locale)
+- Extracts Twitter Card tags (twitter:card, twitter:title, twitter:description, twitter:image, twitter:site, twitter:creator)
+- ASCII card preview mockup showing how the link will appear when shared
+- Completeness bars showing OG and Twitter tag coverage (0-100%)
+- Reports missing required and recommended tags
+- Falls back to page metadata (title, description, canonical URL) when social tags are missing
+- JSON output includes issues for missing/incomplete tags
+
+### Files Added
+- `src/commands/social/types.ts` - Type definitions and tag constants
+- `src/commands/social/runner.ts` - HTML extraction logic
+- `src/commands/social/formatters.ts` - Terminal output with ASCII card preview
+- `src/commands/social/command.ts` - CLI command handler
+- `src/commands/social/index.ts` - Public API exports
+- `src/tui/views/social-view.ts` - TUI view registration
+- `src/tui/views/components/SocialViewContent.tsx` - TUI component
+- `test-server/fixtures/good/social-complete.html` - Test fixture with complete social tags
+- `integration-tests/social/tag-extraction.test.ts` - Integration tests
+
+### Files Modified
+- `src/cli.ts` - Added social command registration and help text
+- `src/tui/views/index.ts` - Added social view import
+- `integration-tests/utils/cli.ts` - Added `runSocial` test helper
+- `AGENTS.md` - Added social command to documentation table
+<!-- SECTION:FINAL_SUMMARY:END -->

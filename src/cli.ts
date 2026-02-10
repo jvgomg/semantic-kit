@@ -6,11 +6,12 @@ import {
 } from './commands/a11y-tree/index.js'
 import { aiCommand } from './commands/ai/index.js'
 import { botCommand } from './commands/bot/index.js'
-import { googleCommand } from './commands/google/index.js'
 import { fetchCommand } from './commands/fetch/index.js'
+import { googleCommand } from './commands/google/index.js'
 import { readerCommand } from './commands/reader/index.js'
 import { schemaCommand } from './commands/schema/index.js'
 import { screenReaderCommand } from './commands/screen-reader/index.js'
+import { socialCommand } from './commands/social/index.js'
 import {
   structureCommand,
   structureJsCommand,
@@ -45,6 +46,7 @@ Lenses (How consumers see your page):
   ai                   Show how AI crawlers extract and see your content
   reader               Show how browser reader modes see your content
   google               Show how Googlebot sees your page (metadata, schema, structure)
+  social               Show how social platforms see your page (Open Graph, Twitter Cards)
   screen-reader        Show how screen readers interpret your page
 
 Analysis Tools:
@@ -167,6 +169,18 @@ program
     'Output format: full (default), compact (summary), json',
   )
   .action(withGlobalOptions(googleCommand))
+
+program
+  .command('social')
+  .description(
+    'Show how social platforms see your page for link previews (Open Graph, Twitter Cards)',
+  )
+  .argument('<target>', 'URL or file path to analyze')
+  .option(
+    '--format <type>',
+    'Output format: full (default), compact (summary), json',
+  )
+  .action(withGlobalOptions(socialCommand))
 
 program
   .command('bot')
