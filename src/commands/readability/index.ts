@@ -1,3 +1,5 @@
 export { readabilityCommand } from './command.js'
+export { readabilityJsCommand } from './command-js.js'
 export { fetchReadability } from './runner.js'
-export type { ReadabilityOptions } from './types.js'
+export { fetchReadabilityJs } from './runner-js.js'
+export type { ReadabilityOptions, ReadabilityJsOptions } from './types.js'

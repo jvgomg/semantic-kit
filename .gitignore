@@ -5,3 +5,4 @@ dist/
 test-server/apps/**/bun.lock
 test-server/apps/**/.next/
 test-server/apps/**/.next-integration/
+SCRATCH.md

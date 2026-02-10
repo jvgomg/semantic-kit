@@ -10,7 +10,7 @@ import {
   type TableGroup,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
-import type { ReadabilityUtilityResult } from '../../lib/results.js'
+import type { ReadabilityJsResult, ReadabilityUtilityResult } from '../../lib/results.js'
 import type { OutputFormat } from '../../lib/validation.js'
 
 // ============================================================================
@@ -156,4 +156,35 @@ export function formatReadabilityOutput(
     default:
       return formatTerminal(result, ctx)
   }
+}
+
+/**
+ * Format readability:js result for terminal output (full or compact mode).
+ * Includes timeout status indicator.
+ */
+export function formatReadabilityJsOutput(
+  result: ReadabilityJsResult,
+  format: OutputFormat,
+  mode: OutputMode,
+): string {
+  const ctx = createFormatterContext(mode)
+  const sections: string[] = []
+
+  // Show timeout warning if applicable
+  if (result.timedOut) {
+    sections.push('⚠ Page load timed out - results may be incomplete')
+    sections.push('')
+  }
+
+  // Use the same terminal formatting as the static command
+  switch (format) {
+    case 'compact':
+      sections.push(formatTerminal(result, ctx, { compact: true }))
+      break
+    case 'full':
+    default:
+      sections.push(formatTerminal(result, ctx))
+  }
+
+  return sections.join('\n')
 }

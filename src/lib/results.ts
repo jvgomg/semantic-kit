@@ -325,6 +325,15 @@ export interface ReadabilityUtilityResult {
   html: string
 }
 
+/**
+ * Result for `readability:js` utility command.
+ * Shows Readability extraction after JavaScript rendering.
+ */
+export interface ReadabilityJsResult extends ReadabilityUtilityResult {
+  /** Whether the page load timed out */
+  timedOut: boolean
+}
+
 // ============================================================================
 // Google Lens Command Results
 // ============================================================================

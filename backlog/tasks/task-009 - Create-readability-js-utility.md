@@ -1,10 +1,10 @@
 ---
 id: TASK-009
 title: 'Create readability:js utility'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-02-09 14:22'
-updated_date: '2026-02-09 14:35'
+updated_date: '2026-02-10 23:23'
 labels: []
 milestone: Command API Restructure
 dependencies:
@@ -38,10 +38,49 @@ New utility for Readability extraction after JavaScript rendering.
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 readability:js command exists and works
-- [ ] #2 Extracts content from JS-rendered HTML
-- [ ] #3 Shows same metrics as readability command
-- [ ] #4 Requires URL (not file path)
-- [ ] #5 Integration tests cover command functionality
-- [ ] #6 Documentation updated
+- [x] #1 readability:js command exists and works
+- [x] #2 Extracts content from JS-rendered HTML
+- [x] #3 Shows same metrics as readability command
+- [x] #4 Requires URL (not file path)
+- [x] #5 Integration tests cover command functionality
+- [x] #6 Documentation updated
 <!-- AC:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## Summary
+
+Implemented `readability:js` utility command that extracts content using Mozilla Readability after JavaScript rendering via Playwright.
+
+### Changes
+
+**New files:**
+- `src/commands/readability/runner-js.ts` - Runner using Playwright's fetchRenderedHtml
+- `src/commands/readability/command-js.ts` - Command handler with timeout option
+- `integration-tests/readability/js-extraction.test.ts` - 10 integration tests
+
+**Modified files:**
+- `src/commands/readability/types.ts` - Added ReadabilityJsOptions interface
+- `src/commands/readability/formatters.ts` - Added formatReadabilityJsOutput with timeout warning
+- `src/commands/readability/index.ts` - Exported new command and runner
+- `src/cli.ts` - Registered readability:js command with options
+- `integration-tests/utils/cli.ts` - Added runReadabilityJs helper
+- `AGENTS.md` - Updated Available Commands table
+
+### Command Usage
+
+```bash
+semantic-kit readability:js <url> [options]
+
+Options:
+  --format <type>  Output format: full (default), compact (summary), json
+  --timeout <ms>   Timeout for page load (default: 5000)
+```
+
+### Testing
+
+- All 58 integration tests pass
+- TypeScript compilation successful
+- Command accepts URL only (rejects file paths as expected)
+<!-- SECTION:FINAL_SUMMARY:END -->

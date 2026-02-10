@@ -8,7 +8,7 @@ import { aiCommand } from './commands/ai/index.js'
 import { botCommand } from './commands/bot/index.js'
 import { fetchCommand } from './commands/fetch/index.js'
 import { googleCommand } from './commands/google/index.js'
-import { readabilityCommand } from './commands/readability/index.js'
+import { readabilityCommand, readabilityJsCommand } from './commands/readability/index.js'
 import { readerCommand } from './commands/reader/index.js'
 import { schemaCommand } from './commands/schema/index.js'
 import { screenReaderCommand } from './commands/screen-reader/index.js'
@@ -52,6 +52,7 @@ Lenses (How consumers see your page):
 
 Analysis Tools:
   readability          Raw Readability extraction with full metrics
+  readability:js       Readability extraction after JavaScript rendering
   schema               View structured data (JSON-LD, Microdata, Open Graph)
   structure            Show page structure (landmarks, headings, links)
   structure:js         Show structure after JavaScript rendering
@@ -208,6 +209,22 @@ program
     'Output format: full (default), compact (summary), json',
   )
   .action(withGlobalOptions(readabilityCommand))
+
+program
+  .command('readability:js')
+  .description(
+    'Readability extraction after JavaScript rendering (requires Playwright)',
+  )
+  .argument('<target>', 'URL to analyze')
+  .option(
+    '--format <type>',
+    'Output format: full (default), compact (summary), json',
+  )
+  .option(
+    '--timeout <ms>',
+    'Timeout in milliseconds for page to load (default: 5000)',
+  )
+  .action(withGlobalOptions(readabilityJsCommand))
 
 program
   .command('schema')

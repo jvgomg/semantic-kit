@@ -21,6 +21,8 @@ Developers use it to answer questions like:
 | `google`            | Show how Googlebot sees your page (metadata, schema, structure)      |
 | `social`            | Show how social platforms see your page (Open Graph, Twitter Cards)  |
 | `screen-reader`     | Show how screen readers interpret your page (accessibility tree)     |
+| `readability`       | Raw Readability extraction with full metrics (link density, etc.)    |
+| `readability:js`    | Same as above, but after JavaScript execution                        |
 | `structure`         | Analyze page structure (landmarks, headings, links)                  |
 | `structure:js`      | Same as above, but after JavaScript execution                        |
 | `structure:compare` | Compare static vs hydrated structure                                 |
