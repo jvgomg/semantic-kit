@@ -25,6 +25,8 @@ export async function startTestServer(): Promise<void> {
         ...process.env,
         TEST_SERVER_PORT: String(TEST_PORT),
         TEST_SERVER_DELAY: '0',
+        // Use separate Next.js build dir to allow concurrent manual test server
+        NEXT_DIST_DIR: '.next-integration',
       },
     })
 
