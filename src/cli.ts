@@ -6,6 +6,7 @@ import {
 } from './commands/a11y-tree/index.js'
 import { aiCommand } from './commands/ai/index.js'
 import { botCommand } from './commands/bot/index.js'
+import { googleCommand } from './commands/google/index.js'
 import { fetchCommand } from './commands/fetch/index.js'
 import { readerCommand } from './commands/reader/index.js'
 import { schemaCommand } from './commands/schema/index.js'
@@ -43,6 +44,7 @@ program
 Lenses (How consumers see your page):
   ai                   Show how AI crawlers extract and see your content
   reader               Show how browser reader modes see your content
+  google               Show how Googlebot sees your page (metadata, schema, structure)
   screen-reader        Show how screen readers interpret your page
 
 Analysis Tools:
@@ -153,6 +155,18 @@ program
     'Timeout in milliseconds for page to load (default: 5000)',
   )
   .action(withGlobalOptions(screenReaderCommand))
+
+program
+  .command('google')
+  .description(
+    'Show how Googlebot sees your page (metadata, structured data, heading structure)',
+  )
+  .argument('<target>', 'URL or file path to analyze')
+  .option(
+    '--format <type>',
+    'Output format: full (default), compact (summary), json',
+  )
+  .action(withGlobalOptions(googleCommand))
 
 program
   .command('bot')

@@ -4,7 +4,7 @@
 
 import type { Issue } from '../../src/lib/cli-formatting/index.js'
 import type { JsonEnvelope } from '../../src/lib/json-envelope.js'
-import type { AiResult, StructureResult } from '../../src/lib/results.js'
+import type { AiResult, GoogleResult, StructureResult } from '../../src/lib/results.js'
 
 interface CliResult<T> {
   data: T | null
@@ -81,6 +81,9 @@ export async function runCommand<T>(
 // Type-safe command runners
 export const runAi = (url: string, options: string[] = []) =>
   runCommand<AiResult>('ai', url, options)
+
+export const runGoogle = (url: string, options: string[] = []) =>
+  runCommand<GoogleResult>('google', url, options)
 
 export const runStructure = (url: string, options: string[] = []) =>
   runCommand<StructureResult>('structure', url, options)

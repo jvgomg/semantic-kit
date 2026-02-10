@@ -185,10 +185,10 @@ function formatHeadings(
     lines.push(header)
   }
 
-  // Headings with indentation based on level
+  // Headings with indentation based on level (H1 = 0 spaces, H2 = 2 spaces, etc.)
   const headingsToShow = result.headings.slice(0, limit)
   for (const heading of headingsToShow) {
-    const indent = '  '.repeat(heading.level)
+    const indent = '  '.repeat(heading.level - 1)
     const levelTag = `H${heading.level}`
     const text =
       heading.text.length > 60
@@ -197,10 +197,10 @@ function formatHeadings(
 
     if (ctx.mode === 'tty') {
       lines.push(
-        `${indent}${colorize(levelTag, colors.yellow, ctx)} ${text}`,
+        `${indent}${colorize(levelTag, colors.dim, ctx)}  ${text}`,
       )
     } else {
-      lines.push(`${indent}${levelTag} ${text}`)
+      lines.push(`${indent}${levelTag}  ${text}`)
     }
   }
 

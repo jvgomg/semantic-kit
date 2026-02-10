@@ -18,6 +18,7 @@ Developers use it to answer questions like:
 | ------------------- | -------------------------------------------------------------------- |
 | `ai`                | Show what AI crawlers extract (static HTML → Readability → markdown) |
 | `reader`            | Show how browser reader modes see your page (Safari Reader, etc.)    |
+| `google`            | Show how Googlebot sees your page (metadata, schema, structure)      |
 | `screen-reader`     | Show how screen readers interpret your page (accessibility tree)     |
 | `structure`         | Analyze page structure (landmarks, headings, links)                  |
 | `structure:js`      | Same as above, but after JavaScript execution                        |

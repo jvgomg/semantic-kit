@@ -33,3 +33,10 @@ export { formatIssue, formatIssues } from './issues.js'
 
 // Tables
 export { formatTable, formatTableGroups } from './table.js'
+
+// Headings
+export {
+  formatHeadingOutline,
+  formatHeadingCounts,
+  type HeadingFormatOptions,
+} from './headings.js'

@@ -179,8 +179,8 @@ function HeadingsContent({ data }: { data: ScreenReaderResult }): ReactNode {
         return (
           <text key={index}>
             <span fg={palette.gray}>{indent}</span>
-            <span fg={palette.yellow}>H{heading.level}</span>
-            <span fg={palette.white}> {text}</span>
+            <span fg={palette.darkGray}>H{heading.level}</span>
+            <span fg={palette.white}>  {text}</span>
           </text>
         )
       })}

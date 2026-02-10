@@ -3,6 +3,8 @@ import {
   colorize,
   colors,
   createFormatterContext,
+  formatHeadingCounts,
+  formatHeadingOutline,
   formatIssues,
   formatTable,
   type FormatterContext,
@@ -14,7 +16,6 @@ import type {
   StructureAnalysis,
   StructureComparison,
   StructureWarning,
-  HeadingInfo,
   LandmarkNode,
   LinkGroup,
 } from '../../lib/structure.js'
@@ -185,20 +186,6 @@ function formatLandmarksCompact(analysis: StructureAnalysis): string {
 }
 
 /**
- * Format heading counts for compact display.
- * Example: "1xh1, 3xh2, 5xh3"
- */
-function formatHeadingsCompact(analysis: StructureAnalysis): string {
-  const counts = analysis.headings.counts
-  if (Object.keys(counts).length === 0) return '(none)'
-
-  return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-    .filter((h) => counts[h])
-    .map((h) => `${counts[h]}x${h}`)
-    .join(', ')
-}
-
-/**
  * Format links for compact display.
  * Example: "12 internal, 4 external"
  */
@@ -274,53 +261,6 @@ function formatOutlineLines(
 
     if (node.children.length > 0) {
       lines.push(...formatOutlineLines(node.children, ctx, indent + 1))
-    }
-  }
-
-  return lines
-}
-
-/**
- * Format heading tree for full display.
- */
-function formatHeadingTreeFull(
-  headings: HeadingInfo[],
-  ctx: FormatterContext,
-  indent: number = 0,
-): string[] {
-  const lines: string[] = []
-  const prefix = '  '.repeat(indent)
-
-  for (const heading of headings) {
-    const levelLabel = `h${heading.level}`
-    const text =
-      heading.text.length > 60
-        ? heading.text.slice(0, 57) + '...'
-        : heading.text
-
-    // Format content stats
-    const stats: string[] = []
-    if (heading.content.wordCount > 0) {
-      stats.push(`${heading.content.wordCount} words`)
-    }
-    if (heading.content.paragraphs > 0) {
-      stats.push(`${heading.content.paragraphs}p`)
-    }
-    if (heading.content.lists > 0) {
-      stats.push(`${heading.content.lists}L`)
-    }
-    const statsStr = stats.length > 0 ? ` (${stats.join(', ')})` : ''
-
-    if (ctx.mode === 'tty') {
-      const dimLevel = colorize(levelLabel, colors.dim, ctx)
-      const dimStats = stats.length > 0 ? colorize(statsStr, colors.gray, ctx) : ''
-      lines.push(`${prefix}${dimLevel}  ${text}${dimStats}`)
-    } else {
-      lines.push(`${prefix}${levelLabel}  ${text}${statsStr}`)
-    }
-
-    if (heading.children.length > 0) {
-      lines.push(...formatHeadingTreeFull(heading.children, ctx, indent + 1))
     }
   }
 
@@ -420,7 +360,7 @@ function formatStructureTerminal(
     }
     const summaryRows: TableRow[] = [
       { key: 'Landmarks', value: formatLandmarksCompact(analysis) },
-      { key: 'Headings', value: formatHeadingsCompact(analysis) },
+      { key: 'Headings', value: formatHeadingCounts(analysis.headings.counts) },
       { key: 'Links', value: formatLinksCompact(analysis) },
     ]
     sections.push(formatTable(summaryRows, ctx))
@@ -445,7 +385,7 @@ function formatStructureTerminal(
       sections.push('HEADINGS')
     }
     if (analysis.headings.outline.length > 0) {
-      sections.push(...formatHeadingTreeFull(analysis.headings.outline, ctx))
+      sections.push(...formatHeadingOutline(analysis.headings.outline, ctx))
     } else {
       sections.push('(no headings)')
     }
@@ -599,7 +539,7 @@ function formatStructureJsTerminal(
     }
     const summaryRows: TableRow[] = [
       { key: 'Landmarks', value: formatLandmarksCompact(hydrated) },
-      { key: 'Headings', value: formatHeadingsCompact(hydrated) },
+      { key: 'Headings', value: formatHeadingCounts(hydrated.headings.counts) },
       { key: 'Links', value: formatLinksCompact(hydrated) },
     ]
     sections.push(formatTable(summaryRows, ctx))
@@ -624,7 +564,7 @@ function formatStructureJsTerminal(
       sections.push('HEADINGS')
     }
     if (hydrated.headings.outline.length > 0) {
-      sections.push(...formatHeadingTreeFull(hydrated.headings.outline, ctx))
+      sections.push(...formatHeadingOutline(hydrated.headings.outline, ctx))
     } else {
       sections.push('(no headings)')
     }

@@ -273,6 +273,56 @@ export interface ReaderResult {
 }
 
 // ============================================================================
+// Google Lens Command Results
+// ============================================================================
+
+/**
+ * Page metadata as Google sees it.
+ */
+export interface GooglePageMetadata {
+  /** Page title from <title> element */
+  title: string | null
+  /** Meta description from <meta name="description"> */
+  description: string | null
+  /** Canonical URL from <link rel="canonical"> */
+  canonical: string | null
+  /** Language from <html lang="..."> */
+  language: string | null
+}
+
+/**
+ * A single JSON-LD schema object with type info.
+ */
+export interface GoogleSchemaItem {
+  /** The @type value */
+  type: string
+  /** The full schema data */
+  data: Record<string, unknown>
+}
+
+/**
+ * Result for the `google` command.
+ * Shows what Googlebot sees when crawling a page.
+ */
+export interface GoogleResult {
+  /** Target URL or file path */
+  target: string
+  /** Page metadata */
+  metadata: GooglePageMetadata
+  /** Google-recognized JSON-LD schemas found */
+  schemas: GoogleSchemaItem[]
+  /** Heading structure (same as structure command) */
+  headings: import('./structure.js').HeadingAnalysis
+  /** Summary counts */
+  counts: {
+    /** Number of JSON-LD schemas found (Google-recognized only) */
+    schemas: number
+    /** Total headings */
+    headings: number
+  }
+}
+
+// ============================================================================
 // Screen Reader Command Results
 // ============================================================================
 

@@ -11,6 +11,7 @@ import {
   Card,
   CardRow,
   Tree,
+  HeadingOutline,
   type TreeNode,
 } from '../../components/ui/index.js'
 import { palette } from '../../theme.js'
@@ -18,7 +19,6 @@ import type { TuiStructureResult } from '../../../commands/structure/index.js'
 import type {
   StructureWarning,
   LandmarkNode,
-  HeadingInfo,
   LandmarkSkeleton,
 } from '../../../lib/structure.js'
 import type { ViewComponentProps } from '../types.js'
@@ -38,22 +38,6 @@ function landmarkToTreeNode(landmark: LandmarkNode): TreeNode {
   return {
     label,
     children: landmark.children.map(landmarkToTreeNode),
-  }
-}
-
-/**
- * Convert HeadingInfo to TreeNode for the Tree component.
- */
-function headingToTreeNode(heading: HeadingInfo): TreeNode {
-  const meta =
-    heading.content.wordCount > 0
-      ? ` (${heading.content.wordCount} words)`
-      : undefined
-
-  return {
-    label: `H${heading.level}`,
-    meta: heading.text + (meta ?? ''),
-    children: heading.children.map(headingToTreeNode),
   }
 }
 
@@ -226,7 +210,6 @@ export function StructureViewContent({
   // Compute headings section props
   const hasHeadings = analysis.headings.total > 0
   const headingsSummary = formatHeadingsSummary(analysis.headings.counts)
-  const headingTreeNodes = analysis.headings.outline.map(headingToTreeNode)
 
   // Compute links section props
   const totalLinks =
@@ -300,7 +283,7 @@ export function StructureViewContent({
         scrollable
       >
         {hasHeadings ? (
-          <Tree nodes={headingTreeNodes} showLines={true} />
+          <HeadingOutline headings={analysis.headings.outline} />
         ) : (
           <text fg={palette.yellow}>No headings found.</text>
         )}
