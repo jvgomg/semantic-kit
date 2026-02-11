@@ -12,6 +12,11 @@ export interface SchemaJsOptions extends OutputModeOptions {
   timeout?: string
 }
 
+export interface SchemaCompareOptions extends OutputModeOptions {
+  format?: string
+  timeout?: string
+}
+
 export interface StructuredData {
   metatags: Record<string, string[]>
   jsonld: Record<string, unknown[]>

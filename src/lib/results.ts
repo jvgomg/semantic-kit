@@ -436,6 +436,47 @@ export interface SchemaJsResult extends SchemaResult {
   timedOut: boolean
 }
 
+/**
+ * Comparison metrics for schema differences.
+ */
+export interface SchemaComparisonMetrics {
+  /** Number of JSON-LD schemas added by JavaScript */
+  jsonldAdded: number
+  /** Number of JSON-LD schemas removed (rare, but possible) */
+  jsonldRemoved: number
+  /** Number of Microdata schemas added by JavaScript */
+  microdataAdded: number
+  /** Number of Microdata schemas removed */
+  microdataRemoved: number
+  /** Number of RDFa schemas added by JavaScript */
+  rdfaAdded: number
+  /** Number of RDFa schemas removed */
+  rdfaRemoved: number
+  /** Whether Open Graph tags changed */
+  openGraphChanged: boolean
+  /** Whether Twitter Card tags changed */
+  twitterChanged: boolean
+  /** Whether there are any differences */
+  hasDifferences: boolean
+}
+
+/**
+ * Result for `schema:compare` command.
+ * Compares structured data between static and JS-rendered HTML.
+ */
+export interface SchemaCompareResult {
+  /** Target URL analyzed */
+  target: string
+  /** Structured data from static HTML */
+  static: SchemaResult
+  /** Structured data from JS-rendered HTML */
+  rendered: SchemaResult
+  /** Comparison metrics */
+  comparison: SchemaComparisonMetrics
+  /** Whether the page load timed out */
+  timedOut: boolean
+}
+
 // ============================================================================
 // Validation Command Results
 // ============================================================================

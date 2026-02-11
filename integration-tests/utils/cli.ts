@@ -6,7 +6,7 @@ import type { ReadabilityCompareResult } from '../../src/commands/readability/ty
 import type { SocialResult } from '../../src/commands/social/types.js'
 import type { Issue } from '../../src/lib/cli-formatting/index.js'
 import type { JsonEnvelope } from '../../src/lib/json-envelope.js'
-import type { AiResult, GoogleResult, ReadabilityJsResult, ReadabilityUtilityResult, SchemaJsResult, SchemaResult, StructureResult } from '../../src/lib/results.js'
+import type { AiResult, GoogleResult, ReadabilityJsResult, ReadabilityUtilityResult, SchemaCompareResult, SchemaJsResult, SchemaResult, StructureResult } from '../../src/lib/results.js'
 
 interface CliResult<T> {
   data: T | null
@@ -107,3 +107,6 @@ export const runSchema = (url: string, options: string[] = []) =>
 
 export const runSchemaJs = (url: string, options: string[] = []) =>
   runCommand<SchemaJsResult>('schema:js', url, options)
+
+export const runSchemaCompare = (url: string, options: string[] = []) =>
+  runCommand<SchemaCompareResult>('schema:compare', url, options)
