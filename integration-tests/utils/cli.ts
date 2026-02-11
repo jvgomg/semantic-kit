@@ -2,6 +2,7 @@
  * CLI test utilities for running semantic-kit commands
  */
 
+import type { ReadabilityCompareResult } from '../../src/commands/readability/types.js'
 import type { SocialResult } from '../../src/commands/social/types.js'
 import type { Issue } from '../../src/lib/cli-formatting/index.js'
 import type { JsonEnvelope } from '../../src/lib/json-envelope.js'
@@ -97,3 +98,6 @@ export const runReadability = (url: string, options: string[] = []) =>
 
 export const runReadabilityJs = (url: string, options: string[] = []) =>
   runCommand<ReadabilityJsResult>('readability:js', url, options)
+
+export const runReadabilityCompare = (url: string, options: string[] = []) =>
+  runCommand<ReadabilityCompareResult>('readability:compare', url, options)

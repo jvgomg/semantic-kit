@@ -14,11 +14,6 @@ export type {
   StructureResult,
   StructureJsResult,
   StructureCompareResult,
-  // Bot command results
-  ExtractedContent,
-  SectionInfo,
-  BotComparisonResult,
-  BotResult,
   // AI command results
   FrameworkDetection,
   HiddenContentAnalysis,
@@ -35,6 +30,14 @@ export type {
   AxeViolationResult,
   ValidateA11yResult,
 } from './lib/results.js'
+
+// Readability command results
+export type {
+  ReadabilityCompareOptions,
+  ReadabilityCompareResult,
+  ReadabilityComparison,
+  SectionInfo,
+} from './commands/readability/types.js'
 
 // Re-export commonly used lib types
 export type {

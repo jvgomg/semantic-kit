@@ -50,6 +50,7 @@
     "@opentui/react": "^0.1.77",
     "axe-core": "^4.11.1",
     "commander": "^14.0.2",
+    "diff": "^8.0.3",
     "emphasize": "^7.0.0",
     "html-validate": "^10.7.0",
     "jotai": "^2.16.2",
@@ -71,6 +72,7 @@
   "devDependencies": {
     "@eslint/js": "^9.28.0",
     "@types/bun": "latest",
+    "@types/diff": "^8.0.0",
     "@types/jsdom": "^27.0.0",
     "@types/marked-terminal": "^6.1.1",
     "@types/node": "^24.10.9",

@@ -14,22 +14,23 @@ Developers use it to answer questions like:
 
 ## Available Commands
 
-| Command             | Purpose                                                              |
-| ------------------- | -------------------------------------------------------------------- |
-| `ai`                | Show what AI crawlers extract (static HTML → Readability → markdown) |
-| `reader`            | Show how browser reader modes see your page (Safari Reader, etc.)    |
-| `google`            | Show how Googlebot sees your page (metadata, schema, structure)      |
-| `social`            | Show how social platforms see your page (Open Graph, Twitter Cards)  |
-| `screen-reader`     | Show how screen readers interpret your page (accessibility tree)     |
-| `readability`       | Raw Readability extraction with full metrics (link density, etc.)    |
-| `readability:js`    | Same as above, but after JavaScript execution                        |
-| `structure`         | Analyze page structure (landmarks, headings, links)                  |
-| `structure:js`      | Same as above, but after JavaScript execution                        |
-| `structure:compare` | Compare static vs hydrated structure                                 |
-| `schema`            | Inspect structured data (JSON-LD, Open Graph, etc.)                  |
-| `validate:html`     | Validate HTML markup                                                 |
-| `validate:schema`   | Validate structured data against platform requirements               |
-| `validate:a11y`     | Run accessibility checks (WCAG via axe-core)                         |
+| Command               | Purpose                                                              |
+| --------------------- | -------------------------------------------------------------------- |
+| `ai`                  | Show what AI crawlers extract (static HTML → Readability → markdown) |
+| `reader`              | Show how browser reader modes see your page (Safari Reader, etc.)    |
+| `google`              | Show how Googlebot sees your page (metadata, schema, structure)      |
+| `social`              | Show how social platforms see your page (Open Graph, Twitter Cards)  |
+| `screen-reader`       | Show how screen readers interpret your page (accessibility tree)     |
+| `readability`         | Raw Readability extraction with full metrics (link density, etc.)    |
+| `readability:js`      | Same as above, but after JavaScript execution                        |
+| `readability:compare` | Compare static vs JS-rendered Readability extraction                 |
+| `structure`           | Analyze page structure (landmarks, headings, links)                  |
+| `structure:js`        | Same as above, but after JavaScript execution                        |
+| `structure:compare`   | Compare static vs hydrated structure                                 |
+| `schema`              | Inspect structured data (JSON-LD, Open Graph, etc.)                  |
+| `validate:html`       | Validate HTML markup                                                 |
+| `validate:schema`     | Validate structured data against platform requirements               |
+| `validate:a11y`       | Run accessibility checks (WCAG via axe-core)                         |
 
 Run `bun run dev <command> --help` for command options.
 

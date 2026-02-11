@@ -523,7 +523,7 @@ function GroupedViolationsSection({ violations }: Props) {
 
 ### Pattern: Prose with Metadata
 
-For content extraction views (ai, bot):
+For content extraction views (ai, readability:compare):
 
 ```tsx
 function ContentSection({ content, wordCount }: Props) {
@@ -620,7 +620,7 @@ The following commands have data structures ready but no TUI views:
 | `validate:html` | ValidateHtmlResult | HTML errors/warnings | Similar to a11y |
 | `validate:schema` | ValidateSchemaResult | Schema test results | Grouped by schema type |
 | `schema` | SchemaResult | Extracted schemas | JSON-LD, Open Graph, etc. |
-| `bot` | BotResult | Content comparison | Static vs rendered diff |
+| `readability:compare` | ReadabilityCompareResult | Content comparison | Static vs rendered diff |
 | `a11y-tree` | A11yTreeResult | Accessibility tree | Tree display |
 | `a11y-tree:compare` | A11yTreeCompareResult | Tree diff | Comparison pattern |
 | `structure:js` | StructureJsResult | Structure comparison | Comparison pattern |

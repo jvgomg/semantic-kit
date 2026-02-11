@@ -5,10 +5,13 @@ import {
   a11yTreeCompareCommand,
 } from './commands/a11y-tree/index.js'
 import { aiCommand } from './commands/ai/index.js'
-import { botCommand } from './commands/bot/index.js'
 import { fetchCommand } from './commands/fetch/index.js'
 import { googleCommand } from './commands/google/index.js'
-import { readabilityCommand, readabilityJsCommand } from './commands/readability/index.js'
+import {
+  readabilityCommand,
+  readabilityJsCommand,
+  readabilityCompareCommand,
+} from './commands/readability/index.js'
 import { readerCommand } from './commands/reader/index.js'
 import { schemaCommand } from './commands/schema/index.js'
 import { screenReaderCommand } from './commands/screen-reader/index.js'
@@ -53,6 +56,7 @@ Lenses (How consumers see your page):
 Analysis Tools:
   readability          Raw Readability extraction with full metrics
   readability:js       Readability extraction after JavaScript rendering
+  readability:compare  Compare static vs JS-rendered content extraction
   schema               View structured data (JSON-LD, Microdata, Open Graph)
   structure            Show page structure (landmarks, headings, links)
   structure:js         Show structure after JavaScript rendering
@@ -60,7 +64,6 @@ Analysis Tools:
   a11y-tree            Show accessibility tree from static HTML
   a11y-tree:js         Show accessibility tree after JavaScript rendering
   a11y-tree:compare    Compare static vs hydrated accessibility tree
-  bot                  Compare static HTML vs JavaScript-rendered content
 
 Validation Tools:
   validate:html        Validate HTML markup against W3C standards
@@ -186,19 +189,20 @@ program
   .action(withGlobalOptions(socialCommand))
 
 program
-  .command('bot')
-  .description('Compare static HTML vs JavaScript-rendered content')
-  .argument('<target>', 'URL to analyze')
-  .option('--content', 'Show extracted markdown content')
-  .option(
-    '--timeout <ms>',
-    'Timeout in milliseconds for page to load (default: 5000)',
+  .command('readability:compare')
+  .description(
+    'Compare Readability extraction between static and JS-rendered page',
   )
+  .argument('<target>', 'URL to analyze')
   .option(
     '--format <type>',
     'Output format: full (default), compact (summary), json',
   )
-  .action(withGlobalOptions(botCommand))
+  .option(
+    '--timeout <ms>',
+    'Timeout in milliseconds for page to load (default: 5000)',
+  )
+  .action(withGlobalOptions(readabilityCompareCommand))
 
 program
   .command('readability')
