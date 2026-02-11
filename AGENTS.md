@@ -28,6 +28,7 @@ Developers use it to answer questions like:
 | `structure:js`        | Same as above, but after JavaScript execution                        |
 | `structure:compare`   | Compare static vs hydrated structure                                 |
 | `schema`              | Inspect structured data (JSON-LD, Open Graph, etc.)                  |
+| `schema:js`           | Same as above, but after JavaScript execution                        |
 | `validate:html`       | Validate HTML markup                                                 |
 | `validate:schema`     | Validate structured data against platform requirements               |
 | `validate:a11y`       | Run accessibility checks (WCAG via axe-core)                         |

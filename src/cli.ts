@@ -13,7 +13,7 @@ import {
   readabilityCompareCommand,
 } from './commands/readability/index.js'
 import { readerCommand } from './commands/reader/index.js'
-import { schemaCommand } from './commands/schema/index.js'
+import { schemaCommand, schemaJsCommand } from './commands/schema/index.js'
 import { screenReaderCommand } from './commands/screen-reader/index.js'
 import { socialCommand } from './commands/social/index.js'
 import {
@@ -58,6 +58,7 @@ Analysis Tools:
   readability:js       Readability extraction after JavaScript rendering
   readability:compare  Compare static vs JS-rendered content extraction
   schema               View structured data (JSON-LD, Microdata, Open Graph)
+  schema:js            View structured data after JavaScript rendering
   structure            Show page structure (landmarks, headings, links)
   structure:js         Show structure after JavaScript rendering
   structure:compare    Compare static vs hydrated structure
@@ -241,6 +242,22 @@ program
     'Output format: full (default), compact (summary), json',
   )
   .action(withGlobalOptions(schemaCommand))
+
+program
+  .command('schema:js')
+  .description(
+    'View structured data after JavaScript rendering (requires Playwright)',
+  )
+  .argument('<target>', 'URL to analyze')
+  .option(
+    '--format <type>',
+    'Output format: full (default), compact (summary), json',
+  )
+  .option(
+    '--timeout <ms>',
+    'Timeout in milliseconds for page to load (default: 5000)',
+  )
+  .action(withGlobalOptions(schemaJsCommand))
 
 program
   .command('validate:schema')

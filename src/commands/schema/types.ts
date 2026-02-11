@@ -7,6 +7,11 @@ export interface SchemaOptions extends OutputModeOptions {
   format?: string
 }
 
+export interface SchemaJsOptions extends OutputModeOptions {
+  format?: string
+  timeout?: string
+}
+
 export interface StructuredData {
   metatags: Record<string, string[]>
   jsonld: Record<string, unknown[]>

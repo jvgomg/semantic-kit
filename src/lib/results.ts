@@ -427,6 +427,15 @@ export interface SchemaResult {
   metatags: Record<string, string>
 }
 
+/**
+ * Result for `schema:js` command.
+ * Shows structured data after JavaScript rendering.
+ */
+export interface SchemaJsResult extends SchemaResult {
+  /** Whether the page load timed out */
+  timedOut: boolean
+}
+
 // ============================================================================
 // Validation Command Results
 // ============================================================================
