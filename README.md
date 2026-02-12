@@ -29,16 +29,16 @@ semantic-kit <command> [options]
 | `fetch <url>`                 | Fetch and prettify HTML                          | Available |
 | `schema <url\|file>`          | View structured data                             | Available |
 | `ai <url\|file>`              | Show AI crawler view (static HTML)               | Available |
-| `bot <url>`                   | Compare static vs JS-rendered content            | Available |
+| `readability:compare <url>`   | Compare static vs JS-rendered content            | Available |
 | `structure <url\|file>`       | Show page structure (landmarks, headings, links) | Available |
 | `structure:js <url>`          | Show page structure (rendered DOM)               | Available |
 | `structure:compare <url>`     | Compare static vs rendered structure             | Available |
 | `validate:a11y <url>`         | Validate WCAG compliance                         | Available |
-| `a11y <url>`                  | Show accessibility tree (static HTML)            | Available |
-| `a11y:js <url>`               | Show accessibility tree (rendered DOM)           | Available |
-| `a11y:compare <url>`          | Compare static vs rendered accessibility tree    | Available |
+| `a11y-tree <url>`             | Show accessibility tree (static HTML)            | Available |
+| `a11y-tree:js <url>`          | Show accessibility tree (rendered DOM)           | Available |
+| `a11y-tree:compare <url>`     | Compare static vs rendered accessibility tree    | Available |
 | `tui`                         | Interactive terminal UI                          | Available |
-| `google <url>`                | Google perspective (composed view)               | Planned   |
+| `google <url>`                | Google perspective (composed view)               | Available |
 
 ## Documentation
 
@@ -46,9 +46,9 @@ semantic-kit <command> [options]
 - [Schema Validation](./docs/commands/validate-schema.md) — Validate structured data against platform requirements
 - [Structured Data](./docs/commands/schema.md) — View JSON-LD, Microdata, RDFa
 - [AI Crawlers](./docs/commands/ai.md) — How AI tools see your content (static HTML)
-- [Bot](./docs/commands/bot.md) — Compare static vs JS-rendered content
+- [Readability](./docs/commands/readability.md) — Raw Readability extraction and comparison
 - [Structure](./docs/commands/structure.md) — Page structure (landmarks, headings, links)
-- [Accessibility](./docs/commands/a11y.md) — View accessibility tree
+- [Accessibility Tree](./docs/commands/a11y-tree.md) — View accessibility tree
 - [Accessibility Validation](./docs/commands/validate-a11y.md) — Validate WCAG compliance
 - [Fetch](./docs/commands/fetch.md) — Fetch and prettify HTML
 - [TUI](./docs/commands/tui.md) — Interactive terminal UI
@@ -74,20 +74,20 @@ The toolkit answers "How does X see my website?" for different consumers:
 | ----------------- | ----------------------------- | --------------------------------------------------- |
 | **Validator**     | Markup correctness            | `validate:html`, `validate:schema`, `validate:a11y` |
 | **AI Crawlers**   | Static HTML only              | `ai`                                                |
-| **Bots**          | Static vs rendered comparison | `bot`                                               |
+| **Readability**   | Static vs rendered comparison | `readability:compare`                               |
 | **Structure**     | Landmarks, headings, links    | `structure`, `structure:js`                         |
-| **Accessibility** | Accessibility tree, ARIA      | `a11y`, `a11y:js`                                   |
+| **Accessibility** | Accessibility tree, ARIA      | `a11y-tree`, `a11y-tree:js`                         |
 | **Google**        | Composed view                 | `google`                                            |
 
 ## Static vs Rendered
 
 Commands that analyze pages support two modes:
 
-| Static (no JS) | Rendered (with JS) | Purpose            |
-| -------------- | ------------------ | ------------------ |
-| `ai`           | `bot`              | Content extraction |
-| `structure`    | `structure:js`     | Page structure     |
-| `a11y`         | `a11y:js`          | Accessibility      |
+| Static (no JS)  | Rendered (with JS)    | Purpose            |
+| --------------- | --------------------- | ------------------ |
+| `ai`            | `readability:compare` | Content extraction |
+| `structure`     | `structure:js`        | Page structure     |
+| `a11y-tree`     | `a11y-tree:js`        | Accessibility      |
 
 - **Static:** Works on URLs and local files. Fast. Shows what AI crawlers see.
 - **Rendered:** Requires Playwright. URL only. Shows what browsers/Google see.
@@ -98,15 +98,15 @@ All command result types are exported for programmatic usage:
 
 ```typescript
 import type {
-  // A11y commands
+  // A11y-tree commands
   A11yResult,
   A11yCompareResult,
   // Structure commands
   StructureResult,
   StructureJsResult,
   StructureCompareResult,
-  // Content commands
-  BotResult,
+  // Readability commands
+  ReadabilityCompareResult,
   AiResult,
   // Schema commands
   SchemaResult,

@@ -11,8 +11,8 @@ The `readability` commands extract content using Mozilla Readability and report 
 | Command | Purpose |
 |---------|---------|
 | `readability` | Extract from static HTML |
-| `readability:js` | Extract after JavaScript rendering (coming soon) |
-| `readability:compare` | Compare static vs hydrated extraction (coming soon) |
+| `readability:js` | Extract after JavaScript rendering |
+| `readability:compare` | Compare static vs hydrated extraction |
 
 ---
 
@@ -233,4 +233,4 @@ console.log(result.extraction?.title) // "Understanding Semantic HTML"
 
 - [[readability]] — How Mozilla Readability works
 - [[ai-crawler-behavior]] — How AI crawlers extract content
-- [reader command](./reader.md) — Consumer-focused reader mode preview (coming soon)
+- [reader command](./reader.md) — Consumer-focused reader mode preview

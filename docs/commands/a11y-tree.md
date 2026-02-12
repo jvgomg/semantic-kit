@@ -1,4 +1,4 @@
-# Accessibility
+# Accessibility Tree
 
 Show the browser's accessibility tree — the structure that screen readers and assistive technologies use to navigate your page.
 
@@ -6,7 +6,7 @@ Show the browser's accessibility tree — the structure that screen readers and 
 
 ## What it does
 
-The `a11y` commands use Playwright to capture the real browser accessibility tree, showing roles, names, states, and hierarchy exactly as assistive technologies receive them.
+The `a11y-tree` commands use Playwright to capture the real browser accessibility tree, showing roles, names, states, and hierarchy exactly as assistive technologies receive them.
 
 ---
 
@@ -16,36 +16,36 @@ The `a11y` commands use Playwright to capture the real browser accessibility tre
 
 ```bash
 # Show accessibility tree (no JavaScript)
-semantic-kit a11y https://example.com
+semantic-kit a11y-tree https://example.com
 
 # Machine-readable output
-semantic-kit a11y https://example.com --json
+semantic-kit a11y-tree https://example.com --format json
 
 # Custom timeout
-semantic-kit a11y https://example.com --timeout 10000
+semantic-kit a11y-tree https://example.com --timeout 10000
 ```
 
 ### Hydrated DOM (JavaScript enabled)
 
 ```bash
 # Show accessibility tree (with JavaScript)
-semantic-kit a11y:js https://example.com
+semantic-kit a11y-tree:js https://example.com
 
 # Machine-readable output
-semantic-kit a11y:js https://example.com --json
+semantic-kit a11y-tree:js https://example.com --format json
 ```
 
 ### Compare static vs hydrated
 
 ```bash
 # Full comparison
-semantic-kit a11y:compare https://example.com
+semantic-kit a11y-tree:compare https://example.com
 
 # Compact summary
-semantic-kit a11y:compare https://example.com --compact
+semantic-kit a11y-tree:compare https://example.com --format compact
 
 # Machine-readable output
-semantic-kit a11y:compare https://example.com --json
+semantic-kit a11y-tree:compare https://example.com --format json
 ```
 
 ---
@@ -54,9 +54,10 @@ semantic-kit a11y:compare https://example.com --json
 
 | Option | Description |
 |--------|-------------|
-| `--json` | Machine-readable JSON output |
-| `--timeout` | Browser timeout in milliseconds (default: 30000) |
-| `--compact` | Compact diff summary (`a11y:compare` only) |
+| `--format full` | Default. Full accessibility tree output |
+| `--format compact` | Compact diff summary (`a11y-tree:compare` only) |
+| `--format json` | Machine-readable JSON output |
+| `--timeout` | Browser timeout in milliseconds (default: 5000) |
 
 ---
 
@@ -74,7 +75,7 @@ semantic-kit a11y:compare https://example.com --json
 
 ### Accessibility tree output
 
-Both `a11y` and `a11y:js` show the browser's ARIA snapshot:
+Both `a11y-tree` and `a11y-tree:js` show the browser's ARIA snapshot:
 
 ```
 ┌─────────────────────────────────────────────────────────────
@@ -120,19 +121,19 @@ Both `a11y` and `a11y:js` show the browser's ARIA snapshot:
 
 | Command | What it shows | Use case |
 |---------|---------------|----------|
-| `a11y` | Static HTML accessibility tree | What AI crawlers/non-JS clients see |
-| `a11y:js` | Hydrated DOM accessibility tree | What browsers/screen readers see |
-| `a11y:compare` | Differences between static and hydrated | Identify JS-dependent accessibility content |
+| `a11y-tree` | Static HTML accessibility tree | What AI crawlers/non-JS clients see |
+| `a11y-tree:js` | Hydrated DOM accessibility tree | What browsers/screen readers see |
+| `a11y-tree:compare` | Differences between static and hydrated | Identify JS-dependent accessibility content |
 
-The `a11y:js` command uses Playwright to execute JavaScript and capture the accessibility tree after hydration. This reveals content that screen readers and browsers see but that static-HTML-only clients (like AI crawlers) miss.
+The `a11y-tree:js` command uses Playwright to execute JavaScript and capture the accessibility tree after hydration. This reveals content that screen readers and browsers see but that static-HTML-only clients (like AI crawlers) miss.
 
-The `a11y:compare` command runs both static and hydrated analysis, then highlights what JavaScript changes. Large differences indicate accessibility content that depends on JavaScript execution.
+The `a11y-tree:compare` command runs both static and hydrated analysis, then highlights what JavaScript changes. Large differences indicate accessibility content that depends on JavaScript execution.
 
 ---
 
 ## Comparison output
 
-The `a11y:compare` command shows what JavaScript changes:
+The `a11y-tree:compare` command shows what JavaScript changes:
 
 ```
 ┌─────────────────────────────────────────────────────────────
@@ -229,7 +230,7 @@ For comparisons:
 
 ## Requirements
 
-All `a11y` commands require Playwright:
+All `a11y-tree` commands require Playwright:
 
 ```bash
 bun add playwright
