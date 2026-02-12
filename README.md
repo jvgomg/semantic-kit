@@ -22,38 +22,81 @@ semantic-kit <command> [options]
 
 ## Commands
 
-| Command                       | Description                                      | Status       |
-| ----------------------------- | ------------------------------------------------ | ------------ |
-| `validate:html <url\|file>`   | Validate HTML markup                             | Available |
-| `validate:schema <url\|file>` | Validate structured data                         | Available |
-| `fetch <url>`                 | Fetch and prettify HTML                          | Available |
-| `schema <url\|file>`          | View structured data                             | Available |
-| `ai <url\|file>`              | Show AI crawler view (static HTML)               | Available |
-| `readability:compare <url>`   | Compare static vs JS-rendered content            | Available |
-| `structure <url\|file>`       | Show page structure (landmarks, headings, links) | Available |
-| `structure:js <url>`          | Show page structure (rendered DOM)               | Available |
-| `structure:compare <url>`     | Compare static vs rendered structure             | Available |
-| `validate:a11y <url>`         | Validate WCAG compliance                         | Available |
-| `a11y-tree <url>`             | Show accessibility tree (static HTML)            | Available |
-| `a11y-tree:js <url>`          | Show accessibility tree (rendered DOM)           | Available |
-| `a11y-tree:compare <url>`     | Compare static vs rendered accessibility tree    | Available |
-| `tui`                         | Interactive terminal UI                          | Available |
-| `google <url>`                | Google perspective (composed view)               | Available |
+Commands are organized into two groups:
+
+- **Lenses** — Show how a specific consumer "sees" your page
+- **Utilities** — Task-oriented tools for analysis and validation
+
+### Lenses
+
+| Command                  | Description                                            |
+| ------------------------ | ------------------------------------------------------ |
+| `ai <url\|file>`         | Show how AI crawlers see your page                     |
+| `reader <url\|file>`     | Show how browser reader modes see your page            |
+| `google <url\|file>`     | Show how Googlebot sees your page                      |
+| `social <url\|file>`     | Show how social platforms see your page (link preview) |
+| `screen-reader <url>`    | Show how screen readers interpret your page            |
+
+### Analysis Utilities
+
+| Command                       | Description                                      |
+| ----------------------------- | ------------------------------------------------ |
+| `readability <url\|file>`     | Raw Readability extraction with full metrics     |
+| `readability:js <url>`        | Readability extraction after JavaScript rendering|
+| `readability:compare <url>`   | Compare static vs JS-rendered content extraction |
+| `schema <url\|file>`          | View structured data (JSON-LD, OG, Twitter Cards)|
+| `schema:js <url>`             | View structured data after JavaScript rendering  |
+| `schema:compare <url>`        | Compare static vs JS-rendered structured data    |
+| `structure <url\|file>`       | Show page structure (landmarks, headings, links) |
+| `structure:js <url>`          | Show structure after JavaScript rendering        |
+| `structure:compare <url>`     | Compare static vs hydrated structure             |
+| `a11y-tree <url>`             | Show accessibility tree (static HTML)            |
+| `a11y-tree:js <url>`          | Show accessibility tree (rendered DOM)           |
+| `a11y-tree:compare <url>`     | Compare static vs rendered accessibility tree    |
+
+### Validation Utilities
+
+| Command                       | Description                                      |
+| ----------------------------- | ------------------------------------------------ |
+| `validate:html <url\|file>`   | Validate HTML markup against W3C standards       |
+| `validate:schema <url\|file>` | Validate structured data against platform requirements |
+| `validate:a11y <url>`         | Validate accessibility against WCAG guidelines   |
+
+### Other Utilities
+
+| Command       | Description                      |
+| ------------- | -------------------------------- |
+| `fetch <url>` | Fetch and prettify HTML          |
+| `tui`         | Launch interactive terminal UI   |
 
 ## Documentation
 
-- [HTML Validation](./docs/commands/validate-html.md) — Validate markup correctness
-- [Schema Validation](./docs/commands/validate-schema.md) — Validate structured data against platform requirements
-- [Structured Data](./docs/commands/schema.md) — View JSON-LD, Microdata, RDFa
-- [AI Crawlers](./docs/commands/ai.md) — How AI tools see your content (static HTML)
+### Lenses
+
+- [AI Crawlers](./docs/commands/ai.md) — How AI tools see your content
+- [Reader Mode](./docs/commands/reader.md) — How browser reader modes see your page
+- [Google](./docs/commands/google.md) — How Googlebot sees your page
+- [Social](./docs/commands/social.md) — How social platforms see your page for link previews
+- [Screen Reader](./docs/commands/screen-reader.md) — How screen readers interpret your page
+
+### Utilities
+
 - [Readability](./docs/commands/readability.md) — Raw Readability extraction and comparison
+- [Structured Data](./docs/commands/schema.md) — View JSON-LD, Microdata, RDFa
 - [Structure](./docs/commands/structure.md) — Page structure (landmarks, headings, links)
 - [Accessibility Tree](./docs/commands/a11y-tree.md) — View accessibility tree
+
+### Validation
+
+- [HTML Validation](./docs/commands/validate-html.md) — Validate markup correctness
+- [Schema Validation](./docs/commands/validate-schema.md) — Validate structured data against platform requirements
 - [Accessibility Validation](./docs/commands/validate-a11y.md) — Validate WCAG compliance
+
+### Other
+
 - [Fetch](./docs/commands/fetch.md) — Fetch and prettify HTML
 - [TUI](./docs/commands/tui.md) — Interactive terminal UI
 - [Design Decisions](./docs/design-decisions.md) — Why things are built this way
-- [Roadmap](./ROADMAP.md) — What's built and what's next
 - [Changelog](./CHANGELOG.md) — Version history
 
 ## Philosophy
@@ -66,31 +109,38 @@ This toolkit prioritizes:
 
 See the [full roadmap](./docs/semantic-kit-roadmap.md) for details.
 
-## Perspectives
+## Lenses vs Utilities
 
-The toolkit answers "How does X see my website?" for different consumers:
+The toolkit organizes commands into two conceptual groups:
 
-| Perspective       | What they see                 | Commands                                            |
-| ----------------- | ----------------------------- | --------------------------------------------------- |
-| **Validator**     | Markup correctness            | `validate:html`, `validate:schema`, `validate:a11y` |
-| **AI Crawlers**   | Static HTML only              | `ai`                                                |
-| **Readability**   | Static vs rendered comparison | `readability:compare`                               |
-| **Structure**     | Landmarks, headings, links    | `structure`, `structure:js`                         |
-| **Accessibility** | Accessibility tree, ARIA      | `a11y-tree`, `a11y-tree:js`                         |
-| **Google**        | Composed view                 | `google`                                            |
+### Lenses
 
-## Static vs Rendered
+Lenses answer "How does X see my page?" for specific consumers:
 
-Commands that analyze pages support two modes:
+| Lens            | Consumer                           | What it shows                        |
+| --------------- | ---------------------------------- | ------------------------------------ |
+| `ai`            | ChatGPT, Claude, Perplexity        | Markdown content via Readability     |
+| `reader`        | Safari Reader, Pocket              | Reader mode extraction               |
+| `google`        | Googlebot                          | Metadata, schema, structure          |
+| `social`        | WhatsApp, Slack, Twitter, iMessage | Open Graph + Twitter Card previews   |
+| `screen-reader` | VoiceOver, NVDA, JAWS              | Accessibility tree (JS-rendered)     |
 
-| Static (no JS)  | Rendered (with JS)    | Purpose            |
-| --------------- | --------------------- | ------------------ |
-| `ai`            | `readability:compare` | Content extraction |
-| `structure`     | `structure:js`        | Page structure     |
-| `a11y-tree`     | `a11y-tree:js`        | Accessibility      |
+Lenses are opinionated: each decides internally whether to use JavaScript rendering based on what the real consumer does.
 
-- **Static:** Works on URLs and local files. Fast. Shows what AI crawlers see.
-- **Rendered:** Requires Playwright. URL only. Shows what browsers/Google see.
+### Utilities
+
+Utilities are task-oriented tools with explicit control over rendering mode:
+
+| Pattern            | Static         | JS-rendered       | Comparison            |
+| ------------------ | -------------- | ----------------- | --------------------- |
+| Content extraction | `readability`  | `readability:js`  | `readability:compare` |
+| Structured data    | `schema`       | `schema:js`       | `schema:compare`      |
+| Page structure     | `structure`    | `structure:js`    | `structure:compare`   |
+| Accessibility tree | `a11y-tree`    | `a11y-tree:js`    | `a11y-tree:compare`   |
+
+- **Static (no `:js`):** Works on URLs and local files. Fast.
+- **JS-rendered (`:js`):** Requires Playwright. URL only. Shows hydrated DOM.
+- **Compare (`:compare`):** Shows differences between static and rendered.
 
 ## Programmatic API
 

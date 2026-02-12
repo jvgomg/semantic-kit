@@ -192,14 +192,14 @@ semantic-kit validate:schema https://localhost:3000
 **Commands:**
 
 ```bash
-semantic-kit a11y https://localhost:3000
+semantic-kit a11y-tree https://localhost:3000
 # Output: Accessibility tree structure
 
 semantic-kit validate:a11y https://localhost:3000
 # Output: WCAG violations
 
-semantic-kit a11y https://localhost:3000 --element "#my-component"
-# Output: Accessibility tree for specific element
+semantic-kit screen-reader https://localhost:3000
+# Output: Screen reader perspective (JS-rendered accessibility tree)
 ```
 
 **Deliverables:**

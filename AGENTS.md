@@ -30,9 +30,14 @@ Developers use it to answer questions like:
 | `schema`              | Inspect structured data (JSON-LD, Open Graph, etc.)                  |
 | `schema:js`           | Same as above, but after JavaScript execution                        |
 | `schema:compare`      | Compare static vs JS-rendered structured data                        |
+| `a11y-tree`           | Show accessibility tree (static HTML, JS disabled)                   |
+| `a11y-tree:js`        | Same as above, but after JavaScript execution                        |
+| `a11y-tree:compare`   | Compare static vs hydrated accessibility tree                        |
 | `validate:html`       | Validate HTML markup                                                 |
 | `validate:schema`     | Validate structured data against platform requirements               |
 | `validate:a11y`       | Run accessibility checks (WCAG via axe-core)                         |
+| `fetch`               | Fetch and prettify HTML from a URL                                   |
+| `tui`                 | Launch interactive terminal UI                                       |
 
 Run `bun run dev <command> --help` for command options.
 

@@ -4,7 +4,38 @@ All notable changes to semantic-kit will be documented in this file.
 
 ## Unreleased
 
-_No unreleased changes._
+### Added
+
+- **Command API Restructure** — Commands organized into Lenses and Utilities
+  - **Lenses** show how a specific consumer "sees" your page (ai, reader, google, social, screen-reader)
+  - **Utilities** are task-oriented tools with `:js` and `:compare` variants
+  - CLI help output now shows grouped commands
+
+- **New Lenses**
+  - `reader` — Show how browser reader modes see your page (Safari Reader, Pocket)
+  - `google` — Show how Googlebot sees your page (metadata, Google-recognized schema, headings)
+  - `social` — Show how social platforms see your page for link previews (Open Graph, Twitter Cards)
+  - `screen-reader` — Show how screen readers interpret your page (accessibility tree)
+
+- **New Utilities**
+  - `readability` — Raw Readability extraction with full metrics (link density, etc.)
+  - `readability:js` — Readability extraction after JavaScript rendering
+  - `schema:js` — View structured data after JavaScript rendering
+  - `schema:compare` — Compare static vs JS-rendered structured data
+
+### Changed
+
+- **BREAKING**: `a11y` commands renamed to `a11y-tree`
+  - `a11y` -> `a11y-tree`
+  - `a11y:js` -> `a11y-tree:js`
+  - `a11y:compare` -> `a11y-tree:compare`
+
+- **BREAKING**: `bot` command renamed to `readability:compare`
+  - Same functionality, better naming consistency
+
+### Removed
+
+- Deprecated command aliases (old names no longer work)
 
 ---
 

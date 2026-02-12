@@ -10,7 +10,7 @@ This document records the design decisions made during semantic-kit development.
 
 The primary goal is **insight**, not pass/fail gatekeeping. Developers should see what consumers see, then decide what to fix.
 
-- Observe commands show data first (`schema`, `structure`, `a11y`)
+- Observe commands show data first (`schema`, `structure`, `a11y-tree`)
 - Validate commands provide pass/fail checks (`validate:html`, `validate:schema`, `validate:a11y`)
 - Warnings bridge the two — observe commands show inline warnings for common issues
 
@@ -40,7 +40,7 @@ Perspective          Observe              Validate
 HTML                 fetch                validate:html
 Structured Data      schema               validate:schema
 Structure            structure            (warnings inline)
-Accessibility        a11y                 validate:a11y
+Accessibility        a11y-tree            validate:a11y
 ```
 
 **Why no `validate:structure`?**
@@ -54,11 +54,12 @@ Structural issues are accessibility issues. Rather than create a separate valida
 
 Commands that analyze page content support both modes:
 
-| Static (no JS) | Rendered (with JS) | Notes              |
-| -------------- | ------------------ | ------------------ |
-| `ai`           | `bot`              | Content extraction |
-| `structure`    | `structure:js`     | Page structure     |
-| `a11y`         | `a11y:js`          | Accessibility      |
+| Static (no JS) | Rendered (with JS) | Comparison             |
+| -------------- | ------------------ | ---------------------- |
+| `readability`  | `readability:js`   | `readability:compare`  |
+| `structure`    | `structure:js`     | `structure:compare`    |
+| `a11y-tree`    | `a11y-tree:js`     | `a11y-tree:compare`    |
+| `schema`       | `schema:js`        | `schema:compare`       |
 
 **Naming decision:** We use `:js` suffix rather than `--rendered` flag because:
 
@@ -77,15 +78,13 @@ Commands that analyze page content support both modes:
 
 ## Command-Specific Decisions
 
-### `bot` Command
+### `readability:compare` Command
 
-**Original name:** `google`
+**Original name:** `google` → `bot` → `readability:compare`
 
-**Why renamed:** The original `google` command used Playwright to render pages, suggesting it showed "what Google sees." However, it only showed content extraction (via Readability) from the rendered DOM — not the full picture Google indexes.
+**History:** The original `google` command used Playwright to render pages, suggesting it showed "what Google sees." However, it only showed content extraction (via Readability) from the rendered DOM — not the full picture Google indexes. It was renamed to `bot`, then to `readability:compare` as part of the Command API Restructure.
 
-**New name rationale:** `bot` is neutral and accurate. It renders the page like a bot would, then compares static vs rendered content.
-
-**Future `google` command:** Will be a composed "lens" that bundles output from multiple commands (`schema`, `bot`, `structure`) to give a more complete picture of Google's perspective.
+**Current name rationale:** `readability:compare` follows the consistent utility pattern (`:js` and `:compare` variants) and clearly indicates it compares Readability extraction between static and JS-rendered content.
 
 ### `structure` Command
 
@@ -100,13 +99,15 @@ Commands that analyze page content support both modes:
 
 **Research note:** Investigate libraries for static HTML structure/accessibility analysis. For rendered mode, Playwright's `page.accessibility.snapshot()` provides the accessibility tree.
 
-### `a11y` Command
+### `a11y-tree` Command
 
-**Purpose:** Show what screen readers see — the accessibility perspective.
+**Purpose:** Show what screen readers see — the accessibility tree.
+
+**Original name:** `a11y` (renamed to `a11y-tree` to distinguish from `validate:a11y`)
 
 **Difference from `structure`:**
 
-| `structure`    | `a11y`                 |
+| `structure`    | `a11y-tree`            |
 | -------------- | ---------------------- |
 | HTML landmarks | Computed ARIA roles    |
 | Heading text   | Accessible names       |
@@ -115,7 +116,13 @@ Commands that analyze page content support both modes:
 | —              | Form labels            |
 | —              | Image alt text         |
 
-**`a11y:js` implementation:** Uses Playwright's accessibility snapshot, which reflects the actual accessibility tree browsers expose to assistive technology.
+**`a11y-tree:js` implementation:** Uses Playwright's accessibility snapshot, which reflects the actual accessibility tree browsers expose to assistive technology.
+
+### `screen-reader` Lens
+
+**Purpose:** Show the accessibility tree as screen readers see it — a user-experience-focused view.
+
+**Difference from `a11y-tree`:** The `screen-reader` lens always uses JS-rendering (because real screen readers see the rendered page) and frames output for understanding the screen reader experience. The `a11y-tree` utility provides raw accessibility tree data with static/JS variants for debugging.
 
 ### `validate:a11y` Command
 
@@ -125,23 +132,34 @@ Commands that analyze page content support both modes:
 
 **Requires Playwright:** Many accessibility issues depend on computed styles (color contrast) and the accessibility tree, which require a browser context.
 
-### `google` Command (Future)
+### `google` Lens
 
-**Purpose:** Composed "lens" bundling relevant data from other commands.
+**Purpose:** Show how Googlebot sees your page — page metadata, Google-recognized structured data, and heading structure.
 
-**Sources:**
+**What it shows:**
+- Page metadata (title, description, canonical, language)
+- Google-recognized JSON-LD schemas (Article, Product, FAQ, etc.)
+- Heading hierarchy
 
-- Structured data summary (from `schema`)
-- Static vs rendered comparison (from `bot`)
-- Structure summary (from `structure`)
+**What it doesn't show:** Open Graph/Twitter Cards (use `social` lens), full schema data (use `schema` utility).
 
-**No new analysis:** This command orchestrates existing commands rather than implementing new logic.
+### `reader` Lens
 
-### Reader Mode (Deprecated)
+**Purpose:** Show how browser reader modes (Safari Reader, Pocket, Firefox Reader View) see your page.
 
-**Decision:** Removed from roadmap.
+**Historical note:** Originally deprioritized, later implemented as part of the Command API Restructure.
 
-**Rationale:** The `bot --content` command already shows extracted content using Readability. Reader mode metrics (isProbablyReaderable, text density) don't add enough unique value to justify a separate command.
+**Difference from `readability`:** The `reader` lens frames output as "how Safari Reader sees your page" while `readability` is a developer utility showing raw metrics like link density.
+
+### `social` Lens
+
+**Purpose:** Show how social media platforms see your page for link previews.
+
+**What it shows:**
+- Open Graph tags
+- Twitter Card tags
+- Resolved preview values (with fallback chains)
+- Validation issues (length limits, missing dimensions)
 
 ---
 
@@ -225,7 +243,7 @@ Inline warnings use consistent formatting:
 
 ---
 
-## Rendering Strategy (for `bot`, `structure:js`, `a11y:js`)
+## Rendering Strategy (for `:js` commands and `screen-reader` lens)
 
 ### Wait Strategy
 
