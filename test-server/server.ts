@@ -19,9 +19,17 @@ const __dirname = dirname(new URL(import.meta.url).pathname)
 // Parse CLI arguments
 const { values: args } = parseArgs({
   options: {
-    port: { type: 'string', short: 'p', default: process.env['TEST_SERVER_PORT'] || '4000' },
+    port: {
+      type: 'string',
+      short: 'p',
+      default: process.env['TEST_SERVER_PORT'] || '4000',
+    },
     host: { type: 'string', short: 'h', default: 'localhost' },
-    delay: { type: 'string', short: 'd', default: process.env['TEST_SERVER_DELAY'] || '3000' },
+    delay: {
+      type: 'string',
+      short: 'd',
+      default: process.env['TEST_SERVER_DELAY'] || '3000',
+    },
     'no-mount': { type: 'boolean', default: false },
     fixtures: { type: 'string', default: join(__dirname, 'fixtures') },
     verbose: { type: 'boolean', default: false },
@@ -214,7 +222,16 @@ async function handleRequest(request: Request): Promise<Response> {
 
   // Sitemap
   if (url.pathname === '/sitemap.xml') {
-    const xml = await generateSitemap({ fixturesPath, baseUrl })
+    // Include running mounts so their sitemaps can be fetched
+    const sitemapMounts = mounts
+      .filter((m) => subprocessManager.get(m.path))
+      .map((m) => ({ path: m.path, port: m.port }))
+
+    const xml = await generateSitemap({
+      fixturesPath,
+      baseUrl,
+      mounts: sitemapMounts,
+    })
     return new Response(xml, {
       headers: { 'Content-Type': 'application/xml; charset=utf-8' },
     })
@@ -237,7 +254,10 @@ async function handleRequest(request: Request): Promise<Response> {
   }
 
   // Try to serve fixture
-  const fixtureResponse = await serveFixture(request, fixturesPath, { verbose, defaultDelay })
+  const fixtureResponse = await serveFixture(request, fixturesPath, {
+    verbose,
+    defaultDelay,
+  })
   if (fixtureResponse) {
     return fixtureResponse
   }
