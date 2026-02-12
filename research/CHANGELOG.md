@@ -29,6 +29,30 @@ _No unreleased changes._
 
 ---
 
+## research-v0.6.0 (2026-02-12)
+
+Open Graph and social metadata validation research: platform requirements, fallbacks, and validation strategy.
+
+### Added
+- New page [[open-graph-validation]] comprehensive reference covering:
+  - Required vs optional tags per OGP and Twitter Card specifications
+  - Platform-specific fallback chains (Facebook, Twitter, LinkedIn, WhatsApp, Telegram, Slack)
+  - Image dimension requirements by platform (1200×630 universal recommendation)
+  - Why og:image:width/height matter for first-share rendering
+  - og:image:alt accessibility support (Twitter only, Facebook ignores)
+  - Character limits and truncation behavior by platform
+  - og:url canonical behavior and URL migration use case
+  - metascraper fallback chain analysis (title, description, image extraction priority)
+  - Tiered validation strategy (errors vs warnings vs info)
+  - Preview content selection algorithm
+  - Testing strategy recommendations
+- Updated [[topics]] index with Social Metadata section
+
+### Backlog
+- Created TASK-019 for enhanced social lens validation based on research findings
+
+---
+
 ## research-v0.5.0 (2026-02-04)
 
 XML sitemap research: protocol specification, validation, and tool recommendations.

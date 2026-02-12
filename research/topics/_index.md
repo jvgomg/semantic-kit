@@ -58,6 +58,14 @@ Why valid HTML matters and how browsers handle invalid markup.
 
 See [[markup-validation]] for the overview.
 
+## Social Metadata
+
+Open Graph, Twitter Cards, and link preview metadata for social sharing.
+
+- [[open-graph-validation]] - Tag requirements, platform fallbacks, image dimensions, character limits, validation strategy
+
+See [[open-graph-validation]] for the comprehensive overview.
+
 ## Sitemaps
 
 XML sitemaps inform search engines and crawlers about URLs available for crawling.
