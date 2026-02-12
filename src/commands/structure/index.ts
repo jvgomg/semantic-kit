@@ -5,6 +5,8 @@ export { structureCompareCommand } from './command-compare.js'
 
 // Public API - Runners (for TUI and programmatic use)
 export { fetchStructure } from './runner.js'
+export { fetchStructureJs } from './runner-js.js'
+export { fetchStructureCompare } from './runner-compare.js'
 
 // Types
 export type {
@@ -12,4 +14,6 @@ export type {
   StructureJsOptions,
   StructureCompareOptions,
   TuiStructureResult,
+  StructureJsInternalResult,
+  StructureCompareResult,
 } from './types.js'
