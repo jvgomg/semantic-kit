@@ -4,6 +4,42 @@ All notable changes to semantic-kit will be documented in this file.
 
 ## Unreleased
 
+_No unreleased changes._
+
+---
+
+## [0.0.17] - 2026-02-12
+
+### Changed
+
+- **BREAKING**: `social` command result type restructured
+  - Removed: `completeness`, `isComplete`, `missingRequired`, `missingRecommended`, `missingImageTags`
+  - Added: `issues` array with tiered validation (`error`, `warning`, `info`)
+
+### Added
+
+- **Tiered validation for social metadata** in the `social` command
+  - Error: `og:url` not absolute (must include protocol)
+  - Warning: `og:title` > 60 chars, `og:description` > 155 chars, missing image dimensions
+  - Info: Missing `twitter:card`, missing image alt text
+  - Research: [[open-graph-validation]], research-v0.6.0
+
+- **Platform-accurate preview fallbacks** matching Facebook, Twitter, WhatsApp behavior
+  - Title: `twitter:title` → `og:title` → `<title>`
+  - Description: `twitter:description` → `og:description` → `<meta name="description">`
+  - Image: `twitter:image` → `og:image` → null
+  - Research: [[open-graph-validation]], research-v0.6.0
+
+### Internal
+
+- New modules: `src/commands/social/validation.ts`, `src/commands/social/preview.ts`
+- Unit tests for validation rules and fallback behavior
+- Test fixtures for validation scenarios
+
+---
+
+## [0.0.16] - 2026-01-30
+
 ### Internal
 
 - **Example HTML fixtures** for demonstrating `structure` and `validate:a11y` commands

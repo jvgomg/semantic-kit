@@ -7,14 +7,16 @@ import {
   colorize,
   colors,
   createFormatterContext,
-  formatTable,
   type FormatterContext,
   type Issue,
-  type TableRow,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
 import type { OutputFormat } from '../../lib/validation.js'
-import type { SocialResult, SocialTagGroup } from './types.js'
+import type {
+  SocialResult,
+  SocialTagGroup,
+  SocialValidationIssue,
+} from './types.js'
 
 // ============================================================================
 // Constants
@@ -33,8 +35,7 @@ const CARD_VERTICAL = '│'
 // ============================================================================
 
 /**
- * Build issues for the Social lens.
- * Issues are warnings about missing or incomplete social meta tags.
+ * Convert validation issues to CLI Issue format.
  */
 export function buildIssues(result: SocialResult): Issue[] {
   const issues: Issue[] = []
@@ -51,7 +52,12 @@ export function buildIssues(result: SocialResult): Issue[] {
     return issues
   }
 
-  // Open Graph issues
+  // Convert validation issues to CLI format
+  for (const issue of result.issues) {
+    issues.push(validationIssueToCLI(issue))
+  }
+
+  // No Open Graph tags
   if (!result.openGraph) {
     issues.push({
       type: 'warning',
@@ -61,39 +67,9 @@ export function buildIssues(result: SocialResult): Issue[] {
         'The page has no Open Graph tags. Facebook, LinkedIn, WhatsApp, and other platforms will use fallbacks.',
       tip: 'Add og:title, og:description, og:image, og:url, and og:type tags.',
     })
-  } else if (!result.openGraph.isComplete) {
-    const missing = result.openGraph.missingRequired.join(', ')
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Incomplete Open Graph Tags',
-      description: `Missing required tags: ${missing}`,
-      tip: 'Add the missing required tags for complete Open Graph support.',
-    })
   }
 
-  // Twitter Card issues
-  if (!result.twitter) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'No Twitter Card Tags',
-      description:
-        'The page has no Twitter Card tags. Twitter/X will fall back to Open Graph tags.',
-      tip: 'Add twitter:card, twitter:title, twitter:description for explicit Twitter control.',
-    })
-  } else if (!result.twitter.isComplete) {
-    const missing = result.twitter.missingRequired.join(', ')
-    issues.push({
-      type: 'warning',
-      severity: 'low',
-      title: 'Incomplete Twitter Card Tags',
-      description: `Missing required tags: ${missing}`,
-      tip: 'Add the missing required tags for complete Twitter Card support.',
-    })
-  }
-
-  // Missing preview image
+  // No preview image
   if (!result.preview.image) {
     issues.push({
       type: 'info',
@@ -103,36 +79,68 @@ export function buildIssues(result: SocialResult): Issue[] {
         'No og:image or twitter:image found. Link previews will appear without an image.',
       tip: 'Add an og:image tag with a 1200x630px image for best results.',
     })
-  } else if (result.openGraph?.missingImageTags?.length) {
-    // Image present but missing dimensions/alt
-    const missing = result.openGraph.missingImageTags
-    const hasDimensions =
-      !missing.includes('og:image:width') && !missing.includes('og:image:height')
-    const hasAlt = !missing.includes('og:image:alt')
-
-    if (!hasDimensions) {
-      issues.push({
-        type: 'info',
-        severity: 'low',
-        title: 'Missing Image Dimensions',
-        description:
-          'og:image is present but og:image:width and og:image:height are not specified.',
-        tip: 'Add og:image:width and og:image:height to help platforms render previews faster.',
-      })
-    }
-
-    if (!hasAlt) {
-      issues.push({
-        type: 'info',
-        severity: 'low',
-        title: 'Missing Image Alt Text',
-        description: 'og:image is present but og:image:alt is not specified.',
-        tip: 'Add og:image:alt for accessibility and when images fail to load.',
-      })
-    }
   }
 
   return issues
+}
+
+/**
+ * Convert a SocialValidationIssue to CLI Issue format.
+ */
+function validationIssueToCLI(issue: SocialValidationIssue): Issue {
+  const severityMap: Record<string, 'high' | 'medium' | 'low'> = {
+    error: 'high',
+    warning: 'medium',
+    info: 'low',
+  }
+
+  const typeMap: Record<string, 'error' | 'warning' | 'info'> = {
+    error: 'error',
+    warning: 'warning',
+    info: 'info',
+  }
+
+  return {
+    type: typeMap[issue.severity],
+    severity: severityMap[issue.severity],
+    title: formatIssueTitle(issue),
+    description: issue.message,
+    tip: getIssueTip(issue),
+  }
+}
+
+/**
+ * Format issue code as a readable title.
+ */
+function formatIssueTitle(issue: SocialValidationIssue): string {
+  const titles: Record<string, string> = {
+    'og-url-not-absolute': 'Invalid og:url Format',
+    'og-title-too-long': 'og:title Too Long',
+    'og-description-too-long': 'og:description Too Long',
+    'og-image-dimensions-missing': 'Missing Image Dimensions',
+    'twitter-card-missing': 'No Twitter Card',
+    'image-alt-missing': 'Missing Image Alt Text',
+  }
+  return titles[issue.code] || issue.code
+}
+
+/**
+ * Get actionable tip for an issue.
+ */
+function getIssueTip(issue: SocialValidationIssue): string {
+  const tips: Record<string, string> = {
+    'og-url-not-absolute':
+      'Use a full URL starting with https:// (e.g., https://example.com/page)',
+    'og-title-too-long': `Keep og:title under 60 characters to avoid truncation. Current: ${issue.actual} chars.`,
+    'og-description-too-long': `Keep og:description under 155 characters. Current: ${issue.actual} chars.`,
+    'og-image-dimensions-missing':
+      'Add og:image:width and og:image:height to speed up first-share rendering.',
+    'twitter-card-missing':
+      'Add twitter:card with value "summary" or "summary_large_image" for Twitter previews.',
+    'image-alt-missing':
+      'Add og:image:alt and/or twitter:image:alt for accessibility.',
+  }
+  return tips[issue.code] || ''
 }
 
 // ============================================================================
@@ -142,7 +150,10 @@ export function buildIssues(result: SocialResult): Issue[] {
 /**
  * Create an ASCII mockup of a social card preview.
  */
-function formatCardPreview(result: SocialResult, ctx: FormatterContext): string[] {
+function formatCardPreview(
+  result: SocialResult,
+  ctx: FormatterContext,
+): string[] {
   const lines: string[] = []
   const innerWidth = CARD_WIDTH - 2
 
@@ -175,11 +186,16 @@ function formatCardPreview(result: SocialResult, ctx: FormatterContext): string[
 
   // Divider
   lines.push(
-    colorize(CARD_VERTICAL + '─'.repeat(innerWidth) + CARD_VERTICAL, colors.gray, ctx),
+    colorize(
+      CARD_VERTICAL + '─'.repeat(innerWidth) + CARD_VERTICAL,
+      colors.gray,
+      ctx,
+    ),
   )
 
   // Site name
-  const siteName = result.preview.siteName || getDomainFromUrl(result.preview.url)
+  const siteName =
+    result.preview.siteName || getDomainFromUrl(result.preview.url)
   if (siteName) {
     const truncatedSite = truncate(siteName, innerWidth - 2)
     lines.push(
@@ -299,26 +315,6 @@ function getDomainFromUrl(url: string | null): string | null {
 }
 
 /**
- * Format completeness as a visual bar.
- */
-function formatCompletenessBar(
-  percentage: number | null,
-  ctx: FormatterContext,
-): string {
-  if (percentage === null) return colorize('—', colors.dim, ctx)
-
-  const filled = Math.round(percentage / 10)
-  const empty = 10 - filled
-
-  let color = colors.green
-  if (percentage < 60) color = colors.red
-  else if (percentage < 80) color = colors.yellow
-
-  const bar = '█'.repeat(filled) + '░'.repeat(empty)
-  return colorize(bar, color, ctx) + ` ${percentage}%`
-}
-
-/**
  * Format a tag group's tags for display.
  */
 function formatTagGroupTags(
@@ -328,8 +324,7 @@ function formatTagGroupTags(
   const lines: string[] = []
 
   for (const [key, value] of Object.entries(group.tags)) {
-    const displayValue =
-      value.length > 50 ? value.slice(0, 47) + '...' : value
+    const displayValue = value.length > 50 ? value.slice(0, 47) + '...' : value
     if (ctx.mode === 'tty') {
       lines.push(`  ${colorize(key + ':', colors.cyan, ctx)} ${displayValue}`)
     } else {
@@ -337,24 +332,40 @@ function formatTagGroupTags(
     }
   }
 
-  // Show missing required
-  if (group.missingRequired.length > 0) {
-    const missing = group.missingRequired.join(', ')
-    lines.push(
-      colorize(`  Missing required: ${missing}`, colors.yellow, ctx),
-    )
+  return lines
+}
+
+/**
+ * Format validation issues for display.
+ */
+function formatIssues(
+  issues: SocialValidationIssue[],
+  ctx: FormatterContext,
+): string[] {
+  if (issues.length === 0) return []
+
+  const lines: string[] = []
+
+  const severityColors: Record<string, (s: string) => string> = {
+    error: colors.red,
+    warning: colors.yellow,
+    info: colors.dim,
+  }
+  const severityLabels: Record<string, string> = {
+    error: 'ERROR',
+    warning: 'WARN',
+    info: 'INFO',
   }
 
-  // Show missing recommended
-  if (group.missingRecommended.length > 0) {
-    const missing = group.missingRecommended.join(', ')
-    lines.push(colorize(`  Missing recommended: ${missing}`, colors.dim, ctx))
-  }
+  for (const issue of issues) {
+    const label = severityLabels[issue.severity]
+    const color = severityColors[issue.severity]
 
-  // Show missing image tags (when image is present)
-  if (group.missingImageTags && group.missingImageTags.length > 0) {
-    const missing = group.missingImageTags.join(', ')
-    lines.push(colorize(`  Missing image metadata: ${missing}`, colors.dim, ctx))
+    if (ctx.mode === 'tty') {
+      lines.push(`  ${colorize(`[${label}]`, color, ctx)} ${issue.message}`)
+    } else {
+      lines.push(`  [${label}] ${issue.message}`)
+    }
   }
 
   return lines
@@ -383,56 +394,32 @@ function formatTerminal(
   }
   sections.push(...formatCardPreview(result, ctx))
 
-  // [COMPLETENESS] section
-  sections.push('')
-  if (ctx.mode === 'tty') {
-    sections.push(colorize('COMPLETENESS', colors.gray, ctx))
-  } else {
-    sections.push('COMPLETENESS')
+  // [ISSUES] section
+  if (result.issues.length > 0) {
+    sections.push('')
+    if (ctx.mode === 'tty') {
+      sections.push(
+        colorize(`ISSUES (${result.issues.length})`, colors.gray, ctx),
+      )
+    } else {
+      sections.push(`ISSUES (${result.issues.length})`)
+    }
+    sections.push(...formatIssues(result.issues, ctx))
   }
-
-  const completenessRows: TableRow[] = [
-    {
-      key: 'Open Graph',
-      value: formatCompletenessBar(result.completeness.openGraph, ctx),
-    },
-    {
-      key: 'Twitter Cards',
-      value: formatCompletenessBar(result.completeness.twitter, ctx),
-    },
-  ]
-  sections.push(formatTable(completenessRows, ctx))
 
   // [OPEN GRAPH] section
   if (result.openGraph || !compact) {
     sections.push('')
     if (ctx.mode === 'tty') {
       sections.push(
-        colorize(
-          `OPEN GRAPH (${result.counts.openGraph})`,
-          colors.gray,
-          ctx,
-        ),
+        colorize(`OPEN GRAPH (${result.counts.openGraph})`, colors.gray, ctx),
       )
     } else {
       sections.push(`OPEN GRAPH (${result.counts.openGraph})`)
     }
 
     if (result.openGraph) {
-      if (compact) {
-        // Compact: just show status
-        const status = result.openGraph.isComplete
-          ? colorize('Complete', colors.green, ctx)
-          : colorize(
-              `Missing: ${result.openGraph.missingRequired.join(', ')}`,
-              colors.yellow,
-              ctx,
-            )
-        sections.push(status)
-      } else {
-        // Full: show all tags
-        sections.push(...formatTagGroupTags(result.openGraph, ctx))
-      }
+      sections.push(...formatTagGroupTags(result.openGraph, ctx))
     } else {
       sections.push('(no Open Graph tags found)')
     }
@@ -443,31 +430,14 @@ function formatTerminal(
     sections.push('')
     if (ctx.mode === 'tty') {
       sections.push(
-        colorize(
-          `TWITTER CARDS (${result.counts.twitter})`,
-          colors.gray,
-          ctx,
-        ),
+        colorize(`TWITTER CARDS (${result.counts.twitter})`, colors.gray, ctx),
       )
     } else {
       sections.push(`TWITTER CARDS (${result.counts.twitter})`)
     }
 
     if (result.twitter) {
-      if (compact) {
-        // Compact: just show status
-        const status = result.twitter.isComplete
-          ? colorize('Complete', colors.green, ctx)
-          : colorize(
-              `Missing: ${result.twitter.missingRequired.join(', ')}`,
-              colors.yellow,
-              ctx,
-            )
-        sections.push(status)
-      } else {
-        // Full: show all tags
-        sections.push(...formatTagGroupTags(result.twitter, ctx))
-      }
+      sections.push(...formatTagGroupTags(result.twitter, ctx))
     } else {
       sections.push('(no Twitter Card tags found)')
     }

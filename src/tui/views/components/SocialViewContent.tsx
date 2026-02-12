@@ -5,9 +5,9 @@
  *
  * Sections:
  * 1. Preview - ASCII mockup of social card
- * 2. Completeness - Visual bars for OG and Twitter completeness
- * 3. Open Graph - All OG tags with missing required/recommended
- * 4. Twitter Cards - All Twitter tags with missing required/recommended
+ * 2. Issues - Validation issues with severity
+ * 3. Open Graph - All OG tags
+ * 4. Twitter Cards - All Twitter tags
  */
 import type { ReactNode } from 'react'
 import {
@@ -16,7 +16,11 @@ import {
   SectionPriority,
 } from '../../components/ui/index.js'
 import { palette } from '../../theme.js'
-import type { SocialResult, SocialTagGroup } from '../../../commands/social/types.js'
+import type {
+  SocialResult,
+  SocialTagGroup,
+  SocialValidationIssue,
+} from '../../../commands/social/types.js'
 import type { ViewComponentProps } from '../types.js'
 
 // ============================================================================
@@ -72,7 +76,9 @@ function CardPreview({ data }: { data: SocialResult }): ReactNode {
       {/* Image area */}
       <text>
         <span fg={palette.gray}>{'│'}</span>
-        <span fg={palette.darkGray}>{` ${displayImage}`.padEnd(innerWidth)}</span>
+        <span fg={palette.darkGray}>
+          {` ${displayImage}`.padEnd(innerWidth)}
+        </span>
         <span fg={palette.gray}>{'│'}</span>
       </text>
 
@@ -83,7 +89,9 @@ function CardPreview({ data }: { data: SocialResult }): ReactNode {
       {displaySite && (
         <text>
           <span fg={palette.gray}>{'│'}</span>
-          <span fg={palette.darkGray}>{` ${displaySite}`.padEnd(innerWidth)}</span>
+          <span fg={palette.darkGray}>
+            {` ${displaySite}`.padEnd(innerWidth)}
+          </span>
           <span fg={palette.gray}>{'│'}</span>
         </text>
       )}
@@ -109,33 +117,44 @@ function CardPreview({ data }: { data: SocialResult }): ReactNode {
 }
 
 // ============================================================================
-// Completeness Bar Component
+// Issues Component
 // ============================================================================
 
 /**
- * Visual completeness bar
+ * Display validation issues
  */
-function CompletenessBar({ percentage }: { percentage: number | null }): ReactNode {
-  if (percentage === null) {
-    return <text fg={palette.gray}>—</text>
+function IssuesContent({
+  issues,
+}: {
+  issues: SocialValidationIssue[]
+}): ReactNode {
+  if (issues.length === 0) {
+    return <text fg={palette.green}>No issues found</text>
   }
 
-  const filled = Math.round(percentage / 10)
-  const empty = 10 - filled
+  const severityColors: Record<string, string> = {
+    error: palette.red,
+    warning: palette.yellow,
+    info: palette.gray,
+  }
 
-  const color =
-    percentage < 60
-      ? palette.red
-      : percentage < 80
-        ? palette.yellow
-        : palette.green
+  const severityLabels: Record<string, string> = {
+    error: 'ERROR',
+    warning: 'WARN',
+    info: 'INFO',
+  }
 
   return (
-    <text>
-      <span fg={color}>{'█'.repeat(filled)}</span>
-      <span fg={palette.darkGray}>{'░'.repeat(empty)}</span>
-      <span fg={palette.gray}> {percentage}%</span>
-    </text>
+    <box flexDirection="column" gap={0}>
+      {issues.map((issue, idx) => (
+        <text key={idx}>
+          <span fg={severityColors[issue.severity]}>
+            [{severityLabels[issue.severity]}]
+          </span>{' '}
+          <span>{issue.message}</span>
+        </text>
+      ))}
+    </box>
   )
 }
 
@@ -163,33 +182,6 @@ function TagGroupContent({ group }: { group: SocialTagGroup }): ReactNode {
           </text>
         </box>
       ))}
-
-      {/* Missing required */}
-      {group.missingRequired.length > 0 && (
-        <box paddingTop={1}>
-          <text fg={palette.yellow}>
-            Missing required: {group.missingRequired.join(', ')}
-          </text>
-        </box>
-      )}
-
-      {/* Missing recommended */}
-      {group.missingRecommended.length > 0 && (
-        <box>
-          <text fg={palette.gray}>
-            Missing recommended: {group.missingRecommended.join(', ')}
-          </text>
-        </box>
-      )}
-
-      {/* Missing image metadata (when image is present) */}
-      {group.missingImageTags && group.missingImageTags.length > 0 && (
-        <box>
-          <text fg={palette.gray}>
-            Missing image metadata: {group.missingImageTags.join(', ')}
-          </text>
-        </box>
-      )}
     </box>
   )
 }
@@ -207,7 +199,6 @@ export function SocialViewContent({
 }: ViewComponentProps<SocialResult>): ReactNode {
   const hasOpenGraph = data.openGraph !== null
   const hasTwitter = data.twitter !== null
-  const hasBoth = hasOpenGraph && hasTwitter
   const hasAny = hasOpenGraph || hasTwitter
 
   // Compute summary text
@@ -217,11 +208,14 @@ export function SocialViewContent({
   if (!hasAny) summaryParts.push('No social tags')
   const summaryText = summaryParts.join(', ')
 
-  // Completeness items for table
-  const completenessItems = [
-    { field: 'Open Graph', value: data.completeness.openGraph },
-    { field: 'Twitter Cards', value: data.completeness.twitter },
-  ]
+  // Compute issue severity for section display
+  const hasErrors = data.issues.some((i) => i.severity === 'error')
+  const hasWarnings = data.issues.some((i) => i.severity === 'warning')
+  const issuesSeverity = hasErrors
+    ? 'error'
+    : hasWarnings
+      ? 'warning'
+      : undefined
 
   return (
     <SectionContainer height={height}>
@@ -236,40 +230,20 @@ export function SocialViewContent({
         <CardPreview data={data} />
       </Section>
 
-      {/* Completeness section */}
+      {/* Issues section */}
       <Section
-        id="completeness"
-        title="COMPLETENESS"
+        id="issues"
+        title="ISSUES"
         priority={SectionPriority.PRIMARY}
-        severity={
-          hasAny
-            ? (data.openGraph?.isComplete ?? true) &&
-              (data.twitter?.isComplete ?? true)
-              ? undefined
-              : 'warning'
-            : 'warning'
-        }
+        severity={issuesSeverity}
         summary={
-          hasAny
-            ? hasBoth
-              ? 'OG + Twitter'
-              : hasOpenGraph
-                ? 'OG only'
-                : 'Twitter only'
-            : 'No social tags found'
+          data.issues.length === 0
+            ? 'No issues'
+            : `${data.issues.length} issue${data.issues.length !== 1 ? 's' : ''}`
         }
-        defaultExpanded={false}
+        defaultExpanded={data.issues.length > 0}
       >
-        <box flexDirection="column" gap={0}>
-          {completenessItems.map((item, idx) => (
-            <box key={idx} flexDirection="row" gap={1}>
-              <text fg={palette.gray} width={14}>
-                {item.field}:
-              </text>
-              <CompletenessBar percentage={item.value} />
-            </box>
-          ))}
-        </box>
+        <IssuesContent issues={data.issues} />
       </Section>
 
       {/* Open Graph section */}
@@ -277,13 +251,7 @@ export function SocialViewContent({
         id="open-graph"
         title="OPEN GRAPH"
         priority={SectionPriority.PRIMARY}
-        severity={
-          hasOpenGraph
-            ? data.openGraph?.isComplete
-              ? undefined
-              : 'warning'
-            : 'muted'
-        }
+        severity={hasOpenGraph ? undefined : 'muted'}
         summary={
           hasOpenGraph
             ? `${data.counts.openGraph} tag${data.counts.openGraph !== 1 ? 's' : ''}`
@@ -307,13 +275,7 @@ export function SocialViewContent({
         id="twitter-cards"
         title="TWITTER CARDS"
         priority={SectionPriority.SECONDARY}
-        severity={
-          hasTwitter
-            ? data.twitter?.isComplete
-              ? undefined
-              : 'warning'
-            : 'muted'
-        }
+        severity={hasTwitter ? undefined : 'muted'}
         summary={
           hasTwitter
             ? `${data.counts.twitter} tag${data.counts.twitter !== 1 ? 's' : ''}`
@@ -326,7 +288,8 @@ export function SocialViewContent({
           <TagGroupContent group={data.twitter!} />
         ) : (
           <text fg={palette.gray}>
-            No Twitter Card tags found. Twitter will fall back to Open Graph tags.
+            No Twitter Card tags found. Twitter will fall back to Open Graph
+            tags.
           </text>
         )}
       </Section>

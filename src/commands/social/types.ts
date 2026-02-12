@@ -11,42 +11,84 @@ import type { OutputFormat } from '../../lib/validation.js'
 /**
  * Valid output formats for the social command.
  */
-export const VALID_FORMATS: readonly OutputFormat[] = ['full', 'compact', 'json']
+export const VALID_FORMATS: readonly OutputFormat[] = [
+  'full',
+  'compact',
+  'json',
+]
 export type SocialFormat = (typeof VALID_FORMATS)[number]
 
 /**
- * Required and recommended Open Graph tags.
- * Based on Open Graph Protocol specification.
- *
- * Note: og:image is technically required per OGP spec, but many pages
- * work fine without it, so we treat it as recommended.
- *
+ * Open Graph tags to extract.
  * @see https://ogp.me/
  */
-export const OPEN_GRAPH_TAGS = {
-  required: ['og:title', 'og:type', 'og:url'],
-  recommended: ['og:image', 'og:description', 'og:site_name', 'og:locale'],
-  /** Image-specific tags to check when og:image is present */
-  imageOptional: ['og:image:width', 'og:image:height', 'og:image:alt'],
-} as const
+export const OPEN_GRAPH_TAGS = [
+  'og:title',
+  'og:type',
+  'og:url',
+  'og:image',
+  'og:description',
+  'og:site_name',
+  'og:locale',
+  'og:image:width',
+  'og:image:height',
+  'og:image:alt',
+  'og:image:type',
+  'og:image:secure_url',
+] as const
 
 /**
- * Required and recommended Twitter Card tags.
- * Based on Twitter Cards documentation.
- *
+ * Twitter Card tags to extract.
  * @see https://developer.twitter.com/en/docs/twitter-for-websites/cards
  */
-export const TWITTER_CARD_TAGS = {
-  required: ['twitter:card', 'twitter:title', 'twitter:description'],
-  recommended: ['twitter:image', 'twitter:site', 'twitter:creator'],
-} as const
+export const TWITTER_CARD_TAGS = [
+  'twitter:card',
+  'twitter:title',
+  'twitter:description',
+  'twitter:image',
+  'twitter:image:alt',
+  'twitter:site',
+  'twitter:creator',
+] as const
+
+// ============================================================================
+// Validation Types
+// ============================================================================
+
+/**
+ * Severity levels for validation issues.
+ * - error: Breaks functionality (invalid URL format)
+ * - warning: Affects quality (truncation, missing dimensions)
+ * - info: Best practice (missing alt text, no twitter:card)
+ */
+export type ValidationSeverity = 'error' | 'warning' | 'info'
+
+/**
+ * A validation issue found in social metadata.
+ */
+export interface SocialValidationIssue {
+  /** Unique code identifying this issue type */
+  code: string
+  /** Severity level */
+  severity: ValidationSeverity
+  /** Human-readable message */
+  message: string
+  /** The tag this issue relates to */
+  tag: string
+  /** The actual value (if applicable) */
+  value?: string
+  /** Character limit (for length issues) */
+  limit?: number
+  /** Actual character count (for length issues) */
+  actual?: number
+}
 
 // ============================================================================
 // Result Types
 // ============================================================================
 
 /**
- * A group of social meta tags with completeness analysis.
+ * A group of social meta tags.
  */
 export interface SocialTagGroup {
   /** Human-readable name (e.g., "Open Graph") */
@@ -55,30 +97,24 @@ export interface SocialTagGroup {
   prefix: string
   /** The extracted tags */
   tags: Record<string, string>
-  /** Required tags that are missing */
-  missingRequired: string[]
-  /** Recommended tags that are missing */
-  missingRecommended: string[]
-  /** Whether all required tags are present */
-  isComplete: boolean
-  /** Image-related tags that are missing (only relevant when og:image is present) */
-  missingImageTags?: string[]
 }
 
 /**
  * Resolved preview data for display.
- * Falls back from Twitter to OG to page metadata.
+ * Uses platform-accurate fallback chains.
+ *
+ * @see research/topics/social-metadata/open-graph-validation.md
  */
 export interface SocialPreview {
-  /** Title for the preview card */
+  /** Title: twitter:title → og:title → <title> */
   title: string | null
-  /** Description for the preview card */
+  /** Description: twitter:description → og:description → meta description */
   description: string | null
-  /** Image URL for the preview card */
+  /** Image: twitter:image → og:image → null */
   image: string | null
-  /** URL for the preview card */
-  url: string | null
-  /** Site name or domain */
+  /** URL: og:url → canonical → target URL */
+  url: string
+  /** Site name: og:site_name → null */
   siteName: string | null
 }
 
@@ -104,13 +140,8 @@ export interface SocialResult {
     /** Total social meta tags */
     total: number
   }
-  /** Completeness scores */
-  completeness: {
-    /** Open Graph completeness (0-100, null if no tags) */
-    openGraph: number | null
-    /** Twitter Card completeness (0-100, null if no tags) */
-    twitter: number | null
-  }
+  /** Validation issues found */
+  issues: SocialValidationIssue[]
 }
 
 // ============================================================================

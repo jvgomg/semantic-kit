@@ -2,8 +2,9 @@
  * Social lens runner - extracts Open Graph and Twitter Card data.
  */
 import { parseHTML } from 'linkedom'
-import type { SocialResult, SocialTagGroup, SocialPreview } from './types.js'
-import { OPEN_GRAPH_TAGS, TWITTER_CARD_TAGS } from './types.js'
+import { buildPreview, type PageMetadata, type SocialTags } from './preview.js'
+import type { SocialResult, SocialTagGroup } from './types.js'
+import { validateSocialTags, sortIssuesBySeverity } from './validation.js'
 
 // ============================================================================
 // Core Functions
@@ -88,9 +89,6 @@ function buildTagGroup(
   name: string,
   prefix: string,
   allTags: Record<string, string[]>,
-  requiredTags: readonly string[],
-  recommendedTags: readonly string[],
-  imageOptionalTags?: readonly string[],
 ): SocialTagGroup | null {
   // Filter to tags with this prefix
   const tags: Record<string, string> = {}
@@ -105,73 +103,35 @@ function buildTagGroup(
     return null
   }
 
-  const foundNames = new Set(Object.keys(tags))
-  const missingRequired = requiredTags.filter((t) => !foundNames.has(t))
-  const missingRecommended = recommendedTags.filter((t) => !foundNames.has(t))
-
-  // Check for missing image-related tags when og:image is present
-  let missingImageTags: string[] | undefined
-  if (imageOptionalTags && tags['og:image']) {
-    missingImageTags = imageOptionalTags.filter((t) => !foundNames.has(t))
-  }
-
   return {
     name,
     prefix,
     tags,
-    missingRequired,
-    missingRecommended,
-    isComplete: missingRequired.length === 0,
-    missingImageTags,
   }
 }
 
 /**
- * Calculate completeness percentage for a tag group.
+ * Build flat tags object for validation.
  */
-function calculateCompleteness(
-  group: SocialTagGroup | null,
-  requiredTags: readonly string[],
-  recommendedTags: readonly string[],
-): number | null {
-  if (!group) return null
-
-  const presentRequired = requiredTags.length - group.missingRequired.length
-  const presentRecommended = recommendedTags.length - group.missingRecommended.length
-
-  // Weight required tags more heavily (60% for required, 40% for recommended)
-  const requiredScore =
-    requiredTags.length > 0 ? (presentRequired / requiredTags.length) * 60 : 60
-  const recommendedScore =
-    recommendedTags.length > 0
-      ? (presentRecommended / recommendedTags.length) * 40
-      : 40
-
-  return Math.round(requiredScore + recommendedScore)
-}
-
-/**
- * Build preview data with fallbacks.
- * Priority: Twitter -> Open Graph -> Page metadata
- */
-function buildPreview(
+function buildValidationInput(
   openGraph: SocialTagGroup | null,
   twitter: SocialTagGroup | null,
-  pageTitle: string | null,
-  pageDescription: string | null,
-  canonicalUrl: string | null,
-): SocialPreview {
-  const og = openGraph?.tags || {}
-  const tw = twitter?.tags || {}
+): Record<string, string | undefined> {
+  const input: Record<string, string | undefined> = {}
 
-  return {
-    title: tw['twitter:title'] || og['og:title'] || pageTitle,
-    description:
-      tw['twitter:description'] || og['og:description'] || pageDescription,
-    image: tw['twitter:image'] || og['og:image'] || null,
-    url: og['og:url'] || canonicalUrl || null,
-    siteName: og['og:site_name'] || null,
+  if (openGraph) {
+    for (const [key, value] of Object.entries(openGraph.tags)) {
+      input[key] = value
+    }
   }
+
+  if (twitter) {
+    for (const [key, value] of Object.entries(twitter.tags)) {
+      input[key] = value
+    }
+  }
+
+  return input
 }
 
 // ============================================================================
@@ -190,50 +150,26 @@ export async function fetchSocial(target: string): Promise<SocialResult> {
   const allTags = extractMetaTags(document)
 
   // Extract page metadata for fallbacks
-  const pageTitle = extractPageTitle(document)
-  const pageDescription = extractMetaDescription(document)
-  const canonicalUrl = extractCanonicalUrl(document)
+  const pageMetadata: PageMetadata = {
+    title: extractPageTitle(document),
+    description: extractMetaDescription(document),
+    canonicalUrl: extractCanonicalUrl(document),
+  }
 
   // Build tag groups
-  const openGraph = buildTagGroup(
-    'Open Graph',
-    'og:',
-    allTags,
-    OPEN_GRAPH_TAGS.required,
-    OPEN_GRAPH_TAGS.recommended,
-    OPEN_GRAPH_TAGS.imageOptional,
-  )
-
-  const twitter = buildTagGroup(
-    'Twitter Cards',
-    'twitter:',
-    allTags,
-    TWITTER_CARD_TAGS.required,
-    TWITTER_CARD_TAGS.recommended,
-  )
+  const openGraph = buildTagGroup('Open Graph', 'og:', allTags)
+  const twitter = buildTagGroup('Twitter Cards', 'twitter:', allTags)
 
   // Build preview with fallbacks
-  const preview = buildPreview(
-    openGraph,
-    twitter,
-    pageTitle,
-    pageDescription,
-    canonicalUrl,
-  )
-
-  // Calculate completeness
-  const completeness = {
-    openGraph: calculateCompleteness(
-      openGraph,
-      OPEN_GRAPH_TAGS.required,
-      OPEN_GRAPH_TAGS.recommended,
-    ),
-    twitter: calculateCompleteness(
-      twitter,
-      TWITTER_CARD_TAGS.required,
-      TWITTER_CARD_TAGS.recommended,
-    ),
+  const socialTags: SocialTags = {
+    openGraph: openGraph?.tags || {},
+    twitter: twitter?.tags || {},
   }
+  const preview = buildPreview(socialTags, pageMetadata, target)
+
+  // Run validation
+  const validationInput = buildValidationInput(openGraph, twitter)
+  const issues = sortIssuesBySeverity(validateSocialTags(validationInput))
 
   // Count tags
   const ogCount = openGraph ? Object.keys(openGraph.tags).length : 0
@@ -249,6 +185,6 @@ export async function fetchSocial(target: string): Promise<SocialResult> {
       twitter: twCount,
       total: ogCount + twCount,
     },
-    completeness,
+    issues,
   }
 }

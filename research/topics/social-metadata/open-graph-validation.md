@@ -2,11 +2,23 @@
 title: "Open Graph and Social Metadata Validation"
 lastVerified: 2026-02-12
 lastUpdated: 2026-02-12
+toolCoverage:
+  - finding: "Tiered validation (error/warning/info) for OG and Twitter Card tags"
+    command: social
+    since: v0.0.17
+  - finding: "Platform-accurate fallback chains for preview content"
+    command: social
+    since: v0.0.17
+  - finding: "Character limit warnings (60 title, 155 description)"
+    command: social
+    since: v0.0.17
 ---
 
 # Open Graph and Social Metadata Validation
 
 Comprehensive reference for validating Open Graph, Twitter Card, and social metadata tags across major platforms.
+
+> **Tool support:** The `social` command implements tiered validation and platform-accurate fallbacks since v0.0.17.
 
 This page documents:
 - Required vs optional tags per specification

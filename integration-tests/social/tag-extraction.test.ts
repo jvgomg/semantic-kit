@@ -17,10 +17,8 @@ describe('social command - tag extraction', () => {
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
-      // Open Graph should be present and complete
+      // Open Graph should be present
       expect(data!.openGraph).not.toBeNull()
-      expect(data!.openGraph!.isComplete).toBe(true)
-      expect(data!.openGraph!.missingRequired).toHaveLength(0)
 
       // Check specific OG tags
       expect(data!.openGraph!.tags['og:title']).toBe(
@@ -43,10 +41,8 @@ describe('social command - tag extraction', () => {
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
-      // Twitter should be present and complete
+      // Twitter should be present
       expect(data!.twitter).not.toBeNull()
-      expect(data!.twitter!.isComplete).toBe(true)
-      expect(data!.twitter!.missingRequired).toHaveLength(0)
 
       // Check specific Twitter tags
       expect(data!.twitter!.tags['twitter:card']).toBe('summary_large_image')
@@ -56,31 +52,18 @@ describe('social command - tag extraction', () => {
       expect(data!.twitter!.tags['twitter:site']).toBe('@semantickit')
       expect(data!.twitter!.tags['twitter:creator']).toBe('@example')
     })
-
-    it('reports 100% completeness for complete tags', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/good/social-complete.html`,
-      )
-      expect(exitCode).toBe(0)
-      expect(data).not.toBeNull()
-
-      expect(data!.completeness.openGraph).toBe(100)
-      expect(data!.completeness.twitter).toBe(100)
-    })
   })
 
   describe('partial social tags', () => {
-    it('extracts OG tags and reports missing recommended', async () => {
+    it('extracts OG tags from semantic-article', async () => {
       const { data, exitCode } = await runSocial(
         `${getBaseUrl()}/good/semantic-article.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
-      // Open Graph present - og:image is recommended, not required
+      // Open Graph present
       expect(data!.openGraph).not.toBeNull()
-      expect(data!.openGraph!.isComplete).toBe(true)
-      expect(data!.openGraph!.missingRecommended).toContain('og:image')
     })
 
     it('handles missing Twitter tags gracefully', async () => {
@@ -92,7 +75,6 @@ describe('social command - tag extraction', () => {
 
       // No Twitter tags
       expect(data!.twitter).toBeNull()
-      expect(data!.completeness.twitter).toBeNull()
     })
   })
 
@@ -156,31 +138,14 @@ describe('social command - tag extraction', () => {
     })
   })
 
-  describe('image metadata', () => {
-    it('reports missing image dimensions and alt when og:image present', async () => {
+  describe('issues array', () => {
+    it('returns issues array in result', async () => {
       const { data, exitCode } = await runSocial(
         `${getBaseUrl()}/good/social-complete.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
-
-      // Has og:image but missing dimensions and alt
-      expect(data!.openGraph!.tags['og:image']).toBeDefined()
-      expect(data!.openGraph!.missingImageTags).toContain('og:image:width')
-      expect(data!.openGraph!.missingImageTags).toContain('og:image:height')
-      expect(data!.openGraph!.missingImageTags).toContain('og:image:alt')
-    })
-
-    it('does not report image metadata when no og:image', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
-      expect(exitCode).toBe(0)
-      expect(data).not.toBeNull()
-
-      // No og:image, so no missing image tags
-      expect(data!.openGraph!.tags['og:image']).toBeUndefined()
-      expect(data!.openGraph!.missingImageTags).toBeUndefined()
+      expect(Array.isArray(data!.issues)).toBe(true)
     })
   })
 })
