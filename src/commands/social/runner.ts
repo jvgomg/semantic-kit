@@ -1,10 +1,18 @@
 /**
  * Social lens runner - extracts Open Graph and Twitter Card data.
  */
-import { parseHTML } from 'linkedom'
-import { buildPreview, type PageMetadata, type SocialTags } from './preview.js'
+import {
+  extractStructuredData,
+  groupMetatagsByPrefix,
+  normalizeMetatags,
+  validateSocialTags,
+  sortIssuesBySeverity,
+} from '../../lib/metadata/index.js'
+import {
+  extractPageMetadata,
+  buildSocialPreview,
+} from '../../lib/preview.js'
 import type { SocialResult, SocialTagGroup } from './types.js'
-import { validateSocialTags, sortIssuesBySeverity } from './validation.js'
 
 // ============================================================================
 // Core Functions
@@ -25,79 +33,18 @@ async function fetchHtmlContent(target: string): Promise<string> {
   return Bun.file(target).text()
 }
 
-/**
- * Extract all meta tags from the document.
- * Returns a map of property/name to content values.
- */
-function extractMetaTags(document: Document): Record<string, string[]> {
-  const tags: Record<string, string[]> = {}
-
-  // Get all meta elements
-  const metaElements = document.querySelectorAll('meta')
-
-  for (const meta of metaElements) {
-    // Check for property attribute (Open Graph, Facebook)
-    const property = meta.getAttribute('property')
-    // Check for name attribute (Twitter, general)
-    const name = meta.getAttribute('name')
-    const content = meta.getAttribute('content')
-
-    const key = property || name
-    if (!key || !content) continue
-
-    if (!tags[key]) {
-      tags[key] = []
-    }
-    tags[key].push(content)
-  }
-
-  return tags
-}
-
-/**
- * Extract page title from document.
- */
-function extractPageTitle(document: Document): string | null {
-  const titleElement = document.querySelector('title')
-  return titleElement?.textContent?.trim() || null
-}
-
-/**
- * Extract meta description from document.
- */
-function extractMetaDescription(document: Document): string | null {
-  const meta = document.querySelector('meta[name="description"]')
-  return meta?.getAttribute('content')?.trim() || null
-}
-
-/**
- * Extract canonical URL from document.
- */
-function extractCanonicalUrl(document: Document): string | null {
-  const link = document.querySelector('link[rel="canonical"]')
-  return link?.getAttribute('href')?.trim() || null
-}
-
 // ============================================================================
 // Analysis Functions
 // ============================================================================
 
 /**
- * Build a social tag group from extracted meta tags.
+ * Build a social tag group from grouped metatags.
  */
 function buildTagGroup(
   name: string,
   prefix: string,
-  allTags: Record<string, string[]>,
+  tags: Record<string, string>,
 ): SocialTagGroup | null {
-  // Filter to tags with this prefix
-  const tags: Record<string, string> = {}
-  for (const [key, values] of Object.entries(allTags)) {
-    if (key.startsWith(prefix)) {
-      tags[key] = values[0] || ''
-    }
-  }
-
   // No tags found for this group
   if (Object.keys(tags).length === 0) {
     return null
@@ -110,30 +57,6 @@ function buildTagGroup(
   }
 }
 
-/**
- * Build flat tags object for validation.
- */
-function buildValidationInput(
-  openGraph: SocialTagGroup | null,
-  twitter: SocialTagGroup | null,
-): Record<string, string | undefined> {
-  const input: Record<string, string | undefined> = {}
-
-  if (openGraph) {
-    for (const [key, value] of Object.entries(openGraph.tags)) {
-      input[key] = value
-    }
-  }
-
-  if (twitter) {
-    for (const [key, value] of Object.entries(twitter.tags)) {
-      input[key] = value
-    }
-  }
-
-  return input
-}
-
 // ============================================================================
 // Public API
 // ============================================================================
@@ -144,32 +67,33 @@ function buildValidationInput(
  */
 export async function fetchSocial(target: string): Promise<SocialResult> {
   const html = await fetchHtmlContent(target)
-  const { document } = parseHTML(html)
 
-  // Extract all meta tags
-  const allTags = extractMetaTags(document)
+  // Extract structured data using WAE (single source of truth)
+  const data = extractStructuredData(html)
+  const grouped = groupMetatagsByPrefix(data.metatags)
 
-  // Extract page metadata for fallbacks
-  const pageMetadata: PageMetadata = {
-    title: extractPageTitle(document),
-    description: extractMetaDescription(document),
-    canonicalUrl: extractCanonicalUrl(document),
-  }
+  // Extract page metadata for preview fallbacks (linkedom)
+  const pageMetadata = extractPageMetadata(html)
 
   // Build tag groups
-  const openGraph = buildTagGroup('Open Graph', 'og:', allTags)
-  const twitter = buildTagGroup('Twitter Cards', 'twitter:', allTags)
+  const openGraph = buildTagGroup('Open Graph', 'og:', grouped.openGraph)
+  const twitter = buildTagGroup('Twitter Cards', 'twitter:', grouped.twitter)
 
-  // Build preview with fallbacks
-  const socialTags: SocialTags = {
-    openGraph: openGraph?.tags || {},
-    twitter: twitter?.tags || {},
-  }
-  const preview = buildPreview(socialTags, pageMetadata, target)
+  // Build preview with fallback chains
+  const preview = buildSocialPreview(
+    grouped.openGraph,
+    grouped.twitter,
+    pageMetadata,
+    target,
+  )
 
-  // Run validation
-  const validationInput = buildValidationInput(openGraph, twitter)
-  const issues = sortIssuesBySeverity(validateSocialTags(validationInput))
+  // Normalize metatags for validation
+  const normalizedTags = normalizeMetatags(data.metatags)
+
+  // Validate with both presence and quality checks
+  const issues = sortIssuesBySeverity(
+    validateSocialTags(normalizedTags, { checkPresence: true, checkQuality: true }),
+  )
 
   // Count tags
   const ogCount = openGraph ? Object.keys(openGraph.tags).length : 0

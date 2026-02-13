@@ -19,7 +19,7 @@ import {
   validateTwitterCard,
   validateSocialTags,
   sortIssuesBySeverity,
-} from './validation.js'
+} from './social-validation.js'
 
 describe('validation constants', () => {
   it('TITLE_CHAR_LIMIT is 60 characters', () => {
@@ -69,7 +69,7 @@ describe('validateOgUrl', () => {
   it('returns error for relative URL', () => {
     const issue = validateOgUrl('/page')
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('error')
+    expect(issue!.severity).toBe('high')
     expect(issue!.code).toBe('og-url-not-absolute')
     expect(issue!.tag).toBe('og:url')
     expect(issue!.value).toBe('/page')
@@ -78,13 +78,13 @@ describe('validateOgUrl', () => {
   it('returns error for URL without protocol', () => {
     const issue = validateOgUrl('example.com/page')
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('error')
+    expect(issue!.severity).toBe('high')
   })
 
   it('returns error for protocol-relative URL', () => {
     const issue = validateOgUrl('//example.com/page')
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('error')
+    expect(issue!.severity).toBe('high')
   })
 })
 
@@ -106,7 +106,7 @@ describe('validateOgTitleLength', () => {
     const title = 'a'.repeat(61)
     const issue = validateOgTitleLength(title)
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('warning')
+    expect(issue!.severity).toBe('medium')
     expect(issue!.code).toBe('og-title-too-long')
     expect(issue!.tag).toBe('og:title')
     expect(issue!.limit).toBe(60)
@@ -138,7 +138,7 @@ describe('validateOgDescriptionLength', () => {
     const desc = 'a'.repeat(156)
     const issue = validateOgDescriptionLength(desc)
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('warning')
+    expect(issue!.severity).toBe('medium')
     expect(issue!.code).toBe('og-description-too-long')
     expect(issue!.tag).toBe('og:description')
     expect(issue!.limit).toBe(155)
@@ -164,10 +164,10 @@ describe('validateImageDimensions', () => {
       '630',
     )
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('warning')
+    expect(issue!.severity).toBe('medium')
     expect(issue!.code).toBe('og-image-dimensions-missing')
-    expect(issue!.message).toContain('og:image:width')
-    expect(issue!.message).not.toContain('og:image:height')
+    expect(issue!.description).toContain('og:image:width')
+    expect(issue!.description).not.toContain('og:image:height')
   })
 
   it('returns warning when height is missing', () => {
@@ -177,9 +177,9 @@ describe('validateImageDimensions', () => {
       undefined,
     )
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('warning')
-    expect(issue!.message).toContain('og:image:height')
-    expect(issue!.message).not.toContain('og:image:width')
+    expect(issue!.severity).toBe('medium')
+    expect(issue!.description).toContain('og:image:height')
+    expect(issue!.description).not.toContain('og:image:width')
   })
 
   it('returns warning mentioning both when both dimensions missing', () => {
@@ -189,9 +189,9 @@ describe('validateImageDimensions', () => {
       undefined,
     )
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('warning')
-    expect(issue!.message).toContain('og:image:width')
-    expect(issue!.message).toContain('og:image:height')
+    expect(issue!.severity).toBe('medium')
+    expect(issue!.description).toContain('og:image:width')
+    expect(issue!.description).toContain('og:image:height')
   })
 })
 
@@ -243,9 +243,9 @@ describe('validateImageAltText', () => {
       undefined,
     )
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('info')
+    expect(issue!.severity).toBe('low')
     expect(issue!.code).toBe('image-alt-missing')
-    expect(issue!.message).toContain('og:image:alt')
+    expect(issue!.description).toContain('og:image:alt')
   })
 
   it('returns info when twitter:image missing twitter:image:alt', () => {
@@ -256,8 +256,8 @@ describe('validateImageAltText', () => {
       undefined,
     )
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('info')
-    expect(issue!.message).toContain('twitter:image:alt')
+    expect(issue!.severity).toBe('low')
+    expect(issue!.description).toContain('twitter:image:alt')
   })
 
   it('returns info mentioning both when both alt texts missing', () => {
@@ -268,9 +268,9 @@ describe('validateImageAltText', () => {
       undefined,
     )
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('info')
-    expect(issue!.message).toContain('og:image:alt')
-    expect(issue!.message).toContain('twitter:image:alt')
+    expect(issue!.severity).toBe('low')
+    expect(issue!.description).toContain('og:image:alt')
+    expect(issue!.description).toContain('twitter:image:alt')
   })
 })
 
@@ -278,7 +278,7 @@ describe('validateTwitterCard', () => {
   it('returns info when twitter:card is missing', () => {
     const issue = validateTwitterCard(undefined)
     expect(issue).not.toBeNull()
-    expect(issue!.severity).toBe('info')
+    expect(issue!.severity).toBe('low')
     expect(issue!.code).toBe('twitter-card-missing')
     expect(issue!.tag).toBe('twitter:card')
   })
@@ -328,31 +328,100 @@ describe('validateSocialTags', () => {
     expect(issues).toHaveLength(1)
     expect(issues[0].code).toBe('twitter-card-missing')
   })
+
+  it('respects checkPresence option', () => {
+    const issues = validateSocialTags({}, { checkPresence: true })
+    // Should include missing required OG tags + missing recommended
+    const ogRequired = issues.filter((i) =>
+      ['og-title-missing', 'og-type-missing', 'og-image-missing', 'og-url-missing'].includes(
+        i.code,
+      ),
+    )
+    expect(ogRequired.length).toBe(4)
+  })
+
+  it('can disable quality checks', () => {
+    const issues = validateSocialTags(
+      { 'og:url': '/relative' },
+      { checkQuality: false },
+    )
+    // No quality issues should be reported
+    expect(issues).toHaveLength(0)
+  })
 })
 
 describe('sortIssuesBySeverity', () => {
   it('sorts errors before warnings before info', () => {
     const issues = [
-      { code: 'info-1', severity: 'info' as const, message: '', tag: '' },
-      { code: 'error-1', severity: 'error' as const, message: '', tag: '' },
-      { code: 'warning-1', severity: 'warning' as const, message: '', tag: '' },
-      { code: 'info-2', severity: 'info' as const, message: '', tag: '' },
-      { code: 'error-2', severity: 'error' as const, message: '', tag: '' },
+      {
+        code: 'info-1',
+        severity: 'low' as const,
+        type: 'info' as const,
+        title: 'Info',
+        description: '',
+        tag: '',
+      },
+      {
+        code: 'error-1',
+        severity: 'high' as const,
+        type: 'error' as const,
+        title: 'Error',
+        description: '',
+        tag: '',
+      },
+      {
+        code: 'warning-1',
+        severity: 'medium' as const,
+        type: 'warning' as const,
+        title: 'Warning',
+        description: '',
+        tag: '',
+      },
+      {
+        code: 'info-2',
+        severity: 'low' as const,
+        type: 'info' as const,
+        title: 'Info',
+        description: '',
+        tag: '',
+      },
+      {
+        code: 'error-2',
+        severity: 'high' as const,
+        type: 'error' as const,
+        title: 'Error',
+        description: '',
+        tag: '',
+      },
     ]
 
     const sorted = sortIssuesBySeverity(issues)
 
-    expect(sorted[0].severity).toBe('error')
-    expect(sorted[1].severity).toBe('error')
-    expect(sorted[2].severity).toBe('warning')
-    expect(sorted[3].severity).toBe('info')
-    expect(sorted[4].severity).toBe('info')
+    expect(sorted[0].severity).toBe('high')
+    expect(sorted[1].severity).toBe('high')
+    expect(sorted[2].severity).toBe('medium')
+    expect(sorted[3].severity).toBe('low')
+    expect(sorted[4].severity).toBe('low')
   })
 
   it('does not mutate original array', () => {
     const issues = [
-      { code: 'info-1', severity: 'info' as const, message: '', tag: '' },
-      { code: 'error-1', severity: 'error' as const, message: '', tag: '' },
+      {
+        code: 'info-1',
+        severity: 'low' as const,
+        type: 'info' as const,
+        title: 'Info',
+        description: '',
+        tag: '',
+      },
+      {
+        code: 'error-1',
+        severity: 'high' as const,
+        type: 'error' as const,
+        title: 'Error',
+        description: '',
+        tag: '',
+      },
     ]
 
     sortIssuesBySeverity(issues)

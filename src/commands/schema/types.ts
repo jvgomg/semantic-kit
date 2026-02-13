@@ -17,12 +17,10 @@ export interface SchemaCompareOptions extends OutputModeOptions {
   timeout?: string
 }
 
-export interface StructuredData {
-  metatags: Record<string, string[]>
-  jsonld: Record<string, unknown[]>
-  microdata: Record<string, unknown[]>
-  rdfa: Record<string, unknown[]>
-}
+/**
+ * Re-export StructuredData from shared library for local use.
+ */
+export type { StructuredData } from '../../lib/metadata/extractor.js'
 
 export interface MetatagGroup {
   name: string
@@ -33,18 +31,5 @@ export interface MetatagGroup {
   isComplete: boolean
 }
 
-/**
- * Required and recommended tags for Open Graph
- */
-export const OPEN_GRAPH_TAGS = {
-  required: ['og:title', 'og:type', 'og:image', 'og:url'],
-  recommended: ['og:description', 'og:site_name', 'og:locale'],
-}
-
-/**
- * Required and recommended tags for Twitter Cards
- */
-export const TWITTER_CARD_TAGS = {
-  required: ['twitter:card', 'twitter:title', 'twitter:description'],
-  recommended: ['twitter:image', 'twitter:site', 'twitter:creator'],
-}
+// Tag requirements are now in lib/metadata/types.ts
+// Use OPEN_GRAPH_REQUIREMENTS and TWITTER_CARD_REQUIREMENTS from there

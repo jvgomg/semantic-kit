@@ -35,7 +35,9 @@ const CARD_VERTICAL = '│'
 // ============================================================================
 
 /**
- * Convert validation issues to CLI Issue format.
+ * Build CLI issues from social result.
+ *
+ * SocialValidationIssue extends Issue, so validation issues can be used directly.
  */
 export function buildIssues(result: SocialResult): Issue[] {
   const issues: Issue[] = []
@@ -52,10 +54,8 @@ export function buildIssues(result: SocialResult): Issue[] {
     return issues
   }
 
-  // Convert validation issues to CLI format
-  for (const issue of result.issues) {
-    issues.push(validationIssueToCLI(issue))
-  }
+  // Include validation issues directly (they extend Issue)
+  issues.push(...result.issues)
 
   // No Open Graph tags
   if (!result.openGraph) {
@@ -82,65 +82,6 @@ export function buildIssues(result: SocialResult): Issue[] {
   }
 
   return issues
-}
-
-/**
- * Convert a SocialValidationIssue to CLI Issue format.
- */
-function validationIssueToCLI(issue: SocialValidationIssue): Issue {
-  const severityMap: Record<string, 'high' | 'medium' | 'low'> = {
-    error: 'high',
-    warning: 'medium',
-    info: 'low',
-  }
-
-  const typeMap: Record<string, 'error' | 'warning' | 'info'> = {
-    error: 'error',
-    warning: 'warning',
-    info: 'info',
-  }
-
-  return {
-    type: typeMap[issue.severity],
-    severity: severityMap[issue.severity],
-    title: formatIssueTitle(issue),
-    description: issue.message,
-    tip: getIssueTip(issue),
-  }
-}
-
-/**
- * Format issue code as a readable title.
- */
-function formatIssueTitle(issue: SocialValidationIssue): string {
-  const titles: Record<string, string> = {
-    'og-url-not-absolute': 'Invalid og:url Format',
-    'og-title-too-long': 'og:title Too Long',
-    'og-description-too-long': 'og:description Too Long',
-    'og-image-dimensions-missing': 'Missing Image Dimensions',
-    'twitter-card-missing': 'No Twitter Card',
-    'image-alt-missing': 'Missing Image Alt Text',
-  }
-  return titles[issue.code] || issue.code
-}
-
-/**
- * Get actionable tip for an issue.
- */
-function getIssueTip(issue: SocialValidationIssue): string {
-  const tips: Record<string, string> = {
-    'og-url-not-absolute':
-      'Use a full URL starting with https:// (e.g., https://example.com/page)',
-    'og-title-too-long': `Keep og:title under 60 characters to avoid truncation. Current: ${issue.actual} chars.`,
-    'og-description-too-long': `Keep og:description under 155 characters. Current: ${issue.actual} chars.`,
-    'og-image-dimensions-missing':
-      'Add og:image:width and og:image:height to speed up first-share rendering.',
-    'twitter-card-missing':
-      'Add twitter:card with value "summary" or "summary_large_image" for Twitter previews.',
-    'image-alt-missing':
-      'Add og:image:alt and/or twitter:image:alt for accessibility.',
-  }
-  return tips[issue.code] || ''
 }
 
 // ============================================================================
@@ -346,25 +287,26 @@ function formatIssues(
 
   const lines: string[] = []
 
-  const severityColors: Record<string, (s: string) => string> = {
-    error: colors.red,
-    warning: colors.yellow,
-    info: colors.dim,
+  // Map IssueSeverity to display labels
+  const severityToLabel: Record<string, string> = {
+    high: 'ERROR',
+    medium: 'WARN',
+    low: 'INFO',
   }
-  const severityLabels: Record<string, string> = {
-    error: 'ERROR',
-    warning: 'WARN',
-    info: 'INFO',
+  const severityToColor: Record<string, (s: string) => string> = {
+    high: colors.red,
+    medium: colors.yellow,
+    low: colors.dim,
   }
 
   for (const issue of issues) {
-    const label = severityLabels[issue.severity]
-    const color = severityColors[issue.severity]
+    const label = severityToLabel[issue.severity]
+    const color = severityToColor[issue.severity]
 
     if (ctx.mode === 'tty') {
-      lines.push(`  ${colorize(`[${label}]`, color, ctx)} ${issue.message}`)
+      lines.push(`  ${colorize(`[${label}]`, color, ctx)} ${issue.description}`)
     } else {
-      lines.push(`  [${label}] ${issue.message}`)
+      lines.push(`  [${label}] ${issue.description}`)
     }
   }
 

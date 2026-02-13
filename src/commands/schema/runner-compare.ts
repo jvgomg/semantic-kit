@@ -5,41 +5,24 @@
  * and compares the results.
  */
 import { fetchHtmlContent } from '../../lib/fetch.js'
+import {
+  extractStructuredData,
+  normalizeMetatags,
+  validateSocialTags,
+  sortIssuesBySeverity,
+  OPEN_GRAPH_REQUIREMENTS,
+  TWITTER_CARD_REQUIREMENTS,
+} from '../../lib/metadata/index.js'
 import { fetchRenderedHtml } from '../../lib/playwright.js'
 import type {
   SchemaCompareResult,
   SchemaComparisonMetrics,
   SchemaResult,
 } from '../../lib/results.js'
-import {
-  OPEN_GRAPH_TAGS,
-  TWITTER_CARD_TAGS,
-  type MetatagGroup,
-  type StructuredData,
-} from './types.js'
+import type { MetatagGroup, StructuredData } from './types.js'
 
 export interface FetchSchemaCompareOptions {
   timeoutMs: number
-}
-
-// ============================================================================
-// Core Functions
-// ============================================================================
-
-/**
- * Extract structured data from HTML using web-auto-extractor
- */
-function extractStructuredData(html: string): StructuredData {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const WAE = require('web-auto-extractor').default
-  const result = WAE().parse(html)
-
-  return {
-    metatags: result.metatags || {},
-    jsonld: result.jsonld || {},
-    microdata: result.microdata || {},
-    rdfa: result.rdfa || {},
-  }
 }
 
 // ============================================================================
@@ -74,10 +57,10 @@ function analyzeMetatags(metatags: Record<string, string[]>): {
   let openGraph: MetatagGroup | null = null
   if (ogTags.length > 0) {
     const foundNames = new Set(ogTags.map((t) => t.name))
-    const missingRequired = OPEN_GRAPH_TAGS.required.filter(
+    const missingRequired = OPEN_GRAPH_REQUIREMENTS.required.filter(
       (t) => !foundNames.has(t),
     )
-    const missingRecommended = OPEN_GRAPH_TAGS.recommended.filter(
+    const missingRecommended = OPEN_GRAPH_REQUIREMENTS.recommended.filter(
       (t) => !foundNames.has(t),
     )
     openGraph = {
@@ -93,10 +76,10 @@ function analyzeMetatags(metatags: Record<string, string[]>): {
   let twitter: MetatagGroup | null = null
   if (twitterTags.length > 0) {
     const foundNames = new Set(twitterTags.map((t) => t.name))
-    const missingRequired = TWITTER_CARD_TAGS.required.filter(
+    const missingRequired = TWITTER_CARD_REQUIREMENTS.required.filter(
       (t) => !foundNames.has(t),
     )
-    const missingRecommended = TWITTER_CARD_TAGS.recommended.filter(
+    const missingRecommended = TWITTER_CARD_REQUIREMENTS.recommended.filter(
       (t) => !foundNames.has(t),
     )
     twitter = {
@@ -117,6 +100,14 @@ function analyzeMetatags(metatags: Record<string, string[]>): {
  */
 function buildSchemaResult(target: string, data: StructuredData): SchemaResult {
   const metatagAnalysis = analyzeMetatags(data.metatags)
+
+  // Normalize metatags for validation
+  const normalizedTags = normalizeMetatags(data.metatags)
+
+  // Run validation with both presence and quality checks
+  const issues = sortIssuesBySeverity(
+    validateSocialTags(normalizedTags, { checkPresence: true, checkQuality: true }),
+  )
 
   return {
     target,
@@ -146,6 +137,7 @@ function buildSchemaResult(target: string, data: StructuredData): SchemaResult {
     metatags: Object.fromEntries(
       metatagAnalysis.other.map((t) => [t.name, t.value]),
     ),
+    issues,
   }
 }
 

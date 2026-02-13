@@ -121,12 +121,10 @@ function hasAnyData(result: SchemaResult): boolean {
 
 /**
  * Build an array of issues from the schema result.
- * Issues are ordered by priority (highest first):
- * 1. No structured data (info)
- * 2. OG missing required (warning/medium)
- * 3. Twitter missing required (warning/medium)
- * 4. OG missing recommended (warning/low)
- * 5. Twitter missing recommended (warning/low)
+ *
+ * Issues include:
+ * 1. No structured data (info) - when no data found at all
+ * 2. Validation issues from result.issues (presence + quality checks)
  */
 export function buildIssues(result: SchemaResult): Issue[] {
   const issues: Issue[] = []
@@ -143,45 +141,10 @@ export function buildIssues(result: SchemaResult): Issue[] {
     return issues
   }
 
-  // 2. OG missing required
-  if (result.openGraph && result.openGraph.missingRequired.length > 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Open Graph Incomplete',
-      description: `Missing required: ${result.openGraph.missingRequired.join(', ')}`,
-      tip: 'Required for proper social sharing on Facebook and LinkedIn.',
-    })
-  }
-
-  // 3. Twitter missing required
-  if (result.twitter && result.twitter.missingRequired.length > 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Twitter Cards Incomplete',
-      description: `Missing required: ${result.twitter.missingRequired.join(', ')}`,
-    })
-  }
-
-  // 4. OG missing recommended
-  if (result.openGraph && result.openGraph.missingRecommended.length > 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'low',
-      title: 'Open Graph Missing Recommended Tags',
-      description: `Consider adding: ${result.openGraph.missingRecommended.join(', ')}`,
-    })
-  }
-
-  // 5. Twitter missing recommended
-  if (result.twitter && result.twitter.missingRecommended.length > 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'low',
-      title: 'Twitter Cards Missing Recommended Tags',
-      description: `Consider adding: ${result.twitter.missingRecommended.join(', ')}`,
-    })
+  // 2. Include validation issues (presence + quality checks)
+  // These are already SocialValidationIssue which extends Issue
+  if (result.issues) {
+    issues.push(...result.issues)
   }
 
   return issues

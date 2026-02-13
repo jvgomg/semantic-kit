@@ -102,3 +102,40 @@ export {
   type TableGroup,
   type TableRow,
 } from './cli-formatting/index.js'
+// Metadata extraction and validation
+export {
+  type SocialValidationIssue,
+  type ValidationSeverity,
+  type NormalizedMetatags,
+  type TagRequirements,
+  type StructuredData,
+  type GroupedMetatags,
+  type ValidationOptions,
+  type ValidationInput,
+  OPEN_GRAPH_REQUIREMENTS,
+  TWITTER_CARD_REQUIREMENTS,
+  TITLE_CHAR_LIMIT,
+  DESCRIPTION_CHAR_LIMIT,
+  severityToIssue,
+  extractStructuredData,
+  normalizeMetatags,
+  groupMetatagsByPrefix,
+  isAbsoluteUrl,
+  validateOgUrl,
+  validateOgTitleLength,
+  validateOgDescriptionLength,
+  validateImageDimensions,
+  validateImageAltText,
+  validateTwitterCard,
+  validateSocialTags,
+  sortIssuesBySeverity,
+} from './metadata/index.js'
+// Social preview
+export {
+  type PageMetadata,
+  type SocialTags,
+  type SocialPreview,
+  extractPageMetadata,
+  buildSocialPreview,
+  buildPreview,
+} from './preview.js'

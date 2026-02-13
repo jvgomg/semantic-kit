@@ -34,7 +34,7 @@ describe('social command - validation', () => {
         (i) => i.code === 'og-url-not-absolute',
       )
       expect(urlIssue).toBeDefined()
-      expect(urlIssue!.severity).toBe('error')
+      expect(urlIssue!.severity).toBe('high')
       expect(urlIssue!.tag).toBe('og:url')
     })
   })
@@ -51,7 +51,7 @@ describe('social command - validation', () => {
         (i) => i.code === 'og-title-too-long',
       )
       expect(titleIssue).toBeDefined()
-      expect(titleIssue!.severity).toBe('warning')
+      expect(titleIssue!.severity).toBe('medium')
       expect(titleIssue!.tag).toBe('og:title')
       expect(titleIssue!.limit).toBe(60)
       expect(titleIssue!.actual).toBeGreaterThan(60)
@@ -70,7 +70,7 @@ describe('social command - validation', () => {
         (i) => i.code === 'og-description-too-long',
       )
       expect(descIssue).toBeDefined()
-      expect(descIssue!.severity).toBe('warning')
+      expect(descIssue!.severity).toBe('medium')
       expect(descIssue!.tag).toBe('og:description')
       expect(descIssue!.limit).toBe(155)
       expect(descIssue!.actual).toBeGreaterThan(155)
@@ -89,9 +89,9 @@ describe('social command - validation', () => {
         (i) => i.code === 'og-image-dimensions-missing',
       )
       expect(dimIssue).toBeDefined()
-      expect(dimIssue!.severity).toBe('warning')
-      expect(dimIssue!.message).toContain('og:image:width')
-      expect(dimIssue!.message).toContain('og:image:height')
+      expect(dimIssue!.severity).toBe('medium')
+      expect(dimIssue!.description).toContain('og:image:width')
+      expect(dimIssue!.description).toContain('og:image:height')
     })
   })
 
@@ -107,7 +107,7 @@ describe('social command - validation', () => {
         (i) => i.code === 'twitter-card-missing',
       )
       expect(cardIssue).toBeDefined()
-      expect(cardIssue!.severity).toBe('info')
+      expect(cardIssue!.severity).toBe('low')
       expect(cardIssue!.tag).toBe('twitter:card')
     })
   })
@@ -122,8 +122,8 @@ describe('social command - validation', () => {
 
       const altIssue = data!.issues.find((i) => i.code === 'image-alt-missing')
       expect(altIssue).toBeDefined()
-      expect(altIssue!.severity).toBe('info')
-      expect(altIssue!.message).toContain('alt')
+      expect(altIssue!.severity).toBe('low')
+      expect(altIssue!.description).toContain('alt')
     })
   })
 
@@ -136,11 +136,12 @@ describe('social command - validation', () => {
       expect(data).not.toBeNull()
 
       // Should have multiple issues, errors should come first
+      // Severity is now 'high' | 'medium' | 'low' (IssueSeverity)
       if (data!.issues.length > 1) {
-        const severityOrder = { error: 0, warning: 1, info: 2 }
+        const severityOrder = { high: 0, medium: 1, low: 2 }
         for (let i = 1; i < data!.issues.length; i++) {
-          const prev = severityOrder[data!.issues[i - 1].severity]
-          const curr = severityOrder[data!.issues[i].severity]
+          const prev = severityOrder[data!.issues[i - 1].severity as keyof typeof severityOrder]
+          const curr = severityOrder[data!.issues[i].severity as keyof typeof severityOrder]
           expect(prev).toBeLessThanOrEqual(curr)
         }
       }

@@ -2,7 +2,13 @@
  * Types for the Social lens command.
  */
 import type { OutputFormat } from '../../lib/arguments.js'
+import type { SocialValidationIssue } from '../../lib/metadata/types.js'
 import type { OutputModeOptions } from '../../lib/output-mode.js'
+import type { SocialPreview } from '../../lib/preview.js'
+
+// Re-export types from shared library for consumers
+export type { SocialValidationIssue, ValidationSeverity } from '../../lib/metadata/types.js'
+export type { SocialPreview } from '../../lib/preview.js'
 
 // ============================================================================
 // Constants
@@ -18,71 +24,6 @@ export const VALID_FORMATS: readonly OutputFormat[] = [
 ]
 export type SocialFormat = (typeof VALID_FORMATS)[number]
 
-/**
- * Open Graph tags to extract.
- * @see https://ogp.me/
- */
-export const OPEN_GRAPH_TAGS = [
-  'og:title',
-  'og:type',
-  'og:url',
-  'og:image',
-  'og:description',
-  'og:site_name',
-  'og:locale',
-  'og:image:width',
-  'og:image:height',
-  'og:image:alt',
-  'og:image:type',
-  'og:image:secure_url',
-] as const
-
-/**
- * Twitter Card tags to extract.
- * @see https://developer.twitter.com/en/docs/twitter-for-websites/cards
- */
-export const TWITTER_CARD_TAGS = [
-  'twitter:card',
-  'twitter:title',
-  'twitter:description',
-  'twitter:image',
-  'twitter:image:alt',
-  'twitter:site',
-  'twitter:creator',
-] as const
-
-// ============================================================================
-// Validation Types
-// ============================================================================
-
-/**
- * Severity levels for validation issues.
- * - error: Breaks functionality (invalid URL format)
- * - warning: Affects quality (truncation, missing dimensions)
- * - info: Best practice (missing alt text, no twitter:card)
- */
-export type ValidationSeverity = 'error' | 'warning' | 'info'
-
-/**
- * A validation issue found in social metadata.
- */
-export interface SocialValidationIssue {
-  /** Unique code identifying this issue type */
-  code: string
-  /** Severity level */
-  severity: ValidationSeverity
-  /** Human-readable message */
-  message: string
-  /** The tag this issue relates to */
-  tag: string
-  /** The actual value (if applicable) */
-  value?: string
-  /** Character limit (for length issues) */
-  limit?: number
-  /** Actual character count (for length issues) */
-  actual?: number
-}
-
 // ============================================================================
 // Result Types
 // ============================================================================
@@ -97,25 +38,6 @@ export interface SocialTagGroup {
   prefix: string
   /** The extracted tags */
   tags: Record<string, string>
-}
-
-/**
- * Resolved preview data for display.
- * Uses platform-accurate fallback chains.
- *
- * @see research/topics/social-metadata/open-graph-validation.md
- */
-export interface SocialPreview {
-  /** Title: twitter:title → og:title → <title> */
-  title: string | null
-  /** Description: twitter:description → og:description → meta description */
-  description: string | null
-  /** Image: twitter:image → og:image → null */
-  image: string | null
-  /** URL: og:url → canonical → target URL */
-  url: string
-  /** Site name: og:site_name → null */
-  siteName: string | null
 }
 
 /**

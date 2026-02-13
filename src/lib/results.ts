@@ -11,6 +11,7 @@
  */
 
 import type { AriaNode, SnapshotDiff } from './aria-snapshot.js'
+import type { SocialValidationIssue } from './metadata/types.js'
 import type { StructureAnalysis, StructureComparison } from './structure.js'
 
 // ============================================================================
@@ -425,6 +426,8 @@ export interface SchemaResult {
   twitter: MetatagGroupResult | null
   /** Other metatags as key-value pairs */
   metatags: Record<string, string>
+  /** Validation issues found in social metadata */
+  issues?: SocialValidationIssue[]
 }
 
 /**
@@ -432,6 +435,8 @@ export interface SchemaResult {
  * Shows structured data after JavaScript rendering.
  */
 export interface SchemaJsResult extends SchemaResult {
+  /** Validation issues found in social metadata */
+  issues?: SocialValidationIssue[]
   /** Whether the page load timed out */
   timedOut: boolean
 }

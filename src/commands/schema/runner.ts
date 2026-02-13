@@ -1,10 +1,13 @@
-import type { SchemaResult } from '../../lib/results.js'
 import {
-  OPEN_GRAPH_TAGS,
-  TWITTER_CARD_TAGS,
-  type MetatagGroup,
-  type StructuredData,
-} from './types.js'
+  extractStructuredData,
+  normalizeMetatags,
+  validateSocialTags,
+  sortIssuesBySeverity,
+  OPEN_GRAPH_REQUIREMENTS,
+  TWITTER_CARD_REQUIREMENTS,
+} from '../../lib/metadata/index.js'
+import type { SchemaResult } from '../../lib/results.js'
+import type { MetatagGroup, StructuredData } from './types.js'
 
 // ============================================================================
 // Core Functions
@@ -23,25 +26,6 @@ async function fetchHtmlContent(target: string): Promise<string> {
   }
 
   return Bun.file(target).text()
-}
-
-/**
- * Extract structured data from HTML using web-auto-extractor
- */
-function extractStructuredData(html: string): StructuredData {
-  // Use the same extractor as structured-data-testing-tool
-  // Bun supports require() directly in ESM
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const WAE = require('web-auto-extractor').default
-
-  const result = WAE().parse(html)
-
-  return {
-    metatags: result.metatags || {},
-    jsonld: result.jsonld || {},
-    microdata: result.microdata || {},
-    rdfa: result.rdfa || {},
-  }
 }
 
 // ============================================================================
@@ -77,10 +61,10 @@ function analyzeMetatags(metatags: Record<string, string[]>): {
   let openGraph: MetatagGroup | null = null
   if (ogTags.length > 0) {
     const foundNames = new Set(ogTags.map((t) => t.name))
-    const missingRequired = OPEN_GRAPH_TAGS.required.filter(
+    const missingRequired = OPEN_GRAPH_REQUIREMENTS.required.filter(
       (t) => !foundNames.has(t),
     )
-    const missingRecommended = OPEN_GRAPH_TAGS.recommended.filter(
+    const missingRecommended = OPEN_GRAPH_REQUIREMENTS.recommended.filter(
       (t) => !foundNames.has(t),
     )
     openGraph = {
@@ -97,10 +81,10 @@ function analyzeMetatags(metatags: Record<string, string[]>): {
   let twitter: MetatagGroup | null = null
   if (twitterTags.length > 0) {
     const foundNames = new Set(twitterTags.map((t) => t.name))
-    const missingRequired = TWITTER_CARD_TAGS.required.filter(
+    const missingRequired = TWITTER_CARD_REQUIREMENTS.required.filter(
       (t) => !foundNames.has(t),
     )
-    const missingRecommended = TWITTER_CARD_TAGS.recommended.filter(
+    const missingRecommended = TWITTER_CARD_REQUIREMENTS.recommended.filter(
       (t) => !foundNames.has(t),
     )
     twitter = {
@@ -121,6 +105,14 @@ function analyzeMetatags(metatags: Record<string, string[]>): {
  */
 function buildSchemaResult(target: string, data: StructuredData): SchemaResult {
   const metatagAnalysis = analyzeMetatags(data.metatags)
+
+  // Normalize metatags for validation
+  const normalizedTags = normalizeMetatags(data.metatags)
+
+  // Run validation with both presence and quality checks
+  const issues = sortIssuesBySeverity(
+    validateSocialTags(normalizedTags, { checkPresence: true, checkQuality: true }),
+  )
 
   return {
     target,
@@ -150,6 +142,7 @@ function buildSchemaResult(target: string, data: StructuredData): SchemaResult {
     metatags: Object.fromEntries(
       metatagAnalysis.other.map((t) => [t.name, t.value]),
     ),
+    issues,
   }
 }
 

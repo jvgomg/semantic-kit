@@ -134,16 +134,17 @@ function IssuesContent({
     return <text fg={palette.base0B}>No issues found</text>
   }
 
+  // Map IssueSeverity ('high'/'medium'/'low') to display
   const severityColors: Record<string, string> = {
-    error: palette.base08,
-    warning: palette.base0A,
-    info: palette.base03,
+    high: palette.base08,
+    medium: palette.base0A,
+    low: palette.base03,
   }
 
   const severityLabels: Record<string, string> = {
-    error: 'ERROR',
-    warning: 'WARN',
-    info: 'INFO',
+    high: 'ERROR',
+    medium: 'WARN',
+    low: 'INFO',
   }
 
   return (
@@ -153,7 +154,7 @@ function IssuesContent({
           <span fg={severityColors[issue.severity]}>
             [{severityLabels[issue.severity]}]
           </span>{' '}
-          <span>{issue.message}</span>
+          <span>{issue.description}</span>
         </text>
       ))}
     </box>
@@ -213,8 +214,9 @@ export function SocialViewContent({
   const summaryText = summaryParts.join(', ')
 
   // Compute issue severity for section display
-  const hasErrors = data.issues.some((i) => i.severity === 'error')
-  const hasWarnings = data.issues.some((i) => i.severity === 'warning')
+  // IssueSeverity is 'high'/'medium'/'low' but Section expects 'error'/'warning'
+  const hasErrors = data.issues.some((i) => i.severity === 'high')
+  const hasWarnings = data.issues.some((i) => i.severity === 'medium')
   const issuesSeverity = hasErrors
     ? 'error'
     : hasWarnings
