@@ -1,0 +1,5 @@
+# Invalid: malformed YAML
+urls:
+  - url: https://example.com
+  - this is not valid yaml: [unclosed bracket
+    - broken indentation

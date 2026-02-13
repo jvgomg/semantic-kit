@@ -9,6 +9,7 @@ import { createRoot } from '@opentui/react'
 import { Provider } from 'jotai'
 import { App } from './App.js'
 import { createPersistedStore, flushPersistedState } from './state/index.js'
+import type { TuiConfig } from '../lib/tui-config/index.js'
 
 // Mouse handling is built into OpenTUI via component props:
 // - onMouseDown, onMouseUp, onMouseScroll, etc.
@@ -16,12 +17,16 @@ import { createPersistedStore, flushPersistedState } from './state/index.js'
 
 export interface TuiOptions {
   initialUrl?: string
+  /** Loaded config data (if --config was provided) */
+  configData?: { path: string; config: TuiConfig }
 }
 
 export async function startTui(options: TuiOptions = {}): Promise<void> {
+  const { initialUrl, configData } = options
+
   // Create store with persisted state loaded from disk
   // This happens before React mounts, so state is immediately available
-  const store = await createPersistedStore(options.initialUrl)
+  const store = await createPersistedStore({ initialUrl, configData })
 
   return new Promise<void>((resolve) => {
     createCliRenderer({
@@ -38,7 +43,7 @@ export async function startTui(options: TuiOptions = {}): Promise<void> {
       const root = createRoot(renderer)
       root.render(
         <Provider store={store}>
-          <App initialUrl={options.initialUrl} />
+          <App initialUrl={initialUrl} hasConfig={!!configData} />
         </Provider>,
       )
     })

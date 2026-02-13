@@ -2,12 +2,13 @@
  * UrlList panel state management.
  *
  * Manages the focus state and active tab for the UrlList panel,
- * which has two tabs (Recent URLs and Sitemap) with different
+ * which has three tabs (Recent URLs, Config, and Sitemap) with different
  * focusable elements in each.
  */
 import { atom } from 'jotai'
 import type { UrlListTab } from '../types.js'
 import { activeSitemapDataAtom } from './sitemap.js'
+import { flattenedConfigTreeAtom } from './config.js'
 
 // ============================================================================
 // Types
@@ -15,12 +16,13 @@ import { activeSitemapDataAtom } from './sitemap.js'
 
 /**
  * Focusable elements within the UrlList panel.
- * - tabs: The tab bar (Recent URLs / Sitemap)
+ * - tabs: The tab bar (Recent URLs / Config / Sitemap)
  * - list: The recent URLs select list (Recent tab only)
+ * - configTree: The config tree browser (Config tab only)
  * - input: The sitemap URL input field (Sitemap tab only)
  * - tree: The sitemap tree browser (Sitemap tab only, when data is loaded)
  */
-export type UrlListFocusElement = 'tabs' | 'list' | 'input' | 'tree'
+export type UrlListFocusElement = 'tabs' | 'list' | 'configTree' | 'input' | 'tree'
 
 // ============================================================================
 // Atoms
@@ -58,17 +60,29 @@ export const urlListHasTreeDataAtom = atom((get) => {
 })
 
 /**
+ * Whether the config tree has data to display.
+ */
+export const urlListHasConfigDataAtom = atom((get) => {
+  const flattenedTree = get(flattenedConfigTreeAtom)
+  return flattenedTree.length > 0
+})
+
+/**
  * Available focus elements for the current tab.
  * Recent tab: tabs, list
+ * Config tab: tabs, configTree (if data loaded)
  * Sitemap tab: tabs, input, tree (if data loaded)
  */
 export const urlListAvailableFocusElementsAtom = atom(
   (get): UrlListFocusElement[] => {
     const activeTab = get(urlListActiveTabAtom)
     const hasTreeData = get(urlListHasTreeDataAtom)
+    const hasConfigData = get(urlListHasConfigDataAtom)
 
     if (activeTab === 'recent') {
       return ['tabs', 'list']
+    } else if (activeTab === 'config') {
+      return hasConfigData ? ['tabs', 'configTree'] : ['tabs']
     } else {
       return hasTreeData ? ['tabs', 'input', 'tree'] : ['tabs', 'input']
     }
@@ -87,6 +101,10 @@ export const setUrlListTabAtom = atom(null, (get, set, tab: UrlListTab) => {
 
   if (tab === 'recent') {
     set(urlListFocusAtom, 'list')
+  } else if (tab === 'config') {
+    // Config tab - focus tree if data loaded, otherwise tabs
+    const hasConfigData = get(urlListHasConfigDataAtom)
+    set(urlListFocusAtom, hasConfigData ? 'configTree' : 'tabs')
   } else {
     // Sitemap tab - focus tree if data loaded, otherwise input
     const hasTreeData = get(urlListHasTreeDataAtom)
@@ -131,12 +149,17 @@ export const urlListFocusTreeIfAvailableAtom = atom(null, (get, set) => {
 
 /**
  * Reset the UrlList state when opening the panel.
- * @param startOnSitemap - If true, start on sitemap tab with input focused
+ * @param options - Object with startOnSitemap and/or startOnConfig flags
  */
 export const resetUrlListStateAtom = atom(
   null,
-  (_get, set, startOnSitemap: boolean) => {
-    if (startOnSitemap) {
+  (get, set, options: { startOnSitemap?: boolean; startOnConfig?: boolean }) => {
+    const { startOnSitemap, startOnConfig } = options
+    if (startOnConfig) {
+      set(urlListActiveTabAtom, 'config')
+      const hasConfigData = get(urlListHasConfigDataAtom)
+      set(urlListFocusAtom, hasConfigData ? 'configTree' : 'tabs')
+    } else if (startOnSitemap) {
       set(urlListActiveTabAtom, 'sitemap')
       set(urlListFocusAtom, 'input')
     } else {

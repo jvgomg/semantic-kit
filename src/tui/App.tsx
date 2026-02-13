@@ -43,13 +43,15 @@ import './views/index.js'
 
 export interface AppProps {
   initialUrl?: string
+  /** Whether a config file was loaded */
+  hasConfig?: boolean
 }
 
 // ============================================================================
 // Main App Component
 // ============================================================================
 
-export function App({ initialUrl }: AppProps) {
+export function App({ initialUrl, hasConfig }: AppProps) {
   const renderer = useRenderer()
   const { focus, focusNext, focusPrevious, disableFocus, enableFocus } =
     useFocusManager()
@@ -92,6 +94,10 @@ export function App({ initialUrl }: AppProps) {
         setUrlState(initialUrl)
         focus('main')
       }
+    } else if (hasConfig) {
+      // Config loaded without URL - auto-open URL list on Config tab
+      setActiveModal('url-list')
+      disableFocus()
     } else {
       focus('url')
     }
@@ -230,6 +236,7 @@ export function App({ initialUrl }: AppProps) {
           autoFetchSitemapUrl={
             initialUrl && isSitemapUrl(initialUrl) ? initialUrl : undefined
           }
+          startOnConfig={hasConfig && !initialUrl}
         />
       ) : (
         /* Main layout: Menu + Content + Info Panel overlay */

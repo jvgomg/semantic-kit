@@ -1,0 +1,25 @@
+# Mixed flat and grouped URLs
+urls:
+  # Flat URLs at top level
+  - url: http://localhost:4000/good/semantic-article.html
+    title: Semantic Article
+
+  # Good examples group
+  - group: Good Examples
+    urls:
+      - url: http://localhost:4000/good/rich-schema.html
+        title: Rich Schema
+      - url: http://localhost:4000/good/accessible-form.html
+        title: Accessible Form
+      - url: http://localhost:4000/good/semantic-article.html
+
+  # Bad examples group
+  - group: Anti-Patterns
+    urls:
+      - url: http://localhost:4000/bad/no-landmarks.html
+        title: No Landmarks
+      - url: http://localhost:4000/bad/divitis.html
+        title: Div Soup
+
+  # Another flat URL
+  - url: http://localhost:4000/edge-cases/empty-page.html

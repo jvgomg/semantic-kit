@@ -21,11 +21,20 @@ const STORAGE_DIR = join(homedir(), '.semantic-kit', 'tui-sessions')
 const WRITE_DELAY_MS = 500
 
 /**
- * Generate a storage key from the initial URL.
- * Different initial URLs get different storage files.
+ * Source for generating storage keys.
  */
-function getStorageKey(initialUrl: string | undefined): string {
-  const input = initialUrl?.trim() || '__blank__'
+export interface StorageKeySource {
+  type: 'url' | 'config'
+  value: string | undefined
+}
+
+/**
+ * Generate a storage key from the key source.
+ * Different URLs/configs get different storage files.
+ */
+function getStorageKey(source: StorageKeySource): string {
+  const prefix = source.type === 'config' ? 'config:' : ''
+  const input = prefix + (source.value?.trim() || '__blank__')
   return createHash('sha256').update(input).digest('hex').slice(0, 12)
 }
 
@@ -41,9 +50,9 @@ function getStoragePath(key: string): string {
  * Returns default state if file doesn't exist or is invalid.
  */
 export async function loadPersistedState(
-  initialUrl: string | undefined,
+  source: StorageKeySource,
 ): Promise<PersistedState> {
-  const key = getStorageKey(initialUrl)
+  const key = getStorageKey(source)
   const path = getStoragePath(key)
 
   try {
@@ -79,13 +88,13 @@ let writeTimeout: Timer | null = null
 let currentStoragePath: string | null = null
 
 /**
- * Create a throttled writer for the given initial URL.
+ * Create a throttled writer for the given key source.
  * Call this once at startup.
  */
 export function createPersistedStateWriter(
-  initialUrl: string | undefined,
+  source: StorageKeySource,
 ): (state: PersistedState) => void {
-  const key = getStorageKey(initialUrl)
+  const key = getStorageKey(source)
   currentStoragePath = getStoragePath(key)
 
   return (state: PersistedState) => {

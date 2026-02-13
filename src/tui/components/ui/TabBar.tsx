@@ -10,6 +10,8 @@ import { colors } from '../../theme.js'
 export interface TabItem {
   id: string
   label: string
+  /** Whether this tab is disabled (cannot be selected) */
+  disabled?: boolean
 }
 
 export interface TabBarProps {
@@ -39,14 +41,28 @@ export function TabBar({
     <box flexDirection="row" paddingLeft={1}>
       {tabs.map((tab, index) => {
         const isActive = tab.id === activeTab
+        const isDisabled = tab.disabled ?? false
         const prefix = showIndex ? `${index + 1}. ` : ''
         const separator = index < tabs.length - 1 ? ' | ' : ''
 
+        // Determine text color based on state
+        const textColor = isDisabled
+          ? colors.textHint // Muted/dimmed for disabled
+          : isActive
+            ? colors.accent
+            : colors.muted
+
+        const handleClick = () => {
+          if (!isDisabled) {
+            onSelect(tab.id)
+          }
+        }
+
         return (
           <box key={tab.id} flexDirection="row">
-            <box onMouseDown={() => onSelect(tab.id)}>
-              <text fg={isActive ? colors.accent : colors.muted}>
-                {isActive ? (
+            <box onMouseDown={handleClick}>
+              <text fg={textColor}>
+                {isActive && !isDisabled ? (
                   <strong>
                     {prefix}
                     {tab.label}

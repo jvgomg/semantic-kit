@@ -5,7 +5,13 @@
  * to disk with throttling. It runs at the store level, not React level.
  */
 import { atomEffect } from 'jotai-effect'
-import { activeModalAtom, urlAtom } from '../atoms/index.js'
+import {
+  activeModalAtom,
+  urlAtom,
+  urlListActiveTabAtom,
+  configExpandedGroupsAtom,
+  configSelectedIndexAtom,
+} from '../atoms/index.js'
 import { sectionsAtomFamily } from '../sections/atoms.js'
 import { activeMenuIndexAtom } from '../tool-navigation.js'
 import { viewDataIdsAtom } from '../view-data/index.js'
@@ -29,6 +35,9 @@ export const persistStateEffect = atomEffect((get) => {
   const activeMenuIndex = get(activeMenuIndexAtom)
   const activeModal = get(activeModalAtom)
   const viewIds = get(viewDataIdsAtom)
+  const urlListActiveTab = get(urlListActiveTabAtom)
+  const configExpandedGroups = get(configExpandedGroupsAtom)
+  const configSelectedIndex = get(configSelectedIndexAtom)
 
   // Build the persisted state
   const state: PersistedState = {
@@ -37,6 +46,9 @@ export const persistStateEffect = atomEffect((get) => {
     activeMenuIndex,
     activeModal,
     views: {},
+    urlListActiveTab,
+    configExpandedGroups: Array.from(configExpandedGroups),
+    configSelectedIndex,
   }
 
   // Collect expanded states for all known views

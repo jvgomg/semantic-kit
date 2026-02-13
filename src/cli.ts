@@ -411,6 +411,7 @@ program
   .command('tui')
   .description('Launch interactive terminal UI for exploring semantic data')
   .argument('[url]', 'URL to analyze on startup')
+  .option('-c, --config <path>', 'Path to YAML config file with URL collections')
   .action(tuiCommand)
 
 program.parse()

@@ -1,13 +1,25 @@
 /**
  * Jotai store initialization with pre-loaded persisted state.
  */
-import { urlAtom, activeModalAtom } from '../atoms/index.js'
+import {
+  urlAtom,
+  activeModalAtom,
+  configStateAtom,
+  configExpandedGroupsAtom,
+  configSelectedIndexAtom,
+  urlListActiveTabAtom,
+} from '../atoms/index.js'
 import { sectionsAtomFamily } from '../sections/atoms.js'
 import { createAppStore } from '../store.js'
 import { activeMenuIndexAtom } from '../tool-navigation.js'
 import { persistStateEffect } from './effect.js'
-import { loadPersistedState, createPersistedStateWriter } from './storage.js'
+import {
+  loadPersistedState,
+  createPersistedStateWriter,
+  type StorageKeySource,
+} from './storage.js'
 import type { PersistedState } from './types.js'
+import type { TuiConfig } from '../../../lib/tui-config/index.js'
 
 /**
  * Context for persistence - holds the writer function.
@@ -24,20 +36,42 @@ export function getPersistWriter(): ((state: PersistedState) => void) | null {
 }
 
 /**
+ * Options for creating a persisted store.
+ */
+export interface CreatePersistedStoreOptions {
+  /** Initial URL to analyze */
+  initialUrl?: string
+  /** Loaded config data (if --config was provided) */
+  configData?: { path: string; config: TuiConfig }
+}
+
+/**
  * Create a Jotai store pre-populated with persisted state.
  *
- * @param initialUrl - The URL passed to startTui (used as storage key)
+ * @param options - Store creation options
  * @returns Configured Jotai store
  */
-export async function createPersistedStore(initialUrl: string | undefined) {
+export async function createPersistedStore(options: CreatePersistedStoreOptions = {}) {
+  const { initialUrl, configData } = options
+
+  // Determine storage key source - config takes precedence
+  const keySource: StorageKeySource = configData
+    ? { type: 'config', value: configData.path }
+    : { type: 'url', value: initialUrl }
+
   // Load persisted state from disk
-  const persisted = await loadPersistedState(initialUrl)
+  const persisted = await loadPersistedState(keySource)
 
   // Create the throttled writer
-  persistWriter = createPersistedStateWriter(initialUrl)
+  persistWriter = createPersistedStateWriter(keySource)
 
   // Create store with data fetching effect already subscribed
   const store = createAppStore()
+
+  // Initialize config state if config was provided
+  if (configData) {
+    store.set(configStateAtom, configData)
+  }
 
   // Pre-populate with persisted values
   // Only restore URL if it was persisted (not empty) and matches session
@@ -49,6 +83,19 @@ export async function createPersistedStore(initialUrl: string | undefined) {
 
   if (persisted.activeModal) {
     store.set(activeModalAtom, persisted.activeModal)
+  }
+
+  // Restore URL list tab state
+  if (persisted.urlListActiveTab) {
+    store.set(urlListActiveTabAtom, persisted.urlListActiveTab)
+  }
+
+  // Restore config browser state
+  if (persisted.configExpandedGroups) {
+    store.set(configExpandedGroupsAtom, new Set(persisted.configExpandedGroups))
+  }
+  if (typeof persisted.configSelectedIndex === 'number') {
+    store.set(configSelectedIndexAtom, persisted.configSelectedIndex)
   }
 
   // Restore per-view section state (only expanded overrides are persisted)

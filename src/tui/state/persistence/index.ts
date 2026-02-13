@@ -27,6 +27,10 @@ export { PERSISTED_STATE_VERSION, DEFAULT_PERSISTED_STATE } from './types.js'
 
 export { loadPersistedState, flushPersistedState } from './storage.js'
 
-export { createPersistedStore, type PersistedStore } from './store.js'
+export {
+  createPersistedStore,
+  type PersistedStore,
+  type CreatePersistedStoreOptions,
+} from './store.js'
 
 export { persistStateEffect } from './effect.js'

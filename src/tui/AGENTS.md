@@ -42,7 +42,7 @@ src/tui/
 ├── AGENTS.md             # This file
 ├── state/
 │   ├── index.ts          # Re-exports all atoms, hooks, and types
-│   ├── types.ts          # Shared types (GroupedMenuItem, ViewData, FocusRegion, etc.)
+│   ├── types.ts          # Shared types (GroupedMenuItem, ViewData, FocusRegion, UrlListTab, etc.)
 │   ├── store.ts          # createAppStore() - base store with effects
 │   ├── tool-navigation.ts # Sidebar navigation (activeMenuIndexAtom, navigateMenuAtom, etc.)
 │   ├── view-atoms.ts     # viewAtomFamily, activeViewAtom (view definition + data)
@@ -51,6 +51,7 @@ src/tui/
 │   │   ├── url.ts        # urlAtom, recentUrlsAtom, setUrlAtom
 │   │   ├── modal.ts      # activeModalAtom, isModalOpenAtom
 │   │   ├── sitemap.ts    # sitemapCacheAtom, sitemapLoadingAtom
+│   │   ├── config.ts     # configStateAtom, configTreeAtom (YAML config support)
 │   │   ├── focus.ts      # focusedRegionAtom
 │   │   └── url-list.ts   # urlListIndexAtom, urlListActiveTabAtom
 │   ├── view-data/        # View data fetching module
@@ -74,16 +75,21 @@ src/tui/
 │   ├── useMouse.ts       # Mouse click and scroll detection
 │   └── useTerminalSize.ts # Terminal dimensions
 └── components/
-    └── chrome/           # Layout components
-        ├── MainContent.tsx   # Content area orchestrator
-        ├── ViewRenderer.tsx  # Loading/error/success renderer
-        ├── ViewContent.tsx   # Content line generation
-        ├── Menu.tsx          # Sidebar menu
-        ├── UrlBar.tsx        # URL input field
-        ├── UrlList.tsx       # URL selection modal
-        ├── HelpModal.tsx     # Help modal
-        ├── StatusBar.tsx     # Bottom status bar
-        └── constants.ts      # Layout dimensions
+    ├── chrome/           # Layout components
+    │   ├── MainContent.tsx   # Content area orchestrator
+    │   ├── ViewRenderer.tsx  # Loading/error/success renderer
+    │   ├── ViewContent.tsx   # Content line generation
+    │   ├── Menu.tsx          # Sidebar menu
+    │   ├── UrlBar.tsx        # URL input field
+    │   ├── UrlList.tsx       # URL selection panel (Recent/Config/Sitemap tabs)
+    │   ├── HelpModal.tsx     # Help modal
+    │   ├── StatusBar.tsx     # Bottom status bar
+    │   └── constants.ts      # Layout dimensions
+    └── ui/               # Reusable UI components
+        ├── ConfigBrowser.tsx # Tree browser for config URLs
+        ├── SitemapBrowser.tsx # Tree browser for sitemap URLs
+        ├── TabBar.tsx        # Tab navigation component
+        └── ...
 ```
 
 ## Adding a New View
@@ -145,6 +151,17 @@ State is managed with **Jotai atoms**. No React Context or prop drilling require
 | `viewAtomFamily` | `atomFamily` | View by ID with data (`View` interface) |
 | `activeModalAtom` | `ModalType` | Currently open modal |
 | `focusedRegionAtom` | `FocusRegion` | Which region has focus |
+
+### Config Atoms (YAML config file support)
+
+| Atom | Type | Description |
+|------|------|-------------|
+| `configStateAtom` | `ConfigState \| null` | Loaded config (path + parsed data) |
+| `hasConfigAtom` | `boolean` | Whether a config is loaded |
+| `configTreeAtom` | `ConfigTreeNode[]` | Tree built from config |
+| `flattenedConfigTreeAtom` | `FlattenedConfigNode[]` | Flattened tree for display |
+| `configExpandedGroupsAtom` | `Set<string>` | Expanded group IDs |
+| `configSelectedIndexAtom` | `number` | Selected index in tree |
 
 ### View and ViewData
 
@@ -255,6 +272,49 @@ bun run semantic-kit:dev tui
 
 # Run with initial URL
 bun run semantic-kit:dev tui https://example.com
+
+# Run with a YAML config file
+bun run semantic-kit:dev tui --config ./src/lib/tui-config/fixtures/valid-grouped.yaml
+```
+
+## Config Module (`src/lib/tui-config/`)
+
+The TUI supports YAML configuration files that define URL collections. The config module provides:
+
+```
+src/lib/tui-config/
+├── schema.ts     # Zod schemas (ConfigUrlSchema, ConfigGroupSchema, TuiConfigSchema)
+├── types.ts      # Type guards (isConfigGroup, isConfigUrl) and result types
+├── loader.ts     # loadTuiConfig() - reads, parses, validates YAML
+├── tree.ts       # buildConfigTree(), flattenConfigTree() - tree building
+├── template.ts   # Config templates and YAML generation
+├── index.ts      # Public API exports
+└── fixtures/     # Test fixtures (valid-simple.yaml, valid-grouped.yaml, etc.)
+```
+
+### Config format
+
+```yaml
+urls:
+  - url: https://example.com
+    title: Homepage           # optional
+  - group: Blog Posts         # groups are collapsible
+    urls:
+      - url: https://example.com/blog/1
+      - url: https://example.com/blog/2
+```
+
+### Using the config module
+
+```typescript
+import { loadTuiConfig, buildConfigTree, flattenConfigTree } from '../lib/tui-config/index.js'
+
+// Load and validate
+const result = await loadTuiConfig('./config.yaml')
+if (result.type === 'success') {
+  const tree = buildConfigTree(result.config)
+  const flat = flattenConfigTree(tree, expandedGroups)
+}
 ```
 
 ## Common Patterns

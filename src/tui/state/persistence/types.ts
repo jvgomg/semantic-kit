@@ -37,6 +37,12 @@ export interface PersistedState {
   activeModal: ModalType
   /** Per-view state: viewId -> PersistedViewState */
   views: Record<string, PersistedViewState>
+  /** Active tab in URL list panel */
+  urlListActiveTab?: import('../types.js').UrlListTab
+  /** Expanded groups in config browser */
+  configExpandedGroups?: string[]
+  /** Selected index in config browser */
+  configSelectedIndex?: number
 }
 
 /**

@@ -59,6 +59,7 @@ src/
   cli.ts              # CLI entrypoint
   commands/           # One file per command
   lib/                # Shared utilities
+    tui-config/       # YAML config file support for TUI
   tui/                # Terminal UI (see src/tui/AGENTS.md)
 
 integration-tests/    # Integration tests (bun:test)
@@ -111,6 +112,9 @@ bun run test-server
 
 # Test with fixtures
 bun run dev ai http://localhost:4000/good/semantic-article.html
+
+# Launch TUI with a YAML config file
+bun run dev tui --config ./path/to/urls.yaml
 
 # Integration tests (test server starts automatically via bunfig.toml preload)
 bun run test:integration         # Run integration tests
