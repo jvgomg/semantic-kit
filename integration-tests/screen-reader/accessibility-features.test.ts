@@ -5,23 +5,25 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runScreenReader } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('screen-reader command - accessibility features', () => {
+  const semanticArticle = () =>
+    run(`screen-reader ${getBaseUrl()}/good/semantic-article.html`)
+  const divSoup = () => run(`screen-reader ${getBaseUrl()}/bad/div-soup.html`)
+
   describe('skip link detection', () => {
     it('detects skip links in semantic pages', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.summary.hasSkipLink).toBe(true)
     })
 
     it('detects skip links in navigation-heavy pages', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/navigation-landmarks.html`
+      const { data, exitCode } = await run(
+        `screen-reader ${getBaseUrl()}/good/navigation-landmarks.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -29,9 +31,7 @@ describe('screen-reader command - accessibility features', () => {
     })
 
     it('reports no skip link in pages without one', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/bad/div-soup.html`
-      )
+      const { data, exitCode } = await divSoup()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.summary.hasSkipLink).toBe(false)
@@ -40,18 +40,14 @@ describe('screen-reader command - accessibility features', () => {
 
   describe('main landmark presence', () => {
     it('detects main landmark in well-structured pages', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.summary.hasMainLandmark).toBe(true)
     })
 
     it('reports missing main landmark in non-semantic pages', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/bad/div-soup.html`
-      )
+      const { data, exitCode } = await divSoup()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.summary.hasMainLandmark).toBe(false)
@@ -60,18 +56,14 @@ describe('screen-reader command - accessibility features', () => {
 
   describe('navigation presence', () => {
     it('detects navigation in pages with nav elements', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.summary.hasNavigation).toBe(true)
     })
 
     it('reports missing navigation in non-semantic pages', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/bad/div-soup.html`
-      )
+      const { data, exitCode } = await divSoup()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.summary.hasNavigation).toBe(false)
@@ -80,9 +72,7 @@ describe('screen-reader command - accessibility features', () => {
 
   describe('ARIA snapshot', () => {
     it('includes raw ARIA snapshot for reference', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.snapshot).toBeTruthy()
@@ -90,9 +80,7 @@ describe('screen-reader command - accessibility features', () => {
     })
 
     it('includes parsed accessibility nodes', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.parsed).toBeDefined()
@@ -100,9 +88,7 @@ describe('screen-reader command - accessibility features', () => {
     })
 
     it('includes role counts', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.counts).toBeDefined()

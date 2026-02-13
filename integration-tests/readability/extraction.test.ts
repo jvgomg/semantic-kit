@@ -5,15 +5,17 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runReadability } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('readability command - extraction', () => {
+  const semanticArticle = () =>
+    run(`readability ${getBaseUrl()}/good/semantic-article.html`)
+  const divSoup = () => run(`readability ${getBaseUrl()}/bad/div-soup.html`)
+
   describe('basic extraction', () => {
     it('extracts content from semantic markup', async () => {
-      const { data, exitCode } = await runReadability(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.extraction).not.toBeNull()
@@ -22,17 +24,15 @@ describe('readability command - extraction', () => {
     })
 
     it('extracts content from non-semantic markup', async () => {
-      const { data, exitCode } = await runReadability(
-        `${getBaseUrl()}/bad/div-soup.html`,
-      )
+      const { data, exitCode } = await divSoup()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.metrics.wordCount).toBeGreaterThan(0)
     })
 
     it('handles empty content gracefully', async () => {
-      const { data, exitCode } = await runReadability(
-        `${getBaseUrl()}/edge-cases/empty-content.html`,
+      const { data, exitCode } = await run(
+        `readability ${getBaseUrl()}/edge-cases/empty-content.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -42,9 +42,7 @@ describe('readability command - extraction', () => {
 
   describe('metrics', () => {
     it('reports all metrics including link density', async () => {
-      const { data, exitCode } = await runReadability(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -57,9 +55,7 @@ describe('readability command - extraction', () => {
     })
 
     it('calculates link density correctly', async () => {
-      const { data, exitCode } = await runReadability(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -69,9 +65,7 @@ describe('readability command - extraction', () => {
     })
 
     it('reports isReaderable status', async () => {
-      const { data, exitCode } = await runReadability(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.metrics.isReaderable).toBe(true)
@@ -80,18 +74,14 @@ describe('readability command - extraction', () => {
 
   describe('extraction metadata', () => {
     it('extracts published time when available', async () => {
-      const { data, exitCode } = await runReadability(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.extraction!.publishedTime).toBe('2026-02-04')
     })
 
     it('returns null for missing metadata', async () => {
-      const { data, exitCode } = await runReadability(
-        `${getBaseUrl()}/bad/div-soup.html`,
-      )
+      const { data, exitCode } = await divSoup()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       // div-soup likely has no structured metadata
@@ -101,9 +91,7 @@ describe('readability command - extraction', () => {
 
   describe('markdown output', () => {
     it('converts extracted HTML to markdown', async () => {
-      const { data, exitCode } = await runReadability(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.markdown).toBeTruthy()
@@ -111,9 +99,7 @@ describe('readability command - extraction', () => {
     })
 
     it('preserves heading structure in markdown', async () => {
-      const { data, exitCode } = await runReadability(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.markdown).toContain('##')

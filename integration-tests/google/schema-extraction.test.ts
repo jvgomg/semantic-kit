@@ -6,16 +6,17 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runGoogle } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('google command - schema extraction', () => {
+  const semanticArticle = () =>
+    run(`google ${getBaseUrl()}/good/semantic-article.html`)
+
   describe('JSON-LD extraction', () => {
     it('extracts Article schema from semantic article', async () => {
       // TODO: update the google integration tests with better fixture cases
-      const { data, exitCode } = await runGoogle(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -35,8 +36,8 @@ describe('google command - schema extraction', () => {
     })
 
     it('handles pages with no structured data', async () => {
-      const { data, exitCode } = await runGoogle(
-        `${getBaseUrl()}/bad/div-soup.html`,
+      const { data, exitCode } = await run(
+        `google ${getBaseUrl()}/bad/div-soup.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -49,9 +50,7 @@ describe('google command - schema extraction', () => {
 
   describe('schema filtering', () => {
     it('only includes Google-recognized schema types', async () => {
-      const { data, exitCode } = await runGoogle(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 

@@ -5,15 +5,16 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runScreenReader } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('screen-reader command - headings', () => {
+  const semanticArticle = () =>
+    run(`screen-reader ${getBaseUrl()}/good/semantic-article.html`)
+
   describe('heading extraction', () => {
     it('extracts headings in document order', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.headings.length).toBeGreaterThan(0)
@@ -22,23 +23,19 @@ describe('screen-reader command - headings', () => {
     })
 
     it('captures heading text', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
-      const h1 = data!.headings.find(h => h.level === 1)
+      const h1 = data!.headings.find((h) => h.level === 1)
       expect(h1).toBeDefined()
       expect(h1!.text).toContain('Semantic HTML')
     })
 
     it('captures all heading levels used', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
-      const levels = new Set(data!.headings.map(h => h.level))
+      const levels = new Set(data!.headings.map((h) => h.level))
       // Page uses h1, h2, h3
       expect(levels.has(1)).toBe(true)
       expect(levels.has(2)).toBe(true)
@@ -48,8 +45,8 @@ describe('screen-reader command - headings', () => {
 
   describe('heading hierarchy', () => {
     it('preserves heading hierarchy order', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/navigation-landmarks.html`
+      const { data, exitCode } = await run(
+        `screen-reader ${getBaseUrl()}/good/navigation-landmarks.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -61,8 +58,8 @@ describe('screen-reader command - headings', () => {
 
   describe('non-semantic markup', () => {
     it('finds no semantic headings in div soup', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/bad/div-soup.html`
+      const { data, exitCode } = await run(
+        `screen-reader ${getBaseUrl()}/bad/div-soup.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()

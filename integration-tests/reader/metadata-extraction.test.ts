@@ -5,33 +5,30 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runReader } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('reader command - metadata extraction', () => {
+  const semanticArticle = () =>
+    run(`reader ${getBaseUrl()}/good/semantic-article.html`)
+
   describe('well-formed articles', () => {
     it('extracts title from article', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.title).toBe('Understanding Semantic HTML')
     })
 
     it('extracts byline/author from article', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.byline).toContain('Jane Smith')
     })
 
     it('extracts site name when available', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       // siteName may be null if not explicitly set in og:site_name
@@ -42,8 +39,8 @@ describe('reader command - metadata extraction', () => {
 
   describe('missing metadata', () => {
     it('returns null for missing title', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/edge-cases/empty-content.html`
+      const { data, exitCode } = await run(
+        `reader ${getBaseUrl()}/edge-cases/empty-content.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -52,8 +49,8 @@ describe('reader command - metadata extraction', () => {
     })
 
     it('returns null for missing byline in non-semantic pages', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/bad/div-soup.html`
+      const { data, exitCode } = await run(
+        `reader ${getBaseUrl()}/bad/div-soup.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()

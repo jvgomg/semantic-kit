@@ -5,15 +5,17 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runReadabilityJs } from '../utils/cli.js'
+import type { ReadabilityJsResult } from '../../src/lib/results.js'
+import { run, runCommand } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('readability:js command - extraction', () => {
+  const semanticArticle = () =>
+    run(`readability:js ${getBaseUrl()}/good/semantic-article.html`)
+
   describe('basic extraction', () => {
     it('extracts content from static HTML via Playwright', async () => {
-      const { data, exitCode } = await runReadabilityJs(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.extraction).not.toBeNull()
@@ -22,9 +24,7 @@ describe('readability:js command - extraction', () => {
     })
 
     it('reports timedOut status', async () => {
-      const { data, exitCode } = await runReadabilityJs(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(typeof data!.timedOut).toBe('boolean')
@@ -32,8 +32,8 @@ describe('readability:js command - extraction', () => {
     })
 
     it('handles empty content gracefully', async () => {
-      const { data, exitCode } = await runReadabilityJs(
-        `${getBaseUrl()}/edge-cases/empty-content.html`,
+      const { data, exitCode } = await run(
+        `readability:js ${getBaseUrl()}/edge-cases/empty-content.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -43,9 +43,7 @@ describe('readability:js command - extraction', () => {
 
   describe('metrics', () => {
     it('reports all metrics including link density', async () => {
-      const { data, exitCode } = await runReadabilityJs(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -58,9 +56,7 @@ describe('readability:js command - extraction', () => {
     })
 
     it('calculates link density correctly', async () => {
-      const { data, exitCode } = await runReadabilityJs(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -72,9 +68,7 @@ describe('readability:js command - extraction', () => {
 
   describe('markdown output', () => {
     it('converts extracted HTML to markdown', async () => {
-      const { data, exitCode } = await runReadabilityJs(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.markdown).toBeTruthy()
@@ -82,9 +76,7 @@ describe('readability:js command - extraction', () => {
     })
 
     it('preserves heading structure in markdown', async () => {
-      const { data, exitCode } = await runReadabilityJs(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.markdown).toContain('##')
@@ -93,7 +85,8 @@ describe('readability:js command - extraction', () => {
 
   describe('timeout option', () => {
     it('accepts custom timeout', async () => {
-      const { data, exitCode } = await runReadabilityJs(
+      const { data, exitCode } = await runCommand<ReadabilityJsResult>(
+        'readability:js',
         `${getBaseUrl()}/good/semantic-article.html`,
         ['--timeout', '10000'],
       )

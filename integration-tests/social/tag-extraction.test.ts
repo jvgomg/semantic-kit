@@ -5,15 +5,18 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runSocial } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('social command - tag extraction', () => {
+  const socialComplete = () =>
+    run(`social ${getBaseUrl()}/good/social-complete.html`)
+  const semanticArticle = () =>
+    run(`social ${getBaseUrl()}/good/semantic-article.html`)
+
   describe('complete social tags', () => {
     it('extracts all Open Graph tags', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/good/social-complete.html`,
-      )
+      const { data, exitCode } = await socialComplete()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -35,9 +38,7 @@ describe('social command - tag extraction', () => {
     })
 
     it('extracts all Twitter Card tags', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/good/social-complete.html`,
-      )
+      const { data, exitCode } = await socialComplete()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -56,9 +57,7 @@ describe('social command - tag extraction', () => {
 
   describe('partial social tags', () => {
     it('extracts OG tags from semantic-article', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -67,9 +66,7 @@ describe('social command - tag extraction', () => {
     })
 
     it('handles missing Twitter tags gracefully', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -80,8 +77,8 @@ describe('social command - tag extraction', () => {
 
   describe('no social tags', () => {
     it('handles pages with no social tags', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/bad/div-soup.html`,
+      const { data, exitCode } = await run(
+        `social ${getBaseUrl()}/bad/div-soup.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -94,9 +91,7 @@ describe('social command - tag extraction', () => {
 
   describe('preview data', () => {
     it('builds preview from social tags', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/good/social-complete.html`,
-      )
+      const { data, exitCode } = await socialComplete()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -111,8 +106,8 @@ describe('social command - tag extraction', () => {
     })
 
     it('falls back to page metadata when social tags missing', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/bad/div-soup.html`,
+      const { data, exitCode } = await run(
+        `social ${getBaseUrl()}/bad/div-soup.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -125,9 +120,7 @@ describe('social command - tag extraction', () => {
 
   describe('tag counts', () => {
     it('counts tags correctly', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/good/social-complete.html`,
-      )
+      const { data, exitCode } = await socialComplete()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -140,9 +133,7 @@ describe('social command - tag extraction', () => {
 
   describe('issues array', () => {
     it('returns issues array in result', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/good/social-complete.html`,
-      )
+      const { data, exitCode } = await socialComplete()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(Array.isArray(data!.issues)).toBe(true)

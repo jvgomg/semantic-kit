@@ -5,24 +5,25 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runScreenReader } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('screen-reader command - summary', () => {
+  const semanticArticle = () =>
+    run(`screen-reader ${getBaseUrl()}/good/semantic-article.html`)
+  const navLandmarks = () =>
+    run(`screen-reader ${getBaseUrl()}/good/navigation-landmarks.html`)
+
   describe('page title detection', () => {
     it('extracts page title from semantic pages', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.summary.pageTitle).not.toBeNull()
     })
 
     it('extracts page title from navigation-focused pages', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/navigation-landmarks.html`
-      )
+      const { data, exitCode } = await navLandmarks()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.summary.pageTitle).not.toBeNull()
@@ -31,9 +32,7 @@ describe('screen-reader command - summary', () => {
 
   describe('element counts', () => {
     it('counts landmarks in well-structured pages', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/navigation-landmarks.html`
-      )
+      const { data, exitCode } = await navLandmarks()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       // Page has multiple landmarks: banner, multiple navs, main, complementary, contentinfo
@@ -41,27 +40,21 @@ describe('screen-reader command - summary', () => {
     })
 
     it('counts headings in content pages', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.summary.headingCount).toBeGreaterThan(3)
     })
 
     it('counts links in pages with navigation', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/navigation-landmarks.html`
-      )
+      const { data, exitCode } = await navLandmarks()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.summary.linkCount).toBeGreaterThan(10)
     })
 
     it('counts form controls when present', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       // Page has search form with input and button
@@ -71,8 +64,8 @@ describe('screen-reader command - summary', () => {
 
   describe('non-semantic markup', () => {
     it('detects lack of landmarks in div soup', async () => {
-      const { data, exitCode } = await runScreenReader(
-        `${getBaseUrl()}/bad/div-soup.html`
+      const { data, exitCode } = await run(
+        `screen-reader ${getBaseUrl()}/bad/div-soup.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()

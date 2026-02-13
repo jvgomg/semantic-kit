@@ -6,15 +6,16 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runGoogle } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('google command - metadata extraction', () => {
+  const semanticArticle = () =>
+    run(`google ${getBaseUrl()}/good/semantic-article.html`)
+
   describe('page metadata', () => {
     it('extracts title, description, canonical, and language', async () => {
-      const { data, exitCode } = await runGoogle(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -36,8 +37,8 @@ describe('google command - metadata extraction', () => {
     })
 
     it('handles missing metadata gracefully', async () => {
-      const { data, exitCode } = await runGoogle(
-        `${getBaseUrl()}/bad/div-soup.html`,
+      const { data, exitCode } = await run(
+        `google ${getBaseUrl()}/bad/div-soup.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -50,9 +51,7 @@ describe('google command - metadata extraction', () => {
 
   describe('heading structure', () => {
     it('extracts heading outline with content stats', async () => {
-      const { data, exitCode } = await runGoogle(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -67,8 +66,8 @@ describe('google command - metadata extraction', () => {
     })
 
     it('handles pages with no headings', async () => {
-      const { data, exitCode } = await runGoogle(
-        `${getBaseUrl()}/edge-cases/empty-content.html`,
+      const { data, exitCode } = await run(
+        `google ${getBaseUrl()}/edge-cases/empty-content.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()

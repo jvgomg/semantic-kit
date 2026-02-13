@@ -6,33 +6,32 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runReader } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('reader command - metrics', () => {
+  const semanticArticle = () =>
+    run(`reader ${getBaseUrl()}/good/semantic-article.html`)
+  const emptyContent = () =>
+    run(`reader ${getBaseUrl()}/edge-cases/empty-content.html`)
+
   describe('word and character counts', () => {
     it('computes word count for content-rich pages', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.metrics.wordCount).toBeGreaterThan(100)
     })
 
     it('computes character count for content-rich pages', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.metrics.characterCount).toBeGreaterThan(500)
     })
 
     it('returns zero counts for empty content', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/edge-cases/empty-content.html`
-      )
+      const { data, exitCode } = await emptyContent()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.metrics.wordCount).toBe(0)
@@ -42,18 +41,14 @@ describe('reader command - metrics', () => {
 
   describe('paragraph count', () => {
     it('counts paragraphs in structured content', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.metrics.paragraphCount).toBeGreaterThan(0)
     })
 
     it('returns zero paragraphs for empty content', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/edge-cases/empty-content.html`
-      )
+      const { data, exitCode } = await emptyContent()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.metrics.paragraphCount).toBe(0)
@@ -62,18 +57,14 @@ describe('reader command - metrics', () => {
 
   describe('isReaderable flag', () => {
     it('marks content-rich article pages as readerable', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.metrics.isReaderable).toBe(true)
     })
 
     it('marks empty pages as not readerable', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/edge-cases/empty-content.html`
-      )
+      const { data, exitCode } = await emptyContent()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.metrics.isReaderable).toBe(false)

@@ -6,15 +6,17 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runAi } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('ai command - hidden content analysis', () => {
+  const semanticArticle = () =>
+    run(`ai ${getBaseUrl()}/good/semantic-article.html`)
+  const nextjsHome = () => run(`ai ${getBaseUrl()}/nextjs/`)
+
   describe('no streaming (severity: none)', () => {
     it('static HTML has no hidden content', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.hiddenContentAnalysis.severity).toBe('none')
@@ -24,8 +26,8 @@ describe('ai command - hidden content analysis', () => {
     })
 
     it('empty content has no hidden content', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/edge-cases/empty-content.html`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/edge-cases/empty-content.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -34,7 +36,7 @@ describe('ai command - hidden content analysis', () => {
     })
 
     it('Next.js static page has no hidden content', async () => {
-      const { data, exitCode } = await runAi(`${getBaseUrl()}/nextjs/`)
+      const { data, exitCode } = await nextjsHome()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.hiddenContentAnalysis.severity).toBe('none')
@@ -43,8 +45,8 @@ describe('ai command - hidden content analysis', () => {
     })
 
     it('Next.js article-static has no hidden content', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/nextjs/article-static`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/nextjs/article-static`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -53,8 +55,8 @@ describe('ai command - hidden content analysis', () => {
     })
 
     it('Next.js nav-static has no hidden content', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/nextjs/nav-static`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/nextjs/nav-static`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -65,22 +67,24 @@ describe('ai command - hidden content analysis', () => {
 
   describe('partial streaming (severity: low)', () => {
     it('article-mixed has low severity (small portion streamed)', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/nextjs/article-mixed`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/nextjs/article-mixed`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.hiddenContentAnalysis.severity).toBe('low')
       expect(data!.hiddenContentAnalysis.hasStreamingContent).toBe(true)
       // Low severity means <=10% hidden
-      expect(data!.hiddenContentAnalysis.hiddenPercentage).toBeLessThanOrEqual(10)
+      expect(data!.hiddenContentAnalysis.hiddenPercentage).toBeLessThanOrEqual(
+        10,
+      )
     })
   })
 
   describe('heavy streaming (severity: high)', () => {
     it('article-streaming has high severity (main content streamed)', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/nextjs/article-streaming`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/nextjs/article-streaming`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -93,8 +97,8 @@ describe('ai command - hidden content analysis', () => {
 
   describe('streaming detection', () => {
     it('detects streaming in nav-streaming', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/nextjs/nav-streaming`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/nextjs/nav-streaming`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -102,8 +106,8 @@ describe('ai command - hidden content analysis', () => {
     })
 
     it('detects streaming in nav-mixed', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/nextjs/nav-mixed`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/nextjs/nav-mixed`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()

@@ -5,24 +5,24 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runSchemaCompare } from '../utils/cli.js'
+import type { SchemaCompareResult } from '../../src/lib/results.js'
+import { run, runCommand } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('schema:compare command', () => {
+  const semanticArticle = () =>
+    run(`schema:compare ${getBaseUrl()}/good/semantic-article.html`)
+
   describe('basic functionality', () => {
     it('compares schema between static and rendered HTML', async () => {
-      const { data, exitCode } = await runSchemaCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.target).toBe(`${getBaseUrl()}/good/semantic-article.html`)
     })
 
     it('returns both static and rendered schema results', async () => {
-      const { data, exitCode } = await runSchemaCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.static).toBeDefined()
@@ -32,9 +32,7 @@ describe('schema:compare command', () => {
     })
 
     it('reports timedOut status', async () => {
-      const { data, exitCode } = await runSchemaCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(typeof data!.timedOut).toBe('boolean')
@@ -44,9 +42,7 @@ describe('schema:compare command', () => {
 
   describe('comparison metrics', () => {
     it('provides hasDifferences flag', async () => {
-      const { data, exitCode } = await runSchemaCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.comparison).toBeDefined()
@@ -55,9 +51,7 @@ describe('schema:compare command', () => {
     })
 
     it('tracks JSON-LD changes', async () => {
-      const { data, exitCode } = await runSchemaCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(typeof data!.comparison.jsonldAdded).toBe('number')
@@ -65,9 +59,7 @@ describe('schema:compare command', () => {
     })
 
     it('tracks Open Graph and Twitter changes', async () => {
-      const { data, exitCode } = await runSchemaCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(typeof data!.comparison.openGraphChanged).toBe('boolean')
@@ -77,9 +69,7 @@ describe('schema:compare command', () => {
 
   describe('static page (no JS-dependent schema)', () => {
     it('reports no differences for static content', async () => {
-      const { data, exitCode } = await runSchemaCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -92,7 +82,8 @@ describe('schema:compare command', () => {
 
   describe('timeout option', () => {
     it('accepts custom timeout', async () => {
-      const { data, exitCode } = await runSchemaCompare(
+      const { data, exitCode } = await runCommand<SchemaCompareResult>(
+        'schema:compare',
         `${getBaseUrl()}/good/semantic-article.html`,
         ['--timeout', '10000'],
       )
@@ -103,7 +94,8 @@ describe('schema:compare command', () => {
 
   describe('URL validation', () => {
     it('requires URL (not file path)', async () => {
-      const { exitCode, stderr } = await runSchemaCompare(
+      const { exitCode, stderr } = await runCommand<SchemaCompareResult>(
+        'schema:compare',
         'test-server/fixtures/good/semantic-article.html',
       )
       expect(exitCode).toBe(1)

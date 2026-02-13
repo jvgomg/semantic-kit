@@ -5,15 +5,17 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runReadabilityCompare } from '../utils/cli.js'
+import type { ReadabilityCompareResult } from '../../src/commands/readability/types.js'
+import { run, runCommand } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('readability:compare command', () => {
+  const semanticArticle = () =>
+    run(`readability:compare ${getBaseUrl()}/good/semantic-article.html`)
+
   describe('basic comparison', () => {
     it('returns both static and rendered extractions', async () => {
-      const { data, exitCode } = await runReadabilityCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -23,9 +25,7 @@ describe('readability:compare command', () => {
     })
 
     it('extracts content from both static and rendered HTML', async () => {
-      const { data, exitCode } = await runReadabilityCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -35,13 +35,13 @@ describe('readability:compare command', () => {
 
       // Rendered extraction
       expect(data!.rendered.extraction).not.toBeNull()
-      expect(data!.rendered.extraction!.title).toBe('Understanding Semantic HTML')
+      expect(data!.rendered.extraction!.title).toBe(
+        'Understanding Semantic HTML',
+      )
     })
 
     it('reports timedOut status', async () => {
-      const { data, exitCode } = await runReadabilityCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(typeof data!.timedOut).toBe('boolean')
@@ -51,9 +51,7 @@ describe('readability:compare command', () => {
 
   describe('comparison metrics', () => {
     it('calculates word count comparison', async () => {
-      const { data, exitCode } = await runReadabilityCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -65,9 +63,7 @@ describe('readability:compare command', () => {
     })
 
     it('calculates JS-dependent percentage correctly', async () => {
-      const { data, exitCode } = await runReadabilityCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -77,9 +73,7 @@ describe('readability:compare command', () => {
     })
 
     it('tracks sections only in rendered version', async () => {
-      const { data, exitCode } = await runReadabilityCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -89,9 +83,7 @@ describe('readability:compare command', () => {
 
   describe('metrics from both extractions', () => {
     it('includes full metrics for static extraction', async () => {
-      const { data, exitCode } = await runReadabilityCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -104,9 +96,7 @@ describe('readability:compare command', () => {
     })
 
     it('includes full metrics for rendered extraction', async () => {
-      const { data, exitCode } = await runReadabilityCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -121,9 +111,7 @@ describe('readability:compare command', () => {
 
   describe('markdown output', () => {
     it('includes markdown for both static and rendered', async () => {
-      const { data, exitCode } = await runReadabilityCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
@@ -134,7 +122,8 @@ describe('readability:compare command', () => {
 
   describe('timeout option', () => {
     it('accepts custom timeout', async () => {
-      const { data, exitCode } = await runReadabilityCompare(
+      const { data, exitCode } = await runCommand<ReadabilityCompareResult>(
+        'readability:compare',
         `${getBaseUrl()}/good/semantic-article.html`,
         ['--timeout', '10000'],
       )
@@ -145,7 +134,8 @@ describe('readability:compare command', () => {
 
   describe('URL validation', () => {
     it('requires URL (rejects file paths)', async () => {
-      const { exitCode, stderr } = await runReadabilityCompare(
+      const { exitCode, stderr } = await runCommand<ReadabilityCompareResult>(
+        'readability:compare',
         '/some/local/file.html',
       )
       expect(exitCode).not.toBe(0)
@@ -155,9 +145,7 @@ describe('readability:compare command', () => {
 
   describe('issues reporting', () => {
     it('includes issues array in JSON output', async () => {
-      const { issues, exitCode } = await runReadabilityCompare(
-        `${getBaseUrl()}/good/semantic-article.html`,
-      )
+      const { issues, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(Array.isArray(issues)).toBe(true)
     })

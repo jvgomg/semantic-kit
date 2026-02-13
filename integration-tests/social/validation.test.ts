@@ -7,14 +7,14 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runSocial } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('social command - validation', () => {
   describe('valid tags (no issues)', () => {
     it('reports no issues for fully valid tags', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/good/social-valid.html`,
+      const { data, exitCode } = await run(
+        `social ${getBaseUrl()}/good/social-valid.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -24,13 +24,15 @@ describe('social command - validation', () => {
 
   describe('og:url validation', () => {
     it('reports error for relative og:url', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/bad/social-relative-url.html`,
+      const { data, exitCode } = await run(
+        `social ${getBaseUrl()}/bad/social-relative-url.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
-      const urlIssue = data!.issues.find((i) => i.code === 'og-url-not-absolute')
+      const urlIssue = data!.issues.find(
+        (i) => i.code === 'og-url-not-absolute',
+      )
       expect(urlIssue).toBeDefined()
       expect(urlIssue!.severity).toBe('error')
       expect(urlIssue!.tag).toBe('og:url')
@@ -39,13 +41,15 @@ describe('social command - validation', () => {
 
   describe('og:title length validation', () => {
     it('reports warning for og:title over 60 characters', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/bad/social-long-title.html`,
+      const { data, exitCode } = await run(
+        `social ${getBaseUrl()}/bad/social-long-title.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
-      const titleIssue = data!.issues.find((i) => i.code === 'og-title-too-long')
+      const titleIssue = data!.issues.find(
+        (i) => i.code === 'og-title-too-long',
+      )
       expect(titleIssue).toBeDefined()
       expect(titleIssue!.severity).toBe('warning')
       expect(titleIssue!.tag).toBe('og:title')
@@ -56,8 +60,8 @@ describe('social command - validation', () => {
 
   describe('og:description length validation', () => {
     it('reports warning for og:description over 155 characters', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/bad/social-long-description.html`,
+      const { data, exitCode } = await run(
+        `social ${getBaseUrl()}/bad/social-long-description.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -75,8 +79,8 @@ describe('social command - validation', () => {
 
   describe('image dimension validation', () => {
     it('reports warning for missing og:image dimensions', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/bad/social-missing-image-dimensions.html`,
+      const { data, exitCode } = await run(
+        `social ${getBaseUrl()}/bad/social-missing-image-dimensions.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -93,13 +97,15 @@ describe('social command - validation', () => {
 
   describe('twitter:card validation', () => {
     it('reports info for missing twitter:card', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/bad/social-no-twitter-card.html`,
+      const { data, exitCode } = await run(
+        `social ${getBaseUrl()}/bad/social-no-twitter-card.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
 
-      const cardIssue = data!.issues.find((i) => i.code === 'twitter-card-missing')
+      const cardIssue = data!.issues.find(
+        (i) => i.code === 'twitter-card-missing',
+      )
       expect(cardIssue).toBeDefined()
       expect(cardIssue!.severity).toBe('info')
       expect(cardIssue!.tag).toBe('twitter:card')
@@ -108,8 +114,8 @@ describe('social command - validation', () => {
 
   describe('image alt text validation', () => {
     it('reports info for missing image alt text', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/bad/social-missing-alt-text.html`,
+      const { data, exitCode } = await run(
+        `social ${getBaseUrl()}/bad/social-missing-alt-text.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -123,8 +129,8 @@ describe('social command - validation', () => {
 
   describe('issue sorting', () => {
     it('sorts issues by severity (errors first)', async () => {
-      const { data, exitCode } = await runSocial(
-        `${getBaseUrl()}/bad/social-relative-url.html`,
+      const { data, exitCode } = await run(
+        `social ${getBaseUrl()}/bad/social-relative-url.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()

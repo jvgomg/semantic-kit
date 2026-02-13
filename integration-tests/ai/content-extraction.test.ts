@@ -5,23 +5,24 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runAi } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('ai command - content extraction', () => {
+  const semanticArticle = () =>
+    run(`ai ${getBaseUrl()}/good/semantic-article.html`)
+
   describe('static HTML', () => {
     it('extracts content from semantic markup', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.wordCount).toBeGreaterThan(0)
     })
 
     it('extracts content from non-semantic markup', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/bad/div-soup.html`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/bad/div-soup.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -29,8 +30,8 @@ describe('ai command - content extraction', () => {
     })
 
     it('handles empty content gracefully', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/edge-cases/empty-content.html`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/edge-cases/empty-content.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -40,8 +41,8 @@ describe('ai command - content extraction', () => {
 
   describe('Next.js pages', () => {
     it('extracts full content from static article', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/nextjs/article-static`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/nextjs/article-static`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -51,20 +52,22 @@ describe('ai command - content extraction', () => {
     })
 
     it('extracts only visible content from streaming article', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/nextjs/article-streaming`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/nextjs/article-streaming`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       // Header should be visible
       expect(data!.markdown).toContain('Understanding Modern Web Rendering')
       // Body content should NOT be visible (streamed)
-      expect(data!.markdown).not.toContain('Introduction to Server-Side Rendering')
+      expect(data!.markdown).not.toContain(
+        'Introduction to Server-Side Rendering',
+      )
     })
 
     it('extracts static portion from mixed streaming article', async () => {
-      const { data, exitCode } = await runAi(
-        `${getBaseUrl()}/nextjs/article-mixed`
+      const { data, exitCode } = await run(
+        `ai ${getBaseUrl()}/nextjs/article-mixed`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -78,7 +81,9 @@ describe('ai command - content extraction', () => {
       const pages = ['nav-static', 'nav-streaming', 'nav-mixed']
 
       for (const page of pages) {
-        const { data, exitCode } = await runAi(`${getBaseUrl()}/nextjs/${page}`)
+        const { data, exitCode } = await run(
+          `ai ${getBaseUrl()}/nextjs/${page}`,
+        )
         expect(exitCode).toBe(0)
         expect(data).not.toBeNull()
         // Main content should always be visible (not in Suspense)

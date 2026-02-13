@@ -5,15 +5,16 @@
  */
 
 import { describe, it, expect } from 'bun:test'
-import { runReader } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('reader command - content extraction', () => {
+  const semanticArticle = () =>
+    run(`reader ${getBaseUrl()}/good/semantic-article.html`)
+
   describe('semantic markup', () => {
     it('extracts article content as markdown', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       // Readability extracts body content; title is in metadata
@@ -22,9 +23,7 @@ describe('reader command - content extraction', () => {
     })
 
     it('extracts content as HTML', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/good/semantic-article.html`
-      )
+      const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       // Readability extracts article body with h2 headings
@@ -34,7 +33,7 @@ describe('reader command - content extraction', () => {
 
     it('includes the target URL in the result', async () => {
       const url = `${getBaseUrl()}/good/semantic-article.html`
-      const { data, exitCode } = await runReader(url)
+      const { data, exitCode } = await run(`reader ${url}`)
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.url).toBe(url)
@@ -43,8 +42,8 @@ describe('reader command - content extraction', () => {
 
   describe('non-semantic markup', () => {
     it('extracts content from div-based markup', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/bad/div-soup.html`
+      const { data, exitCode } = await run(
+        `reader ${getBaseUrl()}/bad/div-soup.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -55,8 +54,8 @@ describe('reader command - content extraction', () => {
 
   describe('edge cases', () => {
     it('handles empty content gracefully', async () => {
-      const { data, exitCode } = await runReader(
-        `${getBaseUrl()}/edge-cases/empty-content.html`
+      const { data, exitCode } = await run(
+        `reader ${getBaseUrl()}/edge-cases/empty-content.html`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
