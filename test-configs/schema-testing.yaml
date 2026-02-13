@@ -1,0 +1,27 @@
+# Schema-related test fixtures for testing schema, social, and validate:schema commands
+urls:
+  # Valid examples with complete structured data
+  - group: Good Examples
+    urls:
+      - url: http://localhost:4000/good/semantic-article.html
+        title: JSON-LD Article + Basic OG
+      - url: http://localhost:4000/good/social-valid.html
+        title: Complete OG + Twitter Card
+      - url: http://localhost:4000/good/social-complete.html
+        title: Full Social Metadata (Article)
+
+  # Invalid examples for validation testing
+  - group: Bad Examples
+    urls:
+      - url: http://localhost:4000/bad/social-no-twitter-card.html
+        title: Missing Twitter Card
+      - url: http://localhost:4000/bad/social-relative-url.html
+        title: Relative og:url (Invalid)
+      - url: http://localhost:4000/bad/social-missing-alt-text.html
+        title: Missing Image Alt Text
+      - url: http://localhost:4000/bad/social-missing-image-dimensions.html
+        title: Missing Image Dimensions
+      - url: http://localhost:4000/bad/social-long-title.html
+        title: Title Exceeds 60 Chars
+      - url: http://localhost:4000/bad/social-long-description.html
+        title: Description Exceeds 155 Chars
