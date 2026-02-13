@@ -25,6 +25,7 @@ import {
   HelpModal,
   MainContent,
   Menu,
+  SettingsModal,
   StatusBar,
   UrlBar,
   UrlList,
@@ -176,6 +177,12 @@ export function App({ initialUrl, hasConfig }: AppProps) {
       return
     }
 
+    // Settings modal (theme switcher)
+    if (event.name === 't') {
+      openModal('settings')
+      return
+    }
+
     // Tab navigation
     if (event.name === 'tab') {
       if (event.shift) {
@@ -320,6 +327,7 @@ export function App({ initialUrl, hasConfig }: AppProps) {
 
       {/* Modals */}
       {activeModal === 'help' && <HelpModal onClose={closeModal} />}
+      {activeModal === 'settings' && <SettingsModal onClose={closeModal} />}
     </box>
   )
 }

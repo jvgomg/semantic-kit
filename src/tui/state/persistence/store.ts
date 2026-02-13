@@ -10,6 +10,7 @@ import {
   configSelectedIndexAtom,
   urlListActiveTabAtom,
 } from '../atoms/index.js'
+import { themeFamilyIdAtom, variantPreferenceAtom } from '../../theme.js'
 import { sectionsAtomFamily } from '../sections/atoms.js'
 import { createAppStore } from '../store.js'
 import { activeMenuIndexAtom } from '../tool-navigation.js'
@@ -96,6 +97,14 @@ export async function createPersistedStore(options: CreatePersistedStoreOptions 
   }
   if (typeof persisted.configSelectedIndex === 'number') {
     store.set(configSelectedIndexAtom, persisted.configSelectedIndex)
+  }
+
+  // Restore theme state
+  if (persisted.themeFamilyId) {
+    store.set(themeFamilyIdAtom, persisted.themeFamilyId)
+  }
+  if (persisted.variantPreference) {
+    store.set(variantPreferenceAtom, persisted.variantPreference)
   }
 
   // Restore per-view section state (only expanded overrides are persisted)

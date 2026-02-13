@@ -23,6 +23,7 @@ export function HelpModal({ onClose }: HelpModalProps) {
     { key: 'Tab / Shift+Tab', desc: 'Cycle focus between regions' },
     { key: 'g', desc: 'Jump to URL bar' },
     { key: 'G (Shift+g)', desc: 'Open URL list' },
+    { key: 't', desc: 'Open settings (theme)' },
     { key: 'r', desc: 'Reload current view' },
     { key: '?', desc: 'Toggle this help' },
     { key: 'Up/Down', desc: 'Navigate menu or scroll content' },

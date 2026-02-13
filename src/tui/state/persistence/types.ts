@@ -8,6 +8,7 @@
  * 4. Add tracking in effect.ts persistStateEffect (get the atom)
  */
 import type { ModalType } from '../types.js'
+import type { VariantPreference } from '../../theme.js'
 
 /**
  * Schema version for migration support.
@@ -43,6 +44,10 @@ export interface PersistedState {
   configExpandedGroups?: string[]
   /** Selected index in config browser */
   configSelectedIndex?: number
+  /** Theme family ID */
+  themeFamilyId?: string
+  /** Variant preference (auto, dark, light) */
+  variantPreference?: VariantPreference
 }
 
 /**
