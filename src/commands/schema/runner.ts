@@ -7,26 +7,8 @@ import {
   TWITTER_CARD_REQUIREMENTS,
 } from '../../lib/metadata/index.js'
 import type { SchemaResult } from '../../lib/results.js'
+import { fetchHtmlContent } from '../../lib/fetch.js'
 import type { MetatagGroup, StructuredData } from './types.js'
-
-// ============================================================================
-// Core Functions
-// ============================================================================
-
-/**
- * Fetch HTML from URL or read from file
- */
-async function fetchHtmlContent(target: string): Promise<string> {
-  if (target.startsWith('http://') || target.startsWith('https://')) {
-    const response = await fetch(target)
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ${target}: ${response.status}`)
-    }
-    return response.text()
-  }
-
-  return Bun.file(target).text()
-}
 
 // ============================================================================
 // Metatag Analysis
