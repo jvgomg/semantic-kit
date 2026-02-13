@@ -1,3 +1,4 @@
+import type { OutputFormat } from '../../lib/arguments.js'
 import type { AxeStaticResult } from '../../lib/axe-static.js'
 import {
   colorize,
@@ -19,7 +20,6 @@ import type {
   LandmarkNode,
   LinkGroup,
 } from '../../lib/structure.js'
-import type { OutputFormat } from '../../lib/arguments.js'
 import type {
   TuiStructureResult,
   StructureJsInternalResult,

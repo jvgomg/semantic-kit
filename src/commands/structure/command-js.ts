@@ -1,6 +1,6 @@
+import { requireUrl, validateFormat, validateTimeout } from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { requireUrl, validateFormat, validateTimeout } from '../../lib/arguments.js'
 import { buildIssuesJs, formatStructureJsOutput } from './formatters.js'
 import { fetchStructureJs } from './runner-js.js'
 import { VALID_FORMATS, type StructureJsOptions } from './types.js'
