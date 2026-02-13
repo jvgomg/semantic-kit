@@ -10,19 +10,28 @@ import {
   normalizeMetatags,
   validateSocialTags,
   sortIssuesBySeverity,
-  OPEN_GRAPH_REQUIREMENTS,
-  TWITTER_CARD_REQUIREMENTS,
 } from '../../lib/metadata/index.js'
+import type { SocialValidationIssue } from '../../lib/metadata/types.js'
 import { fetchRenderedHtml } from '../../lib/playwright.js'
 import type {
   SchemaCompareResult,
   SchemaComparisonMetrics,
   SchemaResult,
 } from '../../lib/results.js'
-import type { MetatagGroup, StructuredData } from './types.js'
+import type { StructuredData } from './types.js'
 
 export interface FetchSchemaCompareOptions {
   timeoutMs: number
+}
+
+// ============================================================================
+// Types
+// ============================================================================
+
+interface TagGroup {
+  name: string
+  prefix: string
+  tags: Array<{ name: string; value: string }>
 }
 
 // ============================================================================
@@ -30,11 +39,11 @@ export interface FetchSchemaCompareOptions {
 // ============================================================================
 
 /**
- * Analyze metatags and group by standard
+ * Group metatags by standard (Open Graph, Twitter, other)
  */
-function analyzeMetatags(metatags: Record<string, string[]>): {
-  openGraph: MetatagGroup | null
-  twitter: MetatagGroup | null
+function groupMetatags(metatags: Record<string, string[]>): {
+  openGraph: TagGroup | null
+  twitter: TagGroup | null
   other: Array<{ name: string; value: string }>
 } {
   const ogTags: Array<{ name: string; value: string }> = []
@@ -54,90 +63,72 @@ function analyzeMetatags(metatags: Record<string, string[]>): {
     }
   }
 
-  let openGraph: MetatagGroup | null = null
-  if (ogTags.length > 0) {
-    const foundNames = new Set(ogTags.map((t) => t.name))
-    const missingRequired = OPEN_GRAPH_REQUIREMENTS.required.filter(
-      (t) => !foundNames.has(t),
-    )
-    const missingRecommended = OPEN_GRAPH_REQUIREMENTS.recommended.filter(
-      (t) => !foundNames.has(t),
-    )
-    openGraph = {
-      name: 'Open Graph',
-      prefix: 'og:',
-      tags: ogTags,
-      missingRequired,
-      missingRecommended,
-      isComplete: missingRequired.length === 0,
-    }
-  }
+  const openGraph: TagGroup | null =
+    ogTags.length > 0
+      ? { name: 'Open Graph', prefix: 'og:', tags: ogTags }
+      : null
 
-  let twitter: MetatagGroup | null = null
-  if (twitterTags.length > 0) {
-    const foundNames = new Set(twitterTags.map((t) => t.name))
-    const missingRequired = TWITTER_CARD_REQUIREMENTS.required.filter(
-      (t) => !foundNames.has(t),
-    )
-    const missingRecommended = TWITTER_CARD_REQUIREMENTS.recommended.filter(
-      (t) => !foundNames.has(t),
-    )
-    twitter = {
-      name: 'Twitter Cards',
-      prefix: 'twitter:',
-      tags: twitterTags,
-      missingRequired,
-      missingRecommended,
-      isComplete: missingRequired.length === 0,
-    }
-  }
+  const twitter: TagGroup | null =
+    twitterTags.length > 0
+      ? { name: 'Twitter Cards', prefix: 'twitter:', tags: twitterTags }
+      : null
 
   return { openGraph, twitter, other: otherTags }
+}
+
+/**
+ * Filter issues by tag prefix
+ */
+function filterIssuesByPrefix(
+  issues: SocialValidationIssue[],
+  prefix: string,
+): SocialValidationIssue[] {
+  return issues.filter((issue) => issue.tag.startsWith(prefix))
 }
 
 /**
  * Build the schema result object
  */
 function buildSchemaResult(target: string, data: StructuredData): SchemaResult {
-  const metatagAnalysis = analyzeMetatags(data.metatags)
+  const metatagGroups = groupMetatags(data.metatags)
 
   // Normalize metatags for validation
   const normalizedTags = normalizeMetatags(data.metatags)
 
   // Run validation with both presence and quality checks
-  const issues = sortIssuesBySeverity(
+  const allIssues = sortIssuesBySeverity(
     validateSocialTags(normalizedTags, { checkPresence: true, checkQuality: true }),
   )
+
+  // Filter issues by prefix for each group
+  const ogIssues = filterIssuesByPrefix(allIssues, 'og:')
+  const twitterIssues = filterIssuesByPrefix(allIssues, 'twitter:')
 
   return {
     target,
     jsonld: data.jsonld,
     microdata: data.microdata,
     rdfa: data.rdfa,
-    openGraph: metatagAnalysis.openGraph
+    openGraph: metatagGroups.openGraph
       ? {
           tags: Object.fromEntries(
-            metatagAnalysis.openGraph.tags.map((t) => [t.name, t.value]),
+            metatagGroups.openGraph.tags.map((t) => [t.name, t.value]),
           ),
-          missingRequired: metatagAnalysis.openGraph.missingRequired,
-          missingRecommended: metatagAnalysis.openGraph.missingRecommended,
-          isComplete: metatagAnalysis.openGraph.isComplete,
+          issues: ogIssues,
         }
       : null,
-    twitter: metatagAnalysis.twitter
+    twitter: metatagGroups.twitter
       ? {
           tags: Object.fromEntries(
-            metatagAnalysis.twitter.tags.map((t) => [t.name, t.value]),
+            metatagGroups.twitter.tags.map((t) => [t.name, t.value]),
           ),
-          missingRequired: metatagAnalysis.twitter.missingRequired,
-          missingRecommended: metatagAnalysis.twitter.missingRecommended,
-          isComplete: metatagAnalysis.twitter.isComplete,
+          issues: twitterIssues,
         }
       : null,
     metatags: Object.fromEntries(
-      metatagAnalysis.other.map((t) => [t.name, t.value]),
+      metatagGroups.other.map((t) => [t.name, t.value]),
     ),
-    issues,
+    issues: allIssues,
   }
 }
 

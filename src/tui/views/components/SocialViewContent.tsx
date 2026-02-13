@@ -14,13 +14,12 @@ import {
   SectionContainer,
   Section,
   SectionPriority,
+  TagList,
+  IssuesContent,
+  getIssuesSeverity,
 } from '../../components/ui/index.js'
 import { usePalette } from '../../theme.js'
-import type {
-  SocialResult,
-  SocialTagGroup,
-  SocialValidationIssue,
-} from '../../../commands/social/types.js'
+import type { SocialResult } from '../../../commands/social/types.js'
 import type { ViewComponentProps } from '../types.js'
 
 // ============================================================================
@@ -118,79 +117,6 @@ function CardPreview({ data }: { data: SocialResult }): ReactNode {
 }
 
 // ============================================================================
-// Issues Component
-// ============================================================================
-
-/**
- * Display validation issues
- */
-function IssuesContent({
-  issues,
-}: {
-  issues: SocialValidationIssue[]
-}): ReactNode {
-  const palette = usePalette()
-  if (issues.length === 0) {
-    return <text fg={palette.base0B}>No issues found</text>
-  }
-
-  // Map IssueSeverity ('high'/'medium'/'low') to display
-  const severityColors: Record<string, string> = {
-    high: palette.base08,
-    medium: palette.base0A,
-    low: palette.base03,
-  }
-
-  const severityLabels: Record<string, string> = {
-    high: 'ERROR',
-    medium: 'WARN',
-    low: 'INFO',
-  }
-
-  return (
-    <box flexDirection="column" gap={0}>
-      {issues.map((issue, idx) => (
-        <text key={idx}>
-          <span fg={severityColors[issue.severity]}>
-            [{severityLabels[issue.severity]}]
-          </span>{' '}
-          <span>{issue.description}</span>
-        </text>
-      ))}
-    </box>
-  )
-}
-
-// ============================================================================
-// Tag Group Content Component
-// ============================================================================
-
-/**
- * Display a tag group's tags
- */
-function TagGroupContent({ group }: { group: SocialTagGroup }): ReactNode {
-  const palette = usePalette()
-  const truncate = (text: string, maxLen: number): string => {
-    if (text.length <= maxLen) return text
-    return text.slice(0, maxLen - 3) + '...'
-  }
-
-  return (
-    <box flexDirection="column" gap={0}>
-      {/* Tags */}
-      {Object.entries(group.tags).map(([key, value], idx) => (
-        <box key={idx} paddingLeft={0}>
-          <text>
-            <span fg={palette.base0D}>{key}:</span>{' '}
-            <span fg={palette.base05}>{truncate(value, 40)}</span>
-          </text>
-        </box>
-      ))}
-    </box>
-  )
-}
-
-// ============================================================================
 // Main Component
 // ============================================================================
 
@@ -214,14 +140,7 @@ export function SocialViewContent({
   const summaryText = summaryParts.join(', ')
 
   // Compute issue severity for section display
-  // IssueSeverity is 'high'/'medium'/'low' but Section expects 'error'/'warning'
-  const hasErrors = data.issues.some((i) => i.severity === 'high')
-  const hasWarnings = data.issues.some((i) => i.severity === 'medium')
-  const issuesSeverity = hasErrors
-    ? 'error'
-    : hasWarnings
-      ? 'warning'
-      : undefined
+  const issuesSeverity = getIssuesSeverity(data.issues)
 
   return (
     <SectionContainer height={height}>
@@ -267,7 +186,7 @@ export function SocialViewContent({
         scrollable={data.counts.openGraph > 5}
       >
         {hasOpenGraph ? (
-          <TagGroupContent group={data.openGraph!} />
+          <TagList tags={data.openGraph!.tags} maxValueLength={40} />
         ) : (
           <text fg={palette.base03}>
             No Open Graph tags found. Add og:title, og:description, og:image for
@@ -291,7 +210,7 @@ export function SocialViewContent({
         scrollable={data.counts.twitter > 5}
       >
         {hasTwitter ? (
-          <TagGroupContent group={data.twitter!} />
+          <TagList tags={data.twitter!.tags} maxValueLength={40} />
         ) : (
           <text fg={palette.base03}>
             No Twitter Card tags found. Twitter will fall back to Open Graph

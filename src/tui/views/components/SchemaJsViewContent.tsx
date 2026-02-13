@@ -21,6 +21,11 @@ import {
   SectionPriority,
   Card,
   CardRow,
+  TagList,
+  IssuesDisplay,
+  IssuesContent,
+  hasHighSeverityIssues,
+  getIssuesSeverity,
 } from '../../components/ui/index.js'
 import { usePalette } from '../../theme.js'
 import type { SchemaJsResult, MetatagGroupResult } from '../../../lib/results.js'
@@ -259,35 +264,10 @@ function MetatagGroupContent({
 }: {
   group: MetatagGroupResult
 }): ReactNode {
-  const palette = usePalette()
-  const tags = Object.entries(group.tags)
-
   return (
     <box flexDirection="column" gap={0}>
-      {tags.map(([name, value], idx) => (
-        <box key={idx}>
-          <text>
-            <span fg={palette.base0D}>{name}:</span>{' '}
-            <span fg={palette.base05}>{truncate(value, 50)}</span>
-          </text>
-        </box>
-      ))}
-
-      {group.missingRequired.length > 0 && (
-        <box marginTop={1}>
-          <text fg={palette.base0A}>
-            Missing required: {group.missingRequired.join(', ')}
-          </text>
-        </box>
-      )}
-
-      {group.missingRecommended.length > 0 && (
-        <box>
-          <text fg={palette.base03}>
-            Missing recommended: {group.missingRecommended.join(', ')}
-          </text>
-        </box>
-      )}
+      <TagList tags={group.tags} maxValueLength={50} />
+      <IssuesDisplay issues={group.issues} />
     </box>
   )
 }
@@ -344,6 +324,10 @@ export function SchemaJsViewContent({
   if (hasTwitter) summaryParts.push('Twitter')
   const summaryText = summaryParts.length > 0 ? summaryParts.join(', ') : 'No structured data'
 
+  // Get all issues for the issues section
+  const allIssues = data.issues ?? []
+  const issuesSeverity = getIssuesSeverity(allIssues)
+
   return (
     <SectionContainer height={height}>
       {/* Timeout warning if applicable */}
@@ -373,6 +357,22 @@ export function SchemaJsViewContent({
         defaultExpanded={true}
       >
         <SummaryContent data={data} />
+      </Section>
+
+      {/* Issues section */}
+      <Section
+        id="issues"
+        title="ISSUES"
+        priority={SectionPriority.PRIMARY}
+        severity={issuesSeverity}
+        summary={
+          allIssues.length === 0
+            ? 'No issues'
+            : `${allIssues.length} issue${allIssues.length !== 1 ? 's' : ''}`
+        }
+        defaultExpanded={allIssues.length > 0}
+      >
+        <IssuesContent issues={allIssues} />
       </Section>
 
       {/* JSON-LD section */}
@@ -427,9 +427,9 @@ export function SchemaJsViewContent({
         priority={SectionPriority.PRIMARY}
         severity={
           hasOG
-            ? data.openGraph?.isComplete
-              ? undefined
-              : 'warning'
+            ? hasHighSeverityIssues(data.openGraph)
+              ? 'warning'
+              : undefined
             : 'muted'
         }
         summary={
@@ -437,7 +437,7 @@ export function SchemaJsViewContent({
             ? `${Object.keys(data.openGraph!.tags).length} tag${Object.keys(data.openGraph!.tags).length !== 1 ? 's' : ''}`
             : 'No Open Graph tags'
         }
-        defaultExpanded={hasOG && !data.openGraph?.isComplete}
+        defaultExpanded={hasOG && hasHighSeverityIssues(data.openGraph)}
       >
         {hasOG ? (
           <MetatagGroupContent group={data.openGraph!} />
@@ -456,9 +456,9 @@ export function SchemaJsViewContent({
         priority={SectionPriority.SECONDARY}
         severity={
           hasTwitter
-            ? data.twitter?.isComplete
-              ? undefined
-              : 'warning'
+            ? hasHighSeverityIssues(data.twitter)
+              ? 'warning'
+              : undefined
             : 'muted'
         }
         summary={

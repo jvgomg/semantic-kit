@@ -65,12 +65,16 @@ describe('schema:js command - extraction', () => {
       )
     })
 
-    it('reports missing required OG tags', async () => {
+    it('reports validation issues for OG tags', async () => {
       const { data, exitCode } = await semanticArticle()
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
-      expect(data!.openGraph!.missingRequired).toContain('og:image')
-      expect(data!.openGraph!.isComplete).toBe(false)
+      expect(data!.openGraph!.issues).toBeDefined()
+      // Check that there are high-severity issues (missing required tags)
+      const hasHighSeverityIssues = data!.openGraph!.issues.some(
+        (i) => i.severity === 'high',
+      )
+      expect(hasHighSeverityIssues).toBe(true)
     })
   })
 

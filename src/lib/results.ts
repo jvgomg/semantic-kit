@@ -399,12 +399,8 @@ export interface ScreenReaderResult {
 export interface MetatagGroupResult {
   /** Tags found as key-value pairs */
   tags: Record<string, string>
-  /** Required tags that are missing */
-  missingRequired: string[]
-  /** Recommended tags that are missing */
-  missingRecommended: string[]
-  /** Whether all required tags are present */
-  isComplete: boolean
+  /** Validation issues for this tag group */
+  issues: SocialValidationIssue[]
 }
 
 /**

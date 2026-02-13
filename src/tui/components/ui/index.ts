@@ -11,6 +11,18 @@ export { TabBar } from './TabBar.js'
 export type { TabBarProps, TabItem } from './TabBar.js'
 export { Table } from './Table.js'
 export type { TableProps, TableVariant } from './Table.js'
+export {
+  TagList,
+  IssuesDisplay,
+  IssuesContent,
+  hasHighSeverityIssues,
+  getIssuesSeverity,
+} from './TagList.js'
+export type {
+  TagListProps,
+  IssuesDisplayProps,
+  IssuesContentProps,
+} from './TagList.js'
 
 // Expandable sections framework - re-exported from view-display for backwards compatibility
 export {

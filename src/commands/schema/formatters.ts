@@ -377,9 +377,10 @@ function buildCompactSummary(
   // Open Graph
   if (result.openGraph) {
     const tagCount = Object.keys(result.openGraph.tags).length
-    const status = result.openGraph.isComplete
-      ? `${tagCount} tags`
-      : `${tagCount} tags (incomplete)`
+    const hasHighSeverity = result.openGraph.issues.some((i) => i.severity === 'high')
+    const status = hasHighSeverity
+      ? `${tagCount} tags (incomplete)`
+      : `${tagCount} tags`
     rows.push({ key: 'Open Graph', value: status })
   } else {
     rows.push({ key: 'Open Graph', value: '(none)' })
@@ -388,9 +389,10 @@ function buildCompactSummary(
   // Twitter
   if (result.twitter) {
     const tagCount = Object.keys(result.twitter.tags).length
-    const status = result.twitter.isComplete
-      ? `${tagCount} tags`
-      : `${tagCount} tags (incomplete)`
+    const hasHighSeverity = result.twitter.issues.some((i) => i.severity === 'high')
+    const status = hasHighSeverity
+      ? `${tagCount} tags (incomplete)`
+      : `${tagCount} tags`
     rows.push({ key: 'Twitter', value: status })
   } else {
     rows.push({ key: 'Twitter', value: '(none)' })
