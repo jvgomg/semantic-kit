@@ -1,6 +1,6 @@
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { validateFormat } from '../../lib/validation.js'
+import { validateFormat } from '../../lib/arguments.js'
 import { buildJsonResult, formatValidateHtmlOutput } from './formatters.js'
 import { fetchValidateHtml } from './runner.js'
 import { VALID_FORMATS, type ValidateHtmlOptions } from './types.js'

@@ -1,6 +1,6 @@
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { validateFormat } from '../../lib/validation.js'
+import { validateFormat } from '../../lib/arguments.js'
 import { buildIssues, formatStructureOutput } from './formatters.js'
 import { fetchStructure } from './runner.js'
 import { VALID_FORMATS, type StructureOptions } from './types.js'

@@ -7,7 +7,7 @@ import {
   requireUrl,
   validateFormat,
   validateTimeout,
-} from '../../lib/validation.js'
+} from '../../lib/arguments.js'
 import { buildCompareIssues, formatSchemaCompareOutput } from './formatters.js'
 import { fetchSchemaCompare } from './runner-compare.js'
 import { VALID_FORMATS, type SchemaCompareOptions } from './types.js'

@@ -3,7 +3,7 @@
  */
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { requireUrl, validateFormat, validateTimeout } from '../../lib/validation.js'
+import { requireUrl, validateFormat, validateTimeout } from '../../lib/arguments.js'
 import { buildCompareIssues, formatReadabilityCompareOutput } from './formatters.js'
 import { fetchReadabilityCompare } from './runner-compare.js'
 import { VALID_FORMATS, type ReadabilityCompareOptions } from './types.js'

@@ -19,7 +19,7 @@ import type {
   LandmarkNode,
   LinkGroup,
 } from '../../lib/structure.js'
-import type { OutputFormat } from '../../lib/validation.js'
+import type { OutputFormat } from '../../lib/arguments.js'
 import type {
   TuiStructureResult,
   StructureJsInternalResult,

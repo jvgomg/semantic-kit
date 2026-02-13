@@ -7,7 +7,7 @@ import {
   requireUrl,
   validateFormat,
   validateTimeout,
-} from '../../lib/validation.js'
+} from '../../lib/arguments.js'
 import { buildIssues, formatSchemaOutput } from './formatters.js'
 import { fetchSchemaJs } from './runner-js.js'
 import { VALID_FORMATS, type SchemaJsOptions } from './types.js'

@@ -11,7 +11,7 @@ import {
   type Issue,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
-import type { OutputFormat } from '../../lib/validation.js'
+import type { OutputFormat } from '../../lib/arguments.js'
 import type {
   SocialResult,
   SocialTagGroup,

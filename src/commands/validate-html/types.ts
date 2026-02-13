@@ -1,5 +1,5 @@
 import type { OutputModeOptions } from '../../lib/output-mode.js'
-import type { OutputFormat } from '../../lib/validation.js'
+import type { OutputFormat } from '../../lib/arguments.js'
 
 export const VALID_FORMATS: readonly OutputFormat[] = [
   'full',

@@ -5,7 +5,7 @@ export {
   requireUrl,
   isUrl,
   type OutputFormat,
-} from './validation.js'
+} from './arguments.js'
 export {
   formatContentStats,
   formatElements,

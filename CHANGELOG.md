@@ -125,7 +125,7 @@ All notable changes to semantic-kit will be documented in this file.
   - Shows word count comparison summary with JS dependency percentage
 - Compact format for `schema` command
   - Shows schema types and metatag completion status
-- Centralized validation utilities in `src/lib/validation.ts`
+- Centralized CLI argument utilities in `src/lib/arguments.ts`
   - `validateFormat()` - validates and returns format option
   - `validateTimeout()` - validates and parses timeout option
   - `requireUrl()` - validates that target is a URL

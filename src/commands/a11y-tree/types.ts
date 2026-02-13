@@ -1,5 +1,5 @@
 import type { OutputModeOptions } from '../../lib/output-mode.js'
-import type { OutputFormat } from '../../lib/validation.js'
+import type { OutputFormat } from '../../lib/arguments.js'
 
 export const VALID_FORMATS_BASIC: readonly OutputFormat[] = ['full', 'compact', 'json']
 export const VALID_FORMATS_COMPARE: readonly OutputFormat[] = [

@@ -1,6 +1,6 @@
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { requireUrl, validateFormat, validateTimeout } from '../../lib/validation.js'
+import { requireUrl, validateFormat, validateTimeout } from '../../lib/arguments.js'
 import { buildIssuesCompare, formatStructureCompareOutput } from './formatters.js'
 import { fetchStructureCompare } from './runner-compare.js'
 import { VALID_FORMATS, type StructureCompareOptions } from './types.js'

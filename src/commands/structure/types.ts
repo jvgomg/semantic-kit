@@ -1,8 +1,11 @@
+import type { OutputFormat } from '../../lib/arguments.js'
 import type { AxeStaticResult } from '../../lib/axe-static.js'
 import type { OutputModeOptions } from '../../lib/output-mode.js'
 import type { StructureJsResult } from '../../lib/results.js'
-import type { StructureAnalysis, StructureComparison } from '../../lib/structure.js'
-import type { OutputFormat } from '../../lib/validation.js'
+import type {
+  StructureAnalysis,
+  StructureComparison,
+} from '../../lib/structure.js'
 
 export const VALID_FORMATS: readonly OutputFormat[] = [
   'full',
