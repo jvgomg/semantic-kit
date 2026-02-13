@@ -9,10 +9,10 @@
  * - Splash display and timing support
  */
 
+import type { OutputFormat } from './arguments.js'
 import type { Issue } from './cli-formatting/index.js'
 import { createJsonEnvelope } from './json-envelope.js'
 import { type OutputMode } from './output-mode.js'
-import type { OutputFormat } from './arguments.js'
 import { VERSION } from './version.js'
 
 // ============================================================================

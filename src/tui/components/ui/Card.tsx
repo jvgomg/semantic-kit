@@ -5,8 +5,8 @@
  * Cards display a title, content rows, and optional actions.
  */
 import type { ReactNode } from 'react'
-import { sectionColors, getSeverityColor } from '../view-display/section-theme.js'
-import { palette } from '../../theme.js'
+import { useSectionColors, getSeverityColor } from '../view-display/section-theme.js'
+import { usePalette } from '../../theme.js'
 
 /**
  * Action that can be performed on a card.
@@ -62,8 +62,9 @@ export function CardRow({
   value,
   muted = false,
 }: CardRowProps): ReactNode {
-  const labelColor = muted ? palette.darkGray : palette.gray
-  const valueColor = muted ? palette.gray : palette.white
+  const palette = usePalette()
+  const labelColor = muted ? palette.base02 : palette.base03
+  const valueColor = muted ? palette.base03 : palette.base05
 
   return (
     <box flexDirection="row">
@@ -85,7 +86,10 @@ function CardHeader({
   severity?: 'critical' | 'error' | 'warning' | 'info'
   icon?: string
 }): ReactNode {
-  const titleColor = severity ? getSeverityColor(severity) : palette.white
+  const sectionColors = useSectionColors()
+  const titleColor = severity
+    ? getSeverityColor(sectionColors, severity)
+    : sectionColors.defaultText
 
   return (
     <text fg={titleColor}>
@@ -99,17 +103,19 @@ function CardHeader({
  * Render card actions as buttons.
  */
 function CardActions({ actions }: { actions: CardAction[] }): ReactNode {
+  const palette = usePalette()
+
   if (actions.length === 0) return null
 
   return (
     <box flexDirection="column" marginTop={1}>
-      <text fg={palette.darkGray}>{'─'.repeat(40)}</text>
+      <text fg={palette.base02}>{'─'.repeat(40)}</text>
       <box flexDirection="row" gap={2} marginTop={1}>
         {actions.map((action, index) => (
-          <text key={index} fg={palette.cyan}>
+          <text key={index} fg={palette.base0D}>
             [{action.label}]
             {action.shortcut && (
-              <span fg={palette.gray}> {action.shortcut}</span>
+              <span fg={palette.base03}> {action.shortcut}</span>
             )}
           </text>
         ))}
@@ -132,6 +138,8 @@ export function Card({
   selected = false,
   focused = false,
 }: CardProps): ReactNode {
+  const sectionColors = useSectionColors()
+
   const borderColor = focused
     ? sectionColors.borderSelected
     : selected

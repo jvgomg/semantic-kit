@@ -5,7 +5,7 @@
  * Uses <box> and <text> elements for rendering since <tab-select> doesn't support
  * controlled selectedIndex (needed to show external active state).
  */
-import { colors } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 
 export interface TabItem {
   id: string
@@ -37,6 +37,8 @@ export function TabBar({
   isFocused: _isFocused = false,
   showIndex = false,
 }: TabBarProps) {
+  const colors = useSemanticColors()
+
   return (
     <box flexDirection="row" paddingLeft={1}>
       {tabs.map((tab, index) => {

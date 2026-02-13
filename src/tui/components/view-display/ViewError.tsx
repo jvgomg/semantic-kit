@@ -2,7 +2,7 @@
  * ViewError - Shown when a fetch or processing error occurs.
  */
 import type { ReactNode } from 'react'
-import { palette, colors } from '../../theme.js'
+import { usePalette, useSemanticColors } from '../../theme.js'
 
 export interface ViewErrorProps {
   /** Error message to display */
@@ -10,9 +10,12 @@ export interface ViewErrorProps {
 }
 
 export function ViewError({ error }: ViewErrorProps): ReactNode {
+  const palette = usePalette()
+  const colors = useSemanticColors()
+
   return (
     <box flexDirection="column" paddingTop={1} paddingLeft={2}>
-      <text fg={palette.red}>Error</text>
+      <text fg={palette.base08}>Error</text>
       <text />
       <text fg={colors.text}>{error}</text>
       <text />

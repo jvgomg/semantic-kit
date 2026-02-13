@@ -7,8 +7,8 @@
  */
 import { atom } from 'jotai'
 import type { UrlListTab } from '../types.js'
-import { activeSitemapDataAtom } from './sitemap.js'
 import { flattenedConfigTreeAtom } from './config.js'
+import { activeSitemapDataAtom } from './sitemap.js'
 
 // ============================================================================
 // Types

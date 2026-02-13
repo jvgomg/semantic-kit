@@ -1,6 +1,6 @@
+import { requireUrl, validateFormat, validateTimeout } from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand, handleCommandError } from '../../lib/run-command.js'
-import { requireUrl, validateFormat, validateTimeout } from '../../lib/arguments.js'
 import { buildIssues, formatA11yOutput } from './formatters.js'
 import { fetchA11y } from './runner.js'
 import { VALID_FORMATS_BASIC, type A11yOptions } from './types.js'

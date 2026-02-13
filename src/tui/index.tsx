@@ -4,11 +4,12 @@
  * This is the OpenTUI version of the entry point.
  * See index.ink.tsx for the original React Ink implementation.
  */
-import { createCliRenderer } from '@opentui/core'
+import { createCliRenderer, type CliRenderer, type ThemeMode } from '@opentui/core'
 import { createRoot } from '@opentui/react'
 import { Provider } from 'jotai'
 import { App } from './App.js'
 import { createPersistedStore, flushPersistedState } from './state/index.js'
+import { setDetectedVariantAtom } from './theme/index.js'
 import type { TuiConfig } from '../lib/tui-config/index.js'
 
 // Mouse handling is built into OpenTUI via component props:
@@ -19,6 +20,25 @@ export interface TuiOptions {
   initialUrl?: string
   /** Loaded config data (if --config was provided) */
   configData?: { path: string; config: TuiConfig }
+}
+
+/**
+ * Initialize theme detection from terminal.
+ * Uses OpenTUI's built-in theme mode detection (DEC mode 2031).
+ */
+function initializeThemeDetection(
+  renderer: CliRenderer,
+  store: Awaited<ReturnType<typeof createPersistedStore>>,
+): void {
+  // Set initial theme mode if already detected
+  if (renderer.themeMode) {
+    store.set(setDetectedVariantAtom, renderer.themeMode)
+  }
+
+  // Subscribe to theme mode changes
+  renderer.on('theme_mode', (mode: ThemeMode) => {
+    store.set(setDetectedVariantAtom, mode)
+  })
 }
 
 export async function startTui(options: TuiOptions = {}): Promise<void> {
@@ -40,6 +60,9 @@ export async function startTui(options: TuiOptions = {}): Promise<void> {
         resolve()
       },
     }).then((renderer) => {
+      // Initialize theme detection
+      initializeThemeDetection(renderer, store)
+
       const root = createRoot(renderer)
       root.render(
         <Provider store={store}>

@@ -14,7 +14,7 @@
 import { useEffect, useMemo } from 'react'
 import { useKeyboard } from '@opentui/react'
 import { useAtomValue, useAtom, useSetAtom } from 'jotai'
-import { colors } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import { TabBar } from '../ui/TabBar.js'
 import { SitemapBrowser } from '../ui/SitemapBrowser.js'
 import { ConfigBrowser } from '../ui/ConfigBrowser.js'
@@ -87,6 +87,7 @@ function RecentTabContent({
   contentHeight,
   onSelect,
 }: RecentTabContentProps) {
+  const colors = useSemanticColors()
   const listHeight = Math.max(urls.length, 1)
   const urlOptions = urls.map((url) => ({
     name: url,
@@ -136,6 +137,8 @@ function ConfigTabContent({
   onExpandedGroupsChange,
   onSelect,
 }: ConfigTabContentProps) {
+  const colors = useSemanticColors()
+
   if (!hasConfigData) {
     return (
       <box flexDirection="column">
@@ -190,6 +193,8 @@ function SitemapTabContent({
   onExpandedPathsChange,
   onSelect,
 }: SitemapTabContentProps) {
+  const colors = useSemanticColors()
+
   return (
     <box flexDirection="column" flexGrow={1}>
       <box
@@ -239,6 +244,8 @@ export function UrlList({
   autoFetchSitemapUrl,
   startOnConfig,
 }: UrlListProps) {
+  const colors = useSemanticColors()
+
   // Atoms - Recent URLs
   const urls = useAtomValue(recentUrlsAtom)
 

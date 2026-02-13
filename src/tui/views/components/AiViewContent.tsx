@@ -19,7 +19,7 @@ import {
   CardRow,
   Table,
 } from '../../components/ui/index.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 import type { AiResult, HiddenContentAnalysis } from '../../../lib/results.js'
 import type { ViewComponentProps } from '../types.js'
 
@@ -70,26 +70,27 @@ function HiddenContentCard({
  * Summary section content
  */
 function SummaryContent({ data }: { data: AiResult }): ReactNode {
+  const palette = usePalette()
   const { hiddenContentAnalysis } = data
 
   const getReadabilityStatus = () => {
-    if (data.isReaderable) return { text: 'Yes', color: palette.green }
-    return { text: 'No', color: palette.yellow }
+    if (data.isReaderable) return { text: 'Yes', color: palette.base0B }
+    return { text: 'No', color: palette.base0A }
   }
 
   const getHiddenStatus = () => {
     if (hiddenContentAnalysis.severity === 'none') {
-      return { text: '0%', color: palette.green }
+      return { text: '0%', color: palette.base0B }
     }
     if (hiddenContentAnalysis.severity === 'low') {
       return {
         text: `${hiddenContentAnalysis.hiddenPercentage}%`,
-        color: palette.yellow,
+        color: palette.base0A,
       }
     }
     return {
       text: `${hiddenContentAnalysis.hiddenPercentage}%`,
-      color: palette.red,
+      color: palette.base08,
     }
   }
 
@@ -100,27 +101,27 @@ function SummaryContent({ data }: { data: AiResult }): ReactNode {
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Words:</span>{' '}
-          <span fg={palette.white}>{data.wordCount.toLocaleString()}</span>
+          <span fg={palette.base03}>Words:</span>{' '}
+          <span fg={palette.base05}>{data.wordCount.toLocaleString()}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Readerable:</span>{' '}
+          <span fg={palette.base03}>Readerable:</span>{' '}
           <span fg={readability.color}>{readability.text}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Hidden Content:</span>{' '}
+          <span fg={palette.base03}>Hidden Content:</span>{' '}
           <span fg={hidden.color}>{hidden.text}</span>
         </text>
       </box>
       {hiddenContentAnalysis.framework && (
         <box flexDirection="row" gap={2}>
           <text>
-            <span fg={palette.gray}>Framework:</span>{' '}
-            <span fg={palette.cyan}>
+            <span fg={palette.base03}>Framework:</span>{' '}
+            <span fg={palette.base0D}>
               {hiddenContentAnalysis.framework.name}
             </span>
           </text>
@@ -137,6 +138,7 @@ export function AiViewContent({
   data,
   height,
 }: ViewComponentProps<AiResult>): ReactNode {
+  const palette = usePalette()
   const { hiddenContentAnalysis } = data
   const hasWarning = hiddenContentAnalysis.severity !== 'none'
   const hasContent = data.markdown && data.wordCount > 0
@@ -188,7 +190,7 @@ export function AiViewContent({
             icon={warningIcon}
           />
         ) : (
-          <text fg={palette.green}>
+          <text fg={palette.base0B}>
             All checks passed. No hidden content detected.
           </text>
         )}
@@ -219,7 +221,7 @@ export function AiViewContent({
         {hasMetadata ? (
           <Table data={metadataItems} variant="borderless" labelWidth={10} />
         ) : (
-          <text fg={palette.gray}>
+          <text fg={palette.base03}>
             No title, author, site name, or excerpt found.
           </text>
         )}
@@ -248,7 +250,7 @@ export function AiViewContent({
             />
           </scrollbox>
         ) : (
-          <text fg={palette.yellow}>
+          <text fg={palette.base0A}>
             No content could be extracted from this page.
           </text>
         )}

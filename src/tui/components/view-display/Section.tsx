@@ -15,8 +15,7 @@ import {
   SectionPriority,
   type SectionSeverity,
 } from './priorities.js'
-import { sectionColors, getSeverityColor } from './section-theme.js'
-import { palette } from '../../theme.js'
+import { useSectionColors, getSeverityColor } from './section-theme.js'
 
 export interface SectionProps {
   /** Unique identifier within parent container */
@@ -54,20 +53,6 @@ export interface SectionProps {
 }
 
 /**
- * Get border color based on state.
- */
-function getBorderColor(
-  isSelected: boolean,
-  isExpanded: boolean,
-  severity?: SectionSeverity,
-): string {
-  if (isSelected) return sectionColors.borderSelected
-  if (severity) return getSeverityColor(severity)
-  if (isExpanded) return sectionColors.borderExpanded
-  return sectionColors.borderCollapsed
-}
-
-/**
  * Section component.
  *
  * Renders a collapsible section with header, optional body content,
@@ -88,14 +73,29 @@ export function Section({
   scrollable = false,
   children,
 }: SectionProps): ReactNode {
+  // Get theme colors
+  const sectionColors = useSectionColors()
+
   // Get state from the section hook (self-registers on mount)
   const { isExpanded, isSelected } = useSection(id, defaultExpanded, priority)
 
-  const borderColor = getBorderColor(isSelected, isExpanded, severity)
+  // Get border color based on state
+  const getBorderColor = (): string => {
+    if (isSelected) return sectionColors.borderSelected
+    if (severity) return getSeverityColor(sectionColors, severity)
+    if (isExpanded) return sectionColors.borderExpanded
+    return sectionColors.borderCollapsed
+  }
+
+  const borderColor = getBorderColor()
   const indicator = isExpanded ? boxChars.expanded : boxChars.collapsed
   const countText = count !== undefined ? ` (${count})` : ''
-  const titleColor = severity ? getSeverityColor(severity) : palette.white
-  const bracketColor = isSelected ? sectionColors.expandIndicator : palette.gray
+  const titleColor = severity
+    ? getSeverityColor(sectionColors, severity)
+    : sectionColors.defaultText
+  const bracketColor = isSelected
+    ? sectionColors.expandIndicator
+    : sectionColors.borderCollapsed
 
   // Build title with indicator on the left: [▼] {icon} TITLE (count)
   const titleContent = (

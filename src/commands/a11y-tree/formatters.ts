@@ -1,3 +1,4 @@
+import type { OutputFormat } from '../../lib/arguments.js'
 import { hasDifferences, type SnapshotDiff } from '../../lib/aria-snapshot.js'
 import {
   colorize,
@@ -10,7 +11,6 @@ import {
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
 import type { A11yCompareResult, A11yResult } from '../../lib/results.js'
-import type { OutputFormat } from '../../lib/arguments.js'
 
 // ============================================================================
 // Role Categories

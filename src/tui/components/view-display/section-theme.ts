@@ -1,39 +1,73 @@
 /**
  * Theme values for the expandable sections framework.
  */
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 
 /**
  * Section-specific theme colors.
  */
-export const sectionColors = {
+export interface SectionColors {
   // Borders
-  borderExpanded: palette.cyan,
-  borderCollapsed: palette.gray,
-  borderSelected: palette.yellow,
+  borderExpanded: string
+  borderCollapsed: string
+  borderSelected: string
 
   // Severity colors
-  severityCritical: palette.red,
-  severityError: palette.red,
-  severityWarning: palette.yellow,
-  severityInfo: palette.blue,
-  severitySuccess: palette.green,
-  severityMuted: palette.gray,
+  severityCritical: string
+  severityError: string
+  severityWarning: string
+  severityInfo: string
+  severitySuccess: string
+  severityMuted: string
 
   // Text
-  titleExpanded: palette.white,
-  titleCollapsed: palette.gray,
-  summaryText: palette.gray,
+  titleExpanded: string
+  titleCollapsed: string
+  summaryText: string
+  defaultText: string
 
   // Indicators
-  expandIndicator: palette.cyan,
-  countBadge: palette.yellow,
-} as const
+  expandIndicator: string
+  countBadge: string
+}
+
+/**
+ * Hook to get section-specific theme colors.
+ */
+export function useSectionColors(): SectionColors {
+  const palette = usePalette()
+
+  return {
+    // Borders
+    borderExpanded: palette.base0D, // accent/cyan
+    borderCollapsed: palette.base03, // muted/gray
+    borderSelected: palette.base0A, // highlight/yellow
+
+    // Severity colors
+    severityCritical: palette.base08, // red
+    severityError: palette.base08, // red
+    severityWarning: palette.base0A, // yellow
+    severityInfo: palette.base0D, // blue/cyan
+    severitySuccess: palette.base0B, // green
+    severityMuted: palette.base03, // gray
+
+    // Text
+    titleExpanded: palette.base05, // default foreground
+    titleCollapsed: palette.base03, // muted
+    summaryText: palette.base03, // muted
+    defaultText: palette.base05, // default foreground
+
+    // Indicators
+    expandIndicator: palette.base0D, // accent/cyan
+    countBadge: palette.base0A, // highlight/yellow
+  }
+}
 
 /**
  * Get severity color for a given severity level.
  */
 export function getSeverityColor(
+  sectionColors: SectionColors,
   severity?: 'critical' | 'error' | 'warning' | 'info' | 'success' | 'muted',
 ): string {
   switch (severity) {
@@ -50,6 +84,6 @@ export function getSeverityColor(
     case 'muted':
       return sectionColors.severityMuted
     default:
-      return palette.white
+      return sectionColors.defaultText
   }
 }

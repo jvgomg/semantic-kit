@@ -7,7 +7,7 @@
 import type { ReactNode } from 'react'
 import { useAtomValue } from 'jotai'
 import { urlAtom, useFocus, activeViewAtom } from '../../state/index.js'
-import { colors } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import { ViewEmpty } from './ViewEmpty.js'
 import { ViewError } from './ViewError.js'
 
@@ -17,6 +17,8 @@ export interface ViewRendererProps {
 }
 
 function ViewLoading({ url }: { url: string }): ReactNode {
+  const colors = useSemanticColors()
+
   return (
     <box flexDirection="column" paddingTop={1} paddingLeft={2}>
       <text fg={colors.text}>Loading...</text>
@@ -55,7 +57,10 @@ export function ViewRenderer({ height, width }: ViewRendererProps) {
     view.Component
   ) {
     // Success - render the view's component
-    content = view.Component({ data: view.data.data, height: contentHeight })
+    // Must use JSX syntax, not function call, so hooks inside the component
+    // are treated as belonging to the component, not this parent
+    const ViewComponent = view.Component
+    content = <ViewComponent data={view.data.data} height={contentHeight} />
   } else {
     // Fallback to loading
     content = <ViewLoading url={url} />

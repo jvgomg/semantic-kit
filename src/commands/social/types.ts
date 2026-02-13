@@ -1,8 +1,8 @@
 /**
  * Types for the Social lens command.
  */
-import type { OutputModeOptions } from '../../lib/output-mode.js'
 import type { OutputFormat } from '../../lib/arguments.js'
+import type { OutputModeOptions } from '../../lib/output-mode.js'
 
 // ============================================================================
 // Constants

@@ -1,8 +1,8 @@
 /**
  * Unit tests for TUI config loader.
  */
-import { describe, test, expect } from 'bun:test'
 import { join } from 'path'
+import { describe, test, expect } from 'bun:test'
 import { loadTuiConfig, formatConfigError } from './loader.js'
 
 // Test fixtures directory (co-located with module)

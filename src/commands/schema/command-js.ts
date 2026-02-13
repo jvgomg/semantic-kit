@@ -1,13 +1,13 @@
 /**
  * Schema:js utility command - Structured data extraction after JavaScript rendering.
  */
-import { resolveOutputMode } from '../../lib/output-mode.js'
-import { runCommand } from '../../lib/run-command.js'
 import {
   requireUrl,
   validateFormat,
   validateTimeout,
 } from '../../lib/arguments.js'
+import { resolveOutputMode } from '../../lib/output-mode.js'
+import { runCommand } from '../../lib/run-command.js'
 import { buildIssues, formatSchemaOutput } from './formatters.js'
 import { fetchSchemaJs } from './runner-js.js'
 import { VALID_FORMATS, type SchemaJsOptions } from './types.js'

@@ -1,7 +1,8 @@
 import { useTerminalDimensions } from '@opentui/react'
-import { colors } from '../../theme'
+import { useSemanticColors } from '../../theme.js'
 
 export const Modal = ({ children }: { children: React.ReactNode }) => {
+  const colors = useSemanticColors()
   const { width, height } = useTerminalDimensions()
 
   return (

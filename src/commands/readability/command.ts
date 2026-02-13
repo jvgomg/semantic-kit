@@ -1,9 +1,9 @@
 /**
  * Readability utility command - raw Readability extraction and analysis.
  */
+import { validateFormat } from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { validateFormat } from '../../lib/arguments.js'
 import { formatReadabilityOutput } from './formatters.js'
 import { fetchReadability } from './runner.js'
 import { VALID_FORMATS, type ReadabilityOptions } from './types.js'

@@ -19,7 +19,7 @@ import {
   SectionPriority,
   Table,
 } from '../../components/ui/index.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 import type { StructureCompareResult } from '../../../commands/structure/index.js'
 import type {
   LandmarkDiff,
@@ -41,11 +41,12 @@ function ComparisonContent({
 }: {
   data: StructureCompareResult
 }): ReactNode {
+  const palette = usePalette()
   const { summary, hasDifferences } = data.comparison
 
   if (!hasDifferences) {
     return (
-      <text fg={palette.green}>
+      <text fg={palette.base0B}>
         No structural differences between static HTML and JS-rendered page.
       </text>
     )
@@ -77,11 +78,12 @@ function MetadataContent({
 }: {
   metadata: MetadataDiff
 }): ReactNode {
+  const palette = usePalette()
   const hasChanges = metadata.title !== null || metadata.language !== null
 
   if (!hasChanges) {
     return (
-      <text fg={palette.gray}>
+      <text fg={palette.base03}>
         No metadata changes between static and rendered versions.
       </text>
     )
@@ -91,12 +93,12 @@ function MetadataContent({
     <box flexDirection="column" gap={0}>
       {metadata.title && (
         <box flexDirection="column" gap={0}>
-          <text fg={palette.gray}>Title:</text>
+          <text fg={palette.base03}>Title:</text>
           <box flexDirection="row" marginLeft={2}>
-            <text fg={palette.red}>- {metadata.title.static || '(none)'}</text>
+            <text fg={palette.base08}>- {metadata.title.static || '(none)'}</text>
           </box>
           <box flexDirection="row" marginLeft={2}>
-            <text fg={palette.green}>
+            <text fg={palette.base0B}>
               + {metadata.title.hydrated || '(none)'}
             </text>
           </box>
@@ -104,14 +106,14 @@ function MetadataContent({
       )}
       {metadata.language && (
         <box flexDirection="column" gap={0} marginTop={metadata.title ? 1 : 0}>
-          <text fg={palette.gray}>Language:</text>
+          <text fg={palette.base03}>Language:</text>
           <box flexDirection="row" marginLeft={2}>
-            <text fg={palette.red}>
+            <text fg={palette.base08}>
               - {metadata.language.static || '(not set)'}
             </text>
           </box>
           <box flexDirection="row" marginLeft={2}>
-            <text fg={palette.green}>
+            <text fg={palette.base0B}>
               + {metadata.language.hydrated || '(not set)'}
             </text>
           </box>
@@ -129,9 +131,10 @@ function LandmarksContent({
 }: {
   landmarks: LandmarkDiff[]
 }): ReactNode {
+  const palette = usePalette()
   if (landmarks.length === 0) {
     return (
-      <text fg={palette.gray}>
+      <text fg={palette.base03}>
         No landmark changes between static and rendered versions.
       </text>
     )
@@ -141,13 +144,13 @@ function LandmarksContent({
     <box flexDirection="column" gap={0}>
       {landmarks.map((landmark, i) => {
         const change = landmark.change
-        const changeColor = change > 0 ? palette.green : palette.red
+        const changeColor = change > 0 ? palette.base0B : palette.base08
         const changeSymbol = change > 0 ? '+' : ''
 
         return (
           <box key={i} flexDirection="row" gap={1}>
-            <text fg={palette.gray}>{landmark.role}:</text>
-            <text fg={palette.white}>
+            <text fg={palette.base03}>{landmark.role}:</text>
+            <text fg={palette.base05}>
               {landmark.staticCount} -&gt; {landmark.hydratedCount}
             </text>
             <text fg={changeColor}>
@@ -169,9 +172,10 @@ function HeadingsContent({
 }: {
   headings: HeadingDiff[]
 }): ReactNode {
+  const palette = usePalette()
   if (headings.length === 0) {
     return (
-      <text fg={palette.gray}>
+      <text fg={palette.base03}>
         No heading changes between static and rendered versions.
       </text>
     )
@@ -184,10 +188,10 @@ function HeadingsContent({
     <box flexDirection="column" gap={0}>
       {added.length > 0 && (
         <box flexDirection="column" gap={0}>
-          <text fg={palette.green}>Added by JavaScript:</text>
+          <text fg={palette.base0B}>Added by JavaScript:</text>
           {added.map((heading, i) => (
             <box key={`added-${i}`} flexDirection="row" marginLeft={2}>
-              <text fg={palette.green}>
+              <text fg={palette.base0B}>
                 + H{heading.level}: {heading.text}
               </text>
             </box>
@@ -200,10 +204,10 @@ function HeadingsContent({
           gap={0}
           marginTop={added.length > 0 ? 1 : 0}
         >
-          <text fg={palette.red}>Removed by JavaScript:</text>
+          <text fg={palette.base08}>Removed by JavaScript:</text>
           {removed.map((heading, i) => (
             <box key={`removed-${i}`} flexDirection="row" marginLeft={2}>
-              <text fg={palette.red}>
+              <text fg={palette.base08}>
                 - H{heading.level}: {heading.text}
               </text>
             </box>
@@ -218,6 +222,7 @@ function HeadingsContent({
  * Links changes content
  */
 function LinksContent({ links }: { links: LinkDiff }): ReactNode {
+  const palette = usePalette()
   const hasChanges =
     links.internalAdded > 0 ||
     links.internalRemoved > 0 ||
@@ -226,7 +231,7 @@ function LinksContent({ links }: { links: LinkDiff }): ReactNode {
 
   if (!hasChanges) {
     return (
-      <text fg={palette.gray}>
+      <text fg={palette.base03}>
         No link count changes between static and rendered versions.
       </text>
     )
@@ -236,44 +241,44 @@ function LinksContent({ links }: { links: LinkDiff }): ReactNode {
     <box flexDirection="column" gap={0}>
       {/* Internal link changes */}
       <box flexDirection="row" gap={1}>
-        <text fg={palette.gray}>Internal:</text>
+        <text fg={palette.base03}>Internal:</text>
         {links.internalAdded > 0 && (
-          <text fg={palette.green}>+{links.internalAdded}</text>
+          <text fg={palette.base0B}>+{links.internalAdded}</text>
         )}
         {links.internalRemoved > 0 && (
-          <text fg={palette.red}>-{links.internalRemoved}</text>
+          <text fg={palette.base08}>-{links.internalRemoved}</text>
         )}
         {links.internalAdded === 0 && links.internalRemoved === 0 && (
-          <text fg={palette.white}>no change</text>
+          <text fg={palette.base05}>no change</text>
         )}
       </box>
 
       {/* External link changes */}
       <box flexDirection="row" gap={1}>
-        <text fg={palette.gray}>External:</text>
+        <text fg={palette.base03}>External:</text>
         {links.externalAdded > 0 && (
-          <text fg={palette.green}>+{links.externalAdded}</text>
+          <text fg={palette.base0B}>+{links.externalAdded}</text>
         )}
         {links.externalRemoved > 0 && (
-          <text fg={palette.red}>-{links.externalRemoved}</text>
+          <text fg={palette.base08}>-{links.externalRemoved}</text>
         )}
         {links.externalAdded === 0 && links.externalRemoved === 0 && (
-          <text fg={palette.white}>no change</text>
+          <text fg={palette.base05}>no change</text>
         )}
       </box>
 
       {/* New internal destinations */}
       {links.newInternalDestinations.length > 0 && (
         <box flexDirection="column" gap={0} marginTop={1}>
-          <text fg={palette.gray}>New internal paths:</text>
+          <text fg={palette.base03}>New internal paths:</text>
           {links.newInternalDestinations.slice(0, 5).map((dest, i) => (
             <box key={i} flexDirection="row" marginLeft={2}>
-              <text fg={palette.green}>+ {dest}</text>
+              <text fg={palette.base0B}>+ {dest}</text>
             </box>
           ))}
           {links.newInternalDestinations.length > 5 && (
             <box flexDirection="row" marginLeft={2}>
-              <text fg={palette.gray}>
+              <text fg={palette.base03}>
                 ...and {links.newInternalDestinations.length - 5} more
               </text>
             </box>
@@ -284,15 +289,15 @@ function LinksContent({ links }: { links: LinkDiff }): ReactNode {
       {/* New external domains */}
       {links.newExternalDomains.length > 0 && (
         <box flexDirection="column" gap={0} marginTop={1}>
-          <text fg={palette.gray}>New external domains:</text>
+          <text fg={palette.base03}>New external domains:</text>
           {links.newExternalDomains.slice(0, 5).map((domain, i) => (
             <box key={i} flexDirection="row" marginLeft={2}>
-              <text fg={palette.green}>+ {domain}</text>
+              <text fg={palette.base0B}>+ {domain}</text>
             </box>
           ))}
           {links.newExternalDomains.length > 5 && (
             <box flexDirection="row" marginLeft={2}>
-              <text fg={palette.gray}>
+              <text fg={palette.base03}>
                 ...and {links.newExternalDomains.length - 5} more
               </text>
             </box>
@@ -314,6 +319,7 @@ export function StructureCompareViewContent({
   data,
   height,
 }: ViewComponentProps<StructureCompareResult>): ReactNode {
+  const palette = usePalette()
   const { comparison, timedOut } = data
   const { hasDifferences, summary, metadata, landmarks, headings, links } =
     comparison
@@ -374,7 +380,7 @@ export function StructureCompareViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={palette.yellow}>
+          <text fg={palette.base0A}>
             The page took too long to load. The comparison may be based on
             partial content.
           </text>

@@ -11,21 +11,21 @@ import {
   SectionPriority,
   Table,
 } from '../../components/ui/index.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 import type { ReadabilityJsResult } from '../../../lib/results.js'
 import type { ViewComponentProps } from '../types.js'
 
 /**
  * Format link density with assessment.
  */
-function formatLinkDensity(density: number): { text: string; color: string } {
+function formatLinkDensity(density: number, palette: ReturnType<typeof usePalette>): { text: string; color: string } {
   const percentage = (density * 100).toFixed(1)
   if (density < 0.1) {
-    return { text: `${percentage}% (low)`, color: palette.green }
+    return { text: `${percentage}% (low)`, color: palette.base0B }
   } else if (density < 0.3) {
-    return { text: `${percentage}% (moderate)`, color: palette.yellow }
+    return { text: `${percentage}% (moderate)`, color: palette.base0A }
   } else {
-    return { text: `${percentage}% (high)`, color: palette.red }
+    return { text: `${percentage}% (high)`, color: palette.base08 }
   }
 }
 
@@ -37,49 +37,50 @@ function MetricsContent({
 }: {
   data: ReadabilityJsResult
 }): ReactNode {
+  const palette = usePalette()
   const { metrics } = data
 
   const getReadabilityStatus = () => {
-    if (metrics.isReaderable) return { text: 'Yes', color: palette.green }
-    return { text: 'No', color: palette.yellow }
+    if (metrics.isReaderable) return { text: 'Yes', color: palette.base0B }
+    return { text: 'No', color: palette.base0A }
   }
 
   const readability = getReadabilityStatus()
-  const linkDensity = formatLinkDensity(metrics.linkDensity)
+  const linkDensity = formatLinkDensity(metrics.linkDensity, palette)
 
   return (
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Words:</span>{' '}
-          <span fg={palette.white}>{metrics.wordCount.toLocaleString()}</span>
+          <span fg={palette.base03}>Words:</span>{' '}
+          <span fg={palette.base05}>{metrics.wordCount.toLocaleString()}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Characters:</span>{' '}
-          <span fg={palette.white}>
+          <span fg={palette.base03}>Characters:</span>{' '}
+          <span fg={palette.base05}>
             {metrics.characterCount.toLocaleString()}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Paragraphs:</span>{' '}
-          <span fg={palette.white}>
+          <span fg={palette.base03}>Paragraphs:</span>{' '}
+          <span fg={palette.base05}>
             {metrics.paragraphCount.toLocaleString()}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Link Density:</span>{' '}
+          <span fg={palette.base03}>Link Density:</span>{' '}
           <span fg={linkDensity.color}>{linkDensity.text}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Readerable:</span>{' '}
+          <span fg={palette.base03}>Readerable:</span>{' '}
           <span fg={readability.color}>{readability.text}</span>
         </text>
       </box>
@@ -94,6 +95,7 @@ export function ReadabilityJsViewContent({
   data,
   height,
 }: ViewComponentProps<ReadabilityJsResult>): ReactNode {
+  const palette = usePalette()
   const { metrics, extraction, timedOut } = data
   const hasContent = data.markdown && metrics.wordCount > 0
   const hasExtraction =
@@ -134,7 +136,7 @@ export function ReadabilityJsViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={palette.yellow}>
+          <text fg={palette.base0A}>
             The page took too long to load. The results shown are from partial
             content. Consider increasing the timeout with --timeout.
           </text>
@@ -168,7 +170,7 @@ export function ReadabilityJsViewContent({
         {hasExtraction ? (
           <Table data={extractionItems} variant="borderless" labelWidth={10} />
         ) : (
-          <text fg={palette.gray}>
+          <text fg={palette.base03}>
             No content could be extracted. Readability requires article-like
             content.
           </text>
@@ -198,7 +200,7 @@ export function ReadabilityJsViewContent({
             />
           </scrollbox>
         ) : (
-          <text fg={palette.yellow}>
+          <text fg={palette.base0A}>
             No content could be extracted from this page.
           </text>
         )}

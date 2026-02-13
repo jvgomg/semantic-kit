@@ -1,6 +1,7 @@
 /**
  * Jotai store initialization with pre-loaded persisted state.
  */
+import type { TuiConfig } from '../../../lib/tui-config/index.js'
 import {
   urlAtom,
   activeModalAtom,
@@ -19,7 +20,6 @@ import {
   type StorageKeySource,
 } from './storage.js'
 import type { PersistedState } from './types.js'
-import type { TuiConfig } from '../../../lib/tui-config/index.js'
 
 /**
  * Context for persistence - holds the writer function.

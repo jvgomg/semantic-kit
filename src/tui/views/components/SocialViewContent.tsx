@@ -15,7 +15,7 @@ import {
   Section,
   SectionPriority,
 } from '../../components/ui/index.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 import type {
   SocialResult,
   SocialTagGroup,
@@ -31,6 +31,7 @@ import type { ViewComponentProps } from '../types.js'
  * ASCII card preview mockup
  */
 function CardPreview({ data }: { data: SocialResult }): ReactNode {
+  const palette = usePalette()
   const CARD_WIDTH = 50
   const innerWidth = CARD_WIDTH - 2
 
@@ -71,47 +72,47 @@ function CardPreview({ data }: { data: SocialResult }): ReactNode {
   return (
     <box flexDirection="column" gap={0}>
       {/* Top border */}
-      <text fg={palette.gray}>{'┌' + '─'.repeat(innerWidth) + '┐'}</text>
+      <text fg={palette.base03}>{'┌' + '─'.repeat(innerWidth) + '┐'}</text>
 
       {/* Image area */}
       <text>
-        <span fg={palette.gray}>{'│'}</span>
-        <span fg={palette.darkGray}>
+        <span fg={palette.base03}>{'│'}</span>
+        <span fg={palette.base02}>
           {` ${displayImage}`.padEnd(innerWidth)}
         </span>
-        <span fg={palette.gray}>{'│'}</span>
+        <span fg={palette.base03}>{'│'}</span>
       </text>
 
       {/* Divider */}
-      <text fg={palette.gray}>{'│' + '─'.repeat(innerWidth) + '│'}</text>
+      <text fg={palette.base03}>{'│' + '─'.repeat(innerWidth) + '│'}</text>
 
       {/* Site name */}
       {displaySite && (
         <text>
-          <span fg={palette.gray}>{'│'}</span>
-          <span fg={palette.darkGray}>
+          <span fg={palette.base03}>{'│'}</span>
+          <span fg={palette.base02}>
             {` ${displaySite}`.padEnd(innerWidth)}
           </span>
-          <span fg={palette.gray}>{'│'}</span>
+          <span fg={palette.base03}>{'│'}</span>
         </text>
       )}
 
       {/* Title */}
       <text>
-        <span fg={palette.gray}>{'│'}</span>
-        <span fg={palette.white}>{` ${displayTitle}`.padEnd(innerWidth)}</span>
-        <span fg={palette.gray}>{'│'}</span>
+        <span fg={palette.base03}>{'│'}</span>
+        <span fg={palette.base05}>{` ${displayTitle}`.padEnd(innerWidth)}</span>
+        <span fg={palette.base03}>{'│'}</span>
       </text>
 
       {/* Description */}
       <text>
-        <span fg={palette.gray}>{'│'}</span>
+        <span fg={palette.base03}>{'│'}</span>
         <span>{` ${displayDesc}`.padEnd(innerWidth)}</span>
-        <span fg={palette.gray}>{'│'}</span>
+        <span fg={palette.base03}>{'│'}</span>
       </text>
 
       {/* Bottom border */}
-      <text fg={palette.gray}>{'└' + '─'.repeat(innerWidth) + '┘'}</text>
+      <text fg={palette.base03}>{'└' + '─'.repeat(innerWidth) + '┘'}</text>
     </box>
   )
 }
@@ -128,14 +129,15 @@ function IssuesContent({
 }: {
   issues: SocialValidationIssue[]
 }): ReactNode {
+  const palette = usePalette()
   if (issues.length === 0) {
-    return <text fg={palette.green}>No issues found</text>
+    return <text fg={palette.base0B}>No issues found</text>
   }
 
   const severityColors: Record<string, string> = {
-    error: palette.red,
-    warning: palette.yellow,
-    info: palette.gray,
+    error: palette.base08,
+    warning: palette.base0A,
+    info: palette.base03,
   }
 
   const severityLabels: Record<string, string> = {
@@ -166,6 +168,7 @@ function IssuesContent({
  * Display a tag group's tags
  */
 function TagGroupContent({ group }: { group: SocialTagGroup }): ReactNode {
+  const palette = usePalette()
   const truncate = (text: string, maxLen: number): string => {
     if (text.length <= maxLen) return text
     return text.slice(0, maxLen - 3) + '...'
@@ -177,8 +180,8 @@ function TagGroupContent({ group }: { group: SocialTagGroup }): ReactNode {
       {Object.entries(group.tags).map(([key, value], idx) => (
         <box key={idx} paddingLeft={0}>
           <text>
-            <span fg={palette.cyan}>{key}:</span>{' '}
-            <span fg={palette.white}>{truncate(value, 40)}</span>
+            <span fg={palette.base0D}>{key}:</span>{' '}
+            <span fg={palette.base05}>{truncate(value, 40)}</span>
           </text>
         </box>
       ))}
@@ -197,6 +200,7 @@ export function SocialViewContent({
   data,
   height,
 }: ViewComponentProps<SocialResult>): ReactNode {
+  const palette = usePalette()
   const hasOpenGraph = data.openGraph !== null
   const hasTwitter = data.twitter !== null
   const hasAny = hasOpenGraph || hasTwitter
@@ -263,7 +267,7 @@ export function SocialViewContent({
         {hasOpenGraph ? (
           <TagGroupContent group={data.openGraph!} />
         ) : (
-          <text fg={palette.gray}>
+          <text fg={palette.base03}>
             No Open Graph tags found. Add og:title, og:description, og:image for
             social previews.
           </text>
@@ -287,7 +291,7 @@ export function SocialViewContent({
         {hasTwitter ? (
           <TagGroupContent group={data.twitter!} />
         ) : (
-          <text fg={palette.gray}>
+          <text fg={palette.base03}>
             No Twitter Card tags found. Twitter will fall back to Open Graph
             tags.
           </text>

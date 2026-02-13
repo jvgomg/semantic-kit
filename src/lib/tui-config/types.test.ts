@@ -2,8 +2,8 @@
  * Unit tests for TUI config type guards.
  */
 import { describe, test, expect } from 'bun:test'
-import { isConfigGroup, isConfigUrl } from './types.js'
 import type { ConfigEntry } from './schema.js'
+import { isConfigGroup, isConfigUrl } from './types.js'
 
 describe('isConfigGroup', () => {
   test('returns true for group entry', () => {

@@ -5,13 +5,11 @@
  * for the config tab in the URL list panel.
  */
 import { atom } from 'jotai'
-import type { TuiConfig } from '../../../lib/tui-config/index.js'
-import {
+import type { TuiConfig,
   buildConfigTree,
   flattenConfigTree,
   type ConfigTreeNode,
-  type FlattenedConfigNode,
-} from '../../../lib/tui-config/index.js'
+  type FlattenedConfigNode } from '../../../lib/tui-config/index.js'
 
 // ============================================================================
 // Types

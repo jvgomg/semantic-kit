@@ -1,9 +1,9 @@
 /**
  * Google lens command - shows how Googlebot sees your page.
  */
+import { validateFormat } from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { validateFormat } from '../../lib/arguments.js'
 import { buildIssues, formatGoogleOutput } from './formatters.js'
 import { fetchGoogle } from './runner.js'
 import { VALID_FORMATS, type GoogleOptions } from './types.js'

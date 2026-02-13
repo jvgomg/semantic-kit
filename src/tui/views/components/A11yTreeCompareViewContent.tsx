@@ -17,7 +17,7 @@ import {
   SectionPriority,
   Table,
 } from '../../components/ui/index.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 import type { A11yCompareResult } from '../../../lib/results.js'
 import type { ViewComponentProps } from '../types.js'
 
@@ -25,6 +25,7 @@ import type { ViewComponentProps } from '../types.js'
  * Summary section content showing high-level comparison.
  */
 function SummaryContent({ data }: { data: A11yCompareResult }): ReactNode {
+  const palette = usePalette()
   const { diff } = data
   const staticTotal = Object.values(data.static.counts).reduce((a, b) => a + b, 0)
   const hydratedTotal = Object.values(data.hydrated.counts).reduce((a, b) => a + b, 0)
@@ -34,44 +35,44 @@ function SummaryContent({ data }: { data: A11yCompareResult }): ReactNode {
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Static HTML Nodes:</span>{' '}
-          <span fg={palette.white}>{staticTotal}</span>
+          <span fg={palette.base03}>Static HTML Nodes:</span>{' '}
+          <span fg={palette.base05}>{staticTotal}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Rendered DOM Nodes:</span>{' '}
-          <span fg={palette.white}>{hydratedTotal}</span>
+          <span fg={palette.base03}>Rendered DOM Nodes:</span>{' '}
+          <span fg={palette.base05}>{hydratedTotal}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Node Difference:</span>{' '}
-          <span fg={nodeDiff > 0 ? palette.green : nodeDiff < 0 ? palette.red : palette.white}>
+          <span fg={palette.base03}>Node Difference:</span>{' '}
+          <span fg={nodeDiff > 0 ? palette.base0B : nodeDiff < 0 ? palette.base08 : palette.base05}>
             {nodeDiff > 0 ? `+${nodeDiff}` : nodeDiff}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Roles Changed:</span>{' '}
-          <span fg={diff.countChanges.length > 0 ? palette.yellow : palette.green}>
+          <span fg={palette.base03}>Roles Changed:</span>{' '}
+          <span fg={diff.countChanges.length > 0 ? palette.base0A : palette.base0B}>
             {diff.countChanges.length}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Elements Added:</span>{' '}
-          <span fg={diff.added.length > 0 ? palette.green : palette.white}>
+          <span fg={palette.base03}>Elements Added:</span>{' '}
+          <span fg={diff.added.length > 0 ? palette.base0B : palette.base05}>
             {diff.added.length}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Elements Removed:</span>{' '}
-          <span fg={diff.removed.length > 0 ? palette.red : palette.white}>
+          <span fg={palette.base03}>Elements Removed:</span>{' '}
+          <span fg={diff.removed.length > 0 ? palette.base08 : palette.base05}>
             {diff.removed.length}
           </span>
         </text>
@@ -84,11 +85,12 @@ function SummaryContent({ data }: { data: A11yCompareResult }): ReactNode {
  * Role changes section content.
  */
 function RoleChangesContent({ data }: { data: A11yCompareResult }): ReactNode {
+  const palette = usePalette()
   const { diff } = data
 
   if (diff.countChanges.length === 0) {
     return (
-      <text fg={palette.gray}>
+      <text fg={palette.base03}>
         No role count changes between static and rendered versions.
       </text>
     )
@@ -121,11 +123,12 @@ function formatSnapshotLine(line: string, maxLength = 80): string {
  * Elements added section content.
  */
 function ElementsAddedContent({ data }: { data: A11yCompareResult }): ReactNode {
+  const palette = usePalette()
   const { diff } = data
 
   if (diff.added.length === 0) {
     return (
-      <text fg={palette.gray}>
+      <text fg={palette.base03}>
         No elements were added by JavaScript.
       </text>
     )
@@ -139,12 +142,12 @@ function ElementsAddedContent({ data }: { data: A11yCompareResult }): ReactNode 
     <box flexDirection="column" gap={0}>
       {displayItems.map((line, index) => (
         <text key={index}>
-          <span fg={palette.green}>+ </span>
-          <span fg={palette.white}>{formatSnapshotLine(line)}</span>
+          <span fg={palette.base0B}>+ </span>
+          <span fg={palette.base05}>{formatSnapshotLine(line)}</span>
         </text>
       ))}
       {hasMore && (
-        <text fg={palette.gray}>
+        <text fg={palette.base03}>
           ... and {diff.added.length - 50} more
         </text>
       )}
@@ -156,11 +159,12 @@ function ElementsAddedContent({ data }: { data: A11yCompareResult }): ReactNode 
  * Elements removed section content.
  */
 function ElementsRemovedContent({ data }: { data: A11yCompareResult }): ReactNode {
+  const palette = usePalette()
   const { diff } = data
 
   if (diff.removed.length === 0) {
     return (
-      <text fg={palette.gray}>
+      <text fg={palette.base03}>
         No elements were removed by JavaScript.
       </text>
     )
@@ -174,12 +178,12 @@ function ElementsRemovedContent({ data }: { data: A11yCompareResult }): ReactNod
     <box flexDirection="column" gap={0}>
       {displayItems.map((line, index) => (
         <text key={index}>
-          <span fg={palette.red}>- </span>
-          <span fg={palette.white}>{formatSnapshotLine(line)}</span>
+          <span fg={palette.base08}>- </span>
+          <span fg={palette.base05}>{formatSnapshotLine(line)}</span>
         </text>
       ))}
       {hasMore && (
-        <text fg={palette.gray}>
+        <text fg={palette.base03}>
           ... and {diff.removed.length - 50} more
         </text>
       )}
@@ -194,6 +198,7 @@ export function A11yTreeCompareViewContent({
   data,
   height,
 }: ViewComponentProps<A11yCompareResult>): ReactNode {
+  const palette = usePalette()
   const { hasDifferences, diff } = data
 
   // Check for timeout
@@ -233,7 +238,7 @@ export function A11yTreeCompareViewContent({
           summary="Page load timed out - comparison may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={palette.yellow}>
+          <text fg={palette.base0A}>
             {data.static.timedOut && data.hydrated.timedOut
               ? 'Both static and rendered fetches timed out.'
               : data.static.timedOut

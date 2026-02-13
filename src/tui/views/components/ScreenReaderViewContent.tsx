@@ -17,7 +17,7 @@ import {
   Card,
   CardRow,
 } from '../../components/ui/index.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 import type { ScreenReaderResult } from '../../../lib/results.js'
 import type { ViewComponentProps } from '../types.js'
 
@@ -73,42 +73,43 @@ function MissingHeadingsCard(): ReactNode {
  * Summary section content
  */
 function SummaryContent({ data }: { data: ScreenReaderResult }): ReactNode {
+  const palette = usePalette()
   const { summary } = data
 
   const getStatusColor = (value: boolean) =>
-    value ? palette.green : palette.red
+    value ? palette.base0B : palette.base08
 
   return (
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Page Title:</span>{' '}
-          <span fg={palette.white}>
+          <span fg={palette.base03}>Page Title:</span>{' '}
+          <span fg={palette.base05}>
             {summary.pageTitle ?? '(not found)'}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Landmarks:</span>{' '}
-          <span fg={palette.white}>{summary.landmarkCount}</span>
+          <span fg={palette.base03}>Landmarks:</span>{' '}
+          <span fg={palette.base05}>{summary.landmarkCount}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Headings:</span>{' '}
-          <span fg={palette.white}>{summary.headingCount}</span>
+          <span fg={palette.base03}>Headings:</span>{' '}
+          <span fg={palette.base05}>{summary.headingCount}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Links:</span>{' '}
-          <span fg={palette.white}>{summary.linkCount}</span>
+          <span fg={palette.base03}>Links:</span>{' '}
+          <span fg={palette.base05}>{summary.linkCount}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Main Landmark:</span>{' '}
+          <span fg={palette.base03}>Main Landmark:</span>{' '}
           <span fg={getStatusColor(summary.hasMainLandmark)}>
             {summary.hasMainLandmark ? 'Yes' : 'No'}
           </span>
@@ -116,8 +117,8 @@ function SummaryContent({ data }: { data: ScreenReaderResult }): ReactNode {
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Skip Link:</span>{' '}
-          <span fg={summary.hasSkipLink ? palette.green : palette.yellow}>
+          <span fg={palette.base03}>Skip Link:</span>{' '}
+          <span fg={summary.hasSkipLink ? palette.base0B : palette.base0A}>
             {summary.hasSkipLink ? 'Yes' : 'No'}
           </span>
         </text>
@@ -130,9 +131,10 @@ function SummaryContent({ data }: { data: ScreenReaderResult }): ReactNode {
  * Landmarks section content
  */
 function LandmarksContent({ data }: { data: ScreenReaderResult }): ReactNode {
+  const palette = usePalette()
   if (data.landmarks.length === 0) {
     return (
-      <text fg={palette.yellow}>
+      <text fg={palette.base0A}>
         No landmark regions found on this page.
       </text>
     )
@@ -143,12 +145,12 @@ function LandmarksContent({ data }: { data: ScreenReaderResult }): ReactNode {
       {data.landmarks.map((landmark, index) => (
         <box key={index} flexDirection="column">
           <text>
-            <span fg={palette.cyan}>{landmark.role}</span>
+            <span fg={palette.base0D}>{landmark.role}</span>
             {landmark.name && (
-              <span fg={palette.gray}> "{landmark.name}"</span>
+              <span fg={palette.base03}> "{landmark.name}"</span>
             )}
           </text>
-          <text fg={palette.gray}>
+          <text fg={palette.base03}>
             {'  '}({landmark.headingCount} headings, {landmark.linkCount} links)
           </text>
         </box>
@@ -161,9 +163,10 @@ function LandmarksContent({ data }: { data: ScreenReaderResult }): ReactNode {
  * Headings section content with tree-like display
  */
 function HeadingsContent({ data }: { data: ScreenReaderResult }): ReactNode {
+  const palette = usePalette()
   if (data.headings.length === 0) {
     return (
-      <text fg={palette.yellow}>
+      <text fg={palette.base0A}>
         No headings found on this page.
       </text>
     )
@@ -178,9 +181,9 @@ function HeadingsContent({ data }: { data: ScreenReaderResult }): ReactNode {
           : heading.text
         return (
           <text key={index}>
-            <span fg={palette.gray}>{indent}</span>
-            <span fg={palette.darkGray}>H{heading.level}</span>
-            <span fg={palette.white}>  {text}</span>
+            <span fg={palette.base03}>{indent}</span>
+            <span fg={palette.base02}>H{heading.level}</span>
+            <span fg={palette.base05}>  {text}</span>
           </text>
         )
       })}
@@ -195,6 +198,7 @@ export function ScreenReaderViewContent({
   data,
   height,
 }: ViewComponentProps<ScreenReaderResult>): ReactNode {
+  const palette = usePalette()
   const { summary } = data
 
   // Check for issues
@@ -236,7 +240,7 @@ export function ScreenReaderViewContent({
             {hasHeadingIssue && <MissingHeadingsCard />}
           </box>
         ) : (
-          <text fg={palette.green}>
+          <text fg={palette.base0B}>
             All basic accessibility checks passed.
           </text>
         )}

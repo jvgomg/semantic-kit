@@ -1,7 +1,7 @@
+import { validateFormat } from '../../lib/arguments.js'
 import { fetchHtmlContent } from '../../lib/fetch.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { validateFormat } from '../../lib/arguments.js'
 import { buildIssues, formatAiOutput } from './formatters.js'
 import { fetchAi } from './runner.js'
 import { VALID_FORMATS, type AiOptions } from './types.js'

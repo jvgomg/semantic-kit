@@ -14,7 +14,7 @@ import type {
   SitemapTreeNode,
 } from '../../../lib/sitemap.js'
 import { buildSitemapTree, flattenSitemapTree } from '../../../lib/sitemap.js'
-import { colors, palette } from '../../theme.js'
+import { useSemanticColors, usePalette } from '../../theme.js'
 import { boxChars } from '../view-display/priorities.js'
 
 // ============================================================================
@@ -60,6 +60,9 @@ export function SitemapBrowser({
   height,
   isFocused,
 }: SitemapBrowserProps): ReactNode {
+  const colors = useSemanticColors()
+  const palette = usePalette()
+
   // Build and flatten the tree
   const flatNodes = useMemo<FlattenedNode[]>(() => {
     if (!sitemapData || sitemapData.type === 'error') {
@@ -204,7 +207,7 @@ export function SitemapBrowser({
   if (sitemapData && sitemapData.type === 'error') {
     return (
       <box flexDirection="column">
-        <text fg={palette.red}>Error: {sitemapData.message}</text>
+        <text fg={palette.base08}>Error: {sitemapData.message}</text>
       </box>
     )
   }
@@ -267,7 +270,7 @@ export function SitemapBrowser({
         const pathDisplay = node.path
         const countBadge =
           hasChildren && node.urlCount > 0 ? (
-            <text fg={palette.gray}> ({node.urlCount})</text>
+            <text fg={palette.base03}> ({node.urlCount})</text>
           ) : null
 
         // Style differs based on focus state:
@@ -285,12 +288,12 @@ export function SitemapBrowser({
         // Expand indicator color: cyan for selected item or ancestors of selected (when focused)
         const expandColor =
           hasChildren && isFocused && (isSelected || isAncestorOfSelected)
-            ? palette.cyan
-            : palette.darkGray
+            ? palette.base0D
+            : palette.base02
 
         return (
           <box key={node.displayPath} flexDirection="row">
-            <text fg={palette.darkGray}>{indent}</text>
+            <text fg={palette.base02}>{indent}</text>
             <text fg={expandColor}>{expandIndicator}</text>
             <text {...style}>{pathDisplay}</text>
             {countBadge}

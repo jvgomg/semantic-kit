@@ -6,7 +6,7 @@
  */
 import type { ReactNode } from 'react'
 import { boxChars } from '../view-display/priorities.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 
 /**
  * A node in the tree structure.
@@ -72,6 +72,7 @@ function TreeNodeComponent({
   expandable: boolean
   prefix: string
 }): ReactNode {
+  const palette = usePalette()
   const hasChildren = node.children && node.children.length > 0
   const isExpanded = node.expanded ?? true
 
@@ -107,13 +108,13 @@ function TreeNodeComponent({
     <box flexDirection="column">
       {/* Node line */}
       <box flexDirection="row">
-        <text fg={palette.darkGray}>{prefix}{connector}</text>
+        <text fg={palette.base02}>{prefix}{connector}</text>
         {expandable && hasChildren && !atMaxDepth && (
-          <text fg={palette.cyan}>{expandIndicator}</text>
+          <text fg={palette.base0D}>{expandIndicator}</text>
         )}
-        <text fg={palette.cyan}>{icon}</text>
+        <text fg={palette.base0D}>{icon}</text>
         <text>{node.label}</text>
-        {meta && <text fg={palette.gray}>{meta}</text>}
+        {meta && <text fg={palette.base03}>{meta}</text>}
       </box>
 
       {/* Children */}
@@ -138,7 +139,7 @@ function TreeNodeComponent({
 
       {/* Truncation indicator at max depth */}
       {hasChildren && !atMaxDepth && !isExpanded && expandable && (
-        <text fg={palette.gray}>
+        <text fg={palette.base03}>
           {childPrefix}  ... ({node.children!.length} items)
         </text>
       )}
@@ -159,8 +160,10 @@ export function Tree({
   maxDepth,
   expandable = false,
 }: TreeProps): ReactNode {
+  const palette = usePalette()
+
   if (nodes.length === 0) {
-    return <text fg={palette.gray}>(empty)</text>
+    return <text fg={palette.base03}>(empty)</text>
   }
 
   return (

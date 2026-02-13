@@ -32,7 +32,7 @@ import {
   STATUS_BAR_HEIGHT,
   URL_BAR_HEIGHT,
 } from './components/chrome/index.js'
-import { colors } from './theme.js'
+import { useSemanticColors } from './theme.js'
 import { getDefaultSitemapUrl, isSitemapUrl } from '../lib/sitemap.js'
 // Import views to trigger registration
 import './views/index.js'
@@ -56,6 +56,7 @@ export function App({ initialUrl, hasConfig }: AppProps) {
   const { focus, focusNext, focusPrevious, disableFocus, enableFocus } =
     useFocusManager()
   const { width, height } = useTerminalDimensions()
+  const colors = useSemanticColors()
 
   // Atoms
   const [url, setUrlState] = useAtom(urlAtom)

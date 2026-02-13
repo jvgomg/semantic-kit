@@ -3,6 +3,7 @@
  *
  * Formats reader extraction results for CLI output.
  */
+import type { OutputFormat } from '../../lib/arguments.js'
 import {
   createFormatterContext,
   formatTableGroups,
@@ -10,7 +11,6 @@ import {
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
 import type { ReaderResult } from '../../lib/results.js'
-import type { OutputFormat } from '../../lib/arguments.js'
 
 // ============================================================================
 // Table Groups

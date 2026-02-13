@@ -14,7 +14,7 @@ import {
   useFocus,
   type GroupedMenuItem,
 } from '../../state/index.js'
-import { colors } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import { boxChars } from '../view-display/priorities.js'
 
 export interface MenuProps {
@@ -25,6 +25,7 @@ export interface MenuProps {
  * Menu component with grouped sections (LENSES, TOOLS)
  */
 export function Menu({ width }: MenuProps) {
+  const colors = useSemanticColors()
   const { isFocused, isInputActive, focus } = useFocus('menu')
   const [activeMenuIndex, setActiveMenuIndex] = useAtom(activeMenuIndexAtom)
   const items = useAtomValue(groupedMenuItemsAtom)
@@ -92,6 +93,8 @@ export function Menu({ width }: MenuProps) {
  * Section header (LENSES, TOOLS)
  */
 function MenuHeader({ label }: { label: string }) {
+  const colors = useSemanticColors()
+
   return (
     <box paddingLeft={1} paddingTop={1}>
       <text fg={colors.muted}>
@@ -115,6 +118,7 @@ function MenuViewItem({
   isFocused: boolean
   onClick: () => void
 }) {
+  const colors = useSemanticColors()
   const bgColor = isSelected ? colors.backgroundSelected : 'transparent'
   const fgColor = isSelected
     ? colors.textSelected

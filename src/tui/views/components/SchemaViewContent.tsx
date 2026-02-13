@@ -20,7 +20,7 @@ import {
   Card,
   CardRow,
 } from '../../components/ui/index.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 import type { SchemaResult, MetatagGroupResult } from '../../../lib/results.js'
 import type { ViewComponentProps } from '../types.js'
 
@@ -130,6 +130,7 @@ function flattenSchemaProperties(
  * Summary section content
  */
 function SummaryContent({ data }: { data: SchemaResult }): ReactNode {
+  const palette = usePalette()
   const counts = countSchemaTypes(data)
   const hasOG = data.openGraph !== null
   const hasTwitter = data.twitter !== null
@@ -138,8 +139,8 @@ function SummaryContent({ data }: { data: SchemaResult }): ReactNode {
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>JSON-LD:</span>{' '}
-          <span fg={counts.jsonld > 0 ? palette.green : palette.gray}>
+          <span fg={palette.base03}>JSON-LD:</span>{' '}
+          <span fg={counts.jsonld > 0 ? palette.base0B : palette.base03}>
             {counts.jsonld} type{counts.jsonld !== 1 ? 's' : ''}
           </span>
         </text>
@@ -147,8 +148,8 @@ function SummaryContent({ data }: { data: SchemaResult }): ReactNode {
       {counts.microdata > 0 && (
         <box flexDirection="row" gap={2}>
           <text>
-            <span fg={palette.gray}>Microdata:</span>{' '}
-            <span fg={palette.green}>
+            <span fg={palette.base03}>Microdata:</span>{' '}
+            <span fg={palette.base0B}>
               {counts.microdata} type{counts.microdata !== 1 ? 's' : ''}
             </span>
           </text>
@@ -157,8 +158,8 @@ function SummaryContent({ data }: { data: SchemaResult }): ReactNode {
       {counts.rdfa > 0 && (
         <box flexDirection="row" gap={2}>
           <text>
-            <span fg={palette.gray}>RDFa:</span>{' '}
-            <span fg={palette.green}>
+            <span fg={palette.base03}>RDFa:</span>{' '}
+            <span fg={palette.base0B}>
               {counts.rdfa} type{counts.rdfa !== 1 ? 's' : ''}
             </span>
           </text>
@@ -166,16 +167,16 @@ function SummaryContent({ data }: { data: SchemaResult }): ReactNode {
       )}
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Open Graph:</span>{' '}
-          <span fg={hasOG ? palette.green : palette.gray}>
+          <span fg={palette.base03}>Open Graph:</span>{' '}
+          <span fg={hasOG ? palette.base0B : palette.base03}>
             {hasOG ? `${Object.keys(data.openGraph!.tags).length} tags` : 'None'}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Twitter Cards:</span>{' '}
-          <span fg={hasTwitter ? palette.green : palette.gray}>
+          <span fg={palette.base03}>Twitter Cards:</span>{' '}
+          <span fg={hasTwitter ? palette.base0B : palette.base03}>
             {hasTwitter ? `${Object.keys(data.twitter!.tags).length} tags` : 'None'}
           </span>
         </text>
@@ -196,6 +197,7 @@ function SchemaCard({
   instance: unknown
   index: number
 }): ReactNode {
+  const palette = usePalette()
   const properties = flattenSchemaProperties(instance)
     .filter(({ path }) => path !== '@type')
     .slice(0, 8) // Limit displayed properties
@@ -206,7 +208,7 @@ function SchemaCard({
         <CardRow key={idx} label={path} value={formatValue(value, 50)} />
       ))}
       {properties.length === 0 && (
-        <text fg={palette.gray}>(empty schema)</text>
+        <text fg={palette.base03}>(empty schema)</text>
       )}
     </Card>
   )
@@ -222,10 +224,11 @@ function SchemaTypeSection({
   schemas: Record<string, unknown[]>
   format: string
 }): ReactNode {
+  const palette = usePalette()
   const types = Object.entries(schemas).filter(([key]) => key !== 'undefined')
 
   if (types.length === 0) {
-    return <text fg={palette.gray}>No {format} schemas found.</text>
+    return <text fg={palette.base03}>No {format} schemas found.</text>
   }
 
   let globalIndex = 0
@@ -256,6 +259,7 @@ function MetatagGroupContent({
 }: {
   group: MetatagGroupResult
 }): ReactNode {
+  const palette = usePalette()
   const tags = Object.entries(group.tags)
 
   return (
@@ -263,15 +267,15 @@ function MetatagGroupContent({
       {tags.map(([name, value], idx) => (
         <box key={idx}>
           <text>
-            <span fg={palette.cyan}>{name}:</span>{' '}
-            <span fg={palette.white}>{truncate(value, 50)}</span>
+            <span fg={palette.base0D}>{name}:</span>{' '}
+            <span fg={palette.base05}>{truncate(value, 50)}</span>
           </text>
         </box>
       ))}
 
       {group.missingRequired.length > 0 && (
         <box marginTop={1}>
-          <text fg={palette.yellow}>
+          <text fg={palette.base0A}>
             Missing required: {group.missingRequired.join(', ')}
           </text>
         </box>
@@ -279,7 +283,7 @@ function MetatagGroupContent({
 
       {group.missingRecommended.length > 0 && (
         <box>
-          <text fg={palette.gray}>
+          <text fg={palette.base03}>
             Missing recommended: {group.missingRecommended.join(', ')}
           </text>
         </box>
@@ -292,10 +296,11 @@ function MetatagGroupContent({
  * Other metatags content
  */
 function MetaContent({ metatags }: { metatags: Record<string, string> }): ReactNode {
+  const palette = usePalette()
   const entries = Object.entries(metatags)
 
   if (entries.length === 0) {
-    return <text fg={palette.gray}>No other metatags found.</text>
+    return <text fg={palette.base03}>No other metatags found.</text>
   }
 
   return (
@@ -303,8 +308,8 @@ function MetaContent({ metatags }: { metatags: Record<string, string> }): ReactN
       {entries.map(([name, value], idx) => (
         <box key={idx}>
           <text>
-            <span fg={palette.cyan}>{name}:</span>{' '}
-            <span fg={palette.white}>{truncate(value, 50)}</span>
+            <span fg={palette.base0D}>{name}:</span>{' '}
+            <span fg={palette.base05}>{truncate(value, 50)}</span>
           </text>
         </box>
       ))}
@@ -323,6 +328,7 @@ export function SchemaViewContent({
   data,
   height,
 }: ViewComponentProps<SchemaResult>): ReactNode {
+  const palette = usePalette()
   const counts = countSchemaTypes(data)
   const hasOG = data.openGraph !== null
   const hasTwitter = data.twitter !== null
@@ -417,7 +423,7 @@ export function SchemaViewContent({
         {hasOG ? (
           <MetatagGroupContent group={data.openGraph!} />
         ) : (
-          <text fg={palette.gray}>
+          <text fg={palette.base03}>
             No Open Graph tags found. Add og:title, og:description, og:image for
             social previews.
           </text>
@@ -446,7 +452,7 @@ export function SchemaViewContent({
         {hasTwitter ? (
           <MetatagGroupContent group={data.twitter!} />
         ) : (
-          <text fg={palette.gray}>
+          <text fg={palette.base03}>
             No Twitter Card tags found. Twitter will fall back to Open Graph tags.
           </text>
         )}

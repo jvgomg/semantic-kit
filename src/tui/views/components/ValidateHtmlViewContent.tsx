@@ -12,7 +12,7 @@ import {
   Card,
   CardRow,
 } from '../../components/ui/index.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 import type { ViewComponentProps } from '../types.js'
 
 // ============================================================================
@@ -70,7 +70,8 @@ function SummaryContent({
   errors: HtmlValidateMessage[]
   warnings: HtmlValidateMessage[]
 }): ReactNode {
-  const statusColor = report.valid ? palette.green : palette.red
+  const palette = usePalette()
+  const statusColor = report.valid ? palette.base0B : palette.base08
   const statusText = report.valid ? 'VALID' : 'INVALID'
   const statusIcon = report.valid ? '✓' : '✗'
 
@@ -82,14 +83,14 @@ function SummaryContent({
         </text>
       </box>
       <box flexDirection="row" marginTop={1}>
-        <text fg={palette.gray}>Errors: </text>
-        <text fg={errors.length > 0 ? palette.red : palette.white}>
+        <text fg={palette.base03}>Errors: </text>
+        <text fg={errors.length > 0 ? palette.base08 : palette.base05}>
           {errors.length}
         </text>
       </box>
       <box flexDirection="row">
-        <text fg={palette.gray}>Warnings: </text>
-        <text fg={warnings.length > 0 ? palette.yellow : palette.white}>
+        <text fg={palette.base03}>Warnings: </text>
+        <text fg={warnings.length > 0 ? palette.base0A : palette.base05}>
           {warnings.length}
         </text>
       </box>
@@ -107,8 +108,9 @@ function MessagesContent({
   messages: HtmlValidateMessage[]
   severity: 'error' | 'warning'
 }): ReactNode {
+  const palette = usePalette()
   if (messages.length === 0) {
-    const color = severity === 'error' ? palette.green : palette.green
+    const color = palette.base0B
     const text =
       severity === 'error'
         ? 'No errors found.'

@@ -2,13 +2,13 @@
  * Unit tests for TUI config tree building utilities.
  */
 import { describe, test, expect } from 'bun:test'
+import type { TuiConfig } from './schema.js'
 import {
   buildConfigTree,
   flattenConfigTree,
   countConfigUrls,
   getAllConfigUrls,
 } from './tree.js'
-import type { TuiConfig } from './schema.js'
 
 describe('buildConfigTree', () => {
   test('builds tree from flat URLs', () => {

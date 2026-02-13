@@ -4,7 +4,7 @@
  * Renders data as a simple bordered table with headers.
  */
 import type { ReactNode } from 'react'
-import { colors } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 
 type Scalar = string | number | boolean | null | undefined
 
@@ -89,6 +89,8 @@ export function Table<T extends ScalarDict>({
   variant = 'bordered',
   labelWidth,
 }: TableProps<T>): ReactNode {
+  const colors = useSemanticColors()
+
   // Get all keys from data if columns not provided
   const columns =
     columnsProp ??

@@ -4,6 +4,7 @@
  * Formats accessibility analysis in a user-friendly way that helps
  * developers understand how screen readers interpret their page.
  */
+import type { OutputFormat } from '../../lib/arguments.js'
 import {
   colorize,
   colors,
@@ -15,7 +16,6 @@ import {
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
 import type { ScreenReaderResult } from '../../lib/results.js'
-import type { OutputFormat } from '../../lib/arguments.js'
 
 // ============================================================================
 // Issue Building

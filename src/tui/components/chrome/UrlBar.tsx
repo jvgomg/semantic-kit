@@ -17,13 +17,14 @@ import {
   useFocus,
   useFocusManager,
 } from '../../state/index.js'
-import { colors } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 
 export interface UrlBarProps {
   width: number
 }
 
 export function UrlBar({ width }: UrlBarProps) {
+  const colors = useSemanticColors()
   const url = useAtomValue(urlAtom)
   const setUrl = useSetAtom(setUrlAtom)
   const { focus: focusManager } = useFocusManager()

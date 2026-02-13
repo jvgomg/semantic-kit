@@ -4,9 +4,10 @@
  */
 import { useAtomValue } from 'jotai'
 import { focusedRegionAtom, type FocusRegion } from '../../state/index.js'
-import { colors } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 
 export function StatusBar() {
+  const colors = useSemanticColors()
   const focusedRegion = useAtomValue(focusedRegionAtom)
 
   const hints: Record<FocusRegion, string[]> = {

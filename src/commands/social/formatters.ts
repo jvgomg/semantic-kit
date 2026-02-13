@@ -3,6 +3,7 @@
  *
  * Formats social lens results for CLI output, including ASCII card preview.
  */
+import type { OutputFormat } from '../../lib/arguments.js'
 import {
   colorize,
   colors,
@@ -11,7 +12,6 @@ import {
   type Issue,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
-import type { OutputFormat } from '../../lib/arguments.js'
 import type {
   SocialResult,
   SocialTagGroup,

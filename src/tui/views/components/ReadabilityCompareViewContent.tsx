@@ -15,18 +15,18 @@ import {
   Section,
   SectionPriority,
 } from '../../components/ui/index.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 import type { ReadabilityCompareResult } from '../../../commands/readability/types.js'
 import type { ViewComponentProps } from '../types.js'
 
 /**
  * Get severity color based on JS-dependent percentage
  */
-function getJsDependencyColor(percentage: number): string {
-  if (percentage === 0) return palette.green
-  if (percentage <= 25) return palette.blue
-  if (percentage <= 50) return palette.yellow
-  return palette.red
+function getJsDependencyColor(percentage: number, palette: ReturnType<typeof usePalette>): string {
+  if (percentage === 0) return palette.base0B
+  if (percentage <= 25) return palette.base0D
+  if (percentage <= 50) return palette.base0A
+  return palette.base08
 }
 
 /**
@@ -37,31 +37,32 @@ function ComparisonContent({
 }: {
   data: ReadabilityCompareResult
 }): ReactNode {
+  const palette = usePalette()
   const { comparison } = data
-  const depColor = getJsDependencyColor(comparison.jsDependentPercentage)
+  const depColor = getJsDependencyColor(comparison.jsDependentPercentage, palette)
   const hasSections = comparison.sectionsOnlyInRendered.length > 0
 
   return (
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Static HTML:</span>{' '}
-          <span fg={palette.white}>
+          <span fg={palette.base03}>Static HTML:</span>{' '}
+          <span fg={palette.base05}>
             {comparison.staticWordCount.toLocaleString()} words
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Rendered DOM:</span>{' '}
-          <span fg={palette.white}>
+          <span fg={palette.base03}>Rendered DOM:</span>{' '}
+          <span fg={palette.base05}>
             {comparison.renderedWordCount.toLocaleString()} words
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>JS-Dependent:</span>{' '}
+          <span fg={palette.base03}>JS-Dependent:</span>{' '}
           <span fg={depColor}>
             {comparison.jsDependentWordCount.toLocaleString()} words (
             {comparison.jsDependentPercentage}%)
@@ -71,8 +72,8 @@ function ComparisonContent({
       {hasSections && (
         <box flexDirection="row" gap={2} marginTop={1}>
           <text>
-            <span fg={palette.gray}>JS-Only Sections:</span>{' '}
-            <span fg={palette.yellow}>
+            <span fg={palette.base03}>JS-Only Sections:</span>{' '}
+            <span fg={palette.base0A}>
               {comparison.sectionsOnlyInRendered.length} section(s) hidden from
               static crawlers
             </span>
@@ -90,6 +91,7 @@ export function ReadabilityCompareViewContent({
   data,
   height,
 }: ViewComponentProps<ReadabilityCompareResult>): ReactNode {
+  const palette = usePalette()
   const { comparison, timedOut } = data
   const hasStaticContent =
     data.static.markdown && data.static.metrics.wordCount > 0
@@ -139,7 +141,7 @@ export function ReadabilityCompareViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={palette.yellow}>
+          <text fg={palette.base0A}>
             The page took too long to load. The comparison may be based on
             partial content.
           </text>
@@ -170,11 +172,11 @@ export function ReadabilityCompareViewContent({
         scrollable
       >
         {!hasContent ? (
-          <text fg={palette.yellow}>
+          <text fg={palette.base0A}>
             No content could be extracted from either version.
           </text>
         ) : !hasDifferences ? (
-          <text fg={palette.gray}>
+          <text fg={palette.base03}>
             Static and rendered content are identical.
           </text>
         ) : (

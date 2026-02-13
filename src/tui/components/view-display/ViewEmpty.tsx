@@ -2,7 +2,7 @@
  * ViewEmpty - Shown when no URL has been entered.
  */
 import type { ReactNode } from 'react'
-import { colors } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 
 export interface ViewEmptyProps {
   /** View label to display */
@@ -10,6 +10,8 @@ export interface ViewEmptyProps {
 }
 
 export function ViewEmpty({ label }: ViewEmptyProps): ReactNode {
+  const colors = useSemanticColors()
+
   return (
     <box flexDirection="column" paddingTop={1} paddingLeft={2}>
       <text fg={colors.muted}>{'═'.repeat(47)}</text>

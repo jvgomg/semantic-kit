@@ -1,9 +1,9 @@
 /**
  * Social lens command - shows how social media platforms see your page.
  */
+import { validateFormat } from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { validateFormat } from '../../lib/arguments.js'
 import { buildIssues, formatSocialOutput } from './formatters.js'
 import { fetchSocial } from './runner.js'
 import { VALID_FORMATS, type SocialOptions } from './types.js'

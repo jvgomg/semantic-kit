@@ -17,7 +17,7 @@ import {
   Table,
   HeadingOutline,
 } from '../../components/ui/index.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 import type { GoogleResult, GoogleSchemaItem } from '../../../commands/google/types.js'
 import type { ViewComponentProps } from '../types.js'
 
@@ -29,6 +29,7 @@ import type { ViewComponentProps } from '../types.js'
  * Summary section content
  */
 function SummaryContent({ data }: { data: GoogleResult }): ReactNode {
+  const palette = usePalette()
   const hasSchemas = data.counts.schemas > 0
   const hasHeadings = data.counts.headings > 0
   const hasTitle = !!data.metadata.title
@@ -38,32 +39,32 @@ function SummaryContent({ data }: { data: GoogleResult }): ReactNode {
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Page Title:</span>{' '}
-          <span fg={hasTitle ? palette.green : palette.yellow}>
+          <span fg={palette.base03}>Page Title:</span>{' '}
+          <span fg={hasTitle ? palette.base0B : palette.base0A}>
             {hasTitle ? 'Present' : 'Missing'}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Meta Description:</span>{' '}
-          <span fg={hasDescription ? palette.green : palette.yellow}>
+          <span fg={palette.base03}>Meta Description:</span>{' '}
+          <span fg={hasDescription ? palette.base0B : palette.base0A}>
             {hasDescription ? 'Present' : 'Missing'}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Structured Data:</span>{' '}
-          <span fg={hasSchemas ? palette.green : palette.gray}>
+          <span fg={palette.base03}>Structured Data:</span>{' '}
+          <span fg={hasSchemas ? palette.base0B : palette.base03}>
             {data.counts.schemas} schema{data.counts.schemas !== 1 ? 's' : ''}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.gray}>Headings:</span>{' '}
-          <span fg={hasHeadings ? palette.white : palette.yellow}>
+          <span fg={palette.base03}>Headings:</span>{' '}
+          <span fg={hasHeadings ? palette.base05 : palette.base0A}>
             {data.counts.headings}
           </span>
         </text>
@@ -76,18 +77,19 @@ function SummaryContent({ data }: { data: GoogleResult }): ReactNode {
  * Schema item display
  */
 function SchemaItemContent({ schema }: { schema: GoogleSchemaItem }): ReactNode {
+  const palette = usePalette()
   const keyProps = getKeyProperties(schema)
 
   return (
     <box flexDirection="column" gap={0} paddingBottom={1}>
-      <text fg={palette.cyan}>
+      <text fg={palette.base0D}>
         {schema.type}
       </text>
       {keyProps.map(({ key, value }, idx) => (
         <box key={idx} paddingLeft={2}>
           <text>
-            <span fg={palette.gray}>{key}:</span>{' '}
-            <span fg={palette.white}>{formatValue(value)}</span>
+            <span fg={palette.base03}>{key}:</span>{' '}
+            <span fg={palette.base05}>{formatValue(value)}</span>
           </text>
         </box>
       ))}
@@ -205,6 +207,7 @@ export function GoogleViewContent({
   data,
   height,
 }: ViewComponentProps<GoogleResult>): ReactNode {
+  const palette = usePalette()
   const hasSchemas = data.counts.schemas > 0
   const hasHeadings = data.counts.headings > 0
   const hasMetadata =
@@ -283,7 +286,7 @@ export function GoogleViewContent({
             ))}
           </box>
         ) : (
-          <text fg={palette.gray}>
+          <text fg={palette.base03}>
             No JSON-LD schemas found that Google uses for rich results.
           </text>
         )}
@@ -308,7 +311,7 @@ export function GoogleViewContent({
             <HeadingOutline headings={data.headings.outline} />
           </scrollbox>
         ) : (
-          <text fg={palette.yellow}>
+          <text fg={palette.base0A}>
             No headings found. Add heading structure for better SEO.
           </text>
         )}

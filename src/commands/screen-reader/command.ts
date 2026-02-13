@@ -1,9 +1,9 @@
 /**
  * Screen reader command - shows how screen readers interpret your page.
  */
+import { validateFormat, validateTimeout } from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { validateFormat, validateTimeout } from '../../lib/arguments.js'
 import { buildIssues, formatScreenReaderOutput } from './formatters.js'
 import { fetchScreenReader } from './runner.js'
 import { VALID_FORMATS, type ScreenReaderOptions } from './types.js'

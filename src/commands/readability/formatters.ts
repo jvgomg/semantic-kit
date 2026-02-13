@@ -6,6 +6,7 @@
  */
 import { createPatch } from 'diff'
 
+import type { OutputFormat } from '../../lib/arguments.js'
 import {
   colorize,
   colors,
@@ -19,7 +20,6 @@ import {
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
 import type { ReadabilityJsResult, ReadabilityUtilityResult } from '../../lib/results.js'
-import type { OutputFormat } from '../../lib/arguments.js'
 import type { ReadabilityCompareResult, SectionInfo } from './types.js'
 
 // ============================================================================

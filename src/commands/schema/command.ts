@@ -1,6 +1,6 @@
+import { validateFormat } from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { validateFormat } from '../../lib/arguments.js'
 import { buildIssues, formatSchemaOutput } from './formatters.js'
 import { fetchSchema } from './runner.js'
 import { VALID_FORMATS, type SchemaOptions } from './types.js'

@@ -11,7 +11,7 @@ import {
   Card,
   CardRow,
 } from '../../components/ui/index.js'
-import { palette } from '../../theme.js'
+import { usePalette } from '../../theme.js'
 import type {
   AxeAnalysisResult,
   WcagLevel,
@@ -139,21 +139,22 @@ function ConfigContent({
   timeoutMs: number
   timedOut: boolean
 }): ReactNode {
+  const palette = usePalette()
   const timeoutSec = Math.round(timeoutMs / 1000)
 
   return (
     <box flexDirection="column" gap={0}>
       <box flexDirection="row">
-        <text fg={palette.gray}>WCAG Level: </text>
-        <text fg={palette.cyan}>{level.toUpperCase()}</text>
+        <text fg={palette.base03}>WCAG Level: </text>
+        <text fg={palette.base0D}>{level.toUpperCase()}</text>
       </box>
       <box flexDirection="row">
-        <text fg={palette.gray}>Timeout: </text>
-        <text fg={palette.white}>{timeoutSec}s</text>
+        <text fg={palette.base03}>Timeout: </text>
+        <text fg={palette.base05}>{timeoutSec}s</text>
       </box>
       {timedOut && (
         <box flexDirection="row" marginTop={1}>
-          <text fg={palette.yellow}>
+          <text fg={palette.base0A}>
             Page load timed out - results may be incomplete
           </text>
         </box>
@@ -170,9 +171,10 @@ function ViolationsContent({
 }: {
   violations: AxeViolationResult[]
 }): ReactNode {
+  const palette = usePalette()
   if (violations.length === 0) {
     return (
-      <text fg={palette.green}>
+      <text fg={palette.base0B}>
         No accessibility violations detected.
       </text>
     )
@@ -229,9 +231,10 @@ function IncompleteContent({
 }: {
   incomplete: AxeViolationResult[]
 }): ReactNode {
+  const palette = usePalette()
   if (incomplete.length === 0) {
     return (
-      <text fg={palette.green}>
+      <text fg={palette.base0B}>
         No items requiring manual review.
       </text>
     )
@@ -271,8 +274,9 @@ function SummaryContent({
   passes: number
   incomplete: number
 }): ReactNode {
+  const palette = usePalette()
   const hasViolations = violations > 0
-  const statusColor = hasViolations ? palette.red : palette.green
+  const statusColor = hasViolations ? palette.base08 : palette.base0B
   const statusText = hasViolations ? 'ISSUES FOUND' : 'PASSED'
   const statusIcon = hasViolations ? '✗' : '✓'
 
@@ -284,18 +288,18 @@ function SummaryContent({
         </text>
       </box>
       <box flexDirection="row" marginTop={1}>
-        <text fg={palette.gray}>Violations: </text>
-        <text fg={violations > 0 ? palette.red : palette.white}>
+        <text fg={palette.base03}>Violations: </text>
+        <text fg={violations > 0 ? palette.base08 : palette.base05}>
           {violations}
         </text>
       </box>
       <box flexDirection="row">
-        <text fg={palette.gray}>Passed: </text>
-        <text fg={palette.green}>{passes}</text>
+        <text fg={palette.base03}>Passed: </text>
+        <text fg={palette.base0B}>{passes}</text>
       </box>
       <box flexDirection="row">
-        <text fg={palette.gray}>Needs Review: </text>
-        <text fg={incomplete > 0 ? palette.yellow : palette.white}>
+        <text fg={palette.base03}>Needs Review: </text>
+        <text fg={incomplete > 0 ? palette.base0A : palette.base05}>
           {incomplete}
         </text>
       </box>

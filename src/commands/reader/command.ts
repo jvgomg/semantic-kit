@@ -1,9 +1,9 @@
 /**
  * Reader command - shows how browser reader modes see your page.
  */
+import { validateFormat } from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { validateFormat } from '../../lib/arguments.js'
 import { formatReaderOutput } from './formatters.js'
 import { fetchReader } from './runner.js'
 import { VALID_FORMATS, type ReaderOptions } from './types.js'

@@ -4,7 +4,7 @@
  */
 import { useKeyboard } from '@opentui/react'
 import { HELP_MODAL_WIDTH } from './constants.js'
-import { colors } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import { Modal } from '../ui/Modal.js'
 
 export interface HelpModalProps {
@@ -12,6 +12,7 @@ export interface HelpModalProps {
 }
 
 export function HelpModal({ onClose }: HelpModalProps) {
+  const colors = useSemanticColors()
   useKeyboard((event) => {
     if (event.name === 'escape' || event.name === '?' || event.name === 'q') {
       onClose()

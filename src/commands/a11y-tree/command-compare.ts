@@ -1,10 +1,10 @@
-import { resolveOutputMode } from '../../lib/output-mode.js'
-import { runCommand, handleCommandError } from '../../lib/run-command.js'
 import {
   requireUrl,
   validateFormat,
   validateTimeout,
 } from '../../lib/arguments.js'
+import { resolveOutputMode } from '../../lib/output-mode.js'
+import { runCommand, handleCommandError } from '../../lib/run-command.js'
 import { buildCompareIssues, formatA11yCompareOutput } from './formatters.js'
 import { fetchA11yCompare } from './runner-compare.js'
 import { VALID_FORMATS_COMPARE, type A11yCompareOptions } from './types.js'

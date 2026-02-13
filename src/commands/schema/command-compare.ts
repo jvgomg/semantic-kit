@@ -1,13 +1,13 @@
 /**
  * Schema:compare command - compares structured data from static vs JS-rendered HTML.
  */
-import { resolveOutputMode } from '../../lib/output-mode.js'
-import { runCommand } from '../../lib/run-command.js'
 import {
   requireUrl,
   validateFormat,
   validateTimeout,
 } from '../../lib/arguments.js'
+import { resolveOutputMode } from '../../lib/output-mode.js'
+import { runCommand } from '../../lib/run-command.js'
 import { buildCompareIssues, formatSchemaCompareOutput } from './formatters.js'
 import { fetchSchemaCompare } from './runner-compare.js'
 import { VALID_FORMATS, type SchemaCompareOptions } from './types.js'
