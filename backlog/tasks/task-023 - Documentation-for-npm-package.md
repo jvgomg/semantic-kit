@@ -4,7 +4,7 @@ title: Documentation for npm package
 status: To Do
 assignee: []
 created_date: '2026-02-15 21:37'
-updated_date: '2026-02-15 21:43'
+updated_date: '2026-02-15 22:22'
 labels:
   - docs
 milestone: npm release
@@ -18,13 +18,13 @@ priority: low
 Update documentation for npm package consumers.
 
 ## README Updates
-- Installation instructions (`npm install`, `npx` usage)
+- Installation instructions (`npm install @webspecs/cli`, `npx @webspecs/cli` usage)
 - Quick start examples
 - Programmatic API usage
 - CLI command reference (or link to docs)
 
 ## Badges to Add
-- npm version
+- npm version (for @webspecs/cli)
 - License
 - Node.js version requirement
 
