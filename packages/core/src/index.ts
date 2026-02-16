@@ -6,6 +6,24 @@ export type { Issue, IssueType, IssueSeverity } from './types.js'
 // HTML fetching
 export { fetchHtmlContent } from './fetch.js'
 
+// HTML parsing
+export { parseHTML } from './html-parser.js'
+
+// HTML validation
+export { validateHtml } from './html-validation.js'
+export type { Report as HtmlValidateReport } from 'html-validate'
+
+// Accessibility validation
+export {
+  validateAccessibility,
+  parseWcagLevel,
+  VALID_LEVELS as WCAG_VALID_LEVELS,
+  WCAG_TAGS,
+  type WcagLevel,
+  type AxeResults,
+  type AxeAnalysisResult,
+} from './accessibility-validation.js'
+
 // File system utilities (with build-time target switching)
 export {
   fileExists,

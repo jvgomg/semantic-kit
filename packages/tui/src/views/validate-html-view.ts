@@ -2,13 +2,13 @@
  * Validate HTML View - Shows HTML validation results.
  */
 import { fetchValidateHtml } from '@webspecs/cli/commands/validate-html/index.js'
-import type { Report } from 'html-validate'
+import type { HtmlValidateReport } from '@webspecs/core'
 
 import { ValidateHtmlViewContent } from './components/ValidateHtmlViewContent.js'
 import { registerView } from './registry.js'
 import type { ViewDefinition } from './types.js'
 
-export const validateHtmlView: ViewDefinition<Report> = {
+export const validateHtmlView: ViewDefinition<HtmlValidateReport> = {
   id: 'validate-html',
   label: 'HTML Validate',
   description:
