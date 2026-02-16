@@ -1,10 +1,10 @@
 ---
 id: TASK-026
 title: Rename package to @webspecs/cli
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-02-15 21:58'
-updated_date: '2026-02-15 22:22'
+updated_date: '2026-02-16 16:04'
 labels:
   - npm
   - breaking
@@ -52,3 +52,28 @@ npm install @webspecs/cli
 - [ ] #4 No remaining 'semantic-kit' references in user-facing strings
 - [ ] #5 Placeholder version 0.0.0 replaced with real release
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Superseded by TASK-027
+
+This task has been superseded by the monorepo restructure (TASK-027).
+
+The rename to `@webspecs/cli` will happen as part of creating the CLI package in TASK-027.03.
+
+### What Carries Forward
+- The `@webspecs` npm organization is already created
+- Placeholder packages are published to reserve names
+- CLI will be named `webspecs` (the binary command)
+
+### Changes from Original Plan
+- Instead of renaming the single package, we're splitting into three packages
+- `@webspecs/cli` is one of three packages, not a rename of the monolith
+<!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Superseded by TASK-027 (monorepo restructure). The @webspecs/cli package will be created as part of the split rather than a rename. The npm organization and placeholder packages are already in place.
+<!-- SECTION:FINAL_SUMMARY:END -->

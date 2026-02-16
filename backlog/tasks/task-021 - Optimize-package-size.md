@@ -4,12 +4,13 @@ title: Optimize package size
 status: To Do
 assignee: []
 created_date: '2026-02-15 21:37'
-updated_date: '2026-02-15 21:43'
+updated_date: '2026-02-16 16:04'
 labels:
   - build
   - performance
 milestone: npm release
-dependencies: []
+dependencies:
+  - TASK-027
 priority: high
 ---
 
@@ -18,48 +19,46 @@ priority: high
 <!-- SECTION:DESCRIPTION:BEGIN -->
 Reduce the npm package size by fixing bundling issues and optimizing dependencies.
 
-## Current State
+**Note:** This task now applies to the monorepo structure (TASK-027). Each package should be optimized individually.
+
+## Current State (Pre-Monorepo)
 - `dist/cli.js` is 3.6MB (100,332 lines)
 - `dist/cli.js.map` is 5.8MB (should not be published)
 - Many dependencies are bundled when they should be external
 
-## Analysis Results
+## How Monorepo Helps
+The split into three packages naturally addresses some concerns:
+- TUI-specific deps (OpenTUI, Jotai) only in `@webspecs/tui`
+- CLI can be much smaller without TUI code
+- Core is just the library code
 
-### Bundle Breakdown
-| Package | Lines | % | Issue |
-|---------|-------|---|-------|
-| highlight.js | 32,500 | 32.4% | ALL 190+ language grammars bundled |
-| zod | 14,000 | 14% | Should be external |
-| yaml | 8,500 | 8.5% | Should be external |
-| sitemap | 10,000 | 10% | Should be external |
-| jotai ecosystem | 3,500 | 3.5% | Should be external |
-| src code | 6,000 | 6% | Expected |
+## Per-Package Optimization
 
-### Missing from externals list in build.ts
-- `diff`
-- `zod`
-- `yaml`
-- `sitemap`
-- `jotai`, `jotai-effect`, `jotai-family`, `jotai-optics`, `optics-ts`
-- `marked`, `marked-terminal`
+### @webspecs/core
+- Should be smallest - just analyzers/extractors
+- All deps external
+- Target: < 100KB bundled
 
-### highlight.js Issue
-- `emphasize` uses highlight.js internally
-- Only used in `fetch` command for XML syntax highlighting
-- Imports `common` subset but Bun bundles all languages anyway
+### @webspecs/cli
+- Depends on core + CLI utilities
+- highlight.js still a concern (emphasize for fetch command)
+- Target: < 300KB bundled (excluding deps)
 
-## Action Items
-1. Add all dependencies to externals list in build.ts
-2. Exclude source maps from published package
-3. Fix highlight.js bloat (externalize, dynamic import, or replace)
-4. Consider lazy-loading TUI dependencies
+### @webspecs/tui
+- Larger due to TUI framework
+- OpenTUI deps are expected
+- Target: Reasonable for TUI app
+
+## Remaining Concerns
+- **highlight.js bloat**: Still relevant for CLI's fetch command
+  - Consider lazy-loading or removing syntax highlighting
+  - Or use a lighter alternative
 
 ## Security Audit
-Before publishing, audit the package contents for accidentally included secrets:
+Before publishing each package:
 - No `.env` files
-- No API keys or credentials in test fixtures
-- No private configuration files
-- Run `npm pack --dry-run` and review file list carefully
+- No API keys or credentials
+- Run `npm pack --dry-run` for each package
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
@@ -71,3 +70,13 @@ Before publishing, audit the package contents for accidentally included secrets:
 - [ ] #5 `npm pack --dry-run` shows reasonable package size
 - [ ] #6 No secrets or sensitive files in published package
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Update: Monorepo Context
+
+This task should be addressed after TASK-027 (monorepo restructure) is complete. The split into core/cli/tui packages naturally solves some size issues by separating TUI dependencies.
+
+Primary remaining concern is highlight.js in the CLI package.
+<!-- SECTION:NOTES:END -->

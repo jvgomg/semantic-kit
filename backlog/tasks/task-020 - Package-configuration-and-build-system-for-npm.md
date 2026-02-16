@@ -1,10 +1,10 @@
 ---
 id: TASK-020
 title: Package configuration and build system for npm
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-02-15 21:37'
-updated_date: '2026-02-16 15:08'
+updated_date: '2026-02-16 16:02'
 labels:
   - build
   - npm
@@ -123,4 +123,52 @@ Research needed on OpenTUI bundling approaches:
 - Does OpenTUI have documented build/bundling guidance?
 - Are there known workarounds for standalone builds?
 - Alternative approaches for Node.js compatibility?
+
+## Resolution
+
+### What Was Accomplished
+
+1. **Build-time target switching pattern** - Created `src/lib/fs.ts` with `__TARGET_BUN__` conditional that enables dead code elimination
+2. **npm build configuration** - `build.ts` now targets Node.js with proper externals and shebang
+3. **Package.json updates** - Added `engines`, `sideEffects`, `files`, updated `exports`
+4. **Type declarations** - Created `tsconfig.build.json` for proper `.d.ts` generation
+5. **Documentation** - Updated `directives/code.md` with build target docs
+
+### What Was Blocked
+
+**Discovery: OpenTUI is fundamentally Bun-only**
+
+1. Uses Bun-specific file imports: `import file from "./file.scm" with { type: "file" }`
+2. Uses `Bun.dlopen()` for native bindings
+3. Uses dynamic platform imports that can't be bundled: `await import(\`@opentui/core-${process.platform}-${process.arch}\`)`
+
+This means:
+- Node.js CLI runtime is not possible with TUI
+- Standalone binary compilation requires per-platform builds
+
+### Architectural Decision
+
+Based on these findings, the project will be restructured into a monorepo:
+
+- `@webspecs/core` - Node/Bun compatible library
+- `@webspecs/cli` - Node/Bun compatible CLI (no TUI)
+- `@webspecs/tui` - Bun-only TUI with clear error messaging
+
+See **TASK-027** for the monorepo restructure plan.
+
+### Branch
+
+Work committed to `task-020-npm-build-system` branch. This code will be incorporated into the monorepo restructure.
 <!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Implemented build-time target switching for Node.js/Bun dual builds. Created `src/lib/fs.ts` abstraction, updated build scripts, and configured package.json for npm publishing. 
+
+**Key discovery:** OpenTUI is fundamentally Bun-only (uses Bun-specific file imports, dlopen, and dynamic platform imports). This blocks Node.js CLI runtime and changes the project architecture.
+
+**Outcome:** Project will restructure into monorepo with `@webspecs/core` (Node/Bun), `@webspecs/cli` (Node/Bun), and `@webspecs/tui` (Bun-only).
+
+Work committed to branch `task-020-npm-build-system`.
+<!-- SECTION:FINAL_SUMMARY:END -->

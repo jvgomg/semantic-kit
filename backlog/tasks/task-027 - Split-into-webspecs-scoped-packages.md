@@ -4,55 +4,103 @@ title: Split into @webspecs/* scoped packages
 status: To Do
 assignee: []
 created_date: '2026-02-15 21:58'
-updated_date: '2026-02-15 22:22'
+updated_date: '2026-02-16 16:02'
 labels:
   - npm
   - architecture
-milestone: v1.0 release
+  - epic
+milestone: npm release
 dependencies: []
-priority: medium
+priority: high
 ---
 
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Split the `@webspecs/cli` package into separate scoped packages for better modularity and smaller install sizes.
+Convert semantic-kit into a Bun workspaces monorepo with three packages. This is now **required** for the npm release due to OpenTUI's Bun-only constraint (see TASK-020 resolution).
 
 ## Background
-The `@webspecs` npm organization is already created. Current state:
-- `@webspecs/cli` - reserved (placeholder published)
-- `@jvgomg/webspecs` - personal scope fallback (placeholder published)
 
-## Target Structure
+**Why this is required:**
+- OpenTUI uses Bun-specific APIs (file imports, dlopen, dynamic platform imports)
+- Node.js runtime cannot load the TUI code
+- The project must split TUI into a separate Bun-only package
+
+**What we're building:**
 ```
-@webspecs/core  - Core command logic, programmatic API, types
-@webspecs/cli   - CLI interface (depends on core) [already reserved]
-@webspecs/tui   - TUI interface (depends on core)
+packages/
+  core/     # @webspecs/core - Node/Bun compatible library
+  cli/      # @webspecs/cli - Node/Bun compatible CLI
+  tui/      # @webspecs/tui - Bun-only TUI
 ```
 
-Note: An unscoped `webspecs` package is not possible (blocked by npm due to similarity to `web-specs`).
+## Package Details
 
-## Benefits
-- Users who only need CLI don't install TUI dependencies
-- Programmatic users can import just `@webspecs/core`
-- Clearer separation of concerns
-- Smaller install footprint for targeted use cases
+### @webspecs/core
+- Analyzers, extractors, validators (the "lib" code)
+- Pure TypeScript, no runtime-specific APIs
+- Consumable via `npm install @webspecs/core`
+- Types exported for TypeScript users
 
-## Implementation Considerations
-- Convert to monorepo with workspaces (already have workspace setup for test-server)
-- Shared build configuration
-- Coordinated versioning (independent or lockstep?)
-- Cross-package testing
+### @webspecs/cli
+- Command-line interface wrapping core functionality
+- Works with `npx @webspecs/cli`, `bunx @webspecs/cli`
+- Node.js 18+ compatible
+- Does NOT include TUI - shows helpful message if user tries `tui` command
 
-## Questions to Resolve
-- Independent versioning or same version across all packages?
-- How to handle shared dependencies?
+### @webspecs/tui
+- Full terminal UI experience
+- Bun runtime required
+- Shows clear error with instructions if run without Bun
+- Can be built into standalone Bun binary
+
+## Technical Approach
+
+### Bun Workspaces Setup
+```json
+// package.json (root)
+{
+  "workspaces": ["packages/*"]
+}
+```
+
+### Shared Configuration
+- Root `tsconfig.json` with project references
+- Shared ESLint config
+- Single `bun.lockb` for all packages
+
+### Build Strategy
+- Each package has its own `build.ts`
+- Core: Node target, external deps
+- CLI: Node target, depends on core
+- TUI: Bun target, uses `__TARGET_BUN__` pattern from TASK-020
+
+### Code from TASK-020 to Incorporate
+- `src/lib/fs.ts` - build-time switching pattern
+- `tsconfig.build.json` approach
+- Package.json fields (engines, sideEffects, files)
+
+## Sub-Tasks
+
+This epic is broken into sub-tasks:
+1. TASK-042: Set up Bun workspaces monorepo structure
+2. TASK-043: Create @webspecs/core package
+3. TASK-044: Create @webspecs/cli package
+4. TASK-045: Create @webspecs/tui package
+5. TASK-046: Multi-package build and release workflow
+
+## References
+- TASK-020 resolution (OpenTUI Bun-only discovery)
+- Branch `task-020-npm-build-system` (build-time switching code)
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 @webspecs/core published and importable
-- [ ] #2 @webspecs/cli works standalone without TUI deps
-- [ ] #3 @webspecs/tui works with full TUI experience
-- [ ] #4 Each package has appropriate dependencies (not over-bundled)
+- [ ] #1 Bun workspaces monorepo structure in place
+- [ ] #2 @webspecs/core published and importable on Node.js
+- [ ] #3 @webspecs/cli works with npx on Node.js (no TUI)
+- [ ] #4 @webspecs/tui works with bunx (full TUI experience)
+- [ ] #5 TUI shows helpful error when run without Bun
+- [ ] #6 Each package has minimal, appropriate dependencies
+- [ ] #7 GitHub releases configured for binary downloads
 <!-- AC:END -->
