@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./dist",
+    "noEmit": false,
+    "paths": {
+      "@webspecs/core": ["../core/dist/index.d.ts"],
+      "@webspecs/cli/*": ["../cli/dist/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "build.ts"]
+}

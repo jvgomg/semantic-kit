@@ -1,0 +1,47 @@
+{
+  "name": "@webspecs/tui",
+  "version": "0.0.17",
+  "license": "MIT",
+  "description": "Terminal UI for webspecs - interactive analysis of web pages (requires Bun runtime)",
+  "author": "James Greenaway",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jvgomg/semantic-kit.git",
+    "directory": "packages/tui"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "bin": {
+    "webspecs-tui": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "bun run build.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test src/"
+  },
+  "dependencies": {
+    "@webspecs/cli": "workspace:*",
+    "@webspecs/core": "workspace:*",
+    "@opentui/core": "^0.1.79",
+    "@opentui/react": "^0.1.79",
+    "diff": "^8.0.3",
+    "emphasize": "^7.0.0",
+    "jotai": "^2.16.2",
+    "jotai-effect": "^2.2.3",
+    "jotai-family": "^1.0.1",
+    "jotai-optics": "^0.4.0",
+    "marked": "^15.0.12",
+    "marked-terminal": "^7.3.0",
+    "optics-ts": "^2.4.1",
+    "react": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/diff": "^8.0.0",
+    "@types/marked-terminal": "^6.1.1",
+    "@types/react": "^19.2.14"
+  }
+}

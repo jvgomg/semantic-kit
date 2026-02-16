@@ -1,10 +1,8 @@
 {
-  "name": "semantic-kit",
-  "version": "0.0.17",
+  "name": "webspecs",
+  "private": true,
   "license": "MIT",
-  "workspaces": [
-    "test-server/apps/nextjs-streaming"
-  ],
+  "workspaces": ["packages/*"],
   "description": "Developer toolkit for understanding how websites are interpreted by search engines, AI crawlers, screen readers, and content extractors",
   "author": "James Greenaway",
   "repository": {
@@ -16,70 +14,19 @@
   },
   "homepage": "https://github.com/jvgomg/semantic-kit#readme",
   "type": "module",
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "sideEffects": false,
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "bin": {
-    "semantic-kit": "./dist/cli.js"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
   "scripts": {
-    "build": "bun run build.ts",
-    "build:global": "bun run build-global.ts",
-    "link:global": "ln -sf $(pwd)/dist/semantic-kit ~/.local/bin/semantic-kit",
-    "dev": "bun src/cli.ts",
-    "dev:watch": "bun --watch src/cli.ts",
-    "start": "bun ./dist/cli.js",
-    "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "typecheck": "tsc --noEmit",
+    "build": "bun run --filter '@webspecs/*' build",
+    "dev": "bun packages/cli/src/cli.ts",
+    "dev:watch": "bun --watch packages/cli/src/cli.ts",
+    "clean": "rm -rf packages/*/dist tsconfig.tsbuildinfo",
+    "typecheck": "bun run --filter '@webspecs/*' typecheck",
     "lint": "eslint .",
     "test": "bun run test:unit && bun run test:integration",
-    "test:unit": "bun test src/",
-    "test:unit:watch": "bun test --watch src/",
-    "test:integration": "bun test --preload ./integration-tests/setup.ts integration-tests/",
-    "test:integration:watch": "bun test --watch --preload ./integration-tests/setup.ts integration-tests/",
-    "test-server": "bun test-server/server.ts",
-    "test-server:verbose": "bun test-server/server.ts --verbose",
-    "prepublishOnly": "bun run build"
-  },
-  "dependencies": {
-    "@axe-core/playwright": "^4.11.0",
-    "@mozilla/readability": "^0.6.0",
-    "@opentui/core": "^0.1.79",
-    "@opentui/react": "^0.1.79",
-    "axe-core": "^4.11.1",
-    "commander": "^14.0.2",
-    "diff": "^8.0.3",
-    "emphasize": "^7.0.0",
-    "html-validate": "^10.7.0",
-    "jotai": "^2.16.2",
-    "jotai-effect": "^2.2.3",
-    "jotai-family": "^1.0.1",
-    "jotai-optics": "^0.4.0",
-    "jsdom": "^27.4.0",
-    "linkedom": "^0.18.12",
-    "marked": "^15.0.12",
-    "marked-terminal": "^7.3.0",
-    "optics-ts": "^2.4.1",
-    "prettier": "^3.8.1",
-    "react": "^19.2.4",
-    "sitemap": "^9.0.0",
-    "structured-data-testing-tool": "^4.5.0",
-    "turndown": "^7.2.2",
-    "web-auto-extractor": "^1.0.17",
-    "yaml": "^2.8.2",
-    "zod": "^4.3.6"
+    "test:unit": "bun run --filter '@webspecs/*' test",
+    "test:integration": "bun run --filter @webspecs/integration-tests test",
+    "test:integration:watch": "bun run --filter @webspecs/integration-tests test:watch",
+    "test-server": "bun run --filter @webspecs/test-server start",
+    "test-server:verbose": "bun run --filter @webspecs/test-server start:verbose"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
@@ -96,13 +43,5 @@
     "playwright": "^1.58.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.55.0"
-  },
-  "peerDependencies": {
-    "playwright": "^1.40.0"
-  },
-  "peerDependenciesMeta": {
-    "playwright": {
-      "optional": true
-    }
   }
 }

@@ -1,0 +1,59 @@
+{
+  "name": "@webspecs/core",
+  "version": "0.0.17",
+  "license": "MIT",
+  "description": "Core analyzers, extractors, and validators for webspecs",
+  "author": "James Greenaway",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jvgomg/semantic-kit.git",
+    "directory": "packages/core"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun run build.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test src/"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@mozilla/readability": "^0.6.0",
+    "axe-core": "^4.11.1",
+    "html-validate": "^10.7.0",
+    "jsdom": "^27.4.0",
+    "linkedom": "^0.18.12",
+    "prettier": "^3.8.1",
+    "sitemap": "^9.0.0",
+    "structured-data-testing-tool": "^4.5.0",
+    "turndown": "^7.2.2",
+    "web-auto-extractor": "^1.0.17",
+    "yaml": "^2.8.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^27.0.0",
+    "@types/turndown": "^5.0.6"
+  },
+  "peerDependencies": {
+    "playwright": "^1.40.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
+  }
+}

@@ -1,8 +1,8 @@
 node_modules/
 dist/
+packages/*/dist/
 *.tsbuildinfo
 .DS_Store
-test-server/apps/**/bun.lock
-test-server/apps/**/.next/
-test-server/apps/**/.next-integration/
+packages/test-server-nextjs/.next/
+packages/test-server-nextjs/.next-integration/
 SCRATCH.md

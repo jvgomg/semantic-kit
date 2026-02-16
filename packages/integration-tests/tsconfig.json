@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@webspecs/core": ["../core/src/index.ts"],
+      "@webspecs/cli/*": ["../cli/dist/*"]
+    }
+  },
+  "references": [
+    { "path": "../core" },
+    { "path": "../cli" }
+  ],
+  "include": ["**/*"],
+  "exclude": ["node_modules"]
+}

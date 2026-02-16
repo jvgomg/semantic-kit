@@ -1,0 +1,55 @@
+{
+  "name": "@webspecs/cli",
+  "version": "0.0.17",
+  "license": "MIT",
+  "description": "CLI for webspecs - analyze how websites are interpreted by search engines, AI crawlers, and screen readers",
+  "author": "James Greenaway",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jvgomg/semantic-kit.git",
+    "directory": "packages/cli"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/cli.d.ts",
+      "default": "./dist/cli.js"
+    },
+    "./commands/*": {
+      "types": "./dist/commands/*",
+      "default": "./dist/commands/*"
+    },
+    "./lib/*": {
+      "types": "./dist/lib/*",
+      "default": "./dist/lib/*"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "bin": {
+    "webspecs": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "bun run build.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test src/"
+  },
+  "dependencies": {
+    "@webspecs/core": "workspace:*",
+    "commander": "^14.0.2",
+    "diff": "^8.0.3",
+    "emphasize": "^7.0.0",
+    "marked": "^15.0.12",
+    "marked-terminal": "^7.3.0"
+  },
+  "devDependencies": {
+    "@types/diff": "^8.0.0",
+    "@types/marked-terminal": "^6.1.1"
+  }
+}

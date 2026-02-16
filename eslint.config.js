@@ -4,7 +4,7 @@ import importX from 'eslint-plugin-import-x'
 import tseslint from 'typescript-eslint'
 
 export default defineConfig(
-  globalIgnores(['dist', 'node_modules', 'coverage', '*.config.*', 'test-server/apps', 'src/tui/_ink_backup']),
+  globalIgnores(['**/dist', 'node_modules', 'coverage', '*.config.*', 'test-server/apps', 'src/tui/_ink_backup', 'packages/test-server-nextjs', 'stubs']),
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
     extends: [

@@ -1,0 +1,16 @@
+{
+  "name": "@webspecs/integration-tests",
+  "version": "0.0.17",
+  "private": true,
+  "description": "Integration tests for webspecs packages",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test --preload ./setup.ts .",
+    "test:watch": "bun test --watch --preload ./setup.ts ."
+  },
+  "devDependencies": {
+    "@webspecs/cli": "workspace:*",
+    "@webspecs/core": "workspace:*"
+  }
+}

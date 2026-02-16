@@ -1,0 +1,11 @@
+{
+  "name": "@webspecs/test-server",
+  "version": "0.0.17",
+  "private": true,
+  "description": "Test server with HTML fixtures for webspecs testing",
+  "type": "module",
+  "scripts": {
+    "start": "bun server.ts",
+    "start:verbose": "bun server.ts --verbose"
+  }
+}

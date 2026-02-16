@@ -1,39 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022"],
-    "module": "preserve",
-    "moduleResolution": "bundler",
     "jsx": "react-jsx",
-    "jsxImportSource": "@opentui/react",
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": false,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "allowUnusedLabels": false,
-    "allowUnreachableCode": false,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "allowJs": true,
-    "checkJs": true,
-    "declaration": true,
-    "declarationMap": true,
-    "incremental": true,
-    "noEmit": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "jsxImportSource": "@opentui/react"
   },
-  "include": ["src/**/*", "integration-tests/**/*", "test-server/**/*"],
-  "exclude": ["node_modules", "dist", "test-server/apps", "src/tui/_ink_backup"]
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/cli" },
+    { "path": "./packages/tui" },
+    { "path": "./packages/integration-tests" },
+    { "path": "./packages/test-server" }
+  ],
+  "include": [],
+  "exclude": ["node_modules", "dist", "packages"]
 }
