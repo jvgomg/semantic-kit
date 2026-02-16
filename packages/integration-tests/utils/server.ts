@@ -17,7 +17,13 @@ export async function startTestServer(): Promise<void> {
   // Create a new promise that all callers will await
   serverReadyPromise = (async () => {
     // Use 'inherit' so subprocess output flows to terminal and doesn't block
-    serverProcess = Bun.spawn(['bun', 'run', 'test-server'], {
+    // Directly spawn the test server script to ensure env vars are passed correctly
+    // From utils/ to packages/test-server: ../ = integration-tests, ../../ = packages
+    const testServerPath = new URL(
+      '../../test-server/server.ts',
+      import.meta.url,
+    ).pathname
+    serverProcess = Bun.spawn(['bun', testServerPath], {
       stdout: 'inherit',
       stderr: 'inherit',
       cwd: process.cwd(),

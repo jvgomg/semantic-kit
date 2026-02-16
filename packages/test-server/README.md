@@ -44,34 +44,35 @@ fixtures/
 
 Demonstrate proper semantic HTML for successful `structure` and `validate:a11y` output:
 
-| File | Description |
-|------|-------------|
-| `semantic-article.html` | Full blog post with proper landmarks, headings, skip links, article structure |
-| `accessible-form.html` | Form with labels, fieldsets, aria-describedby, autocomplete |
-| `navigation-landmarks.html` | Complex landmark structure with multiple navs, search, breadcrumbs |
+| File                        | Description                                                                   |
+| --------------------------- | ----------------------------------------------------------------------------- |
+| `semantic-article.html`     | Full blog post with proper landmarks, headings, skip links, article structure |
+| `accessible-form.html`      | Form with labels, fieldsets, aria-describedby, autocomplete                   |
+| `navigation-landmarks.html` | Complex landmark structure with multiple navs, search, breadcrumbs            |
 
 ### Bad Examples
 
 Demonstrate common mistakes that validation commands should catch:
 
-| File | Description |
-|------|-------------|
-| `div-soup.html` | Non-semantic markup (no landmarks, no headings, divs for everything) |
-| `heading-chaos.html` | Skipped levels, empty headings, multiple h1s, misused for styling |
-| `form-no-labels.html` | Missing labels, placeholder as label, div as button |
-| `button-anti-patterns.html` | Divs as buttons, links without href, icon-only buttons |
+| File                        | Description                                                          |
+| --------------------------- | -------------------------------------------------------------------- |
+| `div-soup.html`             | Non-semantic markup (no landmarks, no headings, divs for everything) |
+| `heading-chaos.html`        | Skipped levels, empty headings, multiple h1s, misused for styling    |
+| `form-no-labels.html`       | Missing labels, placeholder as label, div as button                  |
+| `button-anti-patterns.html` | Divs as buttons, links without href, icon-only buttons               |
 
 ### Edge Cases
 
 Valid but complex patterns that test tool capabilities:
 
-| File | Description |
-|------|-------------|
+| File                    | Description                                               |
+| ----------------------- | --------------------------------------------------------- |
 | `nested-landmarks.html` | Header/footer inside article, sections with/without names |
-| `multiple-mains.html` | SPA pattern with hidden mains (valid per HTML spec) |
-| `empty-content.html` | Intentionally empty main content |
+| `multiple-mains.html`   | SPA pattern with hidden mains (valid per HTML spec)       |
+| `empty-content.html`    | Intentionally empty main content                          |
 
 Fixtures are served via both flat and nested URLs:
+
 - `http://localhost:4000/semantic-article.html` (flat)
 - `http://localhost:4000/good/semantic-article.html` (nested)
 
@@ -102,13 +103,13 @@ All fields are optional.
 
 Override response behavior without creating meta files:
 
-| Parameter | Example | Description |
-|-----------|---------|-------------|
-| `delay` | `?delay=5000` | Response delay in ms (overrides server default) |
-| `status` | `?status=500` | HTTP status code |
-| `header-*` | `?header-X-Custom=value` | Add response header |
-| `redirect` | `?redirect=/other.html` | Force redirect |
-| `contentType` | `?contentType=text/plain` | Override content type |
+| Parameter     | Example                   | Description                                     |
+| ------------- | ------------------------- | ----------------------------------------------- |
+| `delay`       | `?delay=5000`             | Response delay in ms (overrides server default) |
+| `status`      | `?status=500`             | HTTP status code                                |
+| `header-*`    | `?header-X-Custom=value`  | Add response header                             |
+| `redirect`    | `?redirect=/other.html`   | Force redirect                                  |
+| `contentType` | `?contentType=text/plain` | Override content type                           |
 
 Example: `http://localhost:4000/any.html?delay=1000&status=201`
 
@@ -116,9 +117,9 @@ Use `?delay=0` to disable the default delay for a specific request.
 
 ## Special Endpoints
 
-| Endpoint | Description |
-|----------|-------------|
-| `/` | Index page listing all fixtures |
+| Endpoint       | Description                     |
+| -------------- | ------------------------------- |
+| `/`            | Index page listing all fixtures |
 | `/sitemap.xml` | Dynamic sitemap of all fixtures |
 
 ## App Mounting (Subprocess + Reverse Proxy)

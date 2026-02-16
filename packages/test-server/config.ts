@@ -31,7 +31,8 @@ export function getMounts(basePort: number): MountConfig[] {
       command: `bun run dev --port ${nextjsPort}`,
       port: nextjsPort,
       readyPattern: /Ready in/i,
-      cwd: './test-server/apps/nextjs-streaming',
+      // Path to test-server-nextjs package (sibling to test-server)
+      cwd: '../test-server-nextjs',
       timeout: 60000,
     },
   ]

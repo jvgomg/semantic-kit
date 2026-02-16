@@ -38,6 +38,7 @@
     "test-server:verbose": "turbo run start:verbose --filter=@webspecs/test-server"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "@eslint/js": "^9.28.0",
     "@manypkg/cli": "^0.25.1",
     "@types/bun": "1.3.9",

@@ -207,9 +207,12 @@ async function exec<T>(
   url: string,
   options: string[],
 ): Promise<CliResult<T>> {
+  // Path to the built CLI in the @webspecs/cli package
+  const cliPath = new URL('../../cli/dist/cli.js', import.meta.url).pathname
+
   const proc = Bun.spawn(
-    ['bun', 'src/cli.ts', command, '--format', 'json', ...options, url],
-    { stdout: 'pipe', stderr: 'pipe', cwd: process.cwd() },
+    ['bun', cliPath, command, '--format', 'json', ...options, url],
+    { stdout: 'pipe', stderr: 'pipe' },
   )
 
   const [stdout, stderr] = await Promise.all([
