@@ -1,5 +1,8 @@
-import type { ValidateHtmlResult } from '@webspecs/core'
-import type { Report, Message } from 'html-validate'
+import type {
+  ValidateHtmlResult,
+  HtmlValidateReport,
+  HtmlValidateMessage,
+} from '@webspecs/core'
 import type { OutputFormat } from '../../lib/arguments.js'
 import {
   createFormatterContext,
@@ -18,7 +21,7 @@ import type { OutputMode } from '../../lib/output-mode.js'
  * - severity 2 -> error/high
  * - severity 1 -> warning/medium
  */
-export function buildIssues(report: Report): Issue[] {
+export function buildIssues(report: HtmlValidateReport): Issue[] {
   const issues: Issue[] = []
 
   for (const result of report.results) {
@@ -33,7 +36,7 @@ export function buildIssues(report: Report): Issue[] {
 /**
  * Build a single issue from an html-validate message.
  */
-function buildIssueFromMessage(message: Message): Issue {
+function buildIssueFromMessage(message: HtmlValidateMessage): Issue {
   const isError = message.severity === 2
   return {
     type: isError ? 'error' : 'warning',
@@ -51,7 +54,7 @@ function buildIssueFromMessage(message: Message): Issue {
  * Build the result object from html-validate report
  */
 function buildValidateHtmlResult(
-  report: Report,
+  report: HtmlValidateReport,
   target: string,
 ): ValidateHtmlResult {
   return {
@@ -73,7 +76,7 @@ const SUCCESS_MESSAGE = 'HTML markup is valid'
  * Format terminal output - full or compact mode.
  */
 function formatTerminal(
-  report: Report,
+  report: HtmlValidateReport,
   ctx: ReturnType<typeof createFormatterContext>,
   options?: { compact?: boolean },
 ): string {
@@ -100,7 +103,7 @@ function formatTerminal(
  * JSON format is handled directly by runCommand.
  */
 export function formatValidateHtmlOutput(
-  report: Report,
+  report: HtmlValidateReport,
   format: OutputFormat,
   mode: OutputMode,
 ): string {
@@ -119,7 +122,7 @@ export function formatValidateHtmlOutput(
  * Build JSON result data from html-validate report.
  */
 export function buildJsonResult(
-  report: Report,
+  report: HtmlValidateReport,
   target: string,
 ): { result: ValidateHtmlResult; issues: Issue[] } {
   return {

@@ -14,7 +14,10 @@ export { analyzeForGoogle, GOOGLE_SCHEMA_TYPES } from './google-analysis.js'
 
 // HTML validation
 export { validateHtml } from './html-validation.js'
-export type { Report as HtmlValidateReport } from 'html-validate'
+export type {
+  Report as HtmlValidateReport,
+  Message as HtmlValidateMessage,
+} from 'html-validate'
 
 // Accessibility validation
 export {

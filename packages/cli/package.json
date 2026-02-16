@@ -45,11 +45,8 @@
     "commander": "^14.0.2",
     "diff": "^8.0.3",
     "emphasize": "^7.0.0",
-    "html-validate": "^10.7.0",
-    "linkedom": "^0.18.12",
     "marked": "^15.0.12",
-    "marked-terminal": "^7.3.0",
-    "prettier": "^3.8.1"
+    "marked-terminal": "^7.3.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",

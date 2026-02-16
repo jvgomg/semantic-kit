@@ -29,7 +29,6 @@
     "@webspecs/cli": "workspace:*",
     "@webspecs/core": "workspace:*",
     "diff": "^8.0.3",
-    "html-validate": "^10.7.0",
     "jotai": "^2.16.2",
     "jotai-effect": "^2.2.3",
     "jotai-family": "^1.0.1",
