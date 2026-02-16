@@ -122,7 +122,7 @@ Implemented Lenses/Tools navigation structure in TUI:
    - ai-view → lens (shows how AI crawlers see the page)
    - structure → tool (analysis utility)
 
-6. **Documentation** (`src/tui/AGENTS.md`)
+6. **Documentation** (`directives/tui.md`)
    - Added View Categories section explaining lens vs tool distinction
    - Updated Adding a New View section with category field
    - Updated Key Atoms table with new grouped menu atoms

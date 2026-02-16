@@ -1,10 +1,10 @@
-# TUI AGENTS.md
+# TUI Development Guide
 
 Instructions for working with the semantic-kit Terminal UI.
 
 ## Quick Links
 
-- **[UI_GLOSSARY.md](./UI_GLOSSARY.md)** - Terminology, layout regions, keyboard shortcuts, mouse interactions
+- **[UI_GLOSSARY.md](../src/tui/UI_GLOSSARY.md)** - Terminology, layout regions, keyboard shortcuts, mouse interactions
 
 ## Architecture Overview
 
@@ -39,7 +39,6 @@ src/tui/
 ├── index.tsx             # Entry point, mouse handling, alt screen buffer
 ├── App.tsx               # Root component, layout, input handling
 ├── UI_GLOSSARY.md        # UI terminology and interaction documentation
-├── AGENTS.md             # This file
 ├── state/
 │   ├── index.ts          # Re-exports all atoms, hooks, and types
 │   ├── types.ts          # Shared types (GroupedMenuItem, ViewData, FocusRegion, UrlListTab, etc.)
@@ -246,7 +245,7 @@ The store factory pattern separates concerns:
 
 ## Input Handling
 
-See [UI_GLOSSARY.md](./UI_GLOSSARY.md) for complete keyboard shortcuts and mouse interactions.
+See [UI_GLOSSARY.md](../src/tui/UI_GLOSSARY.md) for complete keyboard shortcuts and mouse interactions.
 
 Key patterns used in the codebase:
 

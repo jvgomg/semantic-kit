@@ -12,45 +12,53 @@ Developers use it to answer questions like:
 - "How do AI tools like Claude and ChatGPT see my website?"
 - "How do screen readers interpret my markup?"
 
+## Directives
+
+Load the appropriate guide based on your task:
+
+| Task | Directive |
+|------|-----------|
+| Code changes | [directives/code.md](directives/code.md) |
+| Terminal UI development | [directives/tui.md](directives/tui.md) |
+| Research documentation | [research/_meta/README.md](research/_meta/README.md) |
+| Test fixtures | [test-server/README.md](test-server/README.md) |
+
+## Skills
+
+Load skills for specialized workflows:
+
+| Skill | When to Use |
+|-------|-------------|
+| `research-workflow` | Performing research tasks (verifying, updating, creating pages) |
+| `research-backlog-task` | Creating backlog tasks from research findings |
+| `finalize-research-task` | Completing research-backed implementation tasks (for developers) |
+| `jotai-expert` | Working with Jotai state management in React |
+| `opentui` | Working with the OpenTUI library |
+
+Skills are located in `.agents/skills/`.
+
 ## Available Commands
 
-| Command               | Purpose                                                              |
-| --------------------- | -------------------------------------------------------------------- |
-| `ai`                  | Show what AI crawlers extract (static HTML → Readability → markdown) |
-| `reader`              | Show how browser reader modes see your page (Safari Reader, etc.)    |
-| `google`              | Show how Googlebot sees your page (metadata, schema, structure)      |
-| `social`              | Show how social platforms see your page (Open Graph, Twitter Cards)  |
-| `screen-reader`       | Show how screen readers interpret your page (accessibility tree)     |
-| `readability`         | Raw Readability extraction with full metrics (link density, etc.)    |
-| `readability:js`      | Same as above, but after JavaScript execution                        |
-| `readability:compare` | Compare static vs JS-rendered Readability extraction                 |
-| `structure`           | Analyze page structure (landmarks, headings, links)                  |
-| `structure:js`        | Same as above, but after JavaScript execution                        |
-| `structure:compare`   | Compare static vs hydrated structure                                 |
-| `schema`              | Inspect structured data (JSON-LD, Open Graph, etc.)                  |
-| `schema:js`           | Same as above, but after JavaScript execution                        |
-| `schema:compare`      | Compare static vs JS-rendered structured data                        |
-| `a11y-tree`           | Show accessibility tree (static HTML, JS disabled)                   |
-| `a11y-tree:js`        | Same as above, but after JavaScript execution                        |
-| `a11y-tree:compare`   | Compare static vs hydrated accessibility tree                        |
-| `validate:html`       | Validate HTML markup                                                 |
-| `validate:schema`     | Validate structured data against platform requirements               |
-| `validate:a11y`       | Run accessibility checks (WCAG via axe-core)                         |
-| `fetch`               | Fetch and prettify HTML from a URL                                   |
-| `tui`                 | Launch interactive terminal UI                                       |
+| Command | Purpose |
+|---------|---------|
+| `ai` | Show what AI crawlers extract |
+| `reader` | Show how browser reader modes see your page |
+| `google` | Show how Googlebot sees your page |
+| `social` | Show how social platforms see your page |
+| `screen-reader` | Show how screen readers interpret your page |
+| `readability` | Raw Readability extraction with metrics |
+| `structure` | Analyze page structure (landmarks, headings, links) |
+| `schema` | Inspect structured data (JSON-LD, Open Graph) |
+| `a11y-tree` | Show accessibility tree |
+| `validate:html` | Validate HTML markup |
+| `validate:schema` | Validate structured data |
+| `validate:a11y` | Run accessibility checks (WCAG via axe-core) |
+| `fetch` | Fetch and prettify HTML from a URL |
+| `tui` | Launch interactive terminal UI |
 
-Run `bun run dev <command> --help` for command options.
+Commands support `:js` suffix for JavaScript-rendered content and `:compare` for static vs JS comparison.
 
-## Task-Specific Instructions
-
-**Read the appropriate guide before starting work:**
-
-| Task Type              | Instructions                                                              |
-| ---------------------- | ------------------------------------------------------------------------- |
-| Research documentation | [research/\_meta/AGENT_DIRECTIVES.md](research/_meta/AGENT_DIRECTIVES.md) |
-| Code changes           | [AGENTS_CODE.md](AGENTS_CODE.md)                                          |
-| Terminal UI            | [src/tui/AGENTS.md](src/tui/AGENTS.md)                                    |
-| Test fixtures          | [test-server/README.md](test-server/README.md)                            |
+Run `bun run dev <command> --help` for options.
 
 ## Project Structure
 
@@ -59,40 +67,19 @@ src/
   cli.ts              # CLI entrypoint
   commands/           # One file per command
   lib/                # Shared utilities
-    tui-config/       # YAML config file support for TUI
-  tui/                # Terminal UI (see src/tui/AGENTS.md)
+  tui/                # Terminal UI
 
-integration-tests/    # Integration tests (bun:test)
-  setup.ts            # Global setup (starts test server once)
-  utils/
-    cli.ts            # CLI runner with JSON parsing
-    server.ts         # Test server lifecycle management
-  ai/                 # Tests for `ai` command
-  # Future: structure/, schema/, validate/
+directives/           # Agent instructions
+  code.md             # Code development guide
+  tui.md              # TUI development guide
 
-bunfig.toml           # Bun config (preloads integration-tests/setup.ts)
+research/             # Research documentation
+  entities/           # Company-specific (Google, Anthropic, etc.)
+  topics/             # Cross-cutting topics
+  _meta/              # Research guides and logs
 
-test-server/          # Local test server for fixtures
-  server.ts           # Main entrypoint
-  config.ts           # Mount configurations
-  lib/                # Server utilities
-  fixtures/           # HTML test fixtures
-    good/             # Well-formed examples
-    bad/              # Anti-pattern examples
-    edge-cases/       # Boundary conditions
-    responses/        # Custom response behaviors
-  apps/               # Dynamic fixture apps (mounted via config.ts)
-    nextjs-streaming/ # Next.js App Router for SSR testing
-
-docs/                 # Command documentation (usage-focused)
-  backlog/            # Research-driven change requests
-research/             # Research documentation (findings, citations)
-  entities/           # Company/product-specific (Google, Anthropic, etc.)
-  topics/             # Cross-cutting topics (content extraction, etc.)
-  _meta/              # Research contribution guides
-
-CHANGELOG.md          # Tool version history
-research/CHANGELOG.md # Research version history (separate)
+test-server/          # HTML fixtures for testing
+integration-tests/    # Integration tests
 ```
 
 ## Quick Reference
@@ -107,15 +94,9 @@ bun run typecheck
 # Build
 bun run build
 
-# Start test server (serves fixtures on localhost:4000)
+# Start test server
 bun run test-server
 
-# Test with fixtures
-bun run dev ai http://localhost:4000/good/semantic-article.html
-
-# Launch TUI with a YAML config file
-bun run dev tui --config ./path/to/urls.yaml
-
-# Integration tests (test server starts automatically via bunfig.toml preload)
-bun run test:integration         # Run integration tests
+# Integration tests
+bun run test:integration
 ```

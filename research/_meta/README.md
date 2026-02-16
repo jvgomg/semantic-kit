@@ -1,6 +1,6 @@
-# Research Guide
+# Research Documentation
 
-How to contribute to the semantic-kit research documentation.
+How to contribute to and understand the semantic-kit research documentation.
 
 ---
 
@@ -15,6 +15,20 @@ This research documents how web content is interpreted by different consumers:
 - **Content extraction tools** - Firecrawl, Jina Reader, and similar services
 
 The goal is to help developers understand what these systems see and how to optimize for them.
+
+---
+
+## Skills
+
+For procedural workflows, load the appropriate skill:
+
+| Skill | When to Use |
+|-------|-------------|
+| `research-workflow` | Performing any research task (verifying, updating, creating pages) |
+| `research-backlog-task` | Creating backlog tasks from research findings |
+| `finalize-research-task` | For developers completing research-backed tasks |
+
+Skills are located in `.agents/skills/`.
 
 ---
 
@@ -72,8 +86,7 @@ research/
       _index.md
 
   _meta/                       # Documentation about documentation
-    AGENT_DIRECTIVES.md        # Instructions for AI agents
-    RESEARCH_GUIDE.md          # This file
+    README.md                  # This file
     SEARCH_STRATEGIES.md       # Sources and queries by topic
     VERIFICATION_LOG.md        # Record of verification runs
 
@@ -316,7 +329,22 @@ When uncertain, ask before creating - it's easier to split a page later than to 
 
 ### Recording Verification
 
-Log all verification work in [[VERIFICATION_LOG]] so others know what's been checked and when.
+Log all verification work in `VERIFICATION_LOG.md` so others know what's been checked and when.
+
+---
+
+## Source Priority
+
+When multiple sources exist, prefer in this order:
+
+1. **Official documentation** - Company docs, API references, specs
+2. **Official blog posts** - Engineering blogs from the company
+3. **Conference talks/presentations** - By company employees
+4. **Reputable technical publications** - web.dev, Smashing Magazine
+5. **Well-researched third-party analysis** - With methodology
+6. **Community observations** - Stack Overflow, GitHub issues (lower confidence)
+
+For detailed search strategies by topic, see [SEARCH_STRATEGIES.md](SEARCH_STRATEGIES.md).
 
 ---
 
@@ -329,12 +357,12 @@ The tool CHANGELOG (`/CHANGELOG.md`) documents **what changed and when**.
 These three are connected:
 
 ```
-Research ←→ Tool CHANGELOG ←→ Command Docs
-   ↑              ↑                ↑
+Research <-> Tool CHANGELOG <-> Command Docs
+   ^              ^                ^
 findings    version history    usage guide
 ```
 
-### Command Docs → Research
+### Command Docs -> Research
 
 Command docs include a "Behavior" table linking to research:
 
@@ -347,7 +375,7 @@ Command docs include a "Behavior" table linking to research:
 | Ignores JavaScript | AI crawlers don't render JS | [[ai-crawler-behavior]] |
 ```
 
-### Tool CHANGELOG → Research
+### Tool CHANGELOG -> Research
 
 When a tool change is driven by research, the changelog entry references it:
 
@@ -357,7 +385,7 @@ When a tool change is driven by research, the changelog entry references it:
   - Research: [[streaming-ssr]], research-v0.1.0
 ```
 
-### Research → Tool Version
+### Research -> Tool Version
 
 Research pages indicate which findings are implemented in the tool. See [Tool Coverage](#tool-coverage) below.
 
@@ -441,3 +469,12 @@ Examples:
 - `> **Tool support:** The `ai` command detects streaming SSR patterns since v0.0.3.`
 - `> **Tool support:** The `structure` command extracts ARIA landmarks since v0.0.8.`
 - `> **Tool support:** Checked by `validate:a11y` since v0.0.9.`
+
+---
+
+## Related Files
+
+- **Research pages**: `research/entities/`, `research/topics/`
+- **Research changelog**: `research/CHANGELOG.md`
+- **Verification log**: `VERIFICATION_LOG.md`
+- **Search strategies**: [SEARCH_STRATEGIES.md](SEARCH_STRATEGIES.md)

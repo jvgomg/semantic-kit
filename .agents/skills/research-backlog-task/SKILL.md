@@ -7,6 +7,10 @@ description: Create backlog tasks from research findings using the Backlog.md MC
 
 This skill covers creating backlog tasks when research reveals actionable improvements to semantic-kit.
 
+## Context
+
+For research documentation structure and conventions, see `research/_meta/README.md`.
+
 ## Prerequisites
 
 Before using this skill:
@@ -193,4 +197,4 @@ task_create({
 ## Related Skills
 
 - **research-workflow**: For performing research before creating tasks
-- **research-update-after-implementation**: For developers implementing these tasks
+- **finalize-research-task**: For developers completing these tasks

@@ -7,38 +7,46 @@ description: Workflow for AI agents performing research tasks on semantic-kit do
 
 This skill covers performing research tasks for semantic-kit's research documentation.
 
+## Context
+
+Before using this skill, read `research/_meta/README.md` for:
+- Directory structure and page types
+- Writing style and naming conventions
+- Citation format and frontmatter details
+- Tool coverage documentation
+
+For search queries and sources by topic, see `research/_meta/SEARCH_STRATEGIES.md`.
+
 ## Your Role
 
 You are a research assistant helping maintain accurate, up-to-date documentation about how web content is parsed and interpreted by search engines, AI crawlers, screen readers, and content extraction tools.
 
-Your work directly informs the behavior of the semantic-kit tool and helps developers understand this landscape.
+Your work directly informs the behavior of the semantic-kit tool.
 
 ## Core Principles
 
-### 1. Accuracy Over Completeness
+### Accuracy Over Completeness
 
 - Only document claims you can support with citations
-- Clearly distinguish between confirmed facts, reasonable inferences, and speculation
-- When sources conflict, present both perspectives rather than picking one
-- Say "I don't know" or "I couldn't verify" when appropriate
+- Distinguish between confirmed facts, reasonable inferences, and speculation
+- When sources conflict, present both perspectives
+- Say "I don't know" when appropriate
 
-### 2. Collaborative Workflow
-
-Calibrate your communication based on the nature of your findings:
+### Collaborative Workflow
 
 | Situation | Approach |
 |-----------|----------|
 | Minor addition with clear source | Make the change, summarize what was done |
 | Obscure or niche finding | Ask if it's worth including before adding |
-| Contradicts existing research | Present findings, explain the impact, wait for confirmation |
-| Uncertain interpretation | Share your reasoning, ask for input |
+| Contradicts existing research | Present findings, wait for confirmation |
+| Uncertain interpretation | Share reasoning, ask for input |
 | Verification confirms no change | Log it, mention briefly |
 
-### 3. Preserve Context
+### Preserve Context
 
-- When updating content, preserve the history of how conclusions evolved
-- Don't silently remove information - if something is now outdated, note why
-- Maintain the chain of citations so readers can verify claims
+- Preserve history of how conclusions evolved
+- Don't silently remove information — note why if outdated
+- Maintain citation chains for verification
 
 ## Decision Tree
 
@@ -53,69 +61,13 @@ What type of research task?
 ├── Explore new topic
 │   └── Start with official docs, expand to blogs, create new pages
 └── Research reveals tool improvement
-    └── Release research first, then use research-backlog-task skill
+    └── Present findings, get confirmation, then use research-backlog-task skill
 ```
-
-## Quick Reference
-
-### Research Page Location
-
-- Entity-specific: `research/entities/{company}/{topic}.md`
-- Cross-cutting topics: `research/topics/{category}/{topic}.md`
-
-### Frontmatter Format
-
-```yaml
----
-title: "Descriptive Title"
-lastVerified: YYYY-MM-DD
-lastUpdated: YYYY-MM-DD
-toolCoverage:  # Added when tool implements findings
-  - finding: "Description of what was implemented"
-    command: command-name
-    since: vX.Y.Z
----
-```
-
-### Citation Format
-
-Use footnote-style citations:
-
-```markdown
-Google uses a two-wave indexing process [^google-js-seo].
-
-## References
-
-[^google-js-seo]:
-  - **Source**: Google Search Central
-  - **Title**: "JavaScript SEO Basics"
-  - **URL**: https://developers.google.com/search/...
-  - **Published**: 2023-03-15
-  - **Accessed**: 2024-01-15
-  - **Supports**: Two-wave indexing process description
-```
-
-Required: Source, Title, URL, Accessed, Supports
-Optional: Author, Published
-
-### Wikilinks
-
-- Use flat names: `[[readability]]` not `[[topics/content-extraction/readability]]`
-- Display text when helpful: `[[mozilla-readability|Mozilla's Readability library]]`
-
-### Source Priority
-
-1. Official documentation (company docs, API references, specs)
-2. Official blog posts (engineering blogs from the company)
-3. Conference talks/presentations (by company employees)
-4. Reputable technical publications (web.dev, Smashing Magazine)
-5. Well-researched third-party analysis (with methodology)
-6. Community observations (Stack Overflow, GitHub issues - lower confidence)
 
 ## Releasing Research
 
-When to release (move from Unreleased to versioned section):
-- Before creating a backlog task that references the research
+Release research (move from Unreleased to versioned) when:
+- Before creating a backlog task that references findings
 - When enough changes have accumulated
 - When changes are ready to be cited by tool changelog entries
 
@@ -172,18 +124,24 @@ After any research task, add entry to `research/_meta/VERIFICATION_LOG.md`:
 
 If your research reveals something actionable for the tool:
 
-1. Complete and document the research findings
-2. Release the research (create a version)
-3. **Load the `research-backlog-task` skill** to create a backlog task
+1. Present findings with a short outline of potential improvements
+2. Wait for confirmation on which ideas to pursue
+3. Release the research (create a version)
+4. **Load the `research-backlog-task` skill** to create backlog tasks
 
 Do NOT create backlog tasks for:
 - Purely informational findings (no tool change implied)
 - Trivial changes (just mention in conversation)
 - Uncertain actionability (discuss first)
 
+## Related Skills
+
+- **research-backlog-task**: For creating backlog tasks from confirmed research findings
+- **finalize-research-task**: For developers completing research-backed tasks
+
 ## References
 
-- Research pages: `research/`
-- Changelog: `research/CHANGELOG.md`
-- Verification log: `research/_meta/VERIFICATION_LOG.md`
-- Search strategies: `research/_meta/SEARCH_STRATEGIES.md`
+- **Research guide**: `research/_meta/README.md`
+- **Search strategies**: `research/_meta/SEARCH_STRATEGIES.md`
+- **Changelog**: `research/CHANGELOG.md`
+- **Verification log**: `research/_meta/VERIFICATION_LOG.md`

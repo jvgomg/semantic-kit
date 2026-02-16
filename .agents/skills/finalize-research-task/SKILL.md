@@ -1,18 +1,22 @@
 ---
-name: research-update-after-implementation
-description: Update research documentation after implementing a feature. Use this skill when completing a research-backed backlog task. Covers adding toolCoverage to research pages, writing CHANGELOG entries with research references, and marking tasks complete.
+name: finalize-research-task
+description: Finalize a research-backed backlog task after implementation. For developer agents completing tasks that originated from research. Covers adding toolCoverage to research pages, writing CHANGELOG entries with research references, and marking tasks complete.
 ---
 
-# Research Update After Implementation
+# Finalize Research Task
 
-This skill covers updating research documentation after implementing a feature from a research-backed backlog task.
+This skill is for **developer agents** completing backlog tasks that originated from research findings.
+
+## Context
+
+For research documentation structure and conventions, see `research/_meta/README.md`.
 
 ## When to Use
 
 Use this skill when:
-- You have implemented a feature from a backlog task labeled `research-backed`
+- You are a developer agent who has implemented a feature from a `research-backed` backlog task
 - The acceptance criteria includes "Research page updated with toolCoverage entry"
-- You are ready to finalize a research-backed task
+- You are ready to finalize the task and update documentation
 
 ## Checklist
 
@@ -225,5 +229,5 @@ Users can:
 
 ## Related Skills
 
-- **research-workflow**: For performing research
-- **research-backlog-task**: For creating tasks from research
+- **research-workflow**: For performing research tasks
+- **research-backlog-task**: For creating backlog tasks from research findings

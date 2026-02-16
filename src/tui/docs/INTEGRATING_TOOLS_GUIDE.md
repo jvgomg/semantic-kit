@@ -7,7 +7,7 @@ A step-by-step guide for adding a new tool to the TUI using the expandable secti
 Before starting, ensure you have:
 
 1. Read [EXPANDABLE_SECTIONS_FRAMEWORK.md](./EXPANDABLE_SECTIONS_FRAMEWORK.md)
-2. Familiarity with the existing view system (see [src/tui/AGENTS.md](../AGENTS.md))
+2. Familiarity with the existing view system (see [directives/tui.md](../../../directives/tui.md))
 3. The framework components are implemented and available
 
 ---

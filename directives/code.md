@@ -8,7 +8,7 @@ Load these skills when performing specific workflows:
 
 | Skill | When to Use |
 |-------|-------------|
-| `research-update-after-implementation` | After implementing a research-backed backlog task |
+| `finalize-research-task` | After implementing a research-backed backlog task |
 
 Skills are located in `.agents/skills/`.
 
@@ -72,7 +72,7 @@ Example behavior table:
 
 **For research-backed tasks** (labeled `research-backed`):
 
-1. **Load the `research-update-after-implementation` skill** for the complete workflow
+1. **Load the `finalize-research-task` skill** for the complete workflow
 2. This covers:
    - Adding `toolCoverage` to research page frontmatter
    - Adding inline callout if appropriate
@@ -120,7 +120,7 @@ test-server/fixtures/
   responses/      # Custom response behaviors
 ```
 
-Full documentation: [test-server/README.md](test-server/README.md)
+Full documentation: [test-server/README.md](../test-server/README.md)
 
 ---
 
