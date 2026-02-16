@@ -29,6 +29,7 @@ Load skills for specialized workflows:
 
 | Skill | When to Use |
 |-------|-------------|
+| `changesets-workflow` | Creating changesets, versioning, or publishing packages |
 | `research-workflow` | Performing research tasks (verifying, updating, creating pages) |
 | `research-backlog-task` | Creating backlog tasks from research findings |
 | `finalize-research-task` | Completing research-backed implementation tasks (for developers) |

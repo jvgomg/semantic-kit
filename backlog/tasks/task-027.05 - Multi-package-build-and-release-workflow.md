@@ -1,9 +1,10 @@
 ---
 id: TASK-027.05
 title: Multi-package build and release workflow
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-02-16 16:04'
+updated_date: '2026-02-16 21:36'
 labels:
   - npm
   - workflow
@@ -18,84 +19,140 @@ priority: high
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Set up coordinated build and release workflow for the @webspecs monorepo.
+Set up coordinated build and release workflow for the @webspecs monorepo using Changesets.
 
-## Build Workflow
+## Implementation Status
 
-### Root Scripts
-```json
-{
-  "scripts": {
-    "build": "bun run --filter '*' build",
-    "build:core": "bun run --cwd packages/core build",
-    "build:cli": "bun run --cwd packages/cli build", 
-    "build:tui": "bun run --cwd packages/tui build",
-    "build:binaries": "bun run build-binaries.ts",
-    "typecheck": "bun run --filter '*' typecheck",
-    "test": "bun run test:unit && bun run test:integration",
-    "test:unit": "bun run --filter '*' test",
-    "test:integration": "bun test integration-tests/",
-    "clean": "rm -rf packages/*/dist"
-  }
-}
+**✅ COMPLETED**: Changesets has been integrated into the project.
+
+### What Was Implemented
+
+1. **Changesets installed and configured**
+   - Installed `@changesets/cli@2.29.8`
+   - Configured `.changeset/config.json` with independent versioning
+   - Created `.changeset/README.md` with quick start guide
+
+2. **Agent skill created**
+   - `changesets-workflow` skill provides comprehensive guidance
+   - Non-interactive script for changeset creation
+   - Semver guide for determining version bumps
+   - Complete versioning and publishing workflows
+
+3. **CHANGELOGs migrated**
+   - Archived pre-monorepo CHANGELOG as `/CHANGELOG-pre-monorepo.md`
+   - Created package-specific CHANGELOGs in each package
+   - All packages marked as "Unreleased" (nothing published yet)
+
+4. **Documentation created**
+   - `/docs/RELEASING.md` - Complete release process for humans and agents
+   - Updated `directives/code.md` with changeset workflow
+   - Updated `AGENTS.md` skills table
+   - Skill reference integrated throughout
+
+5. **Backlog task created**
+   - TASK-043: Automate releases with GitHub Actions (deferred to v1.0)
+
+## How It Works
+
+### For Agents
+
+Use the `changesets-workflow` skill when creating changesets or publishing.
+
+**Quick reference**:
+```bash
+# Create a changeset after code changes
+node .agents/skills/changesets-workflow/scripts/create-changeset.js \
+  "@webspecs/cli:patch,@webspecs/core:patch" \
+  "Brief summary" \
+  "Optional details\n\nResearch: [[page-id]], research-vX.Y.Z"
 ```
 
-### Build Order
-Dependencies must build in order:
-1. `@webspecs/core` (no internal deps)
-2. `@webspecs/cli` (depends on core)
-3. `@webspecs/tui` (depends on core)
+### For Maintainers
 
-Bun workspaces handle this automatically with `--filter`.
+**Local release process**:
+```bash
+# 1. Version packages (updates package.json and CHANGELOGs)
+bunx changeset version
 
-## Release Workflow
+# 2. Build and test
+bun run build
+bun run test
 
-### Versioning Strategy
-- **Lockstep versioning**: All packages share the same version
-- Simplifies coordination and communication
-- Version in root package.json, sync to all packages
+# 3. Commit version changes
+git add .
+git commit -m "chore: release packages"
 
-### Release Script (scripts/release.ts)
-```typescript
-// 1. Bump version in all package.json files
-// 2. Update CHANGELOG.md
-// 3. Build all packages
-// 4. Run tests
-// 5. Git commit and tag
-// 6. Publish to npm (core, then cli, then tui)
-// 7. Build binaries
-// 8. Create GitHub release with binaries
+# 4. Publish to npm
+bunx changeset publish
+
+# 5. Push with tags
+git push --follow-tags
 ```
 
-### npm Publishing Order
-Must publish in dependency order:
-1. `npm publish packages/core`
-2. `npm publish packages/cli`
-3. `npm publish packages/tui`
+## Versioning Strategy
 
-### GitHub Releases
-- Create release for each version
-- Attach binary downloads:
-  - `webspecs-cli-darwin-arm64`
-  - `webspecs-cli-darwin-x64`
-  - `webspecs-cli-linux-x64`
-  - `webspecs-tui-darwin-arm64`
-  - `webspecs-tui-darwin-x64`
-  - `webspecs-tui-linux-x64`
+**Independent versioning** is configured:
+- `@webspecs/core`, `@webspecs/cli`, `@webspecs/tui` version independently
+- Packages can release at different cadences
+- Changesets automatically handles dependency updates
+- No lockstep versioning (not using `fixed` array)
 
-## CI/CD Considerations (Future)
-- GitHub Actions workflow for releases
-- Matrix build for cross-platform binaries
-- npm provenance (--provenance flag)
-- Automated changelog from conventional commits
+## Integration with Research
 
-## Integration Tests
-- Tests at root level exercise the full stack
-- Test that published packages work together:
-  ```bash
-  npm install @webspecs/core @webspecs/cli
-  npx webspecs ai https://example.com
-  ```
+Changesets reference research versions for traceability:
+
+```markdown
+Add Remix streaming detection in ai command
+
+Research: [[streaming-ssr]], research-v0.5.0
+```
+
+This creates a link between:
+- Research findings → Tool implementation → Released version
+
+See `docs/RELEASING.md` for complete integration workflow.
+
+## Files Created/Modified
+
+```
+.changeset/
+  config.json           # Changesets configuration
+  README.md             # Quick start guide
+
+.agents/skills/
+  changesets-workflow/  # Comprehensive skill
+    SKILL.md            # Main documentation
+    scripts/
+      create-changeset.js  # Non-interactive script
+    references/
+      semver-guide.md      # Version bump guide
+      config.md            # Config reference
+
+packages/
+  core/CHANGELOG.md     # Package changelog
+  cli/CHANGELOG.md      # Package changelog
+  tui/CHANGELOG.md      # Package changelog
+
+docs/
+  RELEASING.md          # Release process documentation
+
+CHANGELOG-pre-monorepo.md  # Archived history
+
+directives/code.md    # Updated with changeset workflow
+AGENTS.md             # Updated with changesets-workflow skill
+```
+
+## Next Steps
+
+1. **First release**: Follow `docs/RELEASING.md` to publish packages
+2. **Future automation**: Implement TASK-043 for GitHub Actions publishing
+3. **Testing**: Create a test changeset to verify workflow
+
+## References
+
+- Changesets documentation: https://github.com/changesets/changesets
+- Skill: `.agents/skills/changesets-workflow/SKILL.md`
+- Release docs: `docs/RELEASING.md`
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria

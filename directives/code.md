@@ -8,6 +8,7 @@ Load these skills when performing specific workflows:
 
 | Skill | When to Use |
 |-------|-------------|
+| `changesets-workflow` | Creating changesets, versioning, or publishing packages |
 | `finalize-research-task` | After implementing a research-backed backlog task |
 
 Skills are located in `.agents/skills/`.
@@ -52,8 +53,26 @@ Example behavior table:
 3. **Lint**: `bun run lint` (lints all packages)
 4. **Format**: `bun run pretty` (formats all packages)
 5. **Build**: `bun run build` (builds all packages)
-6. **Add CHANGELOG entry**: Update `research/CHANGELOG.md`
-7. **Bump versions**: Update version in relevant `packages/*/package.json` if releasing
+6. **Create changeset**: Use the `changesets-workflow` skill to document your changes
+
+### Creating a Changeset
+
+After making code changes, create a changeset to document what changed:
+
+```bash
+# Use the skill's non-interactive script
+node .agents/skills/changesets-workflow/scripts/create-changeset.js \
+  "@webspecs/cli:patch,@webspecs/core:patch" \
+  "Brief summary of changes" \
+  "Optional detailed description\n\nResearch: [[page-id]], research-vX.Y.Z"
+```
+
+**When to create a changeset:**
+- After any code change that affects package functionality
+- Include all packages that changed in the first argument
+- Reference research if the change is research-backed
+
+**For comprehensive guidance**, use the `changesets-workflow` skill.
 
 ---
 
@@ -74,19 +93,29 @@ Example behavior table:
 
 ### After Implementing
 
+**For all tasks** (research-backed or not):
+
+1. **Create a changeset** using the `changesets-workflow` skill
+   - Documents what changed for the next release
+   - References research if applicable
+
 **For research-backed tasks** (labeled `research-backed`):
 
-1. **Load the `finalize-research-task` skill** for the complete workflow
-2. This covers:
-   - Adding `toolCoverage` to research page frontmatter
-   - Adding inline callout if appropriate
-   - Writing CHANGELOG entry with research reference
-   - Marking task as Done
+2. **Load the `finalize-research-task` skill** for the complete workflow
+   - Adds `toolCoverage` to research page frontmatter
+   - Adds inline callout if appropriate
+   - Marks task as Done
 
 **For non-research tasks:**
 
-1. Add CHANGELOG entry
 2. Mark task as Done via `task_edit`
+
+### Changeset vs Research Integration
+
+- **Changesets**: Document code changes for npm releases
+- **Research finalization**: Link implementation back to research pages
+- Both are required for research-backed tasks
+- Only changesets needed for non-research tasks
 
 ---
 
