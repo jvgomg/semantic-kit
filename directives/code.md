@@ -16,10 +16,11 @@ Skills are located in `.agents/skills/`.
 
 ## Adding a New Command
 
-1. Create command file in `src/commands/<name>.ts`
-2. Add command to CLI in `src/cli.ts`
-3. Export from `src/index.ts` if needed programmatically
-4. Run `bun run typecheck` to verify
+1. Create command file in `packages/cli/src/commands/<name>.ts`
+2. Add command to CLI in `packages/cli/src/cli.ts`
+3. Export from `packages/core/src/index.ts` if adding new extractors/analyzers
+4. Run `bun run typecheck` to verify all packages
+5. Run `bun run build` to ensure everything compiles
 
 ## Adding Command Documentation
 
@@ -46,10 +47,13 @@ Example behavior table:
 
 ## After Making Changes
 
-1. Run `bun run typecheck`
-2. Test command: `bun run dev <command> [options]`
-3. Add entry to CHANGELOG.md
-4. Bump version in `package.json` if releasing
+1. **Type check**: `bun run typecheck` (checks all packages)
+2. **Test command**: `bun run dev <command> [options]`
+3. **Lint**: `bun run lint` (lints all packages)
+4. **Format**: `bun run pretty` (formats all packages)
+5. **Build**: `bun run build` (builds all packages)
+6. **Add CHANGELOG entry**: Update `research/CHANGELOG.md`
+7. **Bump versions**: Update version in relevant `packages/*/package.json` if releasing
 
 ---
 
@@ -89,12 +93,21 @@ Example behavior table:
 ## Testing Commands
 
 ```bash
-# During development (uses tsx, no build needed)
+# During development (no build needed, runs directly from source)
 bun run dev <command> [options]
 
-# After building
+# With auto-rebuild on file changes
+bun run dev:watch
+
+# After building (uses compiled dist/)
 bun run build
 bun run start <command> [options]
+
+# Run integration tests
+bun run test:integration
+
+# Run integration tests with watch mode
+bun run test:integration:watch
 ```
 
 ## Test Server
@@ -126,13 +139,39 @@ Full documentation: [test-server/README.md](../test-server/README.md)
 
 ## File Structure
 
+This is a monorepo using Bun workspaces and Turborepo:
+
 ```
-src/
-  cli.ts              # CLI entrypoint, command definitions
-  index.ts            # Package exports
-  commands/           # One file per command
-  lib/                # Shared utilities
+packages/
+  core/
+    src/
+      index.ts        # Core package exports (analyzers, extractors, validators)
+    build.ts          # Bun build script
+  cli/
+    src/
+      cli.ts          # CLI entrypoint, command definitions
+      commands/       # One file per command
+      lib/            # CLI-specific utilities
+    build.ts          # Bun build script
+  tui/
+    src/
+      index.tsx       # TUI entrypoint
+    build.ts          # Bun build script
+  integration-tests/  # Integration test suite
+  test-server/        # HTML fixture server
 ```
+
+### Package Dependencies
+
+- `@webspecs/core` - Foundation package with all core logic
+- `@webspecs/cli` - Depends on `core`
+- `@webspecs/tui` - Depends on both `core` and `cli`
+- `@webspecs/integration-tests` - Depends on `core` and `cli`
+
+When making changes:
+- Core changes require rebuilding CLI and TUI
+- CLI changes require rebuilding TUI
+- Turborepo handles this automatically via task dependencies
 
 ## Code Style
 

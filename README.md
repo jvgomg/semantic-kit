@@ -176,26 +176,68 @@ These types define the exact structure of `--format json` output for each comman
 
 ## Development
 
+This project uses a **monorepo structure** with Bun workspaces and Turborepo for efficient task orchestration.
+
 ### Setup
 
 ```bash
 # Install dependencies
 bun install
+```
 
-# Run in development mode
+### Development Workflow
+
+```bash
+# Run commands during development (no build needed)
 bun run dev <command> [options]
 
-# Type check
-bun run typecheck
+# Run with auto-rebuild on file changes
+bun run dev:watch
 
-# Lint
-bun run lint
+# Run TUI in development
+bun run dev:tui
+```
 
-# Build
+### Building
+
+```bash
+# Build all packages (with caching and parallel execution)
 bun run build
 
-# Run tests
+# Type check all packages
+bun run typecheck
+
+# Clean build artifacts
+bun run clean
+```
+
+### Code Quality
+
+```bash
+# Lint all packages
+bun run lint
+
+# Format code with Prettier
+bun run pretty
+
+# Check code formatting
+bun run pretty:check
+```
+
+### Testing
+
+```bash
+# Run all tests (unit + integration)
 bun run test
+
+# Run unit tests only
+bun run test:unit
+
+# Run integration tests
+bun run test:integration
+
+# Run integration tests with watch mode
+bun run test:integration:watch
 ```
 
 ### Test Server
@@ -214,6 +256,19 @@ bun run dev validate:a11y http://localhost:4000/bad/div-soup.html
 Fixtures are organized by category (`good/`, `bad/`, `edge-cases/`, `responses/`) and support configurable response behaviors via `.meta.json` sidecar files.
 
 See [test-server/README.md](test-server/README.md) for full documentation.
+
+### Monorepo Structure
+
+The project is organized into packages:
+
+- **`@webspecs/core`** - Core analyzers, extractors, and validators
+- **`@webspecs/cli`** - Command-line interface (depends on core)
+- **`@webspecs/tui`** - Terminal UI (depends on core + cli)
+- **`@webspecs/integration-tests`** - Integration test suite
+- **`@webspecs/test-server`** - HTML fixture server
+- **`@webspecs/test-server-nextjs`** - Next.js streaming fixture
+
+Turborepo handles task orchestration with intelligent caching and parallel execution.
 
 ## License
 

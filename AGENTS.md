@@ -62,12 +62,26 @@ Run `bun run dev <command> --help` for options.
 
 ## Project Structure
 
+This is a monorepo using Bun workspaces and Turborepo for task orchestration.
+
 ```
-src/
-  cli.ts              # CLI entrypoint
-  commands/           # One file per command
-  lib/                # Shared utilities
-  tui/                # Terminal UI
+packages/
+  core/               # @webspecs/core - Core analyzers and extractors
+    src/              # Source code
+    build.ts          # Bun build script
+  cli/                # @webspecs/cli - CLI tool
+    src/
+      cli.ts          # CLI entrypoint
+      commands/       # One file per command
+      lib/            # Shared utilities
+    build.ts          # Bun build script
+  tui/                # @webspecs/tui - Terminal UI (Bun-only)
+    src/
+      index.tsx       # TUI entrypoint
+    build.ts          # Bun build script
+  integration-tests/  # Integration test suite
+  test-server/        # HTML fixture server
+  test-server-nextjs/ # Next.js streaming fixture
 
 directives/           # Agent instructions
   code.md             # Code development guide
@@ -78,25 +92,96 @@ research/             # Research documentation
   topics/             # Cross-cutting topics
   _meta/              # Research guides and logs
 
-test-server/          # HTML fixtures for testing
-integration-tests/    # Integration tests
+turbo.json            # Turborepo task configuration
 ```
+
+## Build System
+
+The project uses **Turborepo** for efficient task orchestration across packages:
+
+- **Parallel execution**: Tasks run in parallel where dependencies allow
+- **Smart caching**: Build outputs are cached; rebuilds are instant when unchanged
+- **Task dependencies**: Core builds before CLI, which builds before TUI
+- **Watch mode**: File watchers with automatic rebuilds for development
+
+All build tasks use Bun's native bundler with TypeScript declaration generation.
 
 ## Quick Reference
 
+### Development
+
 ```bash
-# Run commands during development
+# Run CLI commands during development (no build needed)
 bun run dev <command> [options]
 
-# Type check
-bun run typecheck
+# Run CLI with auto-rebuild on file changes
+bun run dev:watch
 
-# Build
+# Run TUI during development
+bun run dev:tui
+
+# Run TUI with auto-rebuild on file changes
+bun run dev:watch:tui
+```
+
+### Building
+
+```bash
+# Build all packages (respects dependency order)
 bun run build
 
-# Start test server
+# Type check all packages
+bun run typecheck
+
+# Clean build artifacts
+bun run clean
+```
+
+### Code Quality
+
+```bash
+# Lint all packages
+bun run lint
+
+# Format code (Prettier)
+bun run pretty
+
+# Check formatting
+bun run pretty:check
+```
+
+### Testing
+
+```bash
+# Run all tests (unit + integration)
+bun run test
+
+# Run unit tests only
+bun run test:unit
+
+# Run integration tests
+bun run test:integration
+
+# Run integration tests with watch mode
+bun run test:integration:watch
+```
+
+### Test Servers
+
+```bash
+# Start HTML fixture server (localhost:4000)
 bun run test-server
 
-# Integration tests
-bun run test:integration
+# Start with verbose logging
+bun run test-server:verbose
+```
+
+### Package Management
+
+```bash
+# Validate workspace dependencies
+bun run manypkg:check
+
+# Fix workspace dependency issues
+bun run manypkg:fix
 ```

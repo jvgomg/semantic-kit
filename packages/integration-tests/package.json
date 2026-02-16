@@ -7,7 +7,11 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "bun test --preload ./setup.ts .",
-    "test:watch": "bun test --watch --preload ./setup.ts ."
+    "test:watch": "bun test --watch --preload ./setup.ts .",
+    "lint": "eslint .",
+    "pretty": "prettier --write .",
+    "pretty:check": "prettier --check .",
+    "clean": "rm -rf tsconfig.tsbuildinfo"
   },
   "devDependencies": {
     "@webspecs/cli": "workspace:*",

@@ -21,7 +21,13 @@
   "scripts": {
     "build": "bun run build.ts",
     "typecheck": "tsc --noEmit",
-    "test": "bun test src/"
+    "test": "bun test src/",
+    "lint": "eslint .",
+    "pretty": "prettier --write .",
+    "pretty:check": "prettier --check .",
+    "dev": "bun src/index.tsx",
+    "dev:watch": "bun --watch src/index.tsx",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
     "@opentui/core": "^0.1.79",

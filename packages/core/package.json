@@ -27,7 +27,12 @@
   "scripts": {
     "build": "bun run build.ts",
     "typecheck": "tsc --noEmit",
-    "test": "bun test src/"
+    "test": "bun test src/",
+    "lint": "eslint .",
+    "pretty": "prettier --write .",
+    "pretty:check": "prettier --check .",
+    "dev:watch": "bun run build.ts --watch",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
     "@axe-core/playwright": "^4.11.0",

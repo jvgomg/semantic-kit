@@ -1,0 +1,12 @@
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Dependencies
+node_modules/
+
+# Markdown
+*.md
+
+# Test fixtures (intentionally malformed)
+src/lib/tui-config/fixtures/invalid-syntax.yaml

@@ -6,6 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "bun server.ts",
-    "start:verbose": "bun server.ts --verbose"
+    "start:verbose": "bun server.ts --verbose",
+    "lint": "eslint .",
+    "pretty": "prettier --write .",
+    "pretty:check": "prettier --check ."
   }
 }

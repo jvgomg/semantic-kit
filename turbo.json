@@ -1,0 +1,58 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "ui": "tui",
+  "globalDependencies": [
+    "tsconfig.base.json",
+    "tsconfig.json",
+    ".prettierrc",
+    "eslint.config.js"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "inputs": ["src/**", "build.ts", "tsconfig.json", "tsconfig.build.json"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": ["tsconfig.tsbuildinfo"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "inputs": ["src/**", "test/**"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "outputs": []
+    },
+    "pretty": {
+      "outputs": []
+    },
+    "pretty:check": {
+      "outputs": []
+    },
+    "dev": {
+      "persistent": true,
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "dev:watch": {
+      "persistent": true,
+      "interruptible": true,
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "start": {
+      "persistent": true,
+      "cache": false
+    },
+    "start:verbose": {
+      "persistent": true,
+      "cache": false
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

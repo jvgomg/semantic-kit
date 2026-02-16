@@ -1,0 +1,13 @@
+# Build outputs
+.next/
+.next-integration/
+*.tsbuildinfo
+
+# Turbo cache
+.turbo/
+
+# Dependencies
+node_modules/
+
+# Markdown
+*.md

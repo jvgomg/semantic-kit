@@ -38,7 +38,13 @@
   "scripts": {
     "build": "bun run build.ts",
     "typecheck": "tsc --noEmit",
-    "test": "bun test src/"
+    "test": "bun test src/",
+    "lint": "eslint .",
+    "pretty": "prettier --write .",
+    "pretty:check": "prettier --check .",
+    "dev": "bun src/cli.ts",
+    "dev:watch": "bun --watch src/cli.ts",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
     "@webspecs/core": "workspace:*",

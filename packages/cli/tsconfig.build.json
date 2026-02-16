@@ -6,7 +6,8 @@
     "emitDeclarationOnly": true,
     "outDir": "./dist",
     "noEmit": false,
-    "paths": {}
+    "paths": {},
+    "checkJs": false
   },
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "build.ts"]
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "build.ts"]
 }
