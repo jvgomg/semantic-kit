@@ -164,16 +164,27 @@ bun run test:integration
 
 # Run integration tests with watch mode
 bun run test:integration:watch
+
+# Run a single integration test file
+# IMPORTANT: Must use --preload to start test server on port 4050
+cd packages/integration-tests
+bun test --preload ./setup.ts <test-file>
+
+# Example: Run only schema/js-extraction tests
+bun test --preload ./setup.ts schema/js-extraction.test.ts
 ```
 
 ### Test Servers
 
 ```bash
-# Start HTML fixture server (localhost:4000)
+# Start HTML fixture server manually (localhost:4000)
 bun run test-server
 
 # Start with verbose logging
 bun run test-server:verbose
+
+# Note: Integration tests automatically start the test server on port 4050
+# via setup.ts when using --preload
 ```
 
 ### Package Management

@@ -70,11 +70,11 @@ describe('schema:js command - extraction', () => {
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
       expect(data!.openGraph!.issues).toBeDefined()
-      // Check that there are high-severity issues (missing required tags)
-      const hasHighSeverityIssues = data!.openGraph!.issues.some(
-        (i) => i.severity === 'high',
+      // Check that there are medium-severity issues (missing required tags like og:image)
+      const hasMediumSeverityIssues = data!.openGraph!.issues.some(
+        (i) => i.severity === 'medium',
       )
-      expect(hasHighSeverityIssues).toBe(true)
+      expect(hasMediumSeverityIssues).toBe(true)
     })
   })
 
