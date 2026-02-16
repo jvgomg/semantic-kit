@@ -345,7 +345,7 @@ Based on this research, semantic-kit could offer the following sitemap-related f
 Display sitemap contents with parsed metadata:
 
 ```
-bun run semantic-kit:dev sitemap https://example.com/sitemap.xml
+bun run dev sitemap https://example.com/sitemap.xml
 ```
 
 **Output could include:**
@@ -364,7 +364,7 @@ bun run semantic-kit:dev sitemap https://example.com/sitemap.xml
 Validate sitemap structure and contents:
 
 ```
-bun run semantic-kit:dev validate:sitemap https://example.com/sitemap.xml
+bun run dev validate:sitemap https://example.com/sitemap.xml
 ```
 
 **Validation checks:**
@@ -384,7 +384,7 @@ bun run semantic-kit:dev validate:sitemap https://example.com/sitemap.xml
 Automatic sitemap discovery for a domain:
 
 ```
-bun run semantic-kit:dev sitemap --discover https://example.com
+bun run dev sitemap --discover https://example.com
 ```
 
 **Discovery methods (in order):**

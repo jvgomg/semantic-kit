@@ -12,7 +12,7 @@ bun run test-server
 bun run test-server:verbose
 
 # Test with semantic-kit
-bun run semantic-kit:dev ai http://localhost:4000/good/semantic-article.html
+bun run dev ai http://localhost:4000/good/semantic-article.html
 ```
 
 ## CLI Options
@@ -181,7 +181,7 @@ curl -I http://localhost:4000/any.html?status=500
 curl -L http://localhost:4000/responses/redirect.html
 
 # Use with semantic-kit
-bun run semantic-kit:dev structure http://localhost:4000/good/semantic-article.html
-bun run semantic-kit:dev ai http://localhost:4000/good/semantic-article.html
-bun run semantic-kit:dev validate:a11y http://localhost:4000/bad/div-soup.html
+bun run dev structure http://localhost:4000/good/semantic-article.html
+bun run dev ai http://localhost:4000/good/semantic-article.html
+bun run dev validate:a11y http://localhost:4000/bad/div-soup.html
 ```

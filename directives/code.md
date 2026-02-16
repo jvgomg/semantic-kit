@@ -94,7 +94,7 @@ bun run dev <command> [options]
 
 # After building
 bun run build
-bun run semantic-kit <command> [options]
+bun run start <command> [options]
 ```
 
 ## Test Server

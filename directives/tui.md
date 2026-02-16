@@ -267,13 +267,13 @@ useMouseClick({
 
 ```bash
 # Run TUI in development mode
-bun run semantic-kit:dev tui
+bun run dev tui
 
 # Run with initial URL
-bun run semantic-kit:dev tui https://example.com
+bun run dev tui https://example.com
 
 # Run with a YAML config file
-bun run semantic-kit:dev tui --config ./src/lib/tui-config/fixtures/valid-grouped.yaml
+bun run dev tui --config ./src/lib/tui-config/fixtures/valid-grouped.yaml
 ```
 
 ## Config Module (`src/lib/tui-config/`)
