@@ -46,24 +46,11 @@
     "diff": "^8.0.3",
     "emphasize": "^7.0.0",
     "marked": "^15.0.12",
-    "marked-terminal": "^7.3.0"
+    "marked-terminal": "^7.3.0",
+    "prettier": "^3.8.1"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.11.0",
     "@types/diff": "^8.0.0",
-    "@types/marked-terminal": "^6.1.1",
-    "playwright": "^1.58.2"
-  },
-  "peerDependencies": {
-    "@axe-core/playwright": "^4.10.0",
-    "playwright": "^1.40.0"
-  },
-  "peerDependenciesMeta": {
-    "@axe-core/playwright": {
-      "optional": true
-    },
-    "playwright": {
-      "optional": true
-    }
+    "@types/marked-terminal": "^6.1.1"
   }
 }
