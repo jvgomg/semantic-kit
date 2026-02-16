@@ -1,6 +1,9 @@
-
-import { runAxeOnStaticHtml, fetchHtmlContent , analyzeStructure  } from '@webspecs/core'
-import { parseHTML } from 'linkedom'
+import {
+  runAxeOnStaticHtml,
+  fetchHtmlContent,
+  analyzeStructure,
+  parseHTML,
+} from '@webspecs/core'
 import type { TuiStructureResult } from './types.js'
 
 /**

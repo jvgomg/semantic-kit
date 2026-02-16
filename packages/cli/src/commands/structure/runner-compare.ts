@@ -1,6 +1,10 @@
-
-import { fetchHtmlContent, fetchRenderedHtml , analyzeStructure, compareStructures  } from '@webspecs/core'
-import { parseHTML } from 'linkedom'
+import {
+  fetchHtmlContent,
+  fetchRenderedHtml,
+  analyzeStructure,
+  compareStructures,
+  parseHTML,
+} from '@webspecs/core'
 import type { StructureCompareResult } from './types.js'
 
 /**

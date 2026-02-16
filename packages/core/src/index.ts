@@ -9,6 +9,9 @@ export { fetchHtmlContent } from './fetch.js'
 // HTML parsing
 export { parseHTML } from './html-parser.js'
 
+// Google analysis
+export { analyzeForGoogle, GOOGLE_SCHEMA_TYPES } from './google-analysis.js'
+
 // HTML validation
 export { validateHtml } from './html-validation.js'
 export type { Report as HtmlValidateReport } from 'html-validate'
@@ -239,3 +242,6 @@ export type {
   ScreenReaderLandmark,
   ScreenReaderHeading,
 } from './results.js'
+
+// Screen reader analysis
+export { analyzeScreenReaderExperience } from './screen-reader-analysis.js'

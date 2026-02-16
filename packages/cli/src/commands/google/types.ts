@@ -2,78 +2,14 @@
  * Types for the Google lens command.
  */
 import type { HeadingAnalysis } from '@webspecs/core'
+import { GOOGLE_SCHEMA_TYPES } from '@webspecs/core'
 
 // ============================================================================
 // Constants
 // ============================================================================
 
-/**
- * Google-recognized JSON-LD schema types for rich results.
- * Based on Google Search Central documentation.
- *
- * @see https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data
- */
-export const GOOGLE_SCHEMA_TYPES = [
-  // Content types
-  'Article',
-  'NewsArticle',
-  'BlogPosting',
-  'TechArticle',
-
-  // E-commerce
-  'Product',
-  'Offer',
-  'AggregateOffer',
-
-  // Reviews
-  'Review',
-  'AggregateRating',
-
-  // Recipes
-  'Recipe',
-
-  // Events
-  'Event',
-
-  // FAQ & How-to
-  'FAQPage',
-  'HowTo',
-  'HowToStep',
-  'HowToSection',
-
-  // Business
-  'LocalBusiness',
-  'Organization',
-  'Corporation',
-
-  // People
-  'Person',
-
-  // Navigation
-  'BreadcrumbList',
-
-  // Media
-  'VideoObject',
-  'ImageObject',
-
-  // Software
-  'SoftwareApplication',
-  'MobileApplication',
-  'WebApplication',
-
-  // Jobs
-  'JobPosting',
-
-  // Courses
-  'Course',
-
-  // Books
-  'Book',
-
-  // Search features
-  'WebSite',
-  'SearchAction',
-] as const
+// Re-export GOOGLE_SCHEMA_TYPES from core
+export { GOOGLE_SCHEMA_TYPES }
 
 export type GoogleSchemaType = (typeof GOOGLE_SCHEMA_TYPES)[number]
 

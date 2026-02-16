@@ -4,10 +4,13 @@ import {
   fetchHtmlContent,
   fetchRenderedHtml,
   runAxeOnStaticHtml,
+  parseHTML,
   type RuleSet,
 } from '@webspecs/core'
-import { parseHTML } from 'linkedom'
-import type { FetchStructureJsOptions, StructureJsInternalResult } from './types.js'
+import type {
+  FetchStructureJsOptions,
+  StructureJsInternalResult,
+} from './types.js'
 
 /**
  * Fetch and compare static vs hydrated structure.

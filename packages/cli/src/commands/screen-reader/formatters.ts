@@ -196,9 +196,7 @@ function formatHeadings(
         : heading.text
 
     if (ctx.mode === 'tty') {
-      lines.push(
-        `${indent}${colorize(levelTag, colors.dim, ctx)}  ${text}`,
-      )
+      lines.push(`${indent}${colorize(levelTag, colors.dim, ctx)}  ${text}`)
     } else {
       lines.push(`${indent}${levelTag}  ${text}`)
     }

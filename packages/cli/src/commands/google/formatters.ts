@@ -68,7 +68,8 @@ export function buildIssues(result: GoogleResult): Issue[] {
       type: 'info',
       severity: 'low',
       title: 'No Google-Recognized Structured Data',
-      description: 'No JSON-LD schemas found that Google uses for rich results.',
+      description:
+        'No JSON-LD schemas found that Google uses for rich results.',
       tip: 'Add structured data (Article, Product, FAQ, etc.) to enable rich results.',
     })
   }
