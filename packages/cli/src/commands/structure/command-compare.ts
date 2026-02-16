@@ -1,7 +1,14 @@
-import { requireUrl, validateFormat, validateTimeout } from '../../lib/arguments.js'
+import {
+  requireUrl,
+  validateFormat,
+  validateTimeout,
+} from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { buildIssuesCompare, formatStructureCompareOutput } from './formatters.js'
+import {
+  buildIssuesCompare,
+  formatStructureCompareOutput,
+} from './formatters.js'
 import { fetchStructureCompare } from './runner-compare.js'
 import { VALID_FORMATS, type StructureCompareOptions } from './types.js'
 
@@ -27,7 +34,8 @@ export async function structureCompareCommand(
     commandName: 'structure:compare',
     target,
     fetch: () => fetchStructureCompare(target, timeoutMs),
-    render: (result) => formatStructureCompareOutput(result, { format, target }, mode),
+    render: (result) =>
+      formatStructureCompareOutput(result, { format, target }, mode),
     json: (result) => ({
       result: result.comparison,
       issues: buildIssuesCompare(result.comparison, result.timedOut),

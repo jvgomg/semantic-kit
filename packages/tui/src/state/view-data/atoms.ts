@@ -32,11 +32,7 @@ export const invalidateAllViewDataAtom = atom(null, (get, set) => {
 /** Action to update a specific view's data state */
 export const setViewDataAtom = atom(
   null,
-  (
-    get,
-    set,
-    { viewId, data }: { viewId: string; data: Partial<ViewData> },
-  ) => {
+  (get, set, { viewId, data }: { viewId: string; data: Partial<ViewData> }) => {
     const current = get(viewDataAtomFamily(viewId))
     set(viewDataAtomFamily(viewId), { ...current, ...data })
 

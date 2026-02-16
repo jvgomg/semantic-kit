@@ -134,8 +134,7 @@ function getIssueTip(code: string, actual?: number): string {
       'Add og:type (e.g., "website", "article") for proper categorization.',
     'og-image-missing':
       'Add og:image with a 1200x630px image for rich link previews.',
-    'og-url-missing':
-      'Add og:url with the canonical URL for this content.',
+    'og-url-missing': 'Add og:url with the canonical URL for this content.',
     // Presence issues - Open Graph recommended
     'og-description-missing':
       'Add og:description to provide context in social shares.',
@@ -447,7 +446,9 @@ export function validateSocialTags(
     const titleIssue = validateOgTitleLength(input['og:title'])
     if (titleIssue) issues.push(titleIssue)
 
-    const descriptionIssue = validateOgDescriptionLength(input['og:description'])
+    const descriptionIssue = validateOgDescriptionLength(
+      input['og:description'],
+    )
     if (descriptionIssue) issues.push(descriptionIssue)
 
     const dimensionsIssue = validateImageDimensions(

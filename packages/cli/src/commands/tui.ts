@@ -9,7 +9,10 @@ export interface TuiCommandOptions {
   config?: string
 }
 
-export async function tuiCommand(_url?: string, _options?: TuiCommandOptions): Promise<void> {
+export async function tuiCommand(
+  _url?: string,
+  _options?: TuiCommandOptions,
+): Promise<void> {
   // Parameters kept for API compatibility
   void _url
   void _options

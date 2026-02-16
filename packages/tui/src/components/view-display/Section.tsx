@@ -43,7 +43,6 @@ export interface SectionProps {
   /** Unicode symbol, e.g., "✗", "⚠", "✓" */
   icon?: string
 
-
   // Layout
   /** Whether this section contains scrollable content that should expand */
   scrollable?: boolean

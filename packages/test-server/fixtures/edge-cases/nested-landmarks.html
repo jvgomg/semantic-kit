@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Complex Landmarks - Edge Case</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complex Landmarks - Edge Case</title>
 
-  <!--
+    <!--
     Edge case: Complex but valid landmark nesting
     Source: W3C WAI ARIA Landmarks and HTML spec
     https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/
@@ -17,82 +17,87 @@
     - Aside inside article vs. main level
     - Nav inside other landmarks
     - Proper banner/contentinfo at top level only
-  -->
-</head>
-<body>
-  <header>
-    <!-- Banner landmark: header at top level -->
-    <nav aria-label="Primary">
-      <!-- Navigation can be inside banner -->
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/articles">Articles</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <main>
-    <article>
-      <!-- Article inside main: valid -->
-      <header>
-        <!-- This header is NOT a banner (inside article) -->
-        <h1>Article Title</h1>
-        <p>By Author Name</p>
-      </header>
-
-      <section aria-labelledby="intro">
-        <!-- Section with accessible name: becomes region landmark -->
-        <h2 id="intro">Introduction</h2>
-        <p>This section has an accessible name via aria-labelledby,
-           so it becomes a region landmark.</p>
-      </section>
-
-      <section>
-        <!-- Section without accessible name: no landmark role -->
-        <h2>Details</h2>
-        <p>This section has no accessible name, so it does NOT
-           become a landmark. It's just a sectioning element.</p>
-      </section>
-
-      <aside>
-        <!-- Complementary inside article: valid -->
-        <h2>Author Bio</h2>
-        <p>Information about the author that is tangentially related
-           to the article content.</p>
-      </aside>
-
-      <footer>
-        <!-- This footer is NOT contentinfo (inside article) -->
-        <p>Posted: <time datetime="2026-02-04">February 4, 2026</time></p>
-        <p>Tags: HTML, Accessibility</p>
-      </footer>
-    </article>
-
-    <aside aria-labelledby="sidebar-heading">
-      <!-- Complementary at main level -->
-      <h2 id="sidebar-heading">Sidebar</h2>
-
-      <nav aria-label="Related posts">
-        <!-- Navigation inside complementary: valid -->
-        <h3>Related Articles</h3>
+  --></head>
+  <body>
+    <header>
+      <!-- Banner landmark: header at top level -->
+      <nav aria-label="Primary">
+        <!-- Navigation can be inside banner -->
         <ul>
-          <li><a href="/article-1">Related Article 1</a></li>
-          <li><a href="/article-2">Related Article 2</a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/articles">Articles</a></li>
         </ul>
       </nav>
-    </aside>
-  </main>
+    </header>
 
-  <footer>
-    <!-- Contentinfo landmark: footer at top level -->
-    <nav aria-label="Legal">
-      <!-- Navigation inside contentinfo: valid -->
-      <ul>
-        <li><a href="/privacy">Privacy</a></li>
-        <li><a href="/terms">Terms</a></li>
-      </ul>
-    </nav>
-    <p>&copy; 2026 Example Site</p>
-  </footer>
-</body>
+    <main>
+      <article>
+        <!-- Article inside main: valid -->
+        <header>
+          <!-- This header is NOT a banner (inside article) -->
+          <h1>Article Title</h1>
+          <p>By Author Name</p>
+        </header>
+
+        <section aria-labelledby="intro">
+          <!-- Section with accessible name: becomes region landmark -->
+          <h2 id="intro">Introduction</h2>
+          <p>
+            This section has an accessible name via aria-labelledby, so it
+            becomes a region landmark.
+          </p>
+        </section>
+
+        <section>
+          <!-- Section without accessible name: no landmark role -->
+          <h2>Details</h2>
+          <p>
+            This section has no accessible name, so it does NOT become a
+            landmark. It's just a sectioning element.
+          </p>
+        </section>
+
+        <aside>
+          <!-- Complementary inside article: valid -->
+          <h2>Author Bio</h2>
+          <p>
+            Information about the author that is tangentially related to the
+            article content.
+          </p>
+        </aside>
+
+        <footer>
+          <!-- This footer is NOT contentinfo (inside article) -->
+          <p>Posted: <time datetime="2026-02-04">February 4, 2026</time></p>
+          <p>Tags: HTML, Accessibility</p>
+        </footer>
+      </article>
+
+      <aside aria-labelledby="sidebar-heading">
+        <!-- Complementary at main level -->
+        <h2 id="sidebar-heading">Sidebar</h2>
+
+        <nav aria-label="Related posts">
+          <!-- Navigation inside complementary: valid -->
+          <h3>Related Articles</h3>
+          <ul>
+            <li><a href="/article-1">Related Article 1</a></li>
+            <li><a href="/article-2">Related Article 2</a></li>
+          </ul>
+        </nav>
+      </aside>
+    </main>
+
+    <footer>
+      <!-- Contentinfo landmark: footer at top level -->
+      <nav aria-label="Legal">
+        <!-- Navigation inside contentinfo: valid -->
+        <ul>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+        </ul>
+      </nav>
+      <p>&copy; 2026 Example Site</p>
+    </footer>
+  </body>
 </html>

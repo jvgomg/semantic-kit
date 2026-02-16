@@ -52,7 +52,9 @@ export interface CreatePersistedStoreOptions {
  * @param options - Store creation options
  * @returns Configured Jotai store
  */
-export async function createPersistedStore(options: CreatePersistedStoreOptions = {}) {
+export async function createPersistedStore(
+  options: CreatePersistedStoreOptions = {},
+) {
   const { initialUrl, configData } = options
 
   // Determine storage key source - config takes precedence

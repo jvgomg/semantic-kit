@@ -128,7 +128,8 @@ const nordDark: ThemeDefinition = {
 const nordLight: ThemeDefinition = {
   id: 'nord-light',
   name: 'Nord Light',
-  author: "threddast, based on fuxialexander's doom-nord-light-theme (Doom Emacs)",
+  author:
+    "threddast, based on fuxialexander's doom-nord-light-theme (Doom Emacs)",
   variant: 'light',
   palette: {
     base00: '#e5e9f0',

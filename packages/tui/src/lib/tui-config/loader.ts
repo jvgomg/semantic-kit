@@ -32,7 +32,8 @@ export async function loadTuiConfig(path: string): Promise<ConfigLoadResult> {
     return {
       type: 'error',
       errorType: 'read-error',
-      message: error instanceof Error ? error.message : 'Failed to read config file',
+      message:
+        error instanceof Error ? error.message : 'Failed to read config file',
       path,
     }
   }

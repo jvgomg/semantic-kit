@@ -73,11 +73,7 @@ function ComparisonContent({
 /**
  * Metadata changes content
  */
-function MetadataContent({
-  metadata,
-}: {
-  metadata: MetadataDiff
-}): ReactNode {
+function MetadataContent({ metadata }: { metadata: MetadataDiff }): ReactNode {
   const palette = usePalette()
   const hasChanges = metadata.title !== null || metadata.language !== null
 
@@ -95,7 +91,9 @@ function MetadataContent({
         <box flexDirection="column" gap={0}>
           <text fg={palette.base03}>Title:</text>
           <box flexDirection="row" marginLeft={2}>
-            <text fg={palette.base08}>- {metadata.title.static || '(none)'}</text>
+            <text fg={palette.base08}>
+              - {metadata.title.static || '(none)'}
+            </text>
           </box>
           <box flexDirection="row" marginLeft={2}>
             <text fg={palette.base0B}>
@@ -167,11 +165,7 @@ function LandmarksContent({
 /**
  * Headings changes content
  */
-function HeadingsContent({
-  headings,
-}: {
-  headings: HeadingDiff[]
-}): ReactNode {
+function HeadingsContent({ headings }: { headings: HeadingDiff[] }): ReactNode {
   const palette = usePalette()
   if (headings.length === 0) {
     return (

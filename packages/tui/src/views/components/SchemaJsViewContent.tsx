@@ -44,8 +44,12 @@ function countSchemaTypes(result: SchemaJsResult): {
   rdfa: number
   total: number
 } {
-  const jsonld = Object.keys(result.jsonld).filter((k) => k !== 'undefined').length
-  const microdata = Object.keys(result.microdata).filter((k) => k !== 'undefined').length
+  const jsonld = Object.keys(result.jsonld).filter(
+    (k) => k !== 'undefined',
+  ).length
+  const microdata = Object.keys(result.microdata).filter(
+    (k) => k !== 'undefined',
+  ).length
   const rdfa = Object.keys(result.rdfa).filter((k) => k !== 'undefined').length
   return { jsonld, microdata, rdfa, total: jsonld + microdata + rdfa }
 }
@@ -174,7 +178,9 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
         <text>
           <span fg={palette.base03}>Open Graph:</span>{' '}
           <span fg={hasOG ? palette.base0B : palette.base03}>
-            {hasOG ? `${Object.keys(data.openGraph!.tags).length} tags` : 'None'}
+            {hasOG
+              ? `${Object.keys(data.openGraph!.tags).length} tags`
+              : 'None'}
           </span>
         </text>
       </box>
@@ -182,7 +188,9 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
         <text>
           <span fg={palette.base03}>Twitter Cards:</span>{' '}
           <span fg={hasTwitter ? palette.base0B : palette.base03}>
-            {hasTwitter ? `${Object.keys(data.twitter!.tags).length} tags` : 'None'}
+            {hasTwitter
+              ? `${Object.keys(data.twitter!.tags).length} tags`
+              : 'None'}
           </span>
         </text>
       </box>
@@ -275,7 +283,11 @@ function MetatagGroupContent({
 /**
  * Other metatags content
  */
-function MetaContent({ metatags }: { metatags: Record<string, string> }): ReactNode {
+function MetaContent({
+  metatags,
+}: {
+  metatags: Record<string, string>
+}): ReactNode {
   const palette = usePalette()
   const entries = Object.entries(metatags)
 
@@ -318,11 +330,14 @@ export function SchemaJsViewContent({
   // Compute summary text
   const summaryParts: string[] = []
   if (counts.total > 0) {
-    summaryParts.push(`${counts.total} schema type${counts.total !== 1 ? 's' : ''}`)
+    summaryParts.push(
+      `${counts.total} schema type${counts.total !== 1 ? 's' : ''}`,
+    )
   }
   if (hasOG) summaryParts.push('OG')
   if (hasTwitter) summaryParts.push('Twitter')
-  const summaryText = summaryParts.length > 0 ? summaryParts.join(', ') : 'No structured data'
+  const summaryText =
+    summaryParts.length > 0 ? summaryParts.join(', ') : 'No structured data'
 
   // Get all issues for the issues section
   const allIssues = data.issues ?? []
@@ -472,7 +487,8 @@ export function SchemaJsViewContent({
           <MetatagGroupContent group={data.twitter!} />
         ) : (
           <text fg={palette.base03}>
-            No Twitter Card tags found. Twitter will fall back to Open Graph tags.
+            No Twitter Card tags found. Twitter will fall back to Open Graph
+            tags.
           </text>
         )}
       </Section>

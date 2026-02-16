@@ -6,7 +6,12 @@
  */
 
 // Re-export Zod-inferred types
-export type { ConfigUrl, ConfigGroup, ConfigEntry, TuiConfig } from './schema.js'
+export type {
+  ConfigUrl,
+  ConfigGroup,
+  ConfigEntry,
+  TuiConfig,
+} from './schema.js'
 import type { ConfigEntry, ConfigGroup, ConfigUrl } from './schema.js'
 
 // ============================================================================
@@ -45,7 +50,11 @@ export interface ConfigLoadSuccess {
  */
 export interface ConfigLoadError {
   type: 'error'
-  errorType: 'file-not-found' | 'parse-error' | 'validation-error' | 'read-error'
+  errorType:
+    | 'file-not-found'
+    | 'parse-error'
+    | 'validation-error'
+    | 'read-error'
   message: string
   path: string
   /** Detailed validation errors (for validation-error type) */

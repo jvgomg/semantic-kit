@@ -1,4 +1,8 @@
-import { requireUrl, validateFormat, validateTimeout } from '../../lib/arguments.js'
+import {
+  requireUrl,
+  validateFormat,
+  validateTimeout,
+} from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand, handleCommandError } from '../../lib/run-command.js'
 import { buildIssues, formatA11yJsOutput } from './formatters.js'

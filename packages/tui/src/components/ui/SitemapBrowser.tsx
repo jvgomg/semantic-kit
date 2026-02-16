@@ -9,10 +9,7 @@
  */
 import { useMemo, useCallback, type ReactNode } from 'react'
 import { useKeyboard } from '@opentui/react'
-import type {
-  SitemapFetchResult,
-  SitemapTreeNode,
-} from '@webspecs/core'
+import type { SitemapFetchResult, SitemapTreeNode } from '@webspecs/core'
 import { buildSitemapTree, flattenSitemapTree } from '@webspecs/core'
 import { useSemanticColors, usePalette } from '../../theme.js'
 import { boxChars } from '../view-display/priorities.js'
@@ -158,7 +155,8 @@ export function SitemapBrowser({
       if (
         currentPath.startsWith(candidate.displayPath) &&
         candidate.displayPath !== currentPath &&
-        candidate.displayPath.length > (flatNodes[parentIndex]?.displayPath.length ?? 0)
+        candidate.displayPath.length >
+          (flatNodes[parentIndex]?.displayPath.length ?? 0)
       ) {
         parentIndex = i
       }
@@ -167,7 +165,13 @@ export function SitemapBrowser({
     if (parentIndex >= 0) {
       onSelectedIndexChange(parentIndex)
     }
-  }, [flatNodes, selectedIndex, expandedPaths, handleToggleExpand, onSelectedIndexChange])
+  }, [
+    flatNodes,
+    selectedIndex,
+    expandedPaths,
+    handleToggleExpand,
+    onSelectedIndexChange,
+  ])
 
   // Keyboard handling
   useKeyboard((event) => {
@@ -282,7 +286,10 @@ export function SitemapBrowser({
               ? colors.textSelected
               : colors.text
             : colors.text,
-          bg: isSelected && isFocused ? colors.modalBackgroundSelected : undefined,
+          bg:
+            isSelected && isFocused
+              ? colors.modalBackgroundSelected
+              : undefined,
         }
 
         // Expand indicator color: cyan for selected item or ancestors of selected (when focused)

@@ -1,7 +1,8 @@
 import {
   analyzeAriaSnapshot,
   compareSnapshots,
-  hasDifferences, fetchAccessibilityComparison 
+  hasDifferences,
+  fetchAccessibilityComparison,
 } from '@webspecs/core'
 import type { A11yCompareResult } from '@webspecs/core'
 
@@ -16,10 +17,7 @@ export async function fetchA11yCompare(
     await fetchAccessibilityComparison(target, timeoutMs)
 
   // Compare the snapshots
-  const diff = compareSnapshots(
-    staticResult.snapshot,
-    hydratedResult.snapshot,
-  )
+  const diff = compareSnapshots(staticResult.snapshot, hydratedResult.snapshot)
   const staticAnalysis = analyzeAriaSnapshot(staticResult.snapshot)
   const hydratedAnalysis = analyzeAriaSnapshot(hydratedResult.snapshot)
 

@@ -8,4 +8,8 @@ export { fetchSchemaCompare } from './runner-compare.js'
 export { formatSchemaOutput, formatSchemaCompareOutput } from './formatters.js'
 
 // Types
-export type { SchemaOptions, SchemaJsOptions, SchemaCompareOptions } from './types.js'
+export type {
+  SchemaOptions,
+  SchemaJsOptions,
+  SchemaCompareOptions,
+} from './types.js'

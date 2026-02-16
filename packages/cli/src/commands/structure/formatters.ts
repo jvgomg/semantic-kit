@@ -1,9 +1,11 @@
-import type { AxeStaticResult,
+import type {
+  AxeStaticResult,
   StructureAnalysis,
   StructureComparison,
   StructureWarning,
   LandmarkNode,
-  LinkGroup } from '@webspecs/core'
+  LinkGroup,
+} from '@webspecs/core'
 import type { OutputFormat } from '../../lib/arguments.js'
 import {
   colorize,
@@ -102,7 +104,8 @@ export function buildIssuesJs(
       type: 'warning',
       severity: 'medium',
       title: 'Timeout Reached',
-      description: 'Rendering exceeded timeout. Analysis shows partial content.',
+      description:
+        'Rendering exceeded timeout. Analysis shows partial content.',
       tip: 'Increase timeout with --timeout or optimize page load.',
     })
   }
@@ -288,7 +291,9 @@ function formatLinkGroupsFull(
   for (const group of groupsToShow) {
     const countSuffix = group.count > 1 ? ` (${group.count})` : ''
     if (ctx.mode === 'tty') {
-      lines.push(`  ${colorize(group.destination, colors.dim, ctx)}${countSuffix}`)
+      lines.push(
+        `  ${colorize(group.destination, colors.dim, ctx)}${countSuffix}`,
+      )
     } else {
       lines.push(`  ${group.destination}${countSuffix}`)
     }
@@ -459,13 +464,17 @@ function formatComparisonSection(
 
   const rows: TableRow[] = []
 
-  if (comparison.summary.staticLandmarks !== comparison.summary.hydratedLandmarks) {
+  if (
+    comparison.summary.staticLandmarks !== comparison.summary.hydratedLandmarks
+  ) {
     rows.push({
       key: 'Landmarks',
       value: `${comparison.summary.staticLandmarks} -> ${comparison.summary.hydratedLandmarks}`,
     })
   }
-  if (comparison.summary.staticHeadings !== comparison.summary.hydratedHeadings) {
+  if (
+    comparison.summary.staticHeadings !== comparison.summary.hydratedHeadings
+  ) {
     rows.push({
       key: 'Headings',
       value: `${comparison.summary.staticHeadings} -> ${comparison.summary.hydratedHeadings}`,
@@ -765,7 +774,9 @@ function formatCompareTerminal(
     }
 
     const truncated =
-      added.length - addedToShow.length + (removed.length - removedToShow.length)
+      added.length -
+      addedToShow.length +
+      (removed.length - removedToShow.length)
     if (truncated > 0) {
       if (ctx.mode === 'tty') {
         sections.push(colorize(`  ... and ${truncated} more`, colors.gray, ctx))
@@ -810,7 +821,11 @@ function formatCompareTerminal(
           const truncated = links.newInternalDestinations.length - limit
           if (ctx.mode === 'tty') {
             sections.push(
-              colorize(`    ... and ${truncated} more destinations`, colors.gray, ctx),
+              colorize(
+                `    ... and ${truncated} more destinations`,
+                colors.gray,
+                ctx,
+              ),
             )
           } else {
             sections.push(`    ... and ${truncated} more destinations`)
@@ -836,7 +851,11 @@ function formatCompareTerminal(
           const truncated = links.newExternalDomains.length - limit
           if (ctx.mode === 'tty') {
             sections.push(
-              colorize(`    ... and ${truncated} more domains`, colors.gray, ctx),
+              colorize(
+                `    ... and ${truncated} more domains`,
+                colors.gray,
+                ctx,
+              ),
             )
           } else {
             sections.push(`    ... and ${truncated} more domains`)

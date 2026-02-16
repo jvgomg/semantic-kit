@@ -22,7 +22,10 @@ import type { ViewComponentProps } from '../types.js'
 /**
  * Get severity color based on JS-dependent percentage
  */
-function getJsDependencyColor(percentage: number, palette: ReturnType<typeof usePalette>): string {
+function getJsDependencyColor(
+  percentage: number,
+  palette: ReturnType<typeof usePalette>,
+): string {
   if (percentage === 0) return palette.base0B
   if (percentage <= 25) return palette.base0D
   if (percentage <= 50) return palette.base0A
@@ -39,7 +42,10 @@ function ComparisonContent({
 }): ReactNode {
   const palette = usePalette()
   const { comparison } = data
-  const depColor = getJsDependencyColor(comparison.jsDependentPercentage, palette)
+  const depColor = getJsDependencyColor(
+    comparison.jsDependentPercentage,
+    palette,
+  )
   const hasSections = comparison.sectionsOnlyInRendered.length > 0
 
   return (

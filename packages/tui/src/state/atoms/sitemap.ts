@@ -48,7 +48,7 @@ export const fetchSitemapAtom = atom(
 export const activeSitemapDataAtom = atom((get) => {
   const url = get(activeSitemapUrlAtom)
   const cache = get(sitemapCacheAtom)
-  return url ? cache.get(url) ?? null : null
+  return url ? (cache.get(url) ?? null) : null
 })
 
 /** Reset sitemap selection state (when switching sitemaps) */

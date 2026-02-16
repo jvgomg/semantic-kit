@@ -25,7 +25,10 @@ export interface ProseProps {
 /**
  * Truncate text to a maximum number of lines.
  */
-function truncateToLines(text: string, maxLines: number): { text: string; truncated: boolean } {
+function truncateToLines(
+  text: string,
+  maxLines: number,
+): { text: string; truncated: boolean } {
   const lines = text.split('\n')
   if (lines.length <= maxLines) {
     return { text, truncated: false }
@@ -87,7 +90,9 @@ export function Prose({
       {truncated && (
         <box marginTop={1}>
           <text fg={palette.base03}>
-            <em>... ({countWords(content) - countWords(displayText)} more words)</em>
+            <em>
+              ... ({countWords(content) - countWords(displayText)} more words)
+            </em>
           </text>
         </box>
       )}

@@ -58,11 +58,7 @@ function truncate(str: string, maxLength: number): string {
 /**
  * Comparison section content
  */
-function ComparisonContent({
-  data,
-}: {
-  data: SchemaCompareResult
-}): ReactNode {
+function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
   const palette = usePalette()
   const { comparison } = data
   const staticCount = countSchemaTypes(data.static)
@@ -103,7 +99,9 @@ function ComparisonContent({
       <box flexDirection="row" gap={2} marginTop={1}>
         <text>
           <span fg={palette.base03}>JSON-LD:</span>{' '}
-          <span fg={getDiffColor(comparison.jsonldAdded, comparison.jsonldRemoved)}>
+          <span
+            fg={getDiffColor(comparison.jsonldAdded, comparison.jsonldRemoved)}
+          >
             {formatDiff(comparison.jsonldAdded, comparison.jsonldRemoved)}
           </span>
         </text>
@@ -112,8 +110,16 @@ function ComparisonContent({
         <box flexDirection="row" gap={2}>
           <text>
             <span fg={palette.base03}>Microdata:</span>{' '}
-            <span fg={getDiffColor(comparison.microdataAdded, comparison.microdataRemoved)}>
-              {formatDiff(comparison.microdataAdded, comparison.microdataRemoved)}
+            <span
+              fg={getDiffColor(
+                comparison.microdataAdded,
+                comparison.microdataRemoved,
+              )}
+            >
+              {formatDiff(
+                comparison.microdataAdded,
+                comparison.microdataRemoved,
+              )}
             </span>
           </text>
         </box>
@@ -122,7 +128,9 @@ function ComparisonContent({
         <box flexDirection="row" gap={2}>
           <text>
             <span fg={palette.base03}>RDFa:</span>{' '}
-            <span fg={getDiffColor(comparison.rdfaAdded, comparison.rdfaRemoved)}>
+            <span
+              fg={getDiffColor(comparison.rdfaAdded, comparison.rdfaRemoved)}
+            >
               {formatDiff(comparison.rdfaAdded, comparison.rdfaRemoved)}
             </span>
           </text>
@@ -131,7 +139,9 @@ function ComparisonContent({
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={palette.base03}>Open Graph:</span>{' '}
-          <span fg={comparison.openGraphChanged ? palette.base0A : palette.base03}>
+          <span
+            fg={comparison.openGraphChanged ? palette.base0A : palette.base03}
+          >
             {comparison.openGraphChanged ? 'Changed' : 'No change'}
           </span>
         </text>
@@ -139,7 +149,9 @@ function ComparisonContent({
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={palette.base03}>Twitter Cards:</span>{' '}
-          <span fg={comparison.twitterChanged ? palette.base0A : palette.base03}>
+          <span
+            fg={comparison.twitterChanged ? palette.base0A : palette.base03}
+          >
             {comparison.twitterChanged ? 'Changed' : 'No change'}
           </span>
         </text>
@@ -190,7 +202,10 @@ function OpenGraphChangesContent({
   const staticOG = data.static.openGraph?.tags ?? {}
   const renderedOG = data.rendered.openGraph?.tags ?? {}
 
-  const allKeys = new Set([...Object.keys(staticOG), ...Object.keys(renderedOG)])
+  const allKeys = new Set([
+    ...Object.keys(staticOG),
+    ...Object.keys(renderedOG),
+  ])
   const changes: Array<{ field: string; static: string; rendered: string }> = []
 
   for (const key of allKeys) {
@@ -230,7 +245,10 @@ function TwitterChangesContent({
   const staticTw = data.static.twitter?.tags ?? {}
   const renderedTw = data.rendered.twitter?.tags ?? {}
 
-  const allKeys = new Set([...Object.keys(staticTw), ...Object.keys(renderedTw)])
+  const allKeys = new Set([
+    ...Object.keys(staticTw),
+    ...Object.keys(renderedTw),
+  ])
   const changes: Array<{ field: string; static: string; rendered: string }> = []
 
   for (const key of allKeys) {
@@ -281,15 +299,23 @@ export function SchemaCompareViewContent({
   const renderedRdfa = new Set(getSchemaTypes(data.rendered.rdfa))
 
   const addedJsonld = [...renderedJsonld].filter((t) => !staticJsonld.has(t))
-  const addedMicrodata = [...renderedMicrodata].filter((t) => !staticMicrodata.has(t))
+  const addedMicrodata = [...renderedMicrodata].filter(
+    (t) => !staticMicrodata.has(t),
+  )
   const addedRdfa = [...renderedRdfa].filter((t) => !staticRdfa.has(t))
 
   const removedJsonld = [...staticJsonld].filter((t) => !renderedJsonld.has(t))
-  const removedMicrodata = [...staticMicrodata].filter((t) => !renderedMicrodata.has(t))
+  const removedMicrodata = [...staticMicrodata].filter(
+    (t) => !renderedMicrodata.has(t),
+  )
   const removedRdfa = [...staticRdfa].filter((t) => !renderedRdfa.has(t))
 
-  const hasAdded = addedJsonld.length > 0 || addedMicrodata.length > 0 || addedRdfa.length > 0
-  const hasRemoved = removedJsonld.length > 0 || removedMicrodata.length > 0 || removedRdfa.length > 0
+  const hasAdded =
+    addedJsonld.length > 0 || addedMicrodata.length > 0 || addedRdfa.length > 0
+  const hasRemoved =
+    removedJsonld.length > 0 ||
+    removedMicrodata.length > 0 ||
+    removedRdfa.length > 0
 
   // Compute summary text
   const getSummaryText = () => {
@@ -297,10 +323,16 @@ export function SchemaCompareViewContent({
       return 'No differences detected'
     }
     const parts: string[] = []
-    const totalAdded = comparison.jsonldAdded + comparison.microdataAdded + comparison.rdfaAdded
-    const totalRemoved = comparison.jsonldRemoved + comparison.microdataRemoved + comparison.rdfaRemoved
-    if (totalAdded > 0) parts.push(`+${totalAdded} type${totalAdded !== 1 ? 's' : ''}`)
-    if (totalRemoved > 0) parts.push(`-${totalRemoved} type${totalRemoved !== 1 ? 's' : ''}`)
+    const totalAdded =
+      comparison.jsonldAdded + comparison.microdataAdded + comparison.rdfaAdded
+    const totalRemoved =
+      comparison.jsonldRemoved +
+      comparison.microdataRemoved +
+      comparison.rdfaRemoved
+    if (totalAdded > 0)
+      parts.push(`+${totalAdded} type${totalAdded !== 1 ? 's' : ''}`)
+    if (totalRemoved > 0)
+      parts.push(`-${totalRemoved} type${totalRemoved !== 1 ? 's' : ''}`)
     if (comparison.openGraphChanged) parts.push('OG changed')
     if (comparison.twitterChanged) parts.push('Twitter changed')
     return parts.join(', ')
@@ -309,7 +341,8 @@ export function SchemaCompareViewContent({
   // Get severity based on differences
   const getSeverity = () => {
     if (!comparison.hasDifferences) return undefined
-    const totalAdded = comparison.jsonldAdded + comparison.microdataAdded + comparison.rdfaAdded
+    const totalAdded =
+      comparison.jsonldAdded + comparison.microdataAdded + comparison.rdfaAdded
     if (totalAdded > 0) return 'warning' as const
     return 'info' as const
   }
@@ -359,13 +392,25 @@ export function SchemaCompareViewContent({
         >
           <box flexDirection="column" gap={0}>
             {addedJsonld.length > 0 && (
-              <SchemaTypeList types={addedJsonld} color={palette.base0B} format="JSON-LD" />
+              <SchemaTypeList
+                types={addedJsonld}
+                color={palette.base0B}
+                format="JSON-LD"
+              />
             )}
             {addedMicrodata.length > 0 && (
-              <SchemaTypeList types={addedMicrodata} color={palette.base0B} format="Microdata" />
+              <SchemaTypeList
+                types={addedMicrodata}
+                color={palette.base0B}
+                format="Microdata"
+              />
             )}
             {addedRdfa.length > 0 && (
-              <SchemaTypeList types={addedRdfa} color={palette.base0B} format="RDFa" />
+              <SchemaTypeList
+                types={addedRdfa}
+                color={palette.base0B}
+                format="RDFa"
+              />
             )}
             <box marginTop={1}>
               <text fg={palette.base0A}>
@@ -388,17 +433,30 @@ export function SchemaCompareViewContent({
         >
           <box flexDirection="column" gap={0}>
             {removedJsonld.length > 0 && (
-              <SchemaTypeList types={removedJsonld} color={palette.base08} format="JSON-LD" />
+              <SchemaTypeList
+                types={removedJsonld}
+                color={palette.base08}
+                format="JSON-LD"
+              />
             )}
             {removedMicrodata.length > 0 && (
-              <SchemaTypeList types={removedMicrodata} color={palette.base08} format="Microdata" />
+              <SchemaTypeList
+                types={removedMicrodata}
+                color={palette.base08}
+                format="Microdata"
+              />
             )}
             {removedRdfa.length > 0 && (
-              <SchemaTypeList types={removedRdfa} color={palette.base08} format="RDFa" />
+              <SchemaTypeList
+                types={removedRdfa}
+                color={palette.base08}
+                format="RDFa"
+              />
             )}
             <box marginTop={1}>
               <text fg={palette.base08}>
-                These schemas are removed during JavaScript hydration. This is unusual.
+                These schemas are removed during JavaScript hydration. This is
+                unusual.
               </text>
             </box>
           </box>
@@ -444,8 +502,8 @@ export function SchemaCompareViewContent({
           defaultExpanded={false}
         >
           <text fg={palette.base03}>
-            No differences detected between static HTML and JavaScript-rendered page.
-            Your structured data does not depend on JavaScript execution.
+            No differences detected between static HTML and JavaScript-rendered
+            page. Your structured data does not depend on JavaScript execution.
           </text>
         </Section>
       )}

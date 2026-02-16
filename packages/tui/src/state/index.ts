@@ -25,11 +25,7 @@ export {
 } from './tool-navigation.js'
 
 // View Atoms (combines view definitions with fetched data)
-export {
-  viewAtomFamily,
-  activeViewAtom,
-  type View,
-} from './view-atoms.js'
+export { viewAtomFamily, activeViewAtom, type View } from './view-atoms.js'
 
 // Atoms
 export {

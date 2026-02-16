@@ -1,6 +1,9 @@
-import type { AxeStaticResult, StructureJsResult ,
+import type {
+  AxeStaticResult,
+  StructureJsResult,
   StructureAnalysis,
-  StructureComparison } from '@webspecs/core'
+  StructureComparison,
+} from '@webspecs/core'
 import type { OutputFormat } from '../../lib/arguments.js'
 import type { OutputModeOptions } from '../../lib/output-mode.js'
 

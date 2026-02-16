@@ -7,15 +7,16 @@ import { ReadabilityCompareViewContent } from './components/ReadabilityCompareVi
 import { registerView } from './registry.js'
 import type { ViewDefinition } from './types.js'
 
-export const readabilityCompareView: ViewDefinition<ReadabilityCompareResult> = {
-  id: 'readability-compare',
-  label: 'Readability:compare',
-  description:
-    'Compare Readability extraction between static HTML and JS-rendered page. Shows what content requires JavaScript.',
-  category: 'tool',
-  fetch: fetchReadabilityCompare,
-  Component: ReadabilityCompareViewContent,
-}
+export const readabilityCompareView: ViewDefinition<ReadabilityCompareResult> =
+  {
+    id: 'readability-compare',
+    label: 'Readability:compare',
+    description:
+      'Compare Readability extraction between static HTML and JS-rendered page. Shows what content requires JavaScript.',
+    category: 'tool',
+    fetch: fetchReadabilityCompare,
+    Component: ReadabilityCompareViewContent,
+  }
 
 // Self-register
 registerView(readabilityCompareView)

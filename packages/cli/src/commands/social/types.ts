@@ -6,7 +6,11 @@ import type { OutputFormat } from '../../lib/arguments.js'
 import type { OutputModeOptions } from '../../lib/output-mode.js'
 
 // Re-export types from shared library for consumers
-export type { SocialPreview, SocialValidationIssue, ValidationSeverity } from '@webspecs/core'
+export type {
+  SocialPreview,
+  SocialValidationIssue,
+  ValidationSeverity,
+} from '@webspecs/core'
 
 // ============================================================================
 // Constants

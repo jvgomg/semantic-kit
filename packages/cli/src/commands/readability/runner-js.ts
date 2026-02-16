@@ -4,7 +4,11 @@
  * Uses Playwright to render the page with JavaScript,
  * then applies Readability extraction to the rendered HTML.
  */
-import { extractReadability, fetchRenderedHtml, type ReadabilityJsResult } from '@webspecs/core'
+import {
+  extractReadability,
+  fetchRenderedHtml,
+  type ReadabilityJsResult,
+} from '@webspecs/core'
 
 export interface FetchReadabilityJsOptions {
   timeoutMs: number

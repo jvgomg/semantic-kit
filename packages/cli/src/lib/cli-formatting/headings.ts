@@ -68,11 +68,7 @@ export function formatHeadingOutline(
   options: HeadingFormatOptions = {},
   depth: number = 0,
 ): string[] {
-  const {
-    includeStats = true,
-    maxTextLength = 60,
-    indentStr = '  ',
-  } = options
+  const { includeStats = true, maxTextLength = 60, indentStr = '  ' } = options
 
   const lines: string[] = []
   const prefix = indentStr.repeat(depth)

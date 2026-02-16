@@ -29,7 +29,15 @@ import './validate-schema-view.js'
 import './validate-a11y-view.js'
 
 // Re-export registry functions
-export { getGroupedMenuItems, getViewDefinition, getAllViews } from './registry.js'
+export {
+  getGroupedMenuItems,
+  getViewDefinition,
+  getAllViews,
+} from './registry.js'
 
 // Re-export types
-export type { ViewDefinition, ViewComponentProps, ViewCategory } from './types.js'
+export type {
+  ViewDefinition,
+  ViewComponentProps,
+  ViewCategory,
+} from './types.js'

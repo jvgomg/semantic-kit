@@ -7,7 +7,12 @@ import { useState } from 'react'
 import { useKeyboard } from '@opentui/react'
 import { useAtomValue } from 'jotai'
 import { SETTINGS_MODAL_WIDTH } from './constants.js'
-import { useSemanticColors, useTheme, getAllThemeFamilies, variantPreferenceAtom } from '../../theme.js'
+import {
+  useSemanticColors,
+  useTheme,
+  getAllThemeFamilies,
+  variantPreferenceAtom,
+} from '../../theme.js'
 import type { VariantPreference } from '../../theme.js'
 import { Modal } from '../ui/Modal.js'
 
@@ -31,10 +36,16 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const families = getAllThemeFamilies()
   const [activeSection, setActiveSection] = useState<Section>('family')
   const [familyIndex, setFamilyIndex] = useState(() =>
-    Math.max(0, families.findIndex((f) => f.id === family.id)),
+    Math.max(
+      0,
+      families.findIndex((f) => f.id === family.id),
+    ),
   )
   const [variantIndex, setVariantIndex] = useState(() =>
-    Math.max(0, VARIANT_OPTIONS.findIndex((v) => v.value === variantPreference)),
+    Math.max(
+      0,
+      VARIANT_OPTIONS.findIndex((v) => v.value === variantPreference),
+    ),
   )
 
   useKeyboard((event) => {
@@ -97,7 +108,10 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       {blank()}
 
       {/* Theme Family Section */}
-      <text fg={activeSection === 'family' ? colors.text : colors.textHint} bg={bg}>
+      <text
+        fg={activeSection === 'family' ? colors.text : colors.textHint}
+        bg={bg}
+      >
         <strong>Theme</strong>
       </text>
       {families.map((f, idx) => {
@@ -112,21 +126,27 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
             fg={isHighlighted ? colors.text : colors.textHint}
             bg={bg}
           >
-            {`${indicator} ${prefix} ${f.name.padEnd(12)} ${getVariantDesc(f)}`.padEnd(innerWidth)}
+            {`${indicator} ${prefix} ${f.name.padEnd(12)} ${getVariantDesc(f)}`.padEnd(
+              innerWidth,
+            )}
           </text>
         )
       })}
       {blank()}
 
       {/* Variant Section */}
-      <text fg={activeSection === 'variant' ? colors.text : colors.textHint} bg={bg}>
+      <text
+        fg={activeSection === 'variant' ? colors.text : colors.textHint}
+        bg={bg}
+      >
         <strong>Variant</strong>
       </text>
       <box flexDirection="row" backgroundColor={bg}>
         <text bg={bg}>{'  '}</text>
         {VARIANT_OPTIONS.map((opt, idx) => {
           const isSelected = opt.value === variantPreference
-          const isHighlighted = activeSection === 'variant' && idx === variantIndex
+          const isHighlighted =
+            activeSection === 'variant' && idx === variantIndex
           const prefix = isSelected ? '●' : '○'
 
           return (
@@ -143,7 +163,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       {blank()}
 
       <text fg={colors.textHint}>
-        <strong>↑↓ navigate  Tab section  Esc close</strong>
+        <strong>↑↓ navigate Tab section Esc close</strong>
       </text>
     </Modal>
   )

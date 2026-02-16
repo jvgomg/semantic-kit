@@ -7,11 +7,7 @@ import {
   type TableGroup,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
-import type {
-  AxeAnalysisResult,
-  RenderOptions,
-  WcagLevel,
-} from './types.js'
+import type { AxeAnalysisResult, RenderOptions, WcagLevel } from './types.js'
 
 // ============================================================================
 // Issue Building
@@ -87,9 +83,10 @@ function buildIssueFromIncomplete(incomplete: AxeViolationResult): Issue {
 /**
  * Map axe impact to issue type and severity.
  */
-function mapImpactToSeverity(
-  impact: string,
-): { type: Issue['type']; severity: Issue['severity'] } {
+function mapImpactToSeverity(impact: string): {
+  type: Issue['type']
+  severity: Issue['severity']
+} {
   switch (impact) {
     case 'critical':
       return { type: 'error', severity: 'high' }
@@ -119,7 +116,10 @@ function buildConfigTableGroup(
   ]
 
   if (timedOut) {
-    rows.push({ key: 'Timeout', value: 'Page load timed out - results may be incomplete' })
+    rows.push({
+      key: 'Timeout',
+      value: 'Page load timed out - results may be incomplete',
+    })
   }
 
   return {
@@ -175,7 +175,9 @@ function formatTerminal(
   // Add note about ignored incomplete checks
   if (ignoreIncomplete && result.results.incomplete.length > 0) {
     sections.push('')
-    sections.push(`${result.results.incomplete.length} incomplete check(s) ignored`)
+    sections.push(
+      `${result.results.incomplete.length} incomplete check(s) ignored`,
+    )
   }
 
   return sections.join('\n')

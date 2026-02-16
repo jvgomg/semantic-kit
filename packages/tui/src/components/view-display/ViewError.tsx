@@ -19,7 +19,9 @@ export function ViewError({ error }: ViewErrorProps): ReactNode {
       <text />
       <text fg={colors.text}>{error}</text>
       <text />
-      <text fg={colors.textHint}>Try a different URL or check your connection.</text>
+      <text fg={colors.textHint}>
+        Try a different URL or check your connection.
+      </text>
     </box>
   )
 }

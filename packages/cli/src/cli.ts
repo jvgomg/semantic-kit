@@ -212,7 +212,9 @@ program
 
 program
   .command('readability')
-  .description('Raw Readability extraction with full metrics (link density, etc.)')
+  .description(
+    'Raw Readability extraction with full metrics (link density, etc.)',
+  )
   .argument('<target>', 'URL or file path to analyze')
   .option(
     '--format <type>',
@@ -411,7 +413,10 @@ program
   .command('tui')
   .description('Launch interactive terminal UI for exploring semantic data')
   .argument('[url]', 'URL to analyze on startup')
-  .option('-c, --config <path>', 'Path to YAML config file with URL collections')
+  .option(
+    '-c, --config <path>',
+    'Path to YAML config file with URL collections',
+  )
   .action(tuiCommand)
 
 program.parse()

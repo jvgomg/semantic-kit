@@ -333,9 +333,12 @@ describe('validateSocialTags', () => {
     const issues = validateSocialTags({}, { checkPresence: true })
     // Should include missing required OG tags + missing recommended
     const ogRequired = issues.filter((i) =>
-      ['og-title-missing', 'og-type-missing', 'og-image-missing', 'og-url-missing'].includes(
-        i.code,
-      ),
+      [
+        'og-title-missing',
+        'og-type-missing',
+        'og-image-missing',
+        'og-url-missing',
+      ].includes(i.code),
     )
     expect(ogRequired.length).toBe(4)
   })

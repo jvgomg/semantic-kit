@@ -6,7 +6,7 @@
  * the underlying colors to change based on theme.
  */
 
-import { atom, useAtomValue  } from 'jotai'
+import { atom, useAtomValue } from 'jotai'
 import { currentPaletteAtom } from './atoms.js'
 
 /**

@@ -89,7 +89,9 @@ function TreeNodeComponent({
   // Build the expand/collapse indicator
   let expandIndicator = ''
   if (expandable && hasChildren && !atMaxDepth) {
-    expandIndicator = isExpanded ? `${boxChars.expanded} ` : `${boxChars.collapsed} `
+    expandIndicator = isExpanded
+      ? `${boxChars.expanded} `
+      : `${boxChars.collapsed} `
   }
 
   // Build the node content
@@ -108,7 +110,10 @@ function TreeNodeComponent({
     <box flexDirection="column">
       {/* Node line */}
       <box flexDirection="row">
-        <text fg={palette.base02}>{prefix}{connector}</text>
+        <text fg={palette.base02}>
+          {prefix}
+          {connector}
+        </text>
         {expandable && hasChildren && !atMaxDepth && (
           <text fg={palette.base0D}>{expandIndicator}</text>
         )}
@@ -140,7 +145,7 @@ function TreeNodeComponent({
       {/* Truncation indicator at max depth */}
       {hasChildren && !atMaxDepth && !isExpanded && expandable && (
         <text fg={palette.base03}>
-          {childPrefix}  ... ({node.children!.length} items)
+          {childPrefix} ... ({node.children!.length} items)
         </text>
       )}
     </box>

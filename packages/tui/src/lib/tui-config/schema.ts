@@ -43,7 +43,9 @@ export const ConfigEntrySchema = z.union([ConfigUrlSchema, ConfigGroupSchema])
  * Must contain at least one URL or group.
  */
 export const TuiConfigSchema = z.object({
-  urls: z.array(ConfigEntrySchema).min(1, 'Config must contain at least one URL or group'),
+  urls: z
+    .array(ConfigEntrySchema)
+    .min(1, 'Config must contain at least one URL or group'),
 })
 
 // ============================================================================

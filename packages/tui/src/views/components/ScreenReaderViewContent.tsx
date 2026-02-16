@@ -27,10 +27,7 @@ import type { ViewComponentProps } from '../types.js'
 function MissingMainCard(): ReactNode {
   return (
     <Card title="Missing Main Landmark" severity="error" icon="✗">
-      <CardRow
-        label="Issue"
-        value="No <main> element found"
-      />
+      <CardRow label="Issue" value="No <main> element found" />
       <CardRow
         label="Impact"
         value="Screen reader users cannot quickly navigate to primary content"
@@ -51,10 +48,7 @@ function MissingMainCard(): ReactNode {
 function MissingHeadingsCard(): ReactNode {
   return (
     <Card title="No Headings Found" severity="error" icon="✗">
-      <CardRow
-        label="Issue"
-        value="No heading elements found"
-      />
+      <CardRow label="Issue" value="No heading elements found" />
       <CardRow
         label="Impact"
         value="Screen reader users cannot navigate by headings"
@@ -84,9 +78,7 @@ function SummaryContent({ data }: { data: ScreenReaderResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={palette.base03}>Page Title:</span>{' '}
-          <span fg={palette.base05}>
-            {summary.pageTitle ?? '(not found)'}
-          </span>
+          <span fg={palette.base05}>{summary.pageTitle ?? '(not found)'}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
@@ -134,9 +126,7 @@ function LandmarksContent({ data }: { data: ScreenReaderResult }): ReactNode {
   const palette = usePalette()
   if (data.landmarks.length === 0) {
     return (
-      <text fg={palette.base0A}>
-        No landmark regions found on this page.
-      </text>
+      <text fg={palette.base0A}>No landmark regions found on this page.</text>
     )
   }
 
@@ -165,25 +155,22 @@ function LandmarksContent({ data }: { data: ScreenReaderResult }): ReactNode {
 function HeadingsContent({ data }: { data: ScreenReaderResult }): ReactNode {
   const palette = usePalette()
   if (data.headings.length === 0) {
-    return (
-      <text fg={palette.base0A}>
-        No headings found on this page.
-      </text>
-    )
+    return <text fg={palette.base0A}>No headings found on this page.</text>
   }
 
   return (
     <box flexDirection="column" gap={0}>
       {data.headings.map((heading, index) => {
         const indent = '  '.repeat(heading.level - 1)
-        const text = heading.text.length > 50
-          ? heading.text.slice(0, 47) + '...'
-          : heading.text
+        const text =
+          heading.text.length > 50
+            ? heading.text.slice(0, 47) + '...'
+            : heading.text
         return (
           <text key={index}>
             <span fg={palette.base03}>{indent}</span>
             <span fg={palette.base02}>H{heading.level}</span>
-            <span fg={palette.base05}>  {text}</span>
+            <span fg={palette.base05}> {text}</span>
           </text>
         )
       })}
@@ -211,15 +198,22 @@ export function ScreenReaderViewContent({
   const summaryText = `${summary.landmarkCount} landmarks, ${summary.headingCount} headings, ${summary.linkCount} links`
 
   // Compute landmarks summary
-  const landmarksSummary = data.landmarks.length > 0
-    ? data.landmarks.map(l => l.role).slice(0, 4).join(', ') +
-      (data.landmarks.length > 4 ? `, +${data.landmarks.length - 4} more` : '')
-    : 'No landmarks found'
+  const landmarksSummary =
+    data.landmarks.length > 0
+      ? data.landmarks
+          .map((l) => l.role)
+          .slice(0, 4)
+          .join(', ') +
+        (data.landmarks.length > 4
+          ? `, +${data.landmarks.length - 4} more`
+          : '')
+      : 'No landmarks found'
 
   // Compute headings summary
-  const headingsSummary = data.headings.length > 0
-    ? `${data.headings.length} headings (H1-H${Math.max(...data.headings.map(h => h.level))})`
-    : 'No headings found'
+  const headingsSummary =
+    data.headings.length > 0
+      ? `${data.headings.length} headings (H1-H${Math.max(...data.headings.map((h) => h.level))})`
+      : 'No headings found'
 
   return (
     <SectionContainer height={height}>
@@ -231,7 +225,11 @@ export function ScreenReaderViewContent({
         severity={hasIssues ? 'error' : 'success'}
         icon={hasIssues ? '✗' : '✓'}
         count={issueCount}
-        summary={hasIssues ? `${issueCount} accessibility issue${issueCount > 1 ? 's' : ''} found` : 'No issues detected'}
+        summary={
+          hasIssues
+            ? `${issueCount} accessibility issue${issueCount > 1 ? 's' : ''} found`
+            : 'No issues detected'
+        }
         defaultExpanded={hasIssues}
       >
         {hasIssues ? (

@@ -22,7 +22,12 @@ import { activeSitemapDataAtom } from './sitemap.js'
  * - input: The sitemap URL input field (Sitemap tab only)
  * - tree: The sitemap tree browser (Sitemap tab only, when data is loaded)
  */
-export type UrlListFocusElement = 'tabs' | 'list' | 'configTree' | 'input' | 'tree'
+export type UrlListFocusElement =
+  | 'tabs'
+  | 'list'
+  | 'configTree'
+  | 'input'
+  | 'tree'
 
 // ============================================================================
 // Atoms
@@ -153,7 +158,11 @@ export const urlListFocusTreeIfAvailableAtom = atom(null, (get, set) => {
  */
 export const resetUrlListStateAtom = atom(
   null,
-  (get, set, options: { startOnSitemap?: boolean; startOnConfig?: boolean }) => {
+  (
+    get,
+    set,
+    options: { startOnSitemap?: boolean; startOnConfig?: boolean },
+  ) => {
     const { startOnSitemap, startOnConfig } = options
     if (startOnConfig) {
       set(urlListActiveTabAtom, 'config')

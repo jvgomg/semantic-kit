@@ -1,14 +1,23 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Button Problems</title>
-  <style>
-    .btn { padding: 10px 20px; background: blue; color: white; cursor: pointer; }
-    .link { color: blue; text-decoration: underline; cursor: pointer; }
-  </style>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Button Problems</title>
+    <style>
+      .btn {
+        padding: 10px 20px;
+        background: blue;
+        color: white;
+        cursor: pointer;
+      }
+      .link {
+        color: blue;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    </style>
 
-  <!--
+    <!--
     Anti-pattern: Interactive element anti-patterns
     Source: Adapted from Frontend Masters Accessibility course and MDN
     https://frontendmasters.com/courses/accessibility-v3/divs-are-not-buttons/
@@ -22,47 +31,50 @@
     - Icon-only button without accessible name
     - Image as button without alt text
     - Non-descriptive link text ("click here", "read more")
-  -->
-</head>
-<body>
-  <main>
-    <h1>Interactive Elements</h1>
+  --></head>
+  <body>
+    <main>
+      <h1>Interactive Elements</h1>
 
-    <!-- Div as button -->
-    <div class="btn" onclick="doSomething()">Click Me</div>
+      <!-- Div as button -->
+      <div class="btn" onclick="doSomething()">Click Me</div>
 
-    <!-- Span as button -->
-    <span class="btn" onclick="doSomethingElse()">Press Here</span>
+      <!-- Span as button -->
+      <span class="btn" onclick="doSomethingElse()">Press Here</span>
 
-    <!-- Link without href -->
-    <a onclick="navigate()">Go to page</a>
+      <!-- Link without href -->
+      <a onclick="navigate()">Go to page</a>
 
-    <!-- Link with href="#" -->
-    <a href="#" onclick="handleClick()">Do action</a>
+      <!-- Link with href="#" -->
+      <a href="#" onclick="handleClick()">Do action</a>
 
-    <!-- Link with javascript: protocol -->
-    <a href="javascript:void(0)" onclick="action()">Another action</a>
+      <!-- Link with javascript: protocol -->
+      <a href="javascript:void(0)" onclick="action()">Another action</a>
 
-    <!-- Div as link -->
-    <div class="link" onclick="goSomewhere()">Visit our site</div>
+      <!-- Div as link -->
+      <div class="link" onclick="goSomewhere()">Visit our site</div>
 
-    <!-- Button with only icon -->
-    <button onclick="search()">
-      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-    </button>
+      <!-- Button with only icon -->
+      <button onclick="search()">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+          />
+        </svg>
+      </button>
 
-    <!-- Image as button without alt -->
-    <img src="submit.png" onclick="submit()">
+      <!-- Image as button without alt -->
+      <img src="submit.png" onclick="submit()" />
 
-    <!-- Generic click handlers -->
-    <div onclick="expand()">
-      <span>Show more</span>
-    </div>
+      <!-- Generic click handlers -->
+      <div onclick="expand()">
+        <span>Show more</span>
+      </div>
 
-    <!-- Misleading link text -->
-    <p>For more information, <a href="/details">click here</a>.</p>
-    <p><a href="/read-more">Read more</a></p>
-    <p><a href="/info">Learn more</a></p>
-  </main>
-</body>
+      <!-- Misleading link text -->
+      <p>For more information, <a href="/details">click here</a>.</p>
+      <p><a href="/read-more">Read more</a></p>
+      <p><a href="/info">Learn more</a></p>
+    </main>
+  </body>
 </html>

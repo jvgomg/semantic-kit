@@ -27,8 +27,14 @@ import type { ViewComponentProps } from '../types.js'
 function SummaryContent({ data }: { data: A11yCompareResult }): ReactNode {
   const palette = usePalette()
   const { diff } = data
-  const staticTotal = Object.values(data.static.counts).reduce((a, b) => a + b, 0)
-  const hydratedTotal = Object.values(data.hydrated.counts).reduce((a, b) => a + b, 0)
+  const staticTotal = Object.values(data.static.counts).reduce(
+    (a, b) => a + b,
+    0,
+  )
+  const hydratedTotal = Object.values(data.hydrated.counts).reduce(
+    (a, b) => a + b,
+    0,
+  )
   const nodeDiff = hydratedTotal - staticTotal
 
   return (
@@ -48,7 +54,15 @@ function SummaryContent({ data }: { data: A11yCompareResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={palette.base03}>Node Difference:</span>{' '}
-          <span fg={nodeDiff > 0 ? palette.base0B : nodeDiff < 0 ? palette.base08 : palette.base05}>
+          <span
+            fg={
+              nodeDiff > 0
+                ? palette.base0B
+                : nodeDiff < 0
+                  ? palette.base08
+                  : palette.base05
+            }
+          >
             {nodeDiff > 0 ? `+${nodeDiff}` : nodeDiff}
           </span>
         </text>
@@ -56,7 +70,9 @@ function SummaryContent({ data }: { data: A11yCompareResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={palette.base03}>Roles Changed:</span>{' '}
-          <span fg={diff.countChanges.length > 0 ? palette.base0A : palette.base0B}>
+          <span
+            fg={diff.countChanges.length > 0 ? palette.base0A : palette.base0B}
+          >
             {diff.countChanges.length}
           </span>
         </text>
@@ -107,7 +123,12 @@ function RoleChangesContent({ data }: { data: A11yCompareResult }): ReactNode {
     } as Record<string, string | number>
   })
 
-  return <Table data={tableData} columns={['role', 'static', 'hydrated', 'change']} />
+  return (
+    <Table
+      data={tableData}
+      columns={['role', 'static', 'hydrated', 'change']}
+    />
+  )
 }
 
 /**
@@ -122,15 +143,17 @@ function formatSnapshotLine(line: string, maxLength = 80): string {
 /**
  * Elements added section content.
  */
-function ElementsAddedContent({ data }: { data: A11yCompareResult }): ReactNode {
+function ElementsAddedContent({
+  data,
+}: {
+  data: A11yCompareResult
+}): ReactNode {
   const palette = usePalette()
   const { diff } = data
 
   if (diff.added.length === 0) {
     return (
-      <text fg={palette.base03}>
-        No elements were added by JavaScript.
-      </text>
+      <text fg={palette.base03}>No elements were added by JavaScript.</text>
     )
   }
 
@@ -147,9 +170,7 @@ function ElementsAddedContent({ data }: { data: A11yCompareResult }): ReactNode 
         </text>
       ))}
       {hasMore && (
-        <text fg={palette.base03}>
-          ... and {diff.added.length - 50} more
-        </text>
+        <text fg={palette.base03}>... and {diff.added.length - 50} more</text>
       )}
     </box>
   )
@@ -158,15 +179,17 @@ function ElementsAddedContent({ data }: { data: A11yCompareResult }): ReactNode 
 /**
  * Elements removed section content.
  */
-function ElementsRemovedContent({ data }: { data: A11yCompareResult }): ReactNode {
+function ElementsRemovedContent({
+  data,
+}: {
+  data: A11yCompareResult
+}): ReactNode {
   const palette = usePalette()
   const { diff } = data
 
   if (diff.removed.length === 0) {
     return (
-      <text fg={palette.base03}>
-        No elements were removed by JavaScript.
-      </text>
+      <text fg={palette.base03}>No elements were removed by JavaScript.</text>
     )
   }
 
@@ -183,9 +206,7 @@ function ElementsRemovedContent({ data }: { data: A11yCompareResult }): ReactNod
         </text>
       ))}
       {hasMore && (
-        <text fg={palette.base03}>
-          ... and {diff.removed.length - 50} more
-        </text>
+        <text fg={palette.base03}>... and {diff.removed.length - 50} more</text>
       )}
     </box>
   )
@@ -210,20 +231,28 @@ export function A11yTreeCompareViewContent({
     : 'No differences detected'
 
   // Build role changes summary
-  const roleChangesSummary = diff.countChanges.length > 0
-    ? diff.countChanges.slice(0, 3).map(c => c.role).join(', ') +
-      (diff.countChanges.length > 3 ? `, +${diff.countChanges.length - 3} more` : '')
-    : 'No role count changes'
+  const roleChangesSummary =
+    diff.countChanges.length > 0
+      ? diff.countChanges
+          .slice(0, 3)
+          .map((c) => c.role)
+          .join(', ') +
+        (diff.countChanges.length > 3
+          ? `, +${diff.countChanges.length - 3} more`
+          : '')
+      : 'No role count changes'
 
   // Build elements added summary
-  const addedSummary = diff.added.length > 0
-    ? `${diff.added.length} element${diff.added.length !== 1 ? 's' : ''} added by JavaScript`
-    : 'No elements added'
+  const addedSummary =
+    diff.added.length > 0
+      ? `${diff.added.length} element${diff.added.length !== 1 ? 's' : ''} added by JavaScript`
+      : 'No elements added'
 
   // Build elements removed summary
-  const removedSummary = diff.removed.length > 0
-    ? `${diff.removed.length} element${diff.removed.length !== 1 ? 's' : ''} removed by JavaScript`
-    : 'No elements removed'
+  const removedSummary =
+    diff.removed.length > 0
+      ? `${diff.removed.length} element${diff.removed.length !== 1 ? 's' : ''} removed by JavaScript`
+      : 'No elements removed'
 
   return (
     <SectionContainer height={height}>
@@ -243,8 +272,8 @@ export function A11yTreeCompareViewContent({
               ? 'Both static and rendered fetches timed out.'
               : data.static.timedOut
                 ? 'Static HTML fetch timed out.'
-                : 'Rendered DOM fetch timed out.'}
-            {' '}The comparison may be based on partial content.
+                : 'Rendered DOM fetch timed out.'}{' '}
+            The comparison may be based on partial content.
           </text>
         </Section>
       )}
@@ -268,7 +297,9 @@ export function A11yTreeCompareViewContent({
         title="ROLE CHANGES"
         priority={SectionPriority.PRIMARY}
         severity={diff.countChanges.length > 0 ? 'warning' : 'muted'}
-        count={diff.countChanges.length > 0 ? diff.countChanges.length : undefined}
+        count={
+          diff.countChanges.length > 0 ? diff.countChanges.length : undefined
+        }
         summary={roleChangesSummary}
         defaultExpanded={diff.countChanges.length > 0}
         scrollable={diff.countChanges.length > 10}

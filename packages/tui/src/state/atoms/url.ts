@@ -2,7 +2,11 @@
  * URL-related atoms for managing the current URL and recent URLs history.
  */
 import { atom } from 'jotai'
-import { viewDataAtomFamily, viewDataIdsAtom, type ViewData } from '../view-data/index.js'
+import {
+  viewDataAtomFamily,
+  viewDataIdsAtom,
+  type ViewData,
+} from '../view-data/index.js'
 
 /** The current URL being analyzed */
 export const urlAtom = atom('')

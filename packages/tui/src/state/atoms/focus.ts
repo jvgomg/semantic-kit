@@ -38,14 +38,11 @@ export const focusableRegions: readonly FocusRegion[] = ['url', 'menu', 'main']
  * Write-only atom to focus a specific region.
  * Respects effectiveFocusEnabledAtom (won't focus if modal is open).
  */
-export const setFocusAtom = atom(
-  null,
-  (get, set, region: FocusRegion) => {
-    if (get(effectiveFocusEnabledAtom)) {
-      set(focusedRegionAtom, region)
-    }
-  },
-)
+export const setFocusAtom = atom(null, (get, set, region: FocusRegion) => {
+  if (get(effectiveFocusEnabledAtom)) {
+    set(focusedRegionAtom, region)
+  }
+})
 
 /**
  * Write-only atom to focus the next region in the focusable list.

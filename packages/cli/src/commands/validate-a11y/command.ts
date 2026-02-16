@@ -1,9 +1,17 @@
-import { validateFormat, validateTimeout, requireUrl } from '../../lib/arguments.js'
+import {
+  validateFormat,
+  validateTimeout,
+  requireUrl,
+} from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
 import { buildJsonResult, formatA11yValidationOutput } from './formatters.js'
 import { runAxeAnalysis, parseLevel } from './runner.js'
-import { VALID_FORMATS, type RenderOptions, type ValidateA11yOptions } from './types.js'
+import {
+  VALID_FORMATS,
+  type RenderOptions,
+  type ValidateA11yOptions,
+} from './types.js'
 
 /**
  * Validate a11y command - validates accessibility against WCAG guidelines.

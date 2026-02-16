@@ -1,4 +1,8 @@
-import { requireUrl, validateFormat, validateTimeout } from '../../lib/arguments.js'
+import {
+  requireUrl,
+  validateFormat,
+  validateTimeout,
+} from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
 import { buildIssuesJs, formatStructureJsOutput } from './formatters.js'
@@ -22,8 +26,10 @@ export async function structureJsCommand(
     format,
     commandName: 'structure:js',
     target,
-    fetch: () => fetchStructureJs(target, { timeoutMs, allRules: options.allRules }),
-    render: (result) => formatStructureJsOutput(result, { format, target }, mode),
+    fetch: () =>
+      fetchStructureJs(target, { timeoutMs, allRules: options.allRules }),
+    render: (result) =>
+      formatStructureJsOutput(result, { format, target }, mode),
     json: (result) => ({
       result: {
         static: result.static,

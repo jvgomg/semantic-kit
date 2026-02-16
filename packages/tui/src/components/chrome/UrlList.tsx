@@ -143,7 +143,9 @@ function ConfigTabContent({
     return (
       <box flexDirection="column">
         <text fg={colors.textHint}>No config loaded.</text>
-        <text fg={colors.textHint}>Use --config flag to load a YAML config file.</text>
+        <text fg={colors.textHint}>
+          Use --config flag to load a YAML config file.
+        </text>
       </box>
     )
   }
@@ -201,7 +203,9 @@ function SitemapTabContent({
         paddingLeft={1}
         flexDirection="row"
         borderStyle="single"
-        borderColor={inputFocused ? colors.borderFocused : colors.borderUnfocused}
+        borderColor={
+          inputFocused ? colors.borderFocused : colors.borderUnfocused
+        }
         onMouseDown={onInputFocus}
       >
         <text fg={colors.textHint}>URL: </text>
@@ -252,7 +256,9 @@ export function UrlList({
   // Atoms - Sitemap data
   const sitemapLoading = useAtomValue(sitemapLoadingAtom)
   const sitemapData = useAtomValue(activeSitemapDataAtom)
-  const [sitemapSelectedIndex, setSitemapSelectedIndex] = useAtom(sitemapSelectedIndexAtom)
+  const [sitemapSelectedIndex, setSitemapSelectedIndex] = useAtom(
+    sitemapSelectedIndexAtom,
+  )
   const [expandedPaths, setExpandedPaths] = useAtom(sitemapExpandedPathsAtom)
   const fetchSitemap = useSetAtom(fetchSitemapAtom)
   const resetSitemapSelection = useSetAtom(resetSitemapSelectionAtom)
@@ -260,14 +266,20 @@ export function UrlList({
   // Atoms - Config data
   const hasConfig = useAtomValue(hasConfigAtom)
   const flattenedConfigTree = useAtomValue(flattenedConfigTreeAtom)
-  const [configSelectedIndex, setConfigSelectedIndex] = useAtom(configSelectedIndexAtom)
-  const [configExpandedGroups, setConfigExpandedGroups] = useAtom(configExpandedGroupsAtom)
+  const [configSelectedIndex, setConfigSelectedIndex] = useAtom(
+    configSelectedIndexAtom,
+  )
+  const [configExpandedGroups, setConfigExpandedGroups] = useAtom(
+    configExpandedGroupsAtom,
+  )
   const hasConfigData = useAtomValue(urlListHasConfigDataAtom)
 
   // Atoms - UrlList focus state
   const activeTab = useAtomValue(urlListActiveTabAtom)
   const [focusedElement, setFocusedElement] = useAtom(urlListFocusAtom)
-  const [sitemapInputValue, setSitemapInputValue] = useAtom(urlListSitemapInputAtom)
+  const [sitemapInputValue, setSitemapInputValue] = useAtom(
+    urlListSitemapInputAtom,
+  )
   const hasTreeData = useAtomValue(urlListHasTreeDataAtom)
 
   // Action atoms
@@ -279,16 +291,22 @@ export function UrlList({
   const initSitemapInput = useSetAtom(initUrlListSitemapInputAtom)
 
   // Tab definitions - Config tab is disabled when no config loaded
-  const tabDefinitions: TabItem[] = useMemo(() => [
-    { id: 'recent', label: 'Recent URLs' },
-    { id: 'config', label: 'Config', disabled: !hasConfig },
-    { id: 'sitemap', label: 'Sitemap' },
-  ], [hasConfig])
+  const tabDefinitions: TabItem[] = useMemo(
+    () => [
+      { id: 'recent', label: 'Recent URLs' },
+      { id: 'config', label: 'Config', disabled: !hasConfig },
+      { id: 'sitemap', label: 'Sitemap' },
+    ],
+    [hasConfig],
+  )
 
   // Initialize state on mount
   useEffect(() => {
     const startOnSitemap = !!autoFetchSitemapUrl
-    resetUrlListState({ startOnSitemap, startOnConfig: startOnConfig && hasConfig })
+    resetUrlListState({
+      startOnSitemap,
+      startOnConfig: startOnConfig && hasConfig,
+    })
     initSitemapInput(autoFetchSitemapUrl || defaultSitemapUrl)
 
     if (autoFetchSitemapUrl) {

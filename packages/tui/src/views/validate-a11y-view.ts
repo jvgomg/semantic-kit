@@ -21,7 +21,11 @@ const DEFAULT_TIMEOUT_MS = 30000
  */
 async function fetchA11yValidation(url: string): Promise<TuiA11yResult> {
   try {
-    const analysis = await runAxeAnalysis(url, DEFAULT_LEVEL, DEFAULT_TIMEOUT_MS)
+    const analysis = await runAxeAnalysis(
+      url,
+      DEFAULT_LEVEL,
+      DEFAULT_TIMEOUT_MS,
+    )
     return {
       analysis,
       level: DEFAULT_LEVEL,

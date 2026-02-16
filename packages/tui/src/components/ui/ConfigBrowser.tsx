@@ -78,7 +78,9 @@ export function ConfigBrowser({
       if (direction === 'up') {
         onSelectedIndexChange(Math.max(0, selectedIndex - 1))
       } else {
-        onSelectedIndexChange(Math.min(flattenedNodes.length - 1, selectedIndex + 1))
+        onSelectedIndexChange(
+          Math.min(flattenedNodes.length - 1, selectedIndex + 1),
+        )
       }
     },
     [flattenedNodes.length, selectedIndex, onSelectedIndexChange],
@@ -106,7 +108,11 @@ export function ConfigBrowser({
 
   const handleExpandCurrent = useCallback(() => {
     const entry = flattenedNodes[selectedIndex]
-    if (entry && entry.node.type === 'group' && !expandedGroups.has(entry.node.id)) {
+    if (
+      entry &&
+      entry.node.type === 'group' &&
+      !expandedGroups.has(entry.node.id)
+    ) {
       handleToggleExpand(entry.node.id)
     }
   }, [flattenedNodes, selectedIndex, expandedGroups, handleToggleExpand])
@@ -126,13 +132,22 @@ export function ConfigBrowser({
       // Find the parent group index
       for (let i = 0; i < flattenedNodes.length; i++) {
         const candidate = flattenedNodes[i]
-        if (candidate.node.type === 'group' && candidate.node.label === entry.parentGroup) {
+        if (
+          candidate.node.type === 'group' &&
+          candidate.node.label === entry.parentGroup
+        ) {
           onSelectedIndexChange(i)
           return
         }
       }
     }
-  }, [flattenedNodes, selectedIndex, expandedGroups, handleToggleExpand, onSelectedIndexChange])
+  }, [
+    flattenedNodes,
+    selectedIndex,
+    expandedGroups,
+    handleToggleExpand,
+    onSelectedIndexChange,
+  ])
 
   // Keyboard handling
   useKeyboard((event) => {
@@ -213,7 +228,10 @@ export function ConfigBrowser({
               ? colors.textSelected
               : colors.text
             : colors.text,
-          bg: isSelected && isFocused ? colors.modalBackgroundSelected : undefined,
+          bg:
+            isSelected && isFocused
+              ? colors.modalBackgroundSelected
+              : undefined,
         }
 
         // Expand indicator color
@@ -226,7 +244,7 @@ export function ConfigBrowser({
           <box key={node.id} flexDirection="row">
             <text fg={palette.base02}>{indent}</text>
             {isGroup && <text fg={expandColor}>{expandIndicator}</text>}
-            {!isGroup && parentGroup && <text fg={palette.base02}>  </text>}
+            {!isGroup && parentGroup && <text fg={palette.base02}> </text>}
             <text {...style}>{node.label}</text>
             {countBadge}
           </box>

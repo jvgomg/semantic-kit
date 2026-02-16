@@ -165,7 +165,9 @@ export function countConfigUrls(config: TuiConfig): number {
 /**
  * Get all URLs from the config as a flat array.
  */
-export function getAllConfigUrls(config: TuiConfig): Array<{ url: string; title?: string }> {
+export function getAllConfigUrls(
+  config: TuiConfig,
+): Array<{ url: string; title?: string }> {
   const urls: Array<{ url: string; title?: string }> = []
   for (const entry of config.urls) {
     if (isConfigGroup(entry)) {

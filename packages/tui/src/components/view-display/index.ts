@@ -12,7 +12,10 @@ export type { ViewErrorProps } from './ViewError.js'
 
 // Expandable sections framework
 export { ViewSections, SectionContainer } from './ViewSections.js'
-export type { ViewSectionsProps, SectionContainerProps } from './ViewSections.js'
+export type {
+  ViewSectionsProps,
+  SectionContainerProps,
+} from './ViewSections.js'
 
 export { Section, SectionPriority } from './Section.js'
 export type { SectionProps, SectionSeverity } from './Section.js'

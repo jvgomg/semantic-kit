@@ -5,7 +5,10 @@
  * Cards display a title, content rows, and optional actions.
  */
 import type { ReactNode } from 'react'
-import { useSectionColors, getSeverityColor } from '../view-display/section-theme.js'
+import {
+  useSectionColors,
+  getSeverityColor,
+} from '../view-display/section-theme.js'
 import { usePalette } from '../../theme.js'
 
 /**

@@ -9,16 +9,16 @@ export function MainContent() {
         <h1>Welcome to Our Website</h1>
         <p>
           This is the main content area of the page. This content is always
-          rendered statically and will be visible to all crawlers regardless
-          of streaming behavior.
+          rendered statically and will be visible to all crawlers regardless of
+          streaming behavior.
         </p>
         <section>
           <h2>About Our Services</h2>
           <p>
             We provide excellent services to our customers. Our team is
-            dedicated to delivering high-quality solutions that meet your
-            needs. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            dedicated to delivering high-quality solutions that meet your needs.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </p>
         </section>
         <section>

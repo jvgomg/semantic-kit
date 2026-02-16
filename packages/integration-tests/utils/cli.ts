@@ -18,7 +18,8 @@
 import type { ReadabilityCompareResult } from '@webspecs/cli/commands/readability/types.js'
 import type { SocialResult } from '@webspecs/cli/commands/social/types.js'
 import type { JsonEnvelope } from '@webspecs/cli/lib/json-envelope.js'
-import type { Issue,
+import type {
+  Issue,
   A11yCompareResult,
   A11yResult,
   AiResult,
@@ -35,7 +36,8 @@ import type { Issue,
   StructureResult,
   ValidateA11yResult,
   ValidateHtmlResult,
-  ValidateSchemaResult } from '@webspecs/core'
+  ValidateSchemaResult,
+} from '@webspecs/core'
 
 // ============================================================================
 // Command → Result type mapping

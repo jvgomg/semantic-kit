@@ -116,10 +116,7 @@ function getCategoryTotal(
 function MissingMainCard(): ReactNode {
   return (
     <Card title="Missing Main Landmark" severity="warning" icon="!">
-      <CardRow
-        label="Issue"
-        value="No main landmark found"
-      />
+      <CardRow label="Issue" value="No main landmark found" />
       <CardRow
         label="Impact"
         value="Screen readers cannot navigate to primary content"
@@ -135,10 +132,7 @@ function MissingMainCard(): ReactNode {
 function MissingHeadingsCard(): ReactNode {
   return (
     <Card title="No Headings Found" severity="warning" icon="!">
-      <CardRow
-        label="Issue"
-        value="No heading elements found"
-      />
+      <CardRow label="Issue" value="No heading elements found" />
       <CardRow
         label="Impact"
         value="Screen readers cannot navigate by headings"
@@ -171,7 +165,8 @@ function SummaryContent({ data }: { data: A11yResult }): ReactNode {
           </span>
           {landmarkCount > 0 && (
             <span fg={palette.base02}>
-              {' '}({formatCategoryCounts(counts, LANDMARK_ROLES)})
+              {' '}
+              ({formatCategoryCounts(counts, LANDMARK_ROLES)})
             </span>
           )}
         </text>
@@ -182,7 +177,8 @@ function SummaryContent({ data }: { data: A11yResult }): ReactNode {
           <span fg={palette.base05}>{structuralCount}</span>
           {structuralCount > 0 && (
             <span fg={palette.base02}>
-              {' '}({formatCategoryCounts(counts, STRUCTURAL_ROLES)})
+              {' '}
+              ({formatCategoryCounts(counts, STRUCTURAL_ROLES)})
             </span>
           )}
         </text>
@@ -193,7 +189,8 @@ function SummaryContent({ data }: { data: A11yResult }): ReactNode {
           <span fg={palette.base05}>{interactiveCount}</span>
           {interactiveCount > 0 && (
             <span fg={palette.base02}>
-              {' '}({formatCategoryCounts(counts, INTERACTIVE_ROLES)})
+              {' '}
+              ({formatCategoryCounts(counts, INTERACTIVE_ROLES)})
             </span>
           )}
         </text>
@@ -255,9 +252,10 @@ export function A11yTreeViewContent({
   const summaryText = `${landmarkCount} landmarks, ${headingCount} headings, ${linkCount} links`
 
   // Build tree summary
-  const treeSummary = parsed.length > 0
-    ? `${totalNodes} nodes in ${parsed.length} root element${parsed.length !== 1 ? 's' : ''}`
-    : 'No tree content'
+  const treeSummary =
+    parsed.length > 0
+      ? `${totalNodes} nodes in ${parsed.length} root element${parsed.length !== 1 ? 's' : ''}`
+      : 'No tree content'
 
   return (
     <SectionContainer height={height}>

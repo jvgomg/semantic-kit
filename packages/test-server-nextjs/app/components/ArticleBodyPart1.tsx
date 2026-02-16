@@ -22,11 +22,11 @@ export async function ArticleBodyPart1() {
         velit esse cillum dolore eu fugiat nulla pariatur.
       </p>
       <p>
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-        deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste
-        natus error sit voluptatem accusantium doloremque laudantium, totam rem
-        aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto
-        beatae vitae dicta sunt explicabo.
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+        officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde
+        omnis iste natus error sit voluptatem accusantium doloremque laudantium,
+        totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+        architecto beatae vitae dicta sunt explicabo.
       </p>
       <h2>The Evolution of Web Technologies</h2>
       <p>

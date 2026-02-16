@@ -112,21 +112,27 @@ export function configToYaml(
 /**
  * Generate a minimal config template.
  */
-export function generateMinimalTemplate(options: GenerateConfigOptions = {}): string {
+export function generateMinimalTemplate(
+  options: GenerateConfigOptions = {},
+): string {
   return configToYaml(MINIMAL_CONFIG, { header: null, ...options })
 }
 
 /**
  * Generate a flat URL config template.
  */
-export function generateFlatTemplate(options: GenerateConfigOptions = {}): string {
+export function generateFlatTemplate(
+  options: GenerateConfigOptions = {},
+): string {
   return configToYaml(FLAT_CONFIG, options)
 }
 
 /**
  * Generate a grouped URL config template.
  */
-export function generateGroupedTemplate(options: GenerateConfigOptions = {}): string {
+export function generateGroupedTemplate(
+  options: GenerateConfigOptions = {},
+): string {
   return configToYaml(GROUPED_CONFIG, { header: DETAILED_HEADER, ...options })
 }
 
@@ -146,7 +152,9 @@ export interface ConfigTemplateOptions {
  * @param options - Template generation options
  * @returns The template string
  */
-export function generateConfigTemplate(options: ConfigTemplateOptions = {}): string {
+export function generateConfigTemplate(
+  options: ConfigTemplateOptions = {},
+): string {
   const { includeHeader = true, includeGroups = false } = options
 
   const genOptions: GenerateConfigOptions = {

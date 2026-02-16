@@ -19,11 +19,7 @@ export async function schemaCompareCommand(
   target: string,
   options: SchemaCompareOptions,
 ): Promise<void> {
-  requireUrl(
-    target,
-    'schema:compare',
-    'Local files cannot execute JavaScript.',
-  )
+  requireUrl(target, 'schema:compare', 'Local files cannot execute JavaScript.')
   const timeoutMs = validateTimeout(options.timeout)
   const format = validateFormat(options.format, VALID_FORMATS)
   const mode = resolveOutputMode(options)

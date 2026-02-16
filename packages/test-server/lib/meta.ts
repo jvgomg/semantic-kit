@@ -80,7 +80,7 @@ export function parseQueryOverrides(url: URL): Partial<FixtureMeta> {
  */
 export function mergeMeta(
   base: FixtureMeta | null,
-  overrides: Partial<FixtureMeta>
+  overrides: Partial<FixtureMeta>,
 ): FixtureMeta {
   return {
     ...base,

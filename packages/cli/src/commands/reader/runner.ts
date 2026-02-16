@@ -4,7 +4,11 @@
  * Extracts content using Mozilla Readability and reports metrics
  * relevant to browser reader modes (Safari Reader, Pocket, etc.).
  */
-import { extractReadability, fetchHtmlContent, type ReaderResult } from '@webspecs/core'
+import {
+  extractReadability,
+  fetchHtmlContent,
+  type ReaderResult,
+} from '@webspecs/core'
 
 /**
  * Fetch and extract reader mode content from a URL or file path.

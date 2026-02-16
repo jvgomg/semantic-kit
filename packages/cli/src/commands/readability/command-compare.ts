@@ -1,10 +1,17 @@
 /**
  * Readability:compare command - compares Readability extraction from static vs JS-rendered HTML.
  */
-import { requireUrl, validateFormat, validateTimeout } from '../../lib/arguments.js'
+import {
+  requireUrl,
+  validateFormat,
+  validateTimeout,
+} from '../../lib/arguments.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
-import { buildCompareIssues, formatReadabilityCompareOutput } from './formatters.js'
+import {
+  buildCompareIssues,
+  formatReadabilityCompareOutput,
+} from './formatters.js'
 import { fetchReadabilityCompare } from './runner-compare.js'
 import { VALID_FORMATS, type ReadabilityCompareOptions } from './types.js'
 

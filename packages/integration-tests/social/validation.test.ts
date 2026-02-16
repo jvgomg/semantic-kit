@@ -140,8 +140,14 @@ describe('social command - validation', () => {
       if (data!.issues.length > 1) {
         const severityOrder = { high: 0, medium: 1, low: 2 }
         for (let i = 1; i < data!.issues.length; i++) {
-          const prev = severityOrder[data!.issues[i - 1].severity as keyof typeof severityOrder]
-          const curr = severityOrder[data!.issues[i].severity as keyof typeof severityOrder]
+          const prev =
+            severityOrder[
+              data!.issues[i - 1].severity as keyof typeof severityOrder
+            ]
+          const curr =
+            severityOrder[
+              data!.issues[i].severity as keyof typeof severityOrder
+            ]
           expect(prev).toBeLessThanOrEqual(curr)
         }
       }

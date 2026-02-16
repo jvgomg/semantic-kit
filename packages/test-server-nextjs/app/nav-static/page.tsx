@@ -13,10 +13,7 @@ import { MainContent } from '../components/MainContent'
 export default async function NavStaticPage() {
   return (
     <>
-      <GlobalHeader
-        navigation={<NavLinks />}
-        userMenu={<UserMenu />}
-      />
+      <GlobalHeader navigation={<NavLinks />} userMenu={<UserMenu />} />
       <MainContent />
     </>
   )

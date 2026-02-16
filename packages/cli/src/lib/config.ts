@@ -12,9 +12,12 @@ export function getConfigPaths() {
   const home = homedir()
 
   // XDG defaults
-  const xdgConfigHome = process.env['XDG_CONFIG_HOME'] || path.join(home, '.config')
-  const xdgDataHome = process.env['XDG_DATA_HOME'] || path.join(home, '.local', 'share')
-  const xdgCacheHome = process.env['XDG_CACHE_HOME'] || path.join(home, '.cache')
+  const xdgConfigHome =
+    process.env['XDG_CONFIG_HOME'] || path.join(home, '.config')
+  const xdgDataHome =
+    process.env['XDG_DATA_HOME'] || path.join(home, '.local', 'share')
+  const xdgCacheHome =
+    process.env['XDG_CACHE_HOME'] || path.join(home, '.cache')
 
   return {
     // Config: ~/.config/semantic-kit/

@@ -8,10 +8,7 @@
       "@webspecs/cli/*": ["../cli/dist/*"]
     }
   },
-  "references": [
-    { "path": "../core" },
-    { "path": "../cli" }
-  ],
+  "references": [{ "path": "../core" }, { "path": "../cli" }],
   "include": ["**/*"],
   "exclude": ["node_modules"]
 }

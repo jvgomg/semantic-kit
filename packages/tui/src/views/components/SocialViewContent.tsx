@@ -76,9 +76,7 @@ function CardPreview({ data }: { data: SocialResult }): ReactNode {
       {/* Image area */}
       <text>
         <span fg={palette.base03}>{'│'}</span>
-        <span fg={palette.base02}>
-          {` ${displayImage}`.padEnd(innerWidth)}
-        </span>
+        <span fg={palette.base02}>{` ${displayImage}`.padEnd(innerWidth)}</span>
         <span fg={palette.base03}>{'│'}</span>
       </text>
 

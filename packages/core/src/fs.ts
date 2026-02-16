@@ -49,7 +49,10 @@ export async function readJsonFile<T>(path: string): Promise<T> {
 /**
  * Write text content to a file.
  */
-export async function writeTextFile(path: string, content: string): Promise<void> {
+export async function writeTextFile(
+  path: string,
+  content: string,
+): Promise<void> {
   if (__TARGET_BUN__) {
     await Bun.write(path, content)
     return

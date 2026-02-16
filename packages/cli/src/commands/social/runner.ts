@@ -72,7 +72,10 @@ export async function fetchSocial(target: string): Promise<SocialResult> {
 
   // Validate with both presence and quality checks
   const issues = sortIssuesBySeverity(
-    validateSocialTags(normalizedTags, { checkPresence: true, checkQuality: true }),
+    validateSocialTags(normalizedTags, {
+      checkPresence: true,
+      checkQuality: true,
+    }),
   )
 
   // Count tags

@@ -154,10 +154,7 @@ describe('flattenConfigTree', () => {
 describe('countConfigUrls', () => {
   test('counts flat URLs', () => {
     const config: TuiConfig = {
-      urls: [
-        { url: 'https://example.com' },
-        { url: 'https://example.org' },
-      ],
+      urls: [{ url: 'https://example.com' }, { url: 'https://example.org' }],
     }
 
     expect(countConfigUrls(config)).toBe(2)

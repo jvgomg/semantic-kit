@@ -96,7 +96,10 @@ function buildSchemaResult(
 
   // Run validation with both presence and quality checks
   const allIssues = sortIssuesBySeverity(
-    validateSocialTags(normalizedTags, { checkPresence: true, checkQuality: true }),
+    validateSocialTags(normalizedTags, {
+      checkPresence: true,
+      checkQuality: true,
+    }),
   )
 
   // Filter issues by prefix for each group

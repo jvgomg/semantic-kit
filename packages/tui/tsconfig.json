@@ -14,10 +14,7 @@
       "@webspecs/cli/commands/*": ["../cli/dist/commands/*"]
     }
   },
-  "references": [
-    { "path": "../core" },
-    { "path": "../cli" }
-  ],
+  "references": [{ "path": "../core" }, { "path": "../cli" }],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
 }

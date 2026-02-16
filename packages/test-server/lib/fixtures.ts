@@ -4,7 +4,12 @@
 
 import { join, relative } from 'path'
 import { Glob } from 'bun'
-import { loadMeta, parseQueryOverrides, mergeMeta, type FixtureMeta } from './meta'
+import {
+  loadMeta,
+  parseQueryOverrides,
+  mergeMeta,
+  type FixtureMeta,
+} from './meta'
 
 export interface Fixture {
   path: string
@@ -21,7 +26,7 @@ export interface FixturesConfig {
  * Discover all fixture files in the fixtures directory
  */
 export async function discoverFixtures(
-  fixturesPath: string
+  fixturesPath: string,
 ): Promise<Fixture[]> {
   const glob = new Glob('**/*.html')
   const fixtures: Fixture[] = []
@@ -41,7 +46,7 @@ export async function discoverFixtures(
  */
 export async function resolveFixture(
   urlPath: string,
-  fixturesPath: string
+  fixturesPath: string,
 ): Promise<string | null> {
   // Remove leading slash
   const cleanPath = urlPath.replace(/^\//, '')
@@ -95,7 +100,7 @@ export interface ServeFixtureOptions {
 export async function serveFixture(
   request: Request,
   fixturesPath: string,
-  options: ServeFixtureOptions = {}
+  options: ServeFixtureOptions = {},
 ): Promise<Response | null> {
   const { verbose, defaultDelay } = options
   const url = new URL(request.url)
@@ -116,7 +121,9 @@ export async function serveFixture(
   }
 
   if (verbose) {
-    console.log(`[fixture] ${url.pathname} -> ${relative(fixturesPath, filePath)}`)
+    console.log(
+      `[fixture] ${url.pathname} -> ${relative(fixturesPath, filePath)}`,
+    )
     if (meta.delay) console.log(`  delay: ${meta.delay}ms`)
     if (meta.status) console.log(`  status: ${meta.status}`)
   }

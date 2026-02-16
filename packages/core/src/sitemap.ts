@@ -19,7 +19,14 @@ export interface SitemapUrl {
   /** Last modification date (ISO string) */
   lastmod?: string
   /** Change frequency hint */
-  changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never'
+  changefreq?:
+    | 'always'
+    | 'hourly'
+    | 'daily'
+    | 'weekly'
+    | 'monthly'
+    | 'yearly'
+    | 'never'
   /** Priority hint (0.0 to 1.0) */
   priority?: number
 }
@@ -258,7 +265,10 @@ export async function fetchSitemap(url: string): Promise<SitemapFetchResult> {
         type: 'error',
         sourceUrl: url,
         errorType: 'parse-error',
-        message: error instanceof Error ? error.message : 'Failed to parse sitemap index',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Failed to parse sitemap index',
       }
     }
   }
@@ -295,7 +305,8 @@ export async function fetchSitemap(url: string): Promise<SitemapFetchResult> {
       type: 'error',
       sourceUrl: url,
       errorType: 'parse-error',
-      message: error instanceof Error ? error.message : 'Failed to parse sitemap',
+      message:
+        error instanceof Error ? error.message : 'Failed to parse sitemap',
     }
   }
 }
@@ -374,7 +385,10 @@ export function buildSitemapTree(urls: SitemapUrl[]): SitemapTreeNode[] {
       const children = convertNode(buildNode.children, depth + 1)
 
       // Count URLs: if this node has a URL, count 1, plus all descendant URLs
-      const childUrlCount = children.reduce((sum, child) => sum + child.urlCount, 0)
+      const childUrlCount = children.reduce(
+        (sum, child) => sum + child.urlCount,
+        0,
+      )
       const urlCount = (buildNode.fullUrl ? 1 : 0) + childUrlCount
 
       nodes.push({
@@ -411,7 +425,9 @@ export function flattenSitemapTree(
 
     // If this node is expanded and has children, recurse
     if (expandedPaths.has(displayPath) && node.children.length > 0) {
-      result.push(...flattenSitemapTree(node.children, expandedPaths, displayPath))
+      result.push(
+        ...flattenSitemapTree(node.children, expandedPaths, displayPath),
+      )
     }
   }
 

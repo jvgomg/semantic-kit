@@ -14,7 +14,7 @@ export interface ProxyConfig {
  */
 export async function proxyRequest(
   request: Request,
-  config: ProxyConfig
+  config: ProxyConfig,
 ): Promise<Response> {
   const { targetHost, targetPort, stripPrefix, verbose } = config
   const url = new URL(request.url)

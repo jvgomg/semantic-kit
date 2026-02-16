@@ -27,10 +27,7 @@ export interface ViewSectionsProps {
 /**
  * Inner component that uses the section registry context.
  */
-function ViewSectionsInner({
-  children,
-  height,
-}: ViewSectionsProps): ReactNode {
+function ViewSectionsInner({ children, height }: ViewSectionsProps): ReactNode {
   // Get focus state to determine if keyboard input is active
   const { isInputActive } = useFocus('main')
 

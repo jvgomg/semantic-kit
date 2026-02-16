@@ -1,4 +1,9 @@
-import { analyzeHiddenContent, extractReadability, fetchHtmlContent, type AiResult } from '@webspecs/core'
+import {
+  analyzeHiddenContent,
+  extractReadability,
+  fetchHtmlContent,
+  type AiResult,
+} from '@webspecs/core'
 
 // ============================================================================
 // Core Extraction

@@ -4,7 +4,11 @@
  * Fetches both static and JS-rendered HTML, extracts content using
  * Readability, and compares the results.
  */
-import { extractReadability, fetchHtmlContent, fetchRenderedHtml } from '@webspecs/core'
+import {
+  extractReadability,
+  fetchHtmlContent,
+  fetchRenderedHtml,
+} from '@webspecs/core'
 import type { ReadabilityCompareResult } from './types.js'
 
 /**

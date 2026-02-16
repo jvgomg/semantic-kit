@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>My Website</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Website</title>
 
-  <!--
+    <!--
     Anti-pattern: Non-semantic markup using divs for everything
     Source: Adapted from common patterns documented by WebAIM and Scott O'Hara
     https://webaim.org/techniques/semanticstructure/
@@ -16,48 +16,47 @@
     - No semantic list (ul/li)
     - No paragraph elements (p)
     - Screen readers cannot navigate by structure
-  -->
-</head>
-<body>
-  <div class="header">
-    <div class="logo">My Website</div>
-    <div class="nav">
-      <div class="nav-item"><a href="/">Home</a></div>
-      <div class="nav-item"><a href="/about">About</a></div>
-      <div class="nav-item"><a href="/contact">Contact</a></div>
-    </div>
-  </div>
-
-  <div class="main">
-    <div class="title">Welcome to My Website</div>
-
-    <div class="content">
-      <div class="paragraph">
-        This is a paragraph of text. It should be using a p element
-        but instead uses a div with a class.
-      </div>
-
-      <div class="paragraph">
-        Here is another paragraph. Screen readers won't know these
-        are paragraphs without proper markup.
-      </div>
-
-      <div class="list">
-        <div class="list-item">- First item</div>
-        <div class="list-item">- Second item</div>
-        <div class="list-item">- Third item</div>
+  --></head>
+  <body>
+    <div class="header">
+      <div class="logo">My Website</div>
+      <div class="nav">
+        <div class="nav-item"><a href="/">Home</a></div>
+        <div class="nav-item"><a href="/about">About</a></div>
+        <div class="nav-item"><a href="/contact">Contact</a></div>
       </div>
     </div>
 
-    <div class="sidebar">
-      <div class="sidebar-title">Related Links</div>
-      <div class="link"><a href="/page1">Page One</a></div>
-      <div class="link"><a href="/page2">Page Two</a></div>
-    </div>
-  </div>
+    <div class="main">
+      <div class="title">Welcome to My Website</div>
 
-  <div class="footer">
-    <div class="copyright">Copyright 2026</div>
-  </div>
-</body>
+      <div class="content">
+        <div class="paragraph">
+          This is a paragraph of text. It should be using a p element but
+          instead uses a div with a class.
+        </div>
+
+        <div class="paragraph">
+          Here is another paragraph. Screen readers won't know these are
+          paragraphs without proper markup.
+        </div>
+
+        <div class="list">
+          <div class="list-item">- First item</div>
+          <div class="list-item">- Second item</div>
+          <div class="list-item">- Third item</div>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <div class="sidebar-title">Related Links</div>
+        <div class="link"><a href="/page1">Page One</a></div>
+        <div class="link"><a href="/page2">Page Two</a></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="copyright">Copyright 2026</div>
+    </div>
+  </body>
 </html>

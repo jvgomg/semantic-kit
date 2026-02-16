@@ -4,7 +4,10 @@
  * Formats raw Readability extraction results for CLI output.
  * Shows all metrics including link density for developer analysis.
  */
-import type { ReadabilityJsResult, ReadabilityUtilityResult } from '@webspecs/core'
+import type {
+  ReadabilityJsResult,
+  ReadabilityUtilityResult,
+} from '@webspecs/core'
 import { createPatch } from 'diff'
 
 import type { OutputFormat } from '../../lib/arguments.js'
@@ -215,7 +218,8 @@ export function buildCompareIssues(result: ReadabilityCompareResult): Issue[] {
       type: 'warning',
       severity: 'medium',
       title: 'Page Load Timeout',
-      description: 'Rendering exceeded timeout. Analysis shows partial content.',
+      description:
+        'Rendering exceeded timeout. Analysis shows partial content.',
       tip: 'Increase timeout with --timeout or optimize page load.',
     })
   }
@@ -267,7 +271,10 @@ export function buildCompareIssues(result: ReadabilityCompareResult): Issue[] {
 /**
  * Format sections that are only visible after JavaScript execution.
  */
-function formatSections(sections: SectionInfo[], ctx: FormatterContext): string {
+function formatSections(
+  sections: SectionInfo[],
+  ctx: FormatterContext,
+): string {
   if (sections.length === 0) {
     return ''
   }
@@ -310,8 +317,14 @@ function buildComparisonTable(result: ReadabilityCompareResult) {
   const { comparison } = result
 
   return [
-    { key: 'Static HTML', value: `${comparison.staticWordCount.toLocaleString()} words` },
-    { key: 'Rendered DOM', value: `${comparison.renderedWordCount.toLocaleString()} words` },
+    {
+      key: 'Static HTML',
+      value: `${comparison.staticWordCount.toLocaleString()} words`,
+    },
+    {
+      key: 'Rendered DOM',
+      value: `${comparison.renderedWordCount.toLocaleString()} words`,
+    },
     {
       key: 'JS-Dependent',
       value: `${comparison.jsDependentWordCount.toLocaleString()} words (${comparison.jsDependentPercentage}%)`,
@@ -419,7 +432,10 @@ function formatCompareTerminal(
   }
 
   // SECTIONS (if any)
-  const sectionsOutput = formatSections(result.comparison.sectionsOnlyInRendered, ctx)
+  const sectionsOutput = formatSections(
+    result.comparison.sectionsOnlyInRendered,
+    ctx,
+  )
   if (sectionsOutput) {
     sections.push('')
     sections.push(sectionsOutput)
@@ -427,7 +443,9 @@ function formatCompareTerminal(
 
   // META table
   const metaRows = buildMetaTable(result)
-  const validMetaRows = metaRows.filter((row) => row.value !== undefined && row.value !== null)
+  const validMetaRows = metaRows.filter(
+    (row) => row.value !== undefined && row.value !== null,
+  )
   if (validMetaRows.length > 0) {
     sections.push('')
     if (ctx.mode === 'tty') {
@@ -443,10 +461,15 @@ function formatCompareTerminal(
   sections.push('---')
   sections.push('')
 
-  if (result.rendered.metrics.wordCount === 0 && result.static.metrics.wordCount === 0) {
+  if (
+    result.rendered.metrics.wordCount === 0 &&
+    result.static.metrics.wordCount === 0
+  ) {
     sections.push('No main content could be extracted from this page.')
   } else if (result.static.markdown === result.rendered.markdown) {
-    sections.push('No content differences between static and rendered versions.')
+    sections.push(
+      'No content differences between static and rendered versions.',
+    )
     sections.push('')
     sections.push(result.rendered.markdown)
   } else {
@@ -455,7 +478,9 @@ function formatCompareTerminal(
     } else {
       sections.push('CONTENT DIFF')
     }
-    sections.push(formatUnifiedDiff(result.static.markdown, result.rendered.markdown, ctx))
+    sections.push(
+      formatUnifiedDiff(result.static.markdown, result.rendered.markdown, ctx),
+    )
   }
 
   return sections.join('\n')

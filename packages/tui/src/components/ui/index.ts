@@ -55,6 +55,9 @@ export type { HeadingOutlineProps } from './HeadingOutline.js'
 export { ClickableLink, createDocsAction } from './ClickableLink.js'
 export type { ClickableLinkProps } from './ClickableLink.js'
 export { SitemapBrowser, useSitemapBrowserState } from './SitemapBrowser.js'
-export type { SitemapBrowserProps, UseSitemapBrowserOptions } from './SitemapBrowser.js'
+export type {
+  SitemapBrowserProps,
+  UseSitemapBrowserOptions,
+} from './SitemapBrowser.js'
 export { ConfigBrowser } from './ConfigBrowser.js'
 export type { ConfigBrowserProps } from './ConfigBrowser.js'

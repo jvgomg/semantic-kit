@@ -43,7 +43,9 @@ export function spawnSubprocess(config: SubprocessConfig): ManagedSubprocess {
   })
 
   const timeoutId = setTimeout(() => {
-    readyReject(new Error(`Subprocess did not become ready within ${timeout}ms`))
+    readyReject(
+      new Error(`Subprocess did not become ready within ${timeout}ms`),
+    )
   }, timeout)
 
   // Monitor stdout for ready pattern
@@ -106,7 +108,10 @@ export function spawnSubprocess(config: SubprocessConfig): ManagedSubprocess {
 export class SubprocessManager {
   private processes: Map<string, ManagedSubprocess> = new Map()
 
-  async spawn(name: string, config: SubprocessConfig): Promise<ManagedSubprocess> {
+  async spawn(
+    name: string,
+    config: SubprocessConfig,
+  ): Promise<ManagedSubprocess> {
     if (this.processes.has(name)) {
       throw new Error(`Subprocess ${name} already exists`)
     }

@@ -171,7 +171,8 @@ function buildJsonLdSections(
     const instanceArray = instances as unknown[]
     for (const instance of instanceArray) {
       const headerText = `JSON-LD: ${schemaType.toUpperCase()} #${globalIndex}`
-      const header = ctx.mode === 'tty' ? colorize(headerText, colors.gray, ctx) : headerText
+      const header =
+        ctx.mode === 'tty' ? colorize(headerText, colors.gray, ctx) : headerText
       const properties = flattenSchemaProperties(instance)
       const rows: TableRow[] = properties
         .filter(({ path }) => path !== '@type')
@@ -209,7 +210,8 @@ function buildMicrodataSections(
     const instanceArray = instances as unknown[]
     for (const instance of instanceArray) {
       const headerText = `MICRODATA: ${schemaType.toUpperCase()} #${globalIndex}`
-      const header = ctx.mode === 'tty' ? colorize(headerText, colors.gray, ctx) : headerText
+      const header =
+        ctx.mode === 'tty' ? colorize(headerText, colors.gray, ctx) : headerText
       const properties = flattenSchemaProperties(instance)
       const rows: TableRow[] = properties.map(({ path, value }) => ({
         key: path,
@@ -245,7 +247,8 @@ function buildRdfaSections(
     const instanceArray = instances as unknown[]
     for (const instance of instanceArray) {
       const headerText = `RDFA: ${schemaType.toUpperCase()} #${globalIndex}`
-      const header = ctx.mode === 'tty' ? colorize(headerText, colors.gray, ctx) : headerText
+      const header =
+        ctx.mode === 'tty' ? colorize(headerText, colors.gray, ctx) : headerText
       const properties = flattenSchemaProperties(instance)
       const rows: TableRow[] = properties.map(({ path, value }) => ({
         key: path,
@@ -282,7 +285,8 @@ function buildOpenGraphSection(
 
   if (rows.length === 0) return null
 
-  const header = ctx.mode === 'tty' ? colorize('OPEN GRAPH', colors.gray, ctx) : 'OPEN GRAPH'
+  const header =
+    ctx.mode === 'tty' ? colorize('OPEN GRAPH', colors.gray, ctx) : 'OPEN GRAPH'
   return `${header}\n${formatTable(rows, ctx)}`
 }
 
@@ -304,7 +308,8 @@ function buildTwitterSection(
 
   if (rows.length === 0) return null
 
-  const header = ctx.mode === 'tty' ? colorize('TWITTER', colors.gray, ctx) : 'TWITTER'
+  const header =
+    ctx.mode === 'tty' ? colorize('TWITTER', colors.gray, ctx) : 'TWITTER'
   return `${header}\n${formatTable(rows, ctx)}`
 }
 
@@ -333,7 +338,8 @@ function buildMetaSection(
     value: formatValue(value),
   }))
 
-  const header = ctx.mode === 'tty' ? colorize('META', colors.gray, ctx) : 'META'
+  const header =
+    ctx.mode === 'tty' ? colorize('META', colors.gray, ctx) : 'META'
   return `${header}\n${formatTable(rows, ctx)}`
 }
 
@@ -377,7 +383,9 @@ function buildCompactSummary(
   // Open Graph
   if (result.openGraph) {
     const tagCount = Object.keys(result.openGraph.tags).length
-    const hasHighSeverity = result.openGraph.issues.some((i) => i.severity === 'high')
+    const hasHighSeverity = result.openGraph.issues.some(
+      (i) => i.severity === 'high',
+    )
     const status = hasHighSeverity
       ? `${tagCount} tags (incomplete)`
       : `${tagCount} tags`
@@ -389,7 +397,9 @@ function buildCompactSummary(
   // Twitter
   if (result.twitter) {
     const tagCount = Object.keys(result.twitter.tags).length
-    const hasHighSeverity = result.twitter.issues.some((i) => i.severity === 'high')
+    const hasHighSeverity = result.twitter.issues.some(
+      (i) => i.severity === 'high',
+    )
     const status = hasHighSeverity
       ? `${tagCount} tags (incomplete)`
       : `${tagCount} tags`
@@ -413,7 +423,8 @@ function buildCompactSummary(
     rows.push({ key: 'Meta', value: `${filteredMetatags.length} tags` })
   }
 
-  const header = ctx.mode === 'tty' ? colorize('SCHEMAS', colors.gray, ctx) : 'SCHEMAS'
+  const header =
+    ctx.mode === 'tty' ? colorize('SCHEMAS', colors.gray, ctx) : 'SCHEMAS'
   return `${header}\n${formatTable(rows, ctx)}`
 }
 
@@ -523,7 +534,8 @@ export function buildCompareIssues(result: SchemaCompareResult): Issue[] {
       type: 'warning',
       severity: 'medium',
       title: 'Page Load Timeout',
-      description: 'Rendering exceeded timeout. Analysis shows partial content.',
+      description:
+        'Rendering exceeded timeout. Analysis shows partial content.',
       tip: 'Increase timeout with --timeout or optimize page load.',
     })
   }
@@ -534,7 +546,8 @@ export function buildCompareIssues(result: SchemaCompareResult): Issue[] {
       type: 'info',
       severity: 'low',
       title: 'No Schema Differences',
-      description: 'Static and JavaScript-rendered pages have identical structured data.',
+      description:
+        'Static and JavaScript-rendered pages have identical structured data.',
     })
     return issues
   }
@@ -576,7 +589,8 @@ export function buildCompareIssues(result: SchemaCompareResult): Issue[] {
       type: 'info',
       severity: 'low',
       title: 'Open Graph Tags Changed',
-      description: 'Open Graph tags differ between static and JavaScript-rendered pages.',
+      description:
+        'Open Graph tags differ between static and JavaScript-rendered pages.',
     })
   }
 
@@ -586,7 +600,8 @@ export function buildCompareIssues(result: SchemaCompareResult): Issue[] {
       type: 'info',
       severity: 'low',
       title: 'Twitter Card Tags Changed',
-      description: 'Twitter Card tags differ between static and JavaScript-rendered pages.',
+      description:
+        'Twitter Card tags differ between static and JavaScript-rendered pages.',
     })
   }
 
@@ -623,7 +638,8 @@ function buildSchemaComparisonTable(
   if (comparison.jsonldAdded > 0 || comparison.jsonldRemoved > 0) {
     const changes: string[] = []
     if (comparison.jsonldAdded > 0) changes.push(`+${comparison.jsonldAdded}`)
-    if (comparison.jsonldRemoved > 0) changes.push(`-${comparison.jsonldRemoved}`)
+    if (comparison.jsonldRemoved > 0)
+      changes.push(`-${comparison.jsonldRemoved}`)
     rows.push({
       key: 'JSON-LD diff',
       value: changes.join(', '),

@@ -1,4 +1,9 @@
-import { hasDifferences, type SnapshotDiff, A11yCompareResult, A11yResult  } from '@webspecs/core'
+import {
+  hasDifferences,
+  type SnapshotDiff,
+  A11yCompareResult,
+  A11yResult,
+} from '@webspecs/core'
 import type { OutputFormat } from '../../lib/arguments.js'
 import {
   colorize,
@@ -319,7 +324,10 @@ function formatA11yTerminal(
     sections.push('')
     sections.push('---')
     sections.push('')
-    const header = ctx.mode === 'tty' ? colorize('ARIA SNAPSHOT', colors.gray, ctx) : 'ARIA SNAPSHOT'
+    const header =
+      ctx.mode === 'tty'
+        ? colorize('ARIA SNAPSHOT', colors.gray, ctx)
+        : 'ARIA SNAPSHOT'
     sections.push(header)
     sections.push(formatAriaSnapshotText(result.snapshot))
   }

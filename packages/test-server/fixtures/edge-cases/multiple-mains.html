@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SPA with Multiple Views - Edge Case</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPA with Multiple Views - Edge Case</title>
 
-  <!--
+    <!--
     Edge case: SPA pattern with hidden mains
     Source: W3C WAI ARIA Practices and HTML spec
     https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/
@@ -20,49 +20,54 @@
     Note: The HTML spec allows multiple main elements if only one is
     exposed to the user at a time. The hidden attribute ensures
     inactive views are not exposed to assistive technology.
-  -->
-</head>
-<body>
-  <header>
-    <nav aria-label="Main">
-      <button aria-current="page" data-view="home">Home</button>
-      <button data-view="products">Products</button>
-      <button data-view="contact">Contact</button>
-    </nav>
-  </header>
+  --></head>
+  <body>
+    <header>
+      <nav aria-label="Main">
+        <button aria-current="page" data-view="home">Home</button>
+        <button data-view="products">Products</button>
+        <button data-view="contact">Contact</button>
+      </nav>
+    </header>
 
-  <!-- Only one main visible at a time -->
-  <main id="home-view" aria-labelledby="home-title">
-    <h1 id="home-title">Welcome Home</h1>
-    <p>This is the home page content. In a real SPA, JavaScript would
-       toggle the hidden attribute when navigating between views.</p>
-  </main>
+    <!-- Only one main visible at a time -->
+    <main id="home-view" aria-labelledby="home-title">
+      <h1 id="home-title">Welcome Home</h1>
+      <p>
+        This is the home page content. In a real SPA, JavaScript would toggle
+        the hidden attribute when navigating between views.
+      </p>
+    </main>
 
-  <main id="products-view" aria-labelledby="products-title" hidden>
-    <h1 id="products-title">Our Products</h1>
-    <p>This view is hidden by default. When the user clicks "Products",
-       JavaScript would remove the hidden attribute from this main
-       and add it to the others.</p>
-    <ul>
-      <li>Product A</li>
-      <li>Product B</li>
-      <li>Product C</li>
-    </ul>
-  </main>
+    <main id="products-view" aria-labelledby="products-title" hidden>
+      <h1 id="products-title">Our Products</h1>
+      <p>
+        This view is hidden by default. When the user clicks "Products",
+        JavaScript would remove the hidden attribute from this main and add it
+        to the others.
+      </p>
+      <ul>
+        <li>Product A</li>
+        <li>Product B</li>
+        <li>Product C</li>
+      </ul>
+    </main>
 
-  <main id="contact-view" aria-labelledby="contact-title" hidden>
-    <h1 id="contact-title">Contact Us</h1>
-    <p>This view is also hidden. Each main element has its own
-       accessible name via aria-labelledby.</p>
-    <form>
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email">
-      <button type="submit">Send</button>
-    </form>
-  </main>
+    <main id="contact-view" aria-labelledby="contact-title" hidden>
+      <h1 id="contact-title">Contact Us</h1>
+      <p>
+        This view is also hidden. Each main element has its own accessible name
+        via aria-labelledby.
+      </p>
+      <form>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" />
+        <button type="submit">Send</button>
+      </form>
+    </main>
 
-  <footer>
-    <p>&copy; 2026 SPA Example</p>
-  </footer>
-</body>
+    <footer>
+      <p>&copy; 2026 SPA Example</p>
+    </footer>
+  </body>
 </html>

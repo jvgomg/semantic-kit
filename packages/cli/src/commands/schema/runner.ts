@@ -1,9 +1,10 @@
-import type { SocialValidationIssue, SchemaResult  } from '@webspecs/core'
+import type { SocialValidationIssue, SchemaResult } from '@webspecs/core'
 import {
   extractStructuredData,
   normalizeMetatags,
   validateSocialTags,
-  sortIssuesBySeverity, fetchHtmlContent 
+  sortIssuesBySeverity,
+  fetchHtmlContent,
 } from '@webspecs/core'
 import type { StructuredData } from './types.js'
 
@@ -80,7 +81,10 @@ function buildSchemaResult(target: string, data: StructuredData): SchemaResult {
 
   // Run validation with both presence and quality checks
   const allIssues = sortIssuesBySeverity(
-    validateSocialTags(normalizedTags, { checkPresence: true, checkQuality: true }),
+    validateSocialTags(normalizedTags, {
+      checkPresence: true,
+      checkQuality: true,
+    }),
   )
 
   // Filter issues by prefix for each group

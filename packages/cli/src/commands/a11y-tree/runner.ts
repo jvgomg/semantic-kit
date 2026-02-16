@@ -1,4 +1,8 @@
-import { analyzeAriaSnapshot, fetchAccessibilitySnapshot, type A11yResult } from '@webspecs/core'
+import {
+  analyzeAriaSnapshot,
+  fetchAccessibilitySnapshot,
+  type A11yResult,
+} from '@webspecs/core'
 
 /**
  * Fetch accessibility snapshot with JavaScript disabled.

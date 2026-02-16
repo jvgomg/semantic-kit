@@ -37,7 +37,9 @@ describe('loadTuiConfig', () => {
   })
 
   test('returns error for invalid YAML syntax', async () => {
-    const result = await loadTuiConfig(join(FIXTURES_DIR, 'invalid-syntax.yaml'))
+    const result = await loadTuiConfig(
+      join(FIXTURES_DIR, 'invalid-syntax.yaml'),
+    )
 
     expect(result.type).toBe('error')
     if (result.type === 'error') {

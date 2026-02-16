@@ -254,11 +254,7 @@ export function ValidateSchemaViewContent({
         summary={summaryText}
         defaultExpanded={true}
       >
-        <SummaryContent
-          failed={failed}
-          warnings={warnings}
-          passed={passed}
-        />
+        <SummaryContent failed={failed} warnings={warnings} passed={passed} />
       </Section>
 
       {/* Detection section */}

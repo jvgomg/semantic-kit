@@ -72,7 +72,9 @@ function mapImpactToSeverity(
 /**
  * Sort violations by severity.
  */
-function sortBySeverity(violations: AxeViolationResult[]): AxeViolationResult[] {
+function sortBySeverity(
+  violations: AxeViolationResult[],
+): AxeViolationResult[] {
   return [...violations].sort((a, b) => {
     const aIndex = SEVERITY_ORDER.indexOf((a.impact ?? 'moderate') as Severity)
     const bIndex = SEVERITY_ORDER.indexOf((b.impact ?? 'moderate') as Severity)
@@ -174,9 +176,7 @@ function ViolationsContent({
   const palette = usePalette()
   if (violations.length === 0) {
     return (
-      <text fg={palette.base0B}>
-        No accessibility violations detected.
-      </text>
+      <text fg={palette.base0B}>No accessibility violations detected.</text>
     )
   }
 
@@ -233,11 +233,7 @@ function IncompleteContent({
 }): ReactNode {
   const palette = usePalette()
   if (incomplete.length === 0) {
-    return (
-      <text fg={palette.base0B}>
-        No items requiring manual review.
-      </text>
-    )
+    return <text fg={palette.base0B}>No items requiring manual review.</text>
   }
 
   return (
@@ -246,12 +242,7 @@ function IncompleteContent({
         const nodeCount = item.nodes.length
 
         return (
-          <Card
-            key={i}
-            title={item.id}
-            severity="warning"
-            icon="?"
-          >
+          <Card key={i} title={item.id} severity="warning" icon="?">
             <CardRow label="Help" value={item.help} />
             <CardRow label="Affected" value={`${nodeCount} element(s)`} />
             <CardRow label="Status" value="Needs manual review" muted />
@@ -349,15 +340,16 @@ export function ValidateA11yViewContent({
     : 'No items need review'
 
   // Determine overall severity for violations section
-  const violationsSeverity = severityCounts.critical > 0
-    ? 'critical'
-    : severityCounts.serious > 0
-      ? 'error'
-      : severityCounts.moderate > 0
-        ? 'warning'
-        : hasViolations
-          ? 'info'
-          : 'success'
+  const violationsSeverity =
+    severityCounts.critical > 0
+      ? 'critical'
+      : severityCounts.serious > 0
+        ? 'error'
+        : severityCounts.moderate > 0
+          ? 'warning'
+          : hasViolations
+            ? 'info'
+            : 'success'
 
   return (
     <SectionContainer height={height}>
@@ -371,7 +363,11 @@ export function ValidateA11yViewContent({
         summary={configSummary}
         defaultExpanded={true}
       >
-        <ConfigContent level={level} timeoutMs={timeoutMs} timedOut={timedOut} />
+        <ConfigContent
+          level={level}
+          timeoutMs={timeoutMs}
+          timedOut={timedOut}
+        />
       </Section>
 
       {/* Violations section */}

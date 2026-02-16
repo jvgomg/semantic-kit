@@ -4,7 +4,12 @@ export { fetchSocial } from './runner.js'
 export { formatSocialOutput, buildIssues } from './formatters.js'
 
 // Types
-export type { SocialOptions, SocialResult, SocialTagGroup, SocialPreview } from './types.js'
+export type {
+  SocialOptions,
+  SocialResult,
+  SocialTagGroup,
+  SocialPreview,
+} from './types.js'
 export { VALID_FORMATS } from './types.js'
 
 // Re-export tag requirements from shared library

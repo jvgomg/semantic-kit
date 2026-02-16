@@ -5,7 +5,11 @@
  * provides resolution logic for selecting the appropriate variant.
  */
 
-import { THEME_DEFINITIONS, type ThemeDefinition, type ThemeVariant } from './base16.js'
+import {
+  THEME_DEFINITIONS,
+  type ThemeDefinition,
+  type ThemeVariant,
+} from './base16.js'
 
 /**
  * A theme family groups related light and dark variants together.
@@ -97,7 +101,9 @@ export function getThemeFamily(familyId: string): ThemeFamily | undefined {
 export function getDefaultThemeFamily(): ThemeFamily {
   const family = getThemeFamily(THEME_REGISTRY.defaultFamilyId)
   if (!family) {
-    throw new Error(`Default theme family '${THEME_REGISTRY.defaultFamilyId}' not found`)
+    throw new Error(
+      `Default theme family '${THEME_REGISTRY.defaultFamilyId}' not found`,
+    )
   }
   return family
 }

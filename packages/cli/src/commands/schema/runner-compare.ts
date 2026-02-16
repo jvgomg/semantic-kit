@@ -95,7 +95,10 @@ function buildSchemaResult(target: string, data: StructuredData): SchemaResult {
 
   // Run validation with both presence and quality checks
   const allIssues = sortIssuesBySeverity(
-    validateSocialTags(normalizedTags, { checkPresence: true, checkQuality: true }),
+    validateSocialTags(normalizedTags, {
+      checkPresence: true,
+      checkQuality: true,
+    }),
   )
 
   // Filter issues by prefix for each group
@@ -186,16 +189,18 @@ function buildComparisonMetrics(
   const renderedRdfa = getSchemaTypes(renderedResult.rdfa)
 
   // Count added (in rendered but not in static)
-  const jsonldAdded = [...renderedJsonld].filter((t) => !staticJsonld.has(t))
-    .length
+  const jsonldAdded = [...renderedJsonld].filter(
+    (t) => !staticJsonld.has(t),
+  ).length
   const microdataAdded = [...renderedMicrodata].filter(
     (t) => !staticMicrodata.has(t),
   ).length
   const rdfaAdded = [...renderedRdfa].filter((t) => !staticRdfa.has(t)).length
 
   // Count removed (in static but not in rendered) - rare but possible
-  const jsonldRemoved = [...staticJsonld].filter((t) => !renderedJsonld.has(t))
-    .length
+  const jsonldRemoved = [...staticJsonld].filter(
+    (t) => !renderedJsonld.has(t),
+  ).length
   const microdataRemoved = [...staticMicrodata].filter(
     (t) => !renderedMicrodata.has(t),
   ).length

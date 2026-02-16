@@ -18,7 +18,10 @@ import {
   HeadingOutline,
 } from '../../components/ui/index.js'
 import { usePalette } from '../../theme.js'
-import type { GoogleResult, GoogleSchemaItem } from '@webspecs/cli/commands/google/types.js'
+import type {
+  GoogleResult,
+  GoogleSchemaItem,
+} from '@webspecs/cli/commands/google/types.js'
 import type { ViewComponentProps } from '../types.js'
 
 // ============================================================================
@@ -76,15 +79,17 @@ function SummaryContent({ data }: { data: GoogleResult }): ReactNode {
 /**
  * Schema item display
  */
-function SchemaItemContent({ schema }: { schema: GoogleSchemaItem }): ReactNode {
+function SchemaItemContent({
+  schema,
+}: {
+  schema: GoogleSchemaItem
+}): ReactNode {
   const palette = usePalette()
   const keyProps = getKeyProperties(schema)
 
   return (
     <box flexDirection="column" gap={0} paddingBottom={1}>
-      <text fg={palette.base0D}>
-        {schema.type}
-      </text>
+      <text fg={palette.base0D}>{schema.type}</text>
       {keyProps.map(({ key, value }, idx) => (
         <box key={idx} paddingLeft={2}>
           <text>
@@ -211,16 +216,18 @@ export function GoogleViewContent({
   const hasSchemas = data.counts.schemas > 0
   const hasHeadings = data.counts.headings > 0
   const hasMetadata =
-    data.metadata.title ||
-    data.metadata.description ||
-    data.metadata.canonical
+    data.metadata.title || data.metadata.description || data.metadata.canonical
 
   // Compute summary text
   const summaryParts: string[] = []
   if (data.metadata.title) summaryParts.push('Title')
   if (data.metadata.description) summaryParts.push('Desc')
-  summaryParts.push(`${data.counts.schemas} schema${data.counts.schemas !== 1 ? 's' : ''}`)
-  summaryParts.push(`${data.counts.headings} heading${data.counts.headings !== 1 ? 's' : ''}`)
+  summaryParts.push(
+    `${data.counts.schemas} schema${data.counts.schemas !== 1 ? 's' : ''}`,
+  )
+  summaryParts.push(
+    `${data.counts.headings} heading${data.counts.headings !== 1 ? 's' : ''}`,
+  )
   const summaryText = summaryParts.join(', ')
 
   // Compute metadata items
@@ -258,7 +265,9 @@ export function GoogleViewContent({
         priority={SectionPriority.PRIMARY}
         severity={hasMetadata ? undefined : 'warning'}
         summary={
-          hasMetadata ? (data.metadata.title ?? 'Page metadata') : 'Missing key metadata'
+          hasMetadata
+            ? (data.metadata.title ?? 'Page metadata')
+            : 'Missing key metadata'
         }
         defaultExpanded={false}
       >

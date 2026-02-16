@@ -79,8 +79,13 @@ export function buildIssues(result: AiResult): Issue[] {
  * Build a streaming/hidden content issue based on detection results.
  */
 function buildStreamingIssue(analysis: HiddenContentAnalysis): Issue | null {
-  const { framework, severity, hiddenWordCount, visibleWordCount, hiddenPercentage } =
-    analysis
+  const {
+    framework,
+    severity,
+    hiddenWordCount,
+    visibleWordCount,
+    hiddenPercentage,
+  } = analysis
 
   if (severity === 'none') return null
 

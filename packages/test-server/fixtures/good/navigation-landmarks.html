@@ -1,137 +1,153 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Widgets - Company Name</title>
-  <meta name="description" content="Demonstrates complex but correct landmark usage with multiple navs and sections.">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Widgets - Company Name</title>
+    <meta
+      name="description"
+      content="Demonstrates complex but correct landmark usage with multiple navs and sections."
+    />
 
-  <!--
+    <!--
     Source: Adapted from W3C WAI Page Structure Tutorial
     https://www.w3.org/WAI/tutorials/page-structure/
     https://www.w3.org/WAI/tutorials/page-structure/regions/
   -->
-  <style>
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-    .skip-link {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: #000;
-      color: #fff;
-      padding: 8px;
-      z-index: 100;
-    }
-    .skip-link:focus {
-      top: 0;
-    }
-  </style>
-</head>
-<body>
-  <a href="#main" class="skip-link">Skip to main content</a>
-  <a href="#footer-nav" class="skip-link">Skip to footer navigation</a>
+    <style>
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #000;
+        color: #fff;
+        padding: 8px;
+        z-index: 100;
+      }
+      .skip-link:focus {
+        top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <a href="#footer-nav" class="skip-link">Skip to footer navigation</a>
 
-  <header>
-    <a href="/" aria-label="Home - Company Name">
-      <img src="/logo.svg" alt="" role="presentation">
-      <span>Company Name</span>
-    </a>
+    <header>
+      <a href="/" aria-label="Home - Company Name">
+        <img src="/logo.svg" alt="" role="presentation" />
+        <span>Company Name</span>
+      </a>
 
-    <nav aria-label="Main">
-      <ul>
+      <nav aria-label="Main">
+        <ul>
+          <li><a href="/products">Products</a></li>
+          <li><a href="/services">Services</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <form role="search" action="/search" method="get">
+        <label for="site-search" class="visually-hidden">Search</label>
+        <input
+          type="search"
+          id="site-search"
+          name="q"
+          placeholder="Search..."
+        />
+        <button type="submit">
+          <span class="visually-hidden">Submit search</span>
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+            <path
+              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+            />
+          </svg>
+        </button>
+      </form>
+    </header>
+
+    <nav aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
         <li><a href="/products">Products</a></li>
-        <li><a href="/services">Services</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
-      </ul>
+        <li><a href="/products/widgets" aria-current="page">Widgets</a></li>
+      </ol>
     </nav>
 
-    <form role="search" action="/search" method="get">
-      <label for="site-search" class="visually-hidden">Search</label>
-      <input type="search" id="site-search" name="q" placeholder="Search...">
-      <button type="submit">
-        <span class="visually-hidden">Submit search</span>
-        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
-          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-        </svg>
-      </button>
-    </form>
-  </header>
+    <main id="main">
+      <h1>Widgets</h1>
 
-  <nav aria-label="Breadcrumb">
-    <ol>
-      <li><a href="/">Home</a></li>
-      <li><a href="/products">Products</a></li>
-      <li><a href="/products/widgets" aria-current="page">Widgets</a></li>
-    </ol>
-  </nav>
+      <section aria-labelledby="overview-heading">
+        <h2 id="overview-heading">Overview</h2>
+        <p>
+          Our widgets are the best widgets. They come in all shapes and sizes to
+          meet your needs.
+        </p>
+      </section>
 
-  <main id="main">
-    <h1>Widgets</h1>
-
-    <section aria-labelledby="overview-heading">
-      <h2 id="overview-heading">Overview</h2>
-      <p>Our widgets are the best widgets. They come in all shapes and sizes to meet your needs.</p>
-    </section>
-
-    <section aria-labelledby="features-heading">
-      <h2 id="features-heading">Features</h2>
-      <ul>
-        <li>Feature one - High performance</li>
-        <li>Feature two - Easy integration</li>
-        <li>Feature three - Excellent support</li>
-      </ul>
-    </section>
-
-    <aside aria-labelledby="support-heading">
-      <h2 id="support-heading">Need Help?</h2>
-      <p>Contact our <a href="/support">support team</a> for assistance with your widgets.</p>
-    </aside>
-  </main>
-
-  <footer>
-    <nav id="footer-nav" aria-label="Footer">
-      <h2 class="visually-hidden">Footer Navigation</h2>
-
-      <section aria-labelledby="company-nav">
-        <h3 id="company-nav">Company</h3>
+      <section aria-labelledby="features-heading">
+        <h2 id="features-heading">Features</h2>
         <ul>
-          <li><a href="/about">About Us</a></li>
-          <li><a href="/careers">Careers</a></li>
-          <li><a href="/press">Press</a></li>
+          <li>Feature one - High performance</li>
+          <li>Feature two - Easy integration</li>
+          <li>Feature three - Excellent support</li>
         </ul>
       </section>
 
-      <section aria-labelledby="support-nav">
-        <h3 id="support-nav">Support</h3>
-        <ul>
-          <li><a href="/help">Help Center</a></li>
-          <li><a href="/contact">Contact Us</a></li>
-          <li><a href="/status">System Status</a></li>
-        </ul>
-      </section>
+      <aside aria-labelledby="support-heading">
+        <h2 id="support-heading">Need Help?</h2>
+        <p>
+          Contact our <a href="/support">support team</a> for assistance with
+          your widgets.
+        </p>
+      </aside>
+    </main>
 
-      <section aria-labelledby="legal-nav">
-        <h3 id="legal-nav">Legal</h3>
-        <ul>
-          <li><a href="/privacy">Privacy Policy</a></li>
-          <li><a href="/terms">Terms of Service</a></li>
-          <li><a href="/cookies">Cookie Policy</a></li>
-        </ul>
-      </section>
-    </nav>
+    <footer>
+      <nav id="footer-nav" aria-label="Footer">
+        <h2 class="visually-hidden">Footer Navigation</h2>
 
-    <p><small>&copy; 2026 Company Name. All rights reserved.</small></p>
-  </footer>
-</body>
+        <section aria-labelledby="company-nav">
+          <h3 id="company-nav">Company</h3>
+          <ul>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/careers">Careers</a></li>
+            <li><a href="/press">Press</a></li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="support-nav">
+          <h3 id="support-nav">Support</h3>
+          <ul>
+            <li><a href="/help">Help Center</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/status">System Status</a></li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="legal-nav">
+          <h3 id="legal-nav">Legal</h3>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="/cookies">Cookie Policy</a></li>
+          </ul>
+        </section>
+      </nav>
+
+      <p><small>&copy; 2026 Company Name. All rights reserved.</small></p>
+    </footer>
+  </body>
 </html>

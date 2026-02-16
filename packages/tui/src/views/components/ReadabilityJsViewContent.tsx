@@ -18,7 +18,10 @@ import type { ViewComponentProps } from '../types.js'
 /**
  * Format link density with assessment.
  */
-function formatLinkDensity(density: number, palette: ReturnType<typeof usePalette>): { text: string; color: string } {
+function formatLinkDensity(
+  density: number,
+  palette: ReturnType<typeof usePalette>,
+): { text: string; color: string } {
   const percentage = (density * 100).toFixed(1)
   if (density < 0.1) {
     return { text: `${percentage}% (low)`, color: palette.base0B }
@@ -32,11 +35,7 @@ function formatLinkDensity(density: number, palette: ReturnType<typeof usePalett
 /**
  * Metrics section content - includes link density
  */
-function MetricsContent({
-  data,
-}: {
-  data: ReadabilityJsResult
-}): ReactNode {
+function MetricsContent({ data }: { data: ReadabilityJsResult }): ReactNode {
   const palette = usePalette()
   const { metrics } = data
 

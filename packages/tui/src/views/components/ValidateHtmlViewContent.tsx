@@ -112,9 +112,7 @@ function MessagesContent({
   if (messages.length === 0) {
     const color = palette.base0B
     const text =
-      severity === 'error'
-        ? 'No errors found.'
-        : 'No warnings found.'
+      severity === 'error' ? 'No errors found.' : 'No warnings found.'
     return <text fg={color}>{text}</text>
   }
 
@@ -128,7 +126,10 @@ function MessagesContent({
           icon={severity === 'error' ? '✗' : '⚠'}
         >
           <CardRow label="Message" value={message.message} />
-          <CardRow label="Location" value={`Line ${message.line}, Column ${message.column}`} />
+          <CardRow
+            label="Location"
+            value={`Line ${message.line}, Column ${message.column}`}
+          />
         </Card>
       ))}
     </box>

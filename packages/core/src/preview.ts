@@ -129,5 +129,10 @@ export function buildPreview(
   pageMetadata: PageMetadata,
   targetUrl: string,
 ): SocialPreview {
-  return buildSocialPreview(tags.openGraph, tags.twitter, pageMetadata, targetUrl)
+  return buildSocialPreview(
+    tags.openGraph,
+    tags.twitter,
+    pageMetadata,
+    targetUrl,
+  )
 }

@@ -4,7 +4,11 @@
  * Provides raw Readability extraction and analysis from static HTML.
  * Developer-focused utility showing all metrics including link density.
  */
-import { extractReadability, fetchHtmlContent, type ReadabilityUtilityResult } from '@webspecs/core'
+import {
+  extractReadability,
+  fetchHtmlContent,
+  type ReadabilityUtilityResult,
+} from '@webspecs/core'
 
 /**
  * Fetch and extract Readability content with full metrics.
