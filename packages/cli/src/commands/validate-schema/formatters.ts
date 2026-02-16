@@ -20,9 +20,7 @@ import type { SchemaRenderOptions, SchemaValidationResult } from './types.js'
  * - Warnings -> warning/medium
  * - Failed info-only tests -> info/low
  */
-export function buildIssues(
-  result: SchemaValidationResult,
-): Issue[] {
+export function buildIssues(result: SchemaValidationResult): Issue[] {
   const issues: Issue[] = []
   const { testResult, requiredGroups } = result
 
@@ -77,9 +75,7 @@ function buildIssueFromTest(
 /**
  * Build detection table group showing what structured data was found.
  */
-function buildDetectionTableGroup(
-  result: SchemaValidationResult,
-): TableGroup {
+function buildDetectionTableGroup(result: SchemaValidationResult): TableGroup {
   const { testResult, detectedDisplayNames } = result
   const rows: { key: string; value: string | undefined }[] = []
 

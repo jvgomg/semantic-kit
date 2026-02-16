@@ -1,64 +1,34 @@
-import type { SchemaTestResult } from '@webspecs/core'
+import type {
+  StructuredDataResult,
+  Preset,
+  PresetName,
+  PresetMap,
+  SchemaValidationResult,
+} from '@webspecs/core'
+import { VALID_PRESETS } from '@webspecs/core'
 import type { OutputFormat } from '../../lib/arguments.js'
 import type { OutputModeOptions } from '../../lib/output-mode.js'
 
-export const VALID_FORMATS: readonly OutputFormat[] = ['full', 'compact', 'json']
+export const VALID_FORMATS: readonly OutputFormat[] = [
+  'full',
+  'compact',
+  'json',
+]
 
 export interface ValidateSchemaOptions extends OutputModeOptions {
   presets?: string
   format?: OutputFormat
 }
 
-// Internal result type from structured-data-testing-tool
-export interface StructuredDataResult {
-  tests: SchemaTestResult[]
-  passed: SchemaTestResult[]
-  failed: SchemaTestResult[]
-  warnings: SchemaTestResult[]
-  optional: SchemaTestResult[]
-  skipped: SchemaTestResult[]
-  groups: string[]
-  schemas: string[]
-  structuredData: {
-    metatags: Record<string, string[]>
-    jsonld: Record<string, unknown[]>
-    microdata: Record<string, unknown[]>
-    rdfa: Record<string, unknown[]>
-  }
+// Re-export types from core for compatibility
+export type {
+  StructuredDataResult,
+  Preset,
+  PresetName,
+  PresetMap,
+  SchemaValidationResult,
 }
-
-export interface Preset {
-  name: string
-  description?: string
-  presets?: Preset[]
-  tests?: unknown[]
-}
-
-/**
- * Valid preset names (lowercase for CLI, mapped to library's PascalCase)
- */
-export const VALID_PRESETS = [
-  'google',
-  'twitter',
-  'facebook',
-  'social-media',
-] as const
-export type PresetName = (typeof VALID_PRESETS)[number]
-
-export interface PresetMap {
-  google: Preset
-  twitter: Preset
-  facebook: Preset
-  'social-media': Preset
-}
-
-export interface SchemaValidationResult {
-  testResult: StructuredDataResult
-  requiredGroups: string[]
-  infoGroups: string[]
-  detectedDisplayNames: string[]
-  requiredFailedCount: number
-}
+export { VALID_PRESETS }
 
 export interface SchemaRenderOptions {
   format: OutputFormat

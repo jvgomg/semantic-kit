@@ -7,7 +7,13 @@ export type { Issue, IssueType, IssueSeverity } from './types.js'
 export { fetchHtmlContent } from './fetch.js'
 
 // File system utilities (with build-time target switching)
-export { fileExists, readTextFile, readJsonFile, writeTextFile, mkdir } from './fs.js'
+export {
+  fileExists,
+  readTextFile,
+  readJsonFile,
+  writeTextFile,
+  mkdir,
+} from './fs.js'
 
 // HTML to Markdown
 export { createTurndownService } from './turndown.js'
@@ -111,10 +117,7 @@ export {
 } from './sitemap.js'
 
 // Readability extraction
-export {
-  extractReadability,
-  type ReadabilityResult,
-} from './readability.js'
+export { extractReadability, type ReadabilityResult } from './readability.js'
 
 // Hidden content detection
 export {
@@ -161,6 +164,17 @@ export {
   buildSocialPreview,
   buildPreview,
 } from './preview.js'
+
+// Structured data validation
+export {
+  validateStructuredData,
+  VALID_PRESETS,
+  type StructuredDataResult,
+  type Preset,
+  type PresetName,
+  type PresetMap,
+  type SchemaValidationResult,
+} from './schema-validation.js'
 
 // Result types for all commands
 export type {
