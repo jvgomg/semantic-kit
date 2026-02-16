@@ -1,3 +1,5 @@
+import { readTextFile } from './fs.js'
+
 /**
  * Fetch HTML from URL or read from file
  */
@@ -10,5 +12,5 @@ export async function fetchHtmlContent(target: string): Promise<string> {
     return response.text()
   }
 
-  return Bun.file(target).text()
+  return readTextFile(target)
 }

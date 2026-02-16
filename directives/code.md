@@ -146,3 +146,46 @@ src/
 - **Playwright** is a peer dependency (optional, for JS-rendering commands)
 - Lazy-load heavy dependencies — don't load Playwright for static-only commands
 - Prefer existing dependencies over adding new ones
+
+---
+
+## Build-Time Target Switching
+
+This project supports dual build targets:
+- **npm build** (`bun run build`): Targets Node.js, uses `node:fs` APIs
+- **binary build** (`bun run build:global`): Targets Bun, uses optimized `Bun.file()`/`Bun.write()` APIs
+
+### How it works
+
+Build scripts inject `__TARGET_BUN__` as a compile-time constant:
+- `build.ts`: `__TARGET_BUN__: 'false'` (Node.js compatible)
+- `build-global.ts`: `__TARGET_BUN__: 'true'` (Bun optimized)
+
+### Using the pattern
+
+For runtime-specific APIs, use conditional checks in `src/lib/fs.ts`:
+
+```typescript
+declare const __TARGET_BUN__: boolean
+
+export async function readTextFile(path: string): Promise<string> {
+  if (__TARGET_BUN__) {
+    return Bun.file(path).text()
+  }
+  return readFile(path, 'utf-8')
+}
+```
+
+The bundler eliminates dead code branches, so:
+- npm package contains zero `Bun.*` references
+- Binary contains zero `node:fs` imports for file operations
+
+### Available functions in `src/lib/fs.ts`
+
+| Function | Description |
+|----------|-------------|
+| `fileExists(path)` | Check if a file exists |
+| `readTextFile(path)` | Read a file as text |
+| `readJsonFile<T>(path)` | Read and parse a JSON file |
+| `writeTextFile(path, content)` | Write text content to a file |
+| `mkdir` | Re-exported from `node:fs/promises` |

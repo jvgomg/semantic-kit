@@ -1,13 +1,13 @@
 /**
  * File-based storage for TUI state persistence.
  *
- * Uses Bun APIs for filesystem operations with throttled writes.
+ * Uses platform-appropriate APIs for filesystem operations with throttled writes.
  */
 import { createHash } from 'crypto'
 import { mkdirSync, writeFileSync } from 'node:fs'
-import { mkdir } from 'node:fs/promises'
 import { homedir } from 'os'
 import { join } from 'path'
+import { fileExists, mkdir, readJsonFile, writeTextFile } from '../../../lib/fs.js'
 import {
   DEFAULT_PERSISTED_STATE,
   PERSISTED_STATE_VERSION,
@@ -56,15 +56,13 @@ export async function loadPersistedState(
   const path = getStoragePath(key)
 
   try {
-    const file = Bun.file(path)
-
     // Check if file exists
-    if (!(await file.exists())) {
+    if (!(await fileExists(path))) {
       return { ...DEFAULT_PERSISTED_STATE }
     }
 
     // Read and parse JSON
-    const data = (await file.json()) as PersistedState
+    const data = await readJsonFile<PersistedState>(path)
 
     // Validate version - if mismatch, return defaults
     if (data.version !== PERSISTED_STATE_VERSION) {
@@ -127,7 +125,7 @@ async function writeStateToDisk(
     await mkdir(STORAGE_DIR, { recursive: true })
 
     // Write the state file
-    await Bun.write(path, JSON.stringify(state, null, 2))
+    await writeTextFile(path, JSON.stringify(state, null, 2))
   } catch {
     // Silently fail - persistence is best-effort
   }

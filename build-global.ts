@@ -14,6 +14,7 @@ const result = await Bun.build({
   minify: true,
   define: {
     __VERSION__: JSON.stringify(pkg.version),
+    __TARGET_BUN__: 'true',
   },
   // Replace optional dependencies with stub modules
   plugins: [
@@ -27,6 +28,10 @@ const result = await Bun.build({
         // Stub electron (optional Playwright loader)
         build.onResolve({ filter: /^electron$/ }, () => ({
           path: resolve(stubsDir, 'electron.js'),
+        }))
+        // Stub chromium-bidi (optional Playwright bidi protocol)
+        build.onResolve({ filter: /^chromium-bidi/ }, () => ({
+          path: resolve(stubsDir, 'chromium-bidi.js'),
         }))
       },
     },

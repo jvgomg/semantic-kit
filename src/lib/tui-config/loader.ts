@@ -5,6 +5,7 @@
  * against the Zod schema. Returns typed results with clear error messages.
  */
 import { parse as parseYaml, YAMLParseError } from 'yaml'
+import { fileExists, readTextFile } from '../fs.js'
 import { TuiConfigSchema } from './schema.js'
 import type { ConfigLoadResult } from './types.js'
 
@@ -18,8 +19,7 @@ export async function loadTuiConfig(path: string): Promise<ConfigLoadResult> {
   // Read file from disk
   let content: string
   try {
-    const file = Bun.file(path)
-    if (!(await file.exists())) {
+    if (!(await fileExists(path))) {
       return {
         type: 'error',
         errorType: 'file-not-found',
@@ -27,7 +27,7 @@ export async function loadTuiConfig(path: string): Promise<ConfigLoadResult> {
         path,
       }
     }
-    content = await file.text()
+    content = await readTextFile(path)
   } catch (error) {
     return {
       type: 'error',

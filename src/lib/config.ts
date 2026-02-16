@@ -1,5 +1,6 @@
 import { homedir } from 'os'
 import path from 'path'
+import { fileExists, readTextFile } from './fs.js'
 
 const APP_NAME = 'semantic-kit'
 
@@ -33,12 +34,12 @@ export async function findConfig(filename: string): Promise<string | null> {
   const xdgPath = path.join(getConfigPaths().config, filename)
 
   // Check local directory first
-  if (await Bun.file(localPath).exists()) {
+  if (await fileExists(localPath)) {
     return localPath
   }
 
   // Fall back to XDG config home
-  if (await Bun.file(xdgPath).exists()) {
+  if (await fileExists(xdgPath)) {
     return xdgPath
   }
 
@@ -52,6 +53,6 @@ export async function loadConfig<T>(filename: string): Promise<T | null> {
   const configPath = await findConfig(filename)
   if (!configPath) return null
 
-  const content = await Bun.file(configPath).text()
+  const content = await readTextFile(configPath)
   return JSON.parse(content) as T
 }

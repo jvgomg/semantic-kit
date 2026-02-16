@@ -16,12 +16,21 @@
   },
   "homepage": "https://github.com/jvgomg/semantic-kit#readme",
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "bin": {
     "semantic-kit": "./dist/cli.js"
   },
   "exports": {
     ".": {
-      "types": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
@@ -41,7 +50,8 @@
     "test:integration": "bun test --preload ./integration-tests/setup.ts integration-tests/",
     "test:integration:watch": "bun test --watch --preload ./integration-tests/setup.ts integration-tests/",
     "test-server": "bun test-server/server.ts",
-    "test-server:verbose": "bun test-server/server.ts --verbose"
+    "test-server:verbose": "bun test-server/server.ts --verbose",
+    "prepublishOnly": "bun run build"
   },
   "dependencies": {
     "@axe-core/playwright": "^4.11.0",

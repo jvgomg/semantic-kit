@@ -1,4 +1,5 @@
 import { common, createEmphasize } from 'emphasize'
+import { writeTextFile } from '../../lib/fs.js'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand, handleCommandError } from '../../lib/run-command.js'
 import { formatFetchOutput } from './formatters.js'
@@ -25,7 +26,7 @@ export async function fetchCommand(
         console.error('⚠ HTML could not be prettified (possibly malformed)\n')
       }
 
-      await Bun.write(options.out, result.prettyHtml)
+      await writeTextFile(options.out, result.prettyHtml)
       console.log(`✓ Saved to ${options.out}`)
 
       // If stream flag, also show in terminal
