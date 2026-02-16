@@ -1,0 +1,5 @@
+# Bun configuration for TUI package
+
+[test]
+# Preload test setup to define build-time constants
+preload = ["./src/test-setup.ts"]
