@@ -4,4 +4,4 @@
  */
 
 // Define build-time constant that's normally injected by build.ts
-;(globalThis as any).__TARGET_BUN__ = true
+;(globalThis as unknown as Record<string, unknown>).__TARGET_BUN__ = true

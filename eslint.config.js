@@ -9,8 +9,6 @@ export default defineConfig(
     'node_modules',
     'coverage',
     '*.config.*',
-    'test-server/apps',
-    'src/tui/_ink_backup',
     'packages/test-server-nextjs',
     'stubs',
   ]),

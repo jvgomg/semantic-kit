@@ -88,7 +88,7 @@ describe('formatTable', () => {
     it('filters out null values', () => {
       const rows: TableRow[] = [
         { key: 'Present', value: 'Yes' },
-        { key: 'Null', value: null as any },
+        { key: 'Null', value: null as unknown as string },
         { key: 'Also Present', value: 'Yes' },
       ]
       const output = formatTable(rows, ttyContext)
@@ -101,7 +101,7 @@ describe('formatTable', () => {
     it('returns empty string when all values are filtered out', () => {
       const rows: TableRow[] = [
         { key: 'Missing', value: undefined },
-        { key: 'Null', value: null as any },
+        { key: 'Null', value: null as unknown as string },
       ]
       const output = formatTable(rows, ttyContext)
       expect(output).toBe('')
@@ -155,7 +155,7 @@ describe('formatTable', () => {
       const rows: TableRow[] = [
         { key: 'Present', value: 'Yes' },
         { key: 'Missing', value: undefined },
-        { key: 'Null', value: null as any },
+        { key: 'Null', value: null as unknown as string },
       ]
       const output = formatTable(rows, plainContext)
 
@@ -267,7 +267,7 @@ describe('formatTableGroups', () => {
         },
         {
           rows: [
-            { key: 'Null', value: null as any },
+            { key: 'Null', value: null as unknown as string },
           ],
         },
       ]

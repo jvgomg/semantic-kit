@@ -101,7 +101,7 @@ describe('wrapText', () => {
 
       // Subsequent lines should start with 4 spaces
       for (let i = 1; i < lines.length; i++) {
-        expect(lines[i]).toMatch(/^    /)
+        expect(lines[i]).toMatch(/^ {4}/)
       }
     })
 

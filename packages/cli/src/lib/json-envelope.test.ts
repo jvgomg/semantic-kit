@@ -3,12 +3,12 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'bun:test'
+import type { Issue } from './cli-formatting/index.js'
 import {
   createJsonEnvelope,
   formatJsonEnvelope,
   type JsonEnvelope,
 } from './json-envelope.js'
-import type { Issue } from './cli-formatting/index.js'
 
 // ============================================================================
 // Test Helpers

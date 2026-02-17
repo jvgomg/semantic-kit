@@ -2,10 +2,9 @@
  * Unit tests for AI command formatters.
  */
 
-import { describe, it, expect } from 'bun:test'
 import type { AiResult } from '@webspecs/core'
+import { describe, it, expect } from 'bun:test'
 import { buildIssues, formatAiOutput } from './formatters.js'
-import type { Issue } from '../../lib/cli-formatting/index.js'
 
 // ============================================================================
 // Test Fixtures
