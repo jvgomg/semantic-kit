@@ -108,10 +108,9 @@ describe('formatTable', () => {
     })
 
     it('wraps long values at terminal width', () => {
-      const longValue = 'This is a very long value that should wrap when it exceeds the terminal width minus the key column width'
-      const rows: TableRow[] = [
-        { key: 'Description', value: longValue },
-      ]
+      const longValue =
+        'This is a very long value that should wrap when it exceeds the terminal width minus the key column width'
+      const rows: TableRow[] = [{ key: 'Description', value: longValue }]
       const output = formatTable(rows, { mode: 'tty', width: 50 })
       const lines = output.split('\n')
 
@@ -120,9 +119,7 @@ describe('formatTable', () => {
     })
 
     it('respects custom gap option', () => {
-      const rows: TableRow[] = [
-        { key: 'A', value: 'Value' },
-      ]
+      const rows: TableRow[] = [{ key: 'A', value: 'Value' }]
       const outputDefaultGap = formatTable(rows, ttyContext)
       const outputLargeGap = formatTable(rows, ttyContext, { gap: 10 })
 
@@ -143,9 +140,7 @@ describe('formatTable', () => {
     })
 
     it('formats numbers with locale formatting', () => {
-      const rows: TableRow[] = [
-        { key: 'Count', value: 1000 },
-      ]
+      const rows: TableRow[] = [{ key: 'Count', value: 1000 }]
       const output = formatTable(rows, plainContext)
 
       expect(output).toBe('Count: 1,000')
@@ -163,10 +158,9 @@ describe('formatTable', () => {
     })
 
     it('does not wrap text', () => {
-      const longValue = 'This is a very long value that should NOT wrap in plain mode'
-      const rows: TableRow[] = [
-        { key: 'Description', value: longValue },
-      ]
+      const longValue =
+        'This is a very long value that should NOT wrap in plain mode'
+      const rows: TableRow[] = [{ key: 'Description', value: longValue }]
       const output = formatTable(rows, plainContext)
       const lines = output.split('\n')
 
@@ -187,15 +181,11 @@ describe('formatTableGroups', () => {
       const groups: TableGroup[] = [
         {
           header: 'Group 1',
-          rows: [
-            { key: 'Key1', value: 'Value1' },
-          ],
+          rows: [{ key: 'Key1', value: 'Value1' }],
         },
         {
           header: 'Group 2',
-          rows: [
-            { key: 'Key2', value: 'Value2' },
-          ],
+          rows: [{ key: 'Key2', value: 'Value2' }],
         },
       ]
       const output = formatTableGroups(groups, ttyContext)
@@ -216,14 +206,10 @@ describe('formatTableGroups', () => {
     it('formats groups without headers', () => {
       const groups: TableGroup[] = [
         {
-          rows: [
-            { key: 'Key1', value: 'Value1' },
-          ],
+          rows: [{ key: 'Key1', value: 'Value1' }],
         },
         {
-          rows: [
-            { key: 'Key2', value: 'Value2' },
-          ],
+          rows: [{ key: 'Key2', value: 'Value2' }],
         },
       ]
       const output = formatTableGroups(groups, ttyContext)
@@ -237,15 +223,11 @@ describe('formatTableGroups', () => {
       const groups: TableGroup[] = [
         {
           header: 'Empty Group',
-          rows: [
-            { key: 'Missing', value: undefined },
-          ],
+          rows: [{ key: 'Missing', value: undefined }],
         },
         {
           header: 'Valid Group',
-          rows: [
-            { key: 'Present', value: 'Value' },
-          ],
+          rows: [{ key: 'Present', value: 'Value' }],
         },
       ]
       const output = formatTableGroups(groups, ttyContext)
@@ -261,14 +243,10 @@ describe('formatTableGroups', () => {
     it('returns empty string when all groups are empty', () => {
       const groups: TableGroup[] = [
         {
-          rows: [
-            { key: 'Missing', value: undefined },
-          ],
+          rows: [{ key: 'Missing', value: undefined }],
         },
         {
-          rows: [
-            { key: 'Null', value: null as unknown as string },
-          ],
+          rows: [{ key: 'Null', value: null as unknown as string }],
         },
       ]
       const output = formatTableGroups(groups, ttyContext)
@@ -281,9 +259,7 @@ describe('formatTableGroups', () => {
       const groups: TableGroup[] = [
         {
           header: 'Group 1',
-          rows: [
-            { key: 'Key1', value: 'Value1' },
-          ],
+          rows: [{ key: 'Key1', value: 'Value1' }],
         },
       ]
       const output = formatTableGroups(groups, plainContext)

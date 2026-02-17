@@ -1,4 +1,8 @@
-import { buildBunBundle, prepareBinariesDir, reportSizes } from '@webspecs/binary-build'
+import {
+  buildBunBundle,
+  prepareBinariesDir,
+  reportSizes,
+} from '@webspecs/binary-build'
 import pkg from './package.json'
 
 // Note: System binaries are not supported for TUI.
@@ -24,7 +28,9 @@ const config = {
   version: pkg.version,
 }
 
-console.log(`\n🔨 Building binaries for ${config.packageName} v${config.version}\n`)
+console.log(
+  `\n🔨 Building binaries for ${config.packageName} v${config.version}\n`,
+)
 
 await prepareBinariesDir(config.outdir)
 await buildBunBundle(config)

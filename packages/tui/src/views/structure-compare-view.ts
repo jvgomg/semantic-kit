@@ -9,15 +9,16 @@ import type { ViewDefinition } from './types.js'
 
 const DEFAULT_TIMEOUT_MS = 30000
 
-export const structureCompareView: ViewDefinition<StructureCompareRunnerResult> = {
-  id: 'structure-compare',
-  label: 'Structure:compare',
-  description:
-    'Compare page structure between static HTML and JS-rendered page. Shows what structural elements require JavaScript.',
-  category: 'tool',
-  fetch: (url) => fetchStructureCompare(url, DEFAULT_TIMEOUT_MS),
-  Component: StructureCompareViewContent,
-}
+export const structureCompareView: ViewDefinition<StructureCompareRunnerResult> =
+  {
+    id: 'structure-compare',
+    label: 'Structure:compare',
+    description:
+      'Compare page structure between static HTML and JS-rendered page. Shows what structural elements require JavaScript.',
+    category: 'tool',
+    fetch: (url) => fetchStructureCompare(url, DEFAULT_TIMEOUT_MS),
+    Component: StructureCompareViewContent,
+  }
 
 // Self-register
 registerView(structureCompareView)

@@ -7,7 +7,9 @@ const isWatch = process.argv.includes('--watch')
 // satisfying the "./commands/*" wildcard in the exports field.
 const commandGlob = new Bun.Glob('src/commands/**/*.ts')
 const commandEntrypoints = (
-  await Array.fromAsync(commandGlob.scan({ cwd: import.meta.dir, onlyFiles: true }))
+  await Array.fromAsync(
+    commandGlob.scan({ cwd: import.meta.dir, onlyFiles: true }),
+  )
 )
   .filter((f) => !f.endsWith('.test.ts'))
   .map((f) => `./${f}`)

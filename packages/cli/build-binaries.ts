@@ -16,7 +16,9 @@ const config = {
   version: pkg.version,
 }
 
-console.log(`\n🔨 Building binaries for ${config.packageName} v${config.version}\n`)
+console.log(
+  `\n🔨 Building binaries for ${config.packageName} v${config.version}\n`,
+)
 
 await prepareBinariesDir(config.outdir)
 await buildSystemBinaries(config)

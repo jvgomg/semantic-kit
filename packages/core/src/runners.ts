@@ -12,7 +12,10 @@
 
 import type { Report as HtmlValidateReport } from 'html-validate'
 import { validateAccessibility } from './accessibility-validation.js'
-import type { AxeAnalysisResult, WcagLevel } from './accessibility-validation.js'
+import type {
+  AxeAnalysisResult,
+  WcagLevel,
+} from './accessibility-validation.js'
 import {
   analyzeAriaSnapshot,
   compareSnapshots,
@@ -573,7 +576,13 @@ export async function fetchSchemaCompare(
       (twitterChanged ?? false),
   }
 
-  return { target, static: staticResult, rendered: renderedResult, comparison, timedOut }
+  return {
+    target,
+    static: staticResult,
+    rendered: renderedResult,
+    comparison,
+    timedOut,
+  }
 }
 
 // ============================================================================

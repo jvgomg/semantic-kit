@@ -13,9 +13,7 @@ import { buildIssues, formatAiOutput } from './formatters.js'
 /**
  * Helper to create a minimal AiResult for testing
  */
-function createAiResult(
-  overrides?: Partial<AiResult>,
-): AiResult {
+function createAiResult(overrides?: Partial<AiResult>): AiResult {
   return {
     url: 'https://example.com',
     title: 'Example Page',

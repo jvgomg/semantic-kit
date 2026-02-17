@@ -2,7 +2,7 @@
  * Validate A11y View - Shows WCAG accessibility validation results.
  */
 import type { WcagLevel } from '@webspecs/core'
-import { runAxeAnalysis, PlaywrightNotInstalledError  } from '@webspecs/core'
+import { runAxeAnalysis, PlaywrightNotInstalledError } from '@webspecs/core'
 import {
   ValidateA11yViewContent,
   type TuiA11yResult,

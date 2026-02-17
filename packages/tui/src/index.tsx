@@ -62,7 +62,9 @@ Arguments:
 }
 
 const initialUrl = positionals[0]
-let configData: { path: string; config: import('./lib/tui-config/index.js').TuiConfig } | undefined
+let configData:
+  | { path: string; config: import('./lib/tui-config/index.js').TuiConfig }
+  | undefined
 
 if (values.config) {
   const result = await loadTuiConfig(values.config)

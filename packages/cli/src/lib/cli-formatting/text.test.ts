@@ -63,7 +63,8 @@ describe('wrapText', () => {
     })
 
     it('wraps long text at default width', () => {
-      const text = 'This is a very long text that should definitely wrap when it exceeds the maximum width'
+      const text =
+        'This is a very long text that should definitely wrap when it exceeds the maximum width'
       const result = wrapText(text, { mode: 'tty', width: 40 })
       const lines = result.split('\n')
 
@@ -89,7 +90,8 @@ describe('wrapText', () => {
     })
 
     it('indents wrapped lines', () => {
-      const text = 'This is a long text that will wrap and subsequent lines should be indented'
+      const text =
+        'This is a long text that will wrap and subsequent lines should be indented'
       const result = wrapText(text, { mode: 'tty', width: 40 }, { indent: 4 })
       const lines = result.split('\n')
 
@@ -152,7 +154,8 @@ describe('wrapText', () => {
 
   describe('Plain mode', () => {
     it('does not wrap in plain mode', () => {
-      const text = 'This is a very long text that should NOT wrap in plain mode even if it exceeds any width'
+      const text =
+        'This is a very long text that should NOT wrap in plain mode even if it exceeds any width'
       const result = wrapText(text, plainContext)
 
       // Should not wrap
