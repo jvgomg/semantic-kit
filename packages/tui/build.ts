@@ -31,7 +31,6 @@ const buildConfig: Bun.BuildConfig = {
     // Markdown processing
     'marked',
     'marked-terminal',
-    'emphasize',
     // Diff
     'diff',
     // Transitive from core

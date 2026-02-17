@@ -1,12 +1,9 @@
 import { writeTextFile } from '@webspecs/core'
-import { common, createEmphasize } from 'emphasize'
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand, handleCommandError } from '../../lib/run-command.js'
 import { formatFetchOutput } from './formatters.js'
 import { fetchAndFormat } from './runner.js'
 import type { FetchOptions } from './types.js'
-
-const emphasize = createEmphasize(common)
 
 /**
  * Fetch command - fetches and prettifies HTML from a URL.
@@ -32,8 +29,7 @@ export async function fetchCommand(
       // If stream flag, also show in terminal
       if (options.stream) {
         console.log('')
-        const highlighted = emphasize.highlight('xml', result.prettyHtml)
-        console.log(highlighted.value)
+        console.log(result.prettyHtml)
       }
       return
     }

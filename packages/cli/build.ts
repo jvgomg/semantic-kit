@@ -27,7 +27,6 @@ const buildConfig: Bun.BuildConfig = {
     // Direct dependencies
     'commander',
     'diff',
-    'emphasize',
     'marked',
     'marked-terminal',
     // Transitive from core

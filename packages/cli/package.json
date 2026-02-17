@@ -29,7 +29,8 @@
     }
   },
   "files": [
-    "dist",
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
     "README.md"
   ],
   "bin": {
@@ -52,7 +53,6 @@
     "@webspecs/core": "workspace:*",
     "commander": "^14.0.2",
     "diff": "^8.0.3",
-    "emphasize": "^7.0.0",
     "marked": "^15.0.12",
     "marked-terminal": "^7.3.0",
     "prettier": "^3.8.1"

@@ -1,10 +1,7 @@
-import { common, createEmphasize } from 'emphasize'
 import type { FetchResult } from './types.js'
 
-const emphasize = createEmphasize(common)
-
 /**
- * Format fetch result with syntax highlighting.
+ * Format fetch result as plain prettified HTML.
  */
 export function formatFetchOutput(result: FetchResult): string {
   const lines: string[] = []
@@ -13,8 +10,7 @@ export function formatFetchOutput(result: FetchResult): string {
     lines.push('⚠ HTML could not be prettified (possibly malformed)\n')
   }
 
-  const highlighted = emphasize.highlight('xml', result.prettyHtml)
-  lines.push(highlighted.value)
+  lines.push(result.prettyHtml)
 
   return lines.join('\n')
 }
