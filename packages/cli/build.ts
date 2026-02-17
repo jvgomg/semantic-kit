@@ -3,12 +3,23 @@ import pkg from './package.json'
 
 const isWatch = process.argv.includes('--watch')
 
+// Discover all command source files so each one gets its own output JS file,
+// satisfying the "./commands/*" wildcard in the exports field.
+const commandGlob = new Bun.Glob('src/commands/**/*.ts')
+const commandEntrypoints = (
+  await Array.fromAsync(commandGlob.scan({ cwd: import.meta.dir, onlyFiles: true }))
+)
+  .filter((f) => !f.endsWith('.test.ts'))
+  .map((f) => `./${f}`)
+
 const buildConfig: Bun.BuildConfig = {
-  entrypoints: ['./src/cli.ts'],
+  entrypoints: ['./src/cli.ts', ...commandEntrypoints],
   outdir: './dist',
+  root: './src', // strip the src/ prefix so outputs land at dist/commands/*, not dist/src/commands/*
   format: 'esm',
   target: 'node',
   sourcemap: 'external',
+  splitting: true, // shared code across entrypoints goes into chunks
   // External packages that should not be bundled
   external: [
     // Workspace dependencies

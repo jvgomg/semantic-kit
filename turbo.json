@@ -13,6 +13,18 @@
       "outputs": ["dist/**"],
       "inputs": ["src/**", "build.ts", "tsconfig.json", "tsconfig.build.json"]
     },
+    "build:binaries": {
+      "dependsOn": ["^build:binaries", "^build"],
+      "outputs": ["binaries/**"],
+      "inputs": ["src/**", "build-binaries.ts", "package.json"],
+      "cache": true
+    },
+    "build:binaries:local": {
+      "dependsOn": ["^build"],
+      "outputs": ["binaries/**"],
+      "inputs": ["src/**", "build-binaries.ts", "package.json"],
+      "cache": false
+    },
     "typecheck": {
       "dependsOn": ["^build"],
       "outputs": ["tsconfig.tsbuildinfo"]

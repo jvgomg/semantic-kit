@@ -267,13 +267,16 @@ useMouseClick({
 
 ```bash
 # Run TUI in development mode
-bun run dev tui
+bun run dev:tui
 
 # Run with initial URL
-bun run dev tui https://example.com
+bun run dev:tui https://example.com
 
 # Run with a YAML config file
-bun run dev tui --config ./src/lib/tui-config/fixtures/valid-grouped.yaml
+bun run dev:tui --config ./src/lib/tui-config/fixtures/valid-grouped.yaml
+
+# Run with auto-rebuild when core changes (builds core + cli first, then watches)
+bun run watch:tui
 ```
 
 ## Config Module (`src/lib/tui-config/`)

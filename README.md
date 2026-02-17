@@ -188,14 +188,17 @@ bun install
 ### Development Workflow
 
 ```bash
-# Run commands during development (no build needed)
-bun run dev <command> [options]
+# Run CLI commands during development (no build needed)
+bun run dev:cli <command> [options]
 
-# Run with auto-rebuild on file changes
-bun run dev:watch
+# Run CLI with auto-rebuild on file changes
+bun run watch:cli
 
-# Run TUI in development
+# Run TUI during development
 bun run dev:tui
+
+# Run TUI with auto-rebuild on file changes
+bun run watch:tui
 ```
 
 ### Building

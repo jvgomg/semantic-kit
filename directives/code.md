@@ -123,10 +123,10 @@ node .agents/skills/changesets-workflow/scripts/create-changeset.js \
 
 ```bash
 # During development (no build needed, runs directly from source)
-bun run dev <command> [options]
+bun run dev:cli <command> [options]
 
 # With auto-rebuild on file changes
-bun run dev:watch
+bun run watch:cli
 
 # After building (uses compiled dist/)
 bun run build

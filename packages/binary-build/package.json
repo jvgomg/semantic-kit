@@ -1,0 +1,10 @@
+{
+  "name": "@webspecs/binary-build",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "description": "Shared binary build utilities for webspecs packages"
+}

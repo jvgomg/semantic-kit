@@ -19,6 +19,10 @@
         "typescript-eslint": "^8.55.0",
       },
     },
+    "packages/binary-build": {
+      "name": "@webspecs/binary-build",
+      "version": "0.0.0",
+    },
     "packages/cli": {
       "name": "@webspecs/cli",
       "version": "0.0.17",
@@ -37,6 +41,7 @@
       "devDependencies": {
         "@types/diff": "^8.0.0",
         "@types/marked-terminal": "^6.1.1",
+        "@webspecs/binary-build": "workspace:*",
       },
     },
     "packages/core": {
@@ -122,6 +127,7 @@
         "@types/diff": "^8.0.0",
         "@types/marked-terminal": "^6.1.1",
         "@types/react": "^19.2.14",
+        "@webspecs/binary-build": "workspace:*",
       },
     },
   },
@@ -495,6 +501,8 @@
     "@unrs/resolver-binding-win32-x64-msvc": ["@unrs/resolver-binding-win32-x64-msvc@1.11.1", "", { "os": "win32", "cpu": "x64" }, "sha512-lrW200hZdbfRtztbygyaq/6jP6AKE8qQN2KvPcJ+x7wiD038YtnYtZ82IMNJ69GJibV7bwL3y9FgK+5w/pYt6g=="],
 
     "@webgpu/types": ["@webgpu/types@0.1.69", "", {}, "sha512-RPmm6kgRbI8e98zSD3RVACvnuktIja5+yLgDAkTmxLr90BEwdTXRQWNLF3ETTTyH/8mKhznZuN5AveXYFEsMGQ=="],
+
+    "@webspecs/binary-build": ["@webspecs/binary-build@workspace:packages/binary-build"],
 
     "@webspecs/cli": ["@webspecs/cli@workspace:packages/cli"],
 

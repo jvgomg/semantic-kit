@@ -107,22 +107,28 @@ The project uses **Turborepo** for efficient task orchestration across packages:
 
 All build tasks use Bun's native bundler with TypeScript declaration generation.
 
+**Binary compilation**: CLI and TUI packages can be compiled into standalone executables:
+- **Compiled binaries**: Platform-specific executables with embedded Bun runtime (~20-40MB)
+- **Bun bundles**: Universal optimized bundles requiring Bun runtime (~1-2MB)
+- Separate `build:binaries` task keeps regular builds fast
+
 ## Quick Reference
 
 ### Development
 
 ```bash
 # Run CLI commands during development (no build needed)
-bun run dev <command> [options]
+bun run dev:cli <command> [options]
 
 # Run CLI with auto-rebuild on file changes
-bun run dev:watch
+bun run watch:cli
 
 # Run TUI during development
 bun run dev:tui
 
 # Run TUI with auto-rebuild on file changes
-bun run dev:watch:tui
+# Builds core + cli once, then watches core for changes and restarts TUI
+bun run watch:tui
 ```
 
 ### Building
@@ -130,6 +136,14 @@ bun run dev:watch:tui
 ```bash
 # Build all packages (respects dependency order)
 bun run build
+
+# Build standalone binaries for all platforms (CLI + TUI)
+# Output: packages/*/binaries/webspecs-{platform}
+bun run build:binaries
+
+# Build binary for current platform only (faster for testing)
+# Output: packages/*/binaries/webspecs-local or webspecs-tui-local
+bun run build:binaries:local
 
 # Type check all packages
 bun run typecheck

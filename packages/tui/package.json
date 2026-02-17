@@ -20,6 +20,8 @@
   },
   "scripts": {
     "build": "bun run build.ts",
+    "build:binaries": "bun run build-binaries.ts",
+    "build:binaries:local": "bun run build:binaries",
     "typecheck": "tsc --noEmit",
     "test": "bun test src/",
     "lint": "eslint .",
@@ -49,6 +51,7 @@
   "devDependencies": {
     "@types/diff": "^8.0.0",
     "@types/marked-terminal": "^6.1.1",
-    "@types/react": "^19.2.14"
+    "@types/react": "^19.2.14",
+    "@webspecs/binary-build": "workspace:*"
   }
 }

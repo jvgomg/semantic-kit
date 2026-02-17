@@ -62,6 +62,79 @@ gh release create v0.1.0 \
   --latest
 ```
 
+### Building Binaries for Release
+
+The CLI and TUI packages can be distributed as standalone binaries for users who don't want to install Node.js or Bun.
+
+#### Types of Binaries
+
+1. **Compiled binaries**: Executables with embedded Bun runtime
+   - **CLI**: Bundles most dependencies (~75-126MB per platform)
+     - Requires Playwright installed separately (for JS rendering features)
+   - **TUI**: Smaller binaries (~58-109MB per platform)
+     - Requires: Bun runtime, @webspecs/cli, @opentui/core, Playwright
+   - Platform-specific (5 platforms each)
+
+2. **Bun bundles**: Universal optimized bundles requiring Bun runtime
+   - **CLI**: ~10MB (requires Playwright installed)
+   - **TUI**: ~70KB (requires Bun, CLI, OpenTUI, Playwright installed)
+   - Works on any platform with Bun installed
+   - Ideal for Bun users and CI/CD
+
+**Note**: Playwright requires separate installation (`bunx playwright install`) for features using JavaScript rendering (:js and :compare commands).
+
+#### Building All Binaries
+
+```bash
+# Build binaries for all platforms (CLI + TUI)
+bun run build:binaries
+
+# Output locations:
+# - packages/cli/binaries/webspecs-{platform}
+# - packages/cli/binaries/webspecs-bun
+# - packages/tui/binaries/webspecs-tui-{platform}
+# - packages/tui/binaries/webspecs-tui-bun
+
+# Platforms: darwin-arm64, darwin-x64, linux-x64, linux-arm64, windows-x64
+```
+
+#### Building Local Binary (Quick Test)
+
+```bash
+# Build for current platform only (faster for testing)
+bun run build:binaries:local
+
+# Output:
+# - packages/cli/binaries/webspecs-local
+# - packages/tui/binaries/webspecs-tui-local
+```
+
+#### Testing Binaries
+
+```bash
+# Test compiled binary (standalone)
+./packages/cli/binaries/webspecs-darwin-arm64 --version
+
+# Test it works without runtime (copy to /tmp and run)
+cp ./packages/cli/binaries/webspecs-darwin-arm64 /tmp/webspecs
+/tmp/webspecs --version
+
+# Test Bun bundle
+bun ./packages/cli/binaries/webspecs-bun --version
+```
+
+#### Attaching to GitHub Releases
+
+After running `bun run build:binaries`, attach the binaries to the GitHub release:
+
+```bash
+gh release upload v0.1.0 \
+  packages/cli/binaries/webspecs-* \
+  packages/tui/binaries/webspecs-tui-*
+```
+
+**Note**: Binaries are gitignored and must be built before each release.
+
 ### Creating GitHub Releases
 
 1. Combine relevant CHANGELOG sections from all packages

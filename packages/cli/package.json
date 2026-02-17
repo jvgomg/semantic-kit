@@ -37,6 +37,8 @@
   },
   "scripts": {
     "build": "bun run build.ts",
+    "build:binaries": "bun run build-binaries.ts",
+    "build:binaries:local": "mkdir -p ./binaries && bun build --compile --minify ./src/cli.ts --outfile ./binaries/webspecs-local --external playwright --external playwright-core --external @axe-core/playwright",
     "typecheck": "tsc --noEmit",
     "test": "bun test src/",
     "lint": "eslint .",
@@ -57,6 +59,7 @@
   },
   "devDependencies": {
     "@types/diff": "^8.0.0",
-    "@types/marked-terminal": "^6.1.1"
+    "@types/marked-terminal": "^6.1.1",
+    "@webspecs/binary-build": "workspace:*"
   }
 }
