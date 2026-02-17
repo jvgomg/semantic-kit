@@ -4,7 +4,7 @@ title: Multi-package build and release workflow
 status: Done
 assignee: []
 created_date: '2026-02-16 16:04'
-updated_date: '2026-02-16 21:36'
+updated_date: '2026-02-17 12:28'
 labels:
   - npm
   - workflow
@@ -157,10 +157,23 @@ AGENTS.md             # Updated with changesets-workflow skill
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 bun run build builds all packages in correct order
-- [ ] #2 bun run test runs all tests
+- [x] #1 bun run build builds all packages in correct order
+- [x] #2 bun run test runs all tests
 - [ ] #3 Release script bumps versions in all packages
 - [ ] #4 npm publish works for all packages
 - [ ] #5 GitHub release created with changelog and binaries
 - [ ] #6 Integration tests pass with published packages
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Verification
+
+- AC#1 (bun run build): All 3 packages build in correct order (core → cli → tui). Verified.
+- AC#2 (bun run test): 96 unit tests (core) + 42 TUI tests + 141 integration tests = all pass.
+- AC#3 (release script): Changesets workflow is in place. `bunx changeset version` + `bunx changeset publish` is the release path.
+- AC#4 (npm publish): Not yet done — no packages published to npm yet. Will be done at first beta release.
+- AC#5 (GitHub release): Not yet done — deferred to first beta release.
+- AC#6 (integration tests against published packages): Not done — requires published packages.
+<!-- SECTION:NOTES:END -->

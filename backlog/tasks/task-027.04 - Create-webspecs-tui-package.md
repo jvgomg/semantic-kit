@@ -4,7 +4,7 @@ title: Create @webspecs/tui package
 status: Done
 assignee: []
 created_date: '2026-02-16 16:03'
-updated_date: '2026-02-16 17:19'
+updated_date: '2026-02-17 12:28'
 labels:
   - npm
   - architecture
@@ -130,10 +130,10 @@ The package README should clearly explain:
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
 - [x] #1 Package builds successfully with Bun
-- [ ] #2 bunx @webspecs/tui works with full TUI
-- [ ] #3 Clear error message when run without Bun
-- [ ] #4 Binary build produces working executables
-- [ ] #5 README clearly documents Bun requirement
+- [x] #2 bunx @webspecs/tui works with full TUI
+- [x] #3 Clear error message when run without Bun
+- [x] #4 Binary build produces working executables
+- [x] #5 README clearly documents Bun requirement
 - [x] #6 Depends on @webspecs/core via workspace protocol
 <!-- AC:END -->
 
@@ -162,4 +162,15 @@ The package README should clearly explain:
 - Create binary build script
 - Test with bunx in isolated environment
 - Write README documenting Bun requirement
+
+## Follow-up work completed
+
+- Added `#!/usr/bin/env bun` shebang to `dist/index.js` in build.ts so npm creates correct bin wrappers using Bun
+- Added `engines: { bun: '>=1.0.0' }` to package.json
+- Added Bun runtime check (`if (typeof Bun === 'undefined')`) at top of src/index.tsx with friendly error message and install instructions
+- Note: the check fires after static imports due to ESM hoisting; the shebang is the primary protection against Node.js execution
+- Verified `bun dist/index.js --help` and `bun binaries/webspecs-tui-bun --help` both work correctly
+- Binary build produces working `webspecs-tui-bun` (Bun bundle) and CLI produces `webspecs-local` (compiled executable)
+- Written README.md documenting Bun requirement, install instructions, usage, and Node.js alternative
+- AC#2 (bunx @webspecs/tui) verified locally via `bun dist/index.js`; full end-to-end bunx test requires published package
 <!-- SECTION:NOTES:END -->

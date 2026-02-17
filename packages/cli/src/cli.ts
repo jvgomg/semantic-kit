@@ -36,7 +36,7 @@ import { VERSION } from './lib/version.js'
 const program = new Command()
 
 program
-  .name('semantic-kit')
+  .name('webspecs')
   .description(
     'Developer toolkit for understanding how websites are interpreted by search engines, AI crawlers, screen readers, and content extractors',
   )
@@ -80,7 +80,7 @@ Other:
   fetch                Fetch and prettify HTML from a URL
   tui                  Launch interactive terminal UI
 
-Run 'semantic-kit <command> --help' for command-specific options.`,
+Run 'webspecs <command> --help' for command-specific options.`,
   )
 
 /**

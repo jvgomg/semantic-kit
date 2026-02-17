@@ -50,6 +50,11 @@ const buildConfig: Bun.BuildConfig = {
 
 await Bun.build(buildConfig)
 
+// Prepend shebang to the CLI entry so npm creates a correct bin wrapper
+const distCli = Bun.file('./dist/cli.js')
+const cliContent = await distCli.text()
+await Bun.write('./dist/cli.js', `#!/usr/bin/env node\n${cliContent}`)
+
 // Generate type declarations
 // Clean tsbuildinfo to ensure fresh build
 await $`rm -f tsconfig.build.tsbuildinfo`.quiet()

@@ -3,6 +3,28 @@
  *
  * Parses CLI arguments and launches the TUI.
  */
+
+// Bun runtime check - must be before any Bun-specific code
+if (typeof Bun === 'undefined') {
+  process.stderr.write(`
+┌─────────────────────────────────────────────────────────┐
+│  @webspecs/tui requires the Bun runtime                 │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Install Bun:                                           │
+│    curl -fsSL https://bun.sh/install | bash             │
+│                                                         │
+│  Then run:                                              │
+│    bunx @webspecs/tui [url]                             │
+│                                                         │
+│  For Node.js, use the CLI instead:                      │
+│    npx @webspecs/cli [command] [url]                    │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+`)
+  process.exit(1)
+}
+
 import { parseArgs } from 'util'
 import { loadTuiConfig, formatConfigError } from './lib/tui-config/index.js'
 import { startTui } from './start.js'

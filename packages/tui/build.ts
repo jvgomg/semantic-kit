@@ -55,6 +55,11 @@ const buildConfig: Bun.BuildConfig = {
 
 await Bun.build(buildConfig)
 
+// Prepend shebang so npm creates a bin wrapper that uses Bun, not Node.js
+const distIndex = Bun.file('./dist/index.js')
+const content = await distIndex.text()
+await Bun.write('./dist/index.js', `#!/usr/bin/env bun\n${content}`)
+
 // Generate type declarations
 // Clean tsbuildinfo to ensure fresh build
 await $`rm -f tsconfig.build.tsbuildinfo`.quiet()

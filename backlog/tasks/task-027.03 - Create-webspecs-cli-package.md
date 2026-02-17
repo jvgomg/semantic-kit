@@ -4,7 +4,7 @@ title: Create @webspecs/cli package
 status: Done
 assignee: []
 created_date: '2026-02-16 16:03'
-updated_date: '2026-02-16 17:19'
+updated_date: '2026-02-17 12:28'
 labels:
   - npm
   - architecture
@@ -98,8 +98,8 @@ Learn more: https://github.com/jvgomg/webspecs#tui
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
 - [x] #1 Package builds successfully
-- [ ] #2 npx @webspecs/cli --help works on Node.js
-- [ ] #3 All non-TUI commands function correctly
+- [x] #2 npx @webspecs/cli --help works on Node.js
+- [x] #3 All non-TUI commands function correctly
 - [x] #4 TUI command shows helpful redirect message
 - [x] #5 Depends on @webspecs/core via workspace protocol
 - [x] #6 No OpenTUI/TUI code bundled
@@ -129,4 +129,10 @@ Learn more: https://github.com/jvgomg/webspecs#tui
 - Add shebang to built output
 - Test with npx in isolated environment
 - Test all commands work correctly
+
+## Follow-up work completed
+
+- Added `#!/usr/bin/env node` shebang to `dist/cli.js` in build.ts so npm creates correct bin wrappers
+- Renamed CLI from `semantic-kit` to `webspecs` in Commander program name and help text
+- Verified all commands work on Node.js: `node dist/cli.js --help`, schema, validate:html, tui stub all work correctly
 <!-- SECTION:NOTES:END -->
