@@ -11,6 +11,7 @@ const buildConfig: Bun.BuildConfig = {
   sourcemap: 'external',
   define: {
     __TARGET_BUN__: 'true',
+    __VERSION__: JSON.stringify(pkg.version),
   },
   // External packages that should not be bundled
   external: [

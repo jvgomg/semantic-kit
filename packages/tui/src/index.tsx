@@ -1,75 +1,54 @@
 /**
- * TUI Entry Point
+ * TUI CLI Entry Point
+ *
+ * Parses CLI arguments and launches the TUI.
  */
-import {
-  createCliRenderer,
-  type CliRenderer,
-  type ThemeMode,
-} from '@opentui/core'
-import { createRoot } from '@opentui/react'
-import { Provider } from 'jotai'
-import { App } from './App.js'
-import { createPersistedStore, flushPersistedState } from './state/index.js'
-import { setDetectedVariantAtom } from './theme/index.js'
-import type { TuiConfig } from './lib/tui-config/index.js'
+import { parseArgs } from 'util'
+import { loadTuiConfig, formatConfigError } from './lib/tui-config/index.js'
+import { startTui } from './start.js'
+import { VERSION } from './lib/version.js'
 
-// Mouse handling is built into OpenTUI via component props:
-// - onMouseDown, onMouseUp, onMouseScroll, etc.
-// No need for manual stdin patching like with Ink.
+const { values, positionals } = parseArgs({
+  args: Bun.argv.slice(2),
+  options: {
+    config: { type: 'string', short: 'c' },
+    help: { type: 'boolean', short: 'h' },
+    version: { type: 'boolean', short: 'v' },
+  },
+  allowPositionals: true,
+})
 
-export interface TuiOptions {
-  initialUrl?: string
-  /** Loaded config data (if --config was provided) */
-  configData?: { path: string; config: TuiConfig }
+if (values.version) {
+  console.log(VERSION)
+  process.exit(0)
 }
 
-/**
- * Initialize theme detection from terminal.
- * Uses OpenTUI's built-in theme mode detection (DEC mode 2031).
- */
-function initializeThemeDetection(
-  renderer: CliRenderer,
-  store: Awaited<ReturnType<typeof createPersistedStore>>,
-): void {
-  // Set initial theme mode if already detected
-  if (renderer.themeMode) {
-    store.set(setDetectedVariantAtom, renderer.themeMode)
+if (values.help) {
+  console.log(`webspecs-tui v${VERSION}
+
+Usage: webspecs-tui [options] [url]
+
+Options:
+  -c, --config <path>  Path to YAML config file
+  -h, --help           Show this help message
+  -v, --version        Show version number
+
+Arguments:
+  url                  URL to open on startup
+`)
+  process.exit(0)
+}
+
+const initialUrl = positionals[0]
+let configData: { path: string; config: import('./lib/tui-config/index.js').TuiConfig } | undefined
+
+if (values.config) {
+  const result = await loadTuiConfig(values.config)
+  if (result.type === 'error') {
+    console.error(formatConfigError(result))
+    process.exit(1)
   }
-
-  // Subscribe to theme mode changes
-  renderer.on('theme_mode', (mode: ThemeMode) => {
-    store.set(setDetectedVariantAtom, mode)
-  })
+  configData = { path: values.config, config: result.config }
 }
 
-export async function startTui(options: TuiOptions = {}): Promise<void> {
-  const { initialUrl, configData } = options
-
-  // Create store with persisted state loaded from disk
-  // This happens before React mounts, so state is immediately available
-  const store = await createPersistedStore({ initialUrl, configData })
-
-  return new Promise<void>((resolve) => {
-    createCliRenderer({
-      exitOnCtrlC: true,
-      useAlternateScreen: true,
-      useMouse: true,
-      enableMouseMovement: false, // Only track clicks and scrolls, not hover
-      onDestroy: () => {
-        // Flush any pending persisted state before exit (sync)
-        flushPersistedState()
-        resolve()
-      },
-    }).then((renderer) => {
-      // Initialize theme detection
-      initializeThemeDetection(renderer, store)
-
-      const root = createRoot(renderer)
-      root.render(
-        <Provider store={store}>
-          <App initialUrl={initialUrl} hasConfig={!!configData} />
-        </Provider>,
-      )
-    })
-  })
-}
+await startTui({ initialUrl, configData })

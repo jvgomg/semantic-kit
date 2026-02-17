@@ -17,7 +17,7 @@
     "README.md"
   ],
   "bin": {
-    "webspecs-tui": "./dist/cli.js"
+    "webspecs-tui": "./dist/index.js"
   },
   "scripts": {
     "build": "bun run build.ts",
