@@ -210,10 +210,16 @@ export type {
   StructureResult,
   StructureJsResult,
   StructureCompareResult,
+  TuiStructureResult,
+  StructureJsInternalResult,
+  StructureCompareRunnerResult,
   // AI command results
   FrameworkDetection,
   HiddenContentAnalysis,
   AiResult,
+  // Social command results
+  SocialTagGroup,
+  SocialResult,
   // Schema command results
   MetatagGroupResult,
   SchemaResult,
@@ -222,6 +228,9 @@ export type {
   SchemaComparisonMetrics,
   // Readability command results
   ReadabilityJsResult,
+  ReadabilityCompareResult,
+  ReadabilityComparison,
+  SectionInfo,
   ReaderResult,
   ReadabilityMetrics,
   ReadabilityFullMetrics,
@@ -248,3 +257,31 @@ export type {
 
 // Screen reader analysis
 export { analyzeScreenReaderExperience } from './screen-reader-analysis.js'
+
+// Runner functions (orchestrate core analysis functions into typed results)
+export {
+  fetchAi,
+  fetchA11y,
+  fetchA11yJs,
+  fetchA11yCompare,
+  fetchGoogle,
+  fetchReader,
+  fetchReadability,
+  fetchReadabilityJs,
+  fetchReadabilityCompare,
+  fetchSchema,
+  fetchSchemaJs,
+  fetchSchemaCompare,
+  fetchSocial,
+  fetchScreenReader,
+  fetchStructure,
+  fetchStructureJs,
+  fetchStructureCompare,
+  runAxeAnalysis,
+  fetchValidateHtml,
+  fetchSchemaValidation,
+  type FetchReadabilityJsOptions,
+  type FetchSchemaJsOptions,
+  type FetchSchemaCompareOptions,
+  type FetchStructureJsOptions,
+} from './runners.js'

@@ -1,8 +1,8 @@
 /**
  * Readability:compare View - Compare static vs JS-rendered Readability extraction.
  */
-import { fetchReadabilityCompare } from '@webspecs/cli/commands/readability/index.js'
-import type { ReadabilityCompareResult } from '@webspecs/cli/commands/readability/types.js'
+import { fetchReadabilityCompare } from '@webspecs/core'
+import type { ReadabilityCompareResult } from '@webspecs/core'
 import { ReadabilityCompareViewContent } from './components/ReadabilityCompareViewContent.js'
 import { registerView } from './registry.js'
 import type { ViewDefinition } from './types.js'

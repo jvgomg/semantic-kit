@@ -1,17 +1,15 @@
 /**
  * Structure:compare View - Compare static vs JS-rendered page structure.
  */
-import {
-  fetchStructureCompare,
-  type StructureCompareResult,
-} from '@webspecs/cli/commands/structure/index.js'
+import { fetchStructureCompare } from '@webspecs/core'
+import type { StructureCompareRunnerResult } from '@webspecs/core'
 import { StructureCompareViewContent } from './components/StructureCompareViewContent.js'
 import { registerView } from './registry.js'
 import type { ViewDefinition } from './types.js'
 
 const DEFAULT_TIMEOUT_MS = 30000
 
-export const structureCompareView: ViewDefinition<StructureCompareResult> = {
+export const structureCompareView: ViewDefinition<StructureCompareRunnerResult> = {
   id: 'structure-compare',
   label: 'Structure:compare',
   description:

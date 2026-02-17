@@ -16,7 +16,7 @@ import {
   SectionPriority,
 } from '../../components/ui/index.js'
 import { usePalette } from '../../theme.js'
-import type { ReadabilityCompareResult } from '@webspecs/cli/commands/readability/types.js'
+import type { ReadabilityCompareResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 
 /**

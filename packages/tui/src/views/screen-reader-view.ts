@@ -1,7 +1,7 @@
 /**
  * Screen Reader View - Shows how screen readers interpret the page.
  */
-import { fetchScreenReader } from '@webspecs/cli/commands/screen-reader/index.js'
+import { fetchScreenReader } from '@webspecs/core'
 import type { ScreenReaderResult } from '@webspecs/core'
 import { ScreenReaderViewContent } from './components/ScreenReaderViewContent.js'
 import { registerView } from './registry.js'

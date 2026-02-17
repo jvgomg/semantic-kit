@@ -19,7 +19,7 @@ import {
   getIssuesSeverity,
 } from '../../components/ui/index.js'
 import { usePalette } from '../../theme.js'
-import type { SocialResult } from '@webspecs/cli/commands/social/types.js'
+import type { SocialResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 
 // ============================================================================

@@ -15,7 +15,7 @@ import {
   type TreeNode,
 } from '../../components/ui/index.js'
 import { usePalette } from '../../theme.js'
-import type { TuiStructureResult } from '@webspecs/cli/commands/structure/index.js'
+import type { TuiStructureResult } from '@webspecs/core'
 import type {
   StructureWarning,
   LandmarkNode,

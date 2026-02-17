@@ -1,7 +1,7 @@
 /**
  * Schema View - Inspect structured data on a page.
  */
-import { fetchSchema } from '@webspecs/cli/commands/schema/index.js'
+import { fetchSchema } from '@webspecs/core'
 import type { SchemaResult } from '@webspecs/core'
 import { SchemaViewContent } from './components/SchemaViewContent.js'
 import { registerView } from './registry.js'

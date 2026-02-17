@@ -1,8 +1,8 @@
 /**
  * Google View - Shows how Googlebot sees your page.
  */
-import { fetchGoogle } from '@webspecs/cli/commands/google/index.js'
-import type { GoogleResult } from '@webspecs/cli/commands/google/types.js'
+import { fetchGoogle } from '@webspecs/core'
+import type { GoogleResult } from '@webspecs/core'
 import { GoogleViewContent } from './components/GoogleViewContent.js'
 import { registerView } from './registry.js'
 import type { ViewDefinition } from './types.js'

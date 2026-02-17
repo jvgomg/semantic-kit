@@ -1,7 +1,7 @@
 /**
  * Schema:js View - Inspect structured data after JavaScript rendering.
  */
-import { fetchSchemaJs } from '@webspecs/cli/commands/schema/index.js'
+import { fetchSchemaJs } from '@webspecs/core'
 import type { SchemaJsResult } from '@webspecs/core'
 import { SchemaJsViewContent } from './components/SchemaJsViewContent.js'
 import { registerView } from './registry.js'

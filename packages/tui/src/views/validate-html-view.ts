@@ -1,7 +1,7 @@
 /**
  * Validate HTML View - Shows HTML validation results.
  */
-import { fetchValidateHtml } from '@webspecs/cli/commands/validate-html/index.js'
+import { fetchValidateHtml } from '@webspecs/core'
 import type { HtmlValidateReport } from '@webspecs/core'
 
 import { ValidateHtmlViewContent } from './components/ValidateHtmlViewContent.js'

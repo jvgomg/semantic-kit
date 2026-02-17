@@ -1,7 +1,7 @@
 /**
  * Reader View - Shows how browser reader modes see the page content.
  */
-import { fetchReader } from '@webspecs/cli/commands/reader/index.js'
+import { fetchReader } from '@webspecs/core'
 import type { ReaderResult } from '@webspecs/core'
 import { ReaderViewContent } from './components/ReaderViewContent.js'
 import { registerView } from './registry.js'

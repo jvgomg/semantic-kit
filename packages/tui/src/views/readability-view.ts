@@ -1,7 +1,7 @@
 /**
  * Readability View - Raw Readability extraction with full metrics.
  */
-import { fetchReadability } from '@webspecs/cli/commands/readability/index.js'
+import { fetchReadability } from '@webspecs/core'
 import type { ReadabilityUtilityResult } from '@webspecs/core'
 import { ReadabilityViewContent } from './components/ReadabilityViewContent.js'
 import { registerView } from './registry.js'

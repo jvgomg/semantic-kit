@@ -11,7 +11,10 @@
  */
 
 import type { AriaNode, SnapshotDiff } from './aria-snapshot.js'
+import type { AxeStaticResult } from './axe-static.js'
 import type { SocialValidationIssue } from './metadata/types.js'
+import type { SocialPreview } from './preview.js'
+import type { ReadabilityResult } from './readability.js'
 import type { StructureAnalysis, StructureComparison } from './structure.js'
 
 // ============================================================================
@@ -65,6 +68,48 @@ export interface A11yCompareResult {
 }
 
 // ============================================================================
+// Social Command Results
+// ============================================================================
+
+/**
+ * A group of social meta tags (Open Graph, Twitter Cards).
+ */
+export interface SocialTagGroup {
+  /** Human-readable name (e.g., "Open Graph") */
+  name: string
+  /** Tag prefix (e.g., "og:") */
+  prefix: string
+  /** The extracted tags */
+  tags: Record<string, string>
+}
+
+/**
+ * Result for the `social` command.
+ * Shows what social media platforms see when a link is shared.
+ */
+export interface SocialResult {
+  /** Target URL or file path */
+  target: string
+  /** Open Graph tag group (null if no OG tags found) */
+  openGraph: SocialTagGroup | null
+  /** Twitter Card tag group (null if no Twitter tags found) */
+  twitter: SocialTagGroup | null
+  /** Resolved preview values (with fallbacks) */
+  preview: SocialPreview
+  /** Summary counts */
+  counts: {
+    /** Number of Open Graph tags found */
+    openGraph: number
+    /** Number of Twitter Card tags found */
+    twitter: number
+    /** Total social meta tags */
+    total: number
+  }
+  /** Validation issues found */
+  issues: SocialValidationIssue[]
+}
+
+// ============================================================================
 // Structure Command Results
 // ============================================================================
 
@@ -99,6 +144,30 @@ export interface StructureJsResult {
  * Uses StructureComparison directly (already well-typed in lib/structure.ts)
  */
 export type StructureCompareResult = StructureComparison
+
+/**
+ * Structure result including axe-core output, for TUI consumption.
+ */
+export interface TuiStructureResult {
+  url: string
+  analysis: StructureAnalysis
+  axeResult: AxeStaticResult
+}
+
+/**
+ * Structure:js result including axe-core output, for TUI consumption.
+ */
+export interface StructureJsInternalResult extends StructureJsResult {
+  axeResult: AxeStaticResult
+}
+
+/**
+ * Structure:compare runner result (comparison with timeout flag).
+ */
+export interface StructureCompareRunnerResult {
+  comparison: StructureComparison
+  timedOut: boolean
+}
 
 // ============================================================================
 // AI Command Results
@@ -260,6 +329,46 @@ export interface ReadabilityUtilityResult {
  * Shows Readability extraction after JavaScript rendering.
  */
 export interface ReadabilityJsResult extends ReadabilityUtilityResult {
+  /** Whether the page load timed out */
+  timedOut: boolean
+}
+
+/**
+ * Section heading found only in one version (static or rendered).
+ */
+export interface SectionInfo {
+  heading: string
+  level: number
+}
+
+/**
+ * Comparison metrics between static and rendered Readability content.
+ */
+export interface ReadabilityComparison {
+  /** Word count in static HTML */
+  staticWordCount: number
+  /** Word count after JavaScript rendering */
+  renderedWordCount: number
+  /** Words only visible after JavaScript execution */
+  jsDependentWordCount: number
+  /** Percentage of content that requires JavaScript */
+  jsDependentPercentage: number
+  /** Sections that only appear after JavaScript */
+  sectionsOnlyInRendered: SectionInfo[]
+}
+
+/**
+ * Result for `readability:compare` command.
+ */
+export interface ReadabilityCompareResult {
+  /** Target URL analyzed */
+  url: string
+  /** Readability extraction from static HTML */
+  static: ReadabilityResult
+  /** Readability extraction from JS-rendered HTML */
+  rendered: ReadabilityResult
+  /** Comparison metrics */
+  comparison: ReadabilityComparison
   /** Whether the page load timed out */
   timedOut: boolean
 }

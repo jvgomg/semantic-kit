@@ -1,7 +1,7 @@
 /**
  * A11y Tree:compare View - Compare accessibility trees between static and JS-rendered HTML.
  */
-import { fetchA11yCompare } from '@webspecs/cli/commands/a11y-tree/runner-compare.js'
+import { fetchA11yCompare } from '@webspecs/core'
 import type { A11yCompareResult } from '@webspecs/core'
 import { A11yTreeCompareViewContent } from './components/A11yTreeCompareViewContent.js'
 import { registerView } from './registry.js'

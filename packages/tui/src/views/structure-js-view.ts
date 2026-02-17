@@ -1,10 +1,8 @@
 /**
  * Structure:js View - Shows page structure after JavaScript rendering.
  */
-import {
-  fetchStructureJs,
-  type StructureJsInternalResult,
-} from '@webspecs/cli/commands/structure/index.js'
+import { fetchStructureJs } from '@webspecs/core'
+import type { StructureJsInternalResult } from '@webspecs/core'
 import { StructureJsViewContent } from './components/StructureJsViewContent.js'
 import { registerView } from './registry.js'
 import type { ViewDefinition } from './types.js'

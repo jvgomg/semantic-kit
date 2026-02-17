@@ -1,7 +1,7 @@
 /**
  * A11y Tree View - Accessibility tree snapshot (static HTML).
  */
-import { fetchA11y } from '@webspecs/cli/commands/a11y-tree/runner.js'
+import { fetchA11y } from '@webspecs/core'
 import type { A11yResult } from '@webspecs/core'
 import { A11yTreeViewContent } from './components/A11yTreeViewContent.js'
 import { registerView } from './registry.js'

@@ -20,7 +20,7 @@ import {
   Table,
 } from '../../components/ui/index.js'
 import { usePalette } from '../../theme.js'
-import type { StructureCompareResult } from '@webspecs/cli/commands/structure/index.js'
+import type { StructureCompareRunnerResult } from '@webspecs/core'
 import type {
   LandmarkDiff,
   HeadingDiff,
@@ -39,7 +39,7 @@ import type { ViewComponentProps } from '../types.js'
 function ComparisonContent({
   data,
 }: {
-  data: StructureCompareResult
+  data: StructureCompareRunnerResult
 }): ReactNode {
   const palette = usePalette()
   const { summary, hasDifferences } = data.comparison
@@ -312,7 +312,7 @@ function LinksContent({ links }: { links: LinkDiff }): ReactNode {
 export function StructureCompareViewContent({
   data,
   height,
-}: ViewComponentProps<StructureCompareResult>): ReactNode {
+}: ViewComponentProps<StructureCompareRunnerResult>): ReactNode {
   const palette = usePalette()
   const { comparison, timedOut } = data
   const { hasDifferences, summary, metadata, landmarks, headings, links } =

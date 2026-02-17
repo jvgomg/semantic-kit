@@ -1,7 +1,7 @@
 /**
  * Schema:compare View - Compare static vs JS-rendered structured data.
  */
-import { fetchSchemaCompare } from '@webspecs/cli/commands/schema/index.js'
+import { fetchSchemaCompare } from '@webspecs/core'
 import type { SchemaCompareResult } from '@webspecs/core'
 import { SchemaCompareViewContent } from './components/SchemaCompareViewContent.js'
 import { registerView } from './registry.js'

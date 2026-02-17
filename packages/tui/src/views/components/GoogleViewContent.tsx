@@ -18,10 +18,7 @@ import {
   HeadingOutline,
 } from '../../components/ui/index.js'
 import { usePalette } from '../../theme.js'
-import type {
-  GoogleResult,
-  GoogleSchemaItem,
-} from '@webspecs/cli/commands/google/types.js'
+import type { GoogleResult, GoogleSchemaItem } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 
 // ============================================================================

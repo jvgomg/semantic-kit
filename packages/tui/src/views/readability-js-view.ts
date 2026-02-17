@@ -1,7 +1,7 @@
 /**
  * Readability:js View - Readability extraction after JavaScript rendering.
  */
-import { fetchReadabilityJs } from '@webspecs/cli/commands/readability/runner-js.js'
+import { fetchReadabilityJs } from '@webspecs/core'
 import type { ReadabilityJsResult } from '@webspecs/core'
 import { ReadabilityJsViewContent } from './components/ReadabilityJsViewContent.js'
 import { registerView } from './registry.js'

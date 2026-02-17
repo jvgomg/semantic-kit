@@ -12,11 +12,9 @@ import {
   CardRow,
 } from '../../components/ui/index.js'
 import { usePalette } from '../../theme.js'
-import type {
-  AxeAnalysisResult,
-  WcagLevel,
-  Severity,
-} from '@webspecs/cli/commands/validate-a11y/types.js'
+import type { AxeAnalysisResult, WcagLevel } from '@webspecs/core'
+
+type Severity = 'critical' | 'serious' | 'moderate' | 'minor'
 import type { AxeViolationResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 

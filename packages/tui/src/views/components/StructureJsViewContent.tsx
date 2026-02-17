@@ -16,7 +16,7 @@ import {
   type TreeNode,
 } from '../../components/ui/index.js'
 import { usePalette } from '../../theme.js'
-import type { StructureJsInternalResult } from '@webspecs/cli/commands/structure/index.js'
+import type { StructureJsInternalResult } from '@webspecs/core'
 import type {
   StructureWarning,
   LandmarkNode,

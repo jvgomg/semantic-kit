@@ -1,7 +1,7 @@
 /**
  * AI View - Shows how AI crawlers see the page content.
  */
-import { fetchAi } from '@webspecs/cli/commands/ai/index.js'
+import { fetchAi } from '@webspecs/core'
 import type { AiResult } from '@webspecs/core'
 import { AiViewContent } from './components/AiViewContent.js'
 import { registerView } from './registry.js'

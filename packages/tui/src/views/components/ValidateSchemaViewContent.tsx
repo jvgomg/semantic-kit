@@ -12,7 +12,7 @@ import {
   CardRow,
 } from '../../components/ui/index.js'
 import { usePalette } from '../../theme.js'
-import type { SchemaValidationResult } from '@webspecs/cli/commands/validate-schema/types.js'
+import type { SchemaValidationResult } from '@webspecs/core'
 import type { SchemaTestResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 

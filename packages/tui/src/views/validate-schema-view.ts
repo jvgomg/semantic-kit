@@ -1,8 +1,8 @@
 /**
  * Validate Schema View - Shows structured data validation results.
  */
-import { fetchSchemaValidation } from '@webspecs/cli/commands/validate-schema/index.js'
-import type { SchemaValidationResult } from '@webspecs/cli/commands/validate-schema/types.js'
+import { fetchSchemaValidation } from '@webspecs/core'
+import type { SchemaValidationResult } from '@webspecs/core'
 import { ValidateSchemaViewContent } from './components/ValidateSchemaViewContent.js'
 import { registerView } from './registry.js'
 import type { ViewDefinition } from './types.js'

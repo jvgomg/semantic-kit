@@ -1,8 +1,8 @@
 /**
  * Social View - Shows how social platforms see your page.
  */
-import { fetchSocial } from '@webspecs/cli/commands/social/index.js'
-import type { SocialResult } from '@webspecs/cli/commands/social/types.js'
+import { fetchSocial } from '@webspecs/core'
+import type { SocialResult } from '@webspecs/core'
 import { SocialViewContent } from './components/SocialViewContent.js'
 import { registerView } from './registry.js'
 import type { ViewDefinition } from './types.js'

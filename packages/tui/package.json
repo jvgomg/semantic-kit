@@ -55,7 +55,6 @@
   "dependencies": {
     "@opentui/core": "^0.1.79",
     "@opentui/react": "^0.1.79",
-    "@webspecs/cli": "workspace:*",
     "@webspecs/core": "workspace:*",
     "diff": "^8.0.3",
     "jotai": "^2.16.2",
