@@ -1,23 +1,37 @@
 # semantic-kit
 
-> Work in progress
-
 Developer toolkit for understanding how websites are interpreted by search engines, AI crawlers, screen readers, and content extractors.
+
+[![npm](https://img.shields.io/npm/v/@webspecs/cli?label=%40webspecs%2Fcli)](https://www.npmjs.com/package/@webspecs/cli)
+[![npm](https://img.shields.io/npm/v/@webspecs/core?label=%40webspecs%2Fcore)](https://www.npmjs.com/package/@webspecs/core)
+[![npm](https://img.shields.io/npm/v/@webspecs/tui?label=%40webspecs%2Ftui)](https://www.npmjs.com/package/@webspecs/tui)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+## Packages
+
+| Package | Description |
+| --- | --- |
+| [`@webspecs/cli`](https://www.npmjs.com/package/@webspecs/cli) | CLI tool — Node.js ≥ 18, works with `npm` and `npx` |
+| [`@webspecs/core`](https://www.npmjs.com/package/@webspecs/core) | Core library for programmatic use |
+| [`@webspecs/tui`](https://www.npmjs.com/package/@webspecs/tui) | Interactive terminal UI — requires Bun |
 
 ## Installation
 
 ```bash
-# Install globally
-npm install -g semantic-kit
+# CLI (Node.js ≥ 18)
+npm install -g @webspecs/cli
 
-# Or use with npx
-npx semantic-kit <command> [options]
+# Or use without installing
+npx @webspecs/cli <command> [url]
+
+# TUI (requires Bun)
+bunx @webspecs/tui [url]
 ```
 
 ## Usage
 
 ```bash
-semantic-kit <command> [options]
+webspecs <command> [url] [options]
 ```
 
 ## Commands
@@ -97,7 +111,6 @@ Commands are organized into two groups:
 - [Fetch](./docs/commands/fetch.md) — Fetch and prettify HTML
 - [TUI](./docs/commands/tui.md) — Interactive terminal UI
 - [Design Decisions](./docs/design-decisions.md) — Why things are built this way
-- [Changelog](./CHANGELOG.md) — Version history
 
 ## Philosophy
 
@@ -169,7 +182,7 @@ import type {
   StructureComparison,
   AriaNode,
   SnapshotDiff,
-} from 'semantic-kit'
+} from '@webspecs/core'
 ```
 
 These types define the exact structure of `--format json` output for each command, enabling type-safe consumption of results in scripts and tools.

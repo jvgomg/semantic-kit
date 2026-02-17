@@ -13,6 +13,21 @@
   "engines": {
     "node": ">=18.0.0"
   },
+  "keywords": [
+    "seo",
+    "accessibility",
+    "a11y",
+    "schema",
+    "structured-data",
+    "json-ld",
+    "open-graph",
+    "readability",
+    "screen-reader",
+    "wcag",
+    "html-validation",
+    "cli",
+    "command-line"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {

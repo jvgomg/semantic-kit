@@ -13,6 +13,23 @@
   "engines": {
     "bun": ">=1.0.0"
   },
+  "keywords": [
+    "seo",
+    "accessibility",
+    "a11y",
+    "schema",
+    "structured-data",
+    "json-ld",
+    "open-graph",
+    "readability",
+    "screen-reader",
+    "wcag",
+    "html-validation",
+    "tui",
+    "terminal",
+    "interactive",
+    "bun"
+  ],
   "sideEffects": false,
   "files": [
     "dist/**/*.js",

@@ -2,6 +2,9 @@
 
 Interactive terminal UI for webspecs — analyze how websites are interpreted by search engines, AI crawlers, screen readers, and content extractors.
 
+[![npm](https://img.shields.io/npm/v/@webspecs/tui)](https://www.npmjs.com/package/@webspecs/tui)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/jvgomg/semantic-kit/blob/main/LICENSE)
+
 > **Requires Bun runtime.** This package uses [OpenTUI](https://github.com/nicholasgasior/opentui) which depends on Bun-native APIs. It cannot run on Node.js.
 
 ## Requirements
