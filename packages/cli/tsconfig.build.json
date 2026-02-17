@@ -4,10 +4,12 @@
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
+    "rootDir": "./src",
     "outDir": "./dist",
     "noEmit": false,
     "paths": {},
     "checkJs": false
   },
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "build.ts"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
 }
