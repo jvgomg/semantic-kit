@@ -11,13 +11,25 @@
  */
 
 import { watch } from 'fs'
-import { join } from 'path'
+import { join, resolve, isAbsolute } from 'path'
 import type { Subprocess } from 'bun'
 
 const ROOT = join(import.meta.dir, '..')
 const CORE_DIR = join(ROOT, 'packages/core')
 const TUI_DIR = join(ROOT, 'packages/tui')
 const CORE_DIST = join(CORE_DIR, 'dist/index.js')
+
+// Forward CLI arguments to the TUI process, resolving relative paths to absolute.
+// This is needed because the TUI runs from packages/tui, not the monorepo root.
+const TUI_ARGS = process.argv.slice(2).map((arg, i, args) => {
+  // Check if this arg follows --config or -c
+  const prev = args[i - 1]
+  if (prev === '--config' || prev === '-c') {
+    // Resolve relative paths against cwd; absolute paths pass through unchanged
+    return isAbsolute(arg) ? arg : resolve(process.cwd(), arg)
+  }
+  return arg
+})
 
 // ── Initial builds ───────────────────────────────────────────────────────────
 
@@ -56,12 +68,18 @@ function startTUI(): void {
   if (tuiProcess) {
     tuiProcess.kill()
   }
-  tuiProcess = Bun.spawn(['bun', 'src/index.tsx'], {
-    cwd: TUI_DIR,
-    stdin: 'inherit',
-    stdout: 'inherit',
-    stderr: 'inherit',
-  })
+  // Use --preload to define __TARGET_BUN__ before any imports run.
+  // This is needed because tsconfig paths resolve @webspecs/core to source,
+  // not dist, so the build-time constant isn't defined.
+  tuiProcess = Bun.spawn(
+    ['bun', '--preload', './src/test-setup.ts', 'src/index.tsx', ...TUI_ARGS],
+    {
+      cwd: TUI_DIR,
+      stdin: 'inherit',
+      stdout: 'inherit',
+      stderr: 'inherit',
+    },
+  )
 }
 
 startTUI()
