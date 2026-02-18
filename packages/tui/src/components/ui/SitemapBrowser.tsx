@@ -11,7 +11,7 @@ import { useMemo, useCallback, type ReactNode } from 'react'
 import { useKeyboard } from '@opentui/react'
 import type { SitemapFetchResult, SitemapTreeNode } from '@webspecs/core'
 import { buildSitemapTree, flattenSitemapTree } from '@webspecs/core'
-import { useSemanticColors, usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import { boxChars } from '../view-display/priorities.js'
 
 // ============================================================================
@@ -58,7 +58,6 @@ export function SitemapBrowser({
   isFocused,
 }: SitemapBrowserProps): ReactNode {
   const colors = useSemanticColors()
-  const palette = usePalette()
 
   // Build and flatten the tree
   const flatNodes = useMemo<FlattenedNode[]>(() => {
@@ -211,7 +210,7 @@ export function SitemapBrowser({
   if (sitemapData && sitemapData.type === 'error') {
     return (
       <box flexDirection="column">
-        <text fg={palette.base08}>Error: {sitemapData.message}</text>
+        <text fg={colors.textError}>Error: {sitemapData.message}</text>
       </box>
     )
   }
@@ -274,7 +273,7 @@ export function SitemapBrowser({
         const pathDisplay = node.path
         const countBadge =
           hasChildren && node.urlCount > 0 ? (
-            <text fg={palette.base03}> ({node.urlCount})</text>
+            <text fg={colors.textMuted}> ({node.urlCount})</text>
           ) : null
 
         // Style differs based on focus state:
@@ -292,15 +291,15 @@ export function SitemapBrowser({
               : undefined,
         }
 
-        // Expand indicator color: cyan for selected item or ancestors of selected (when focused)
+        // Expand indicator color: accent for selected item or ancestors of selected (when focused)
         const expandColor =
           hasChildren && isFocused && (isSelected || isAncestorOfSelected)
-            ? palette.base0D
-            : palette.base02
+            ? colors.accent
+            : colors.treeGuide
 
         return (
           <box key={node.displayPath} flexDirection="row">
-            <text fg={palette.base02}>{indent}</text>
+            <text fg={colors.indent}>{indent}</text>
             <text fg={expandColor}>{expandIndicator}</text>
             <text {...style}>{pathDisplay}</text>
             {countBadge}

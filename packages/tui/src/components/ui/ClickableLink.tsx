@@ -5,7 +5,7 @@
  * Uses OpenTUI's built-in link support via the <a> element.
  */
 import type { ReactNode } from 'react'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 
 export interface ClickableLinkProps {
   /** URL to open when clicked */
@@ -34,8 +34,8 @@ export function ClickableLink({
   muted = false,
   underline = true,
 }: ClickableLinkProps): ReactNode {
-  const palette = usePalette()
-  const color = muted ? palette.base03 : palette.base0D
+  const colors = useSemanticColors()
+  const color = muted ? colors.textLinkMuted : colors.textLink
   const content = children ?? label ?? href
 
   // OpenTUI's <a> element must be inside a <text> element

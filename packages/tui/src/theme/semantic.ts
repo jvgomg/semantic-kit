@@ -14,34 +14,140 @@ import { currentPaletteAtom } from './atoms.js'
  */
 export interface SemanticColors {
   // ---------------------------------------------------------------------------
-  // Primary Roles
+  // Text Hierarchy
   // ---------------------------------------------------------------------------
 
-  /** Primary accent color - used for focus indicators and active elements */
-  accent: string
-  /** Muted/secondary color - used for inactive elements and hints */
-  muted: string
-  /** Primary text color */
+  /** Primary text color for main content */
   text: string
-  /** Highlight color for keyboard shortcuts and important callouts */
-  highlight: string
+  /** Secondary text for less prominent but still readable content */
+  textSecondary: string
+  /** Muted text for comments, timestamps, low-priority info */
+  textMuted: string
+  /** Disabled text for inactive elements */
+  textDisabled: string
 
   // ---------------------------------------------------------------------------
-  // Component-Specific
+  // Text - Interactive
+  // ---------------------------------------------------------------------------
+
+  /** Link text color */
+  textLink: string
+  /** Muted link text (links in muted context) */
+  textLinkMuted: string
+  /** Selected item text color */
+  textSelected: string
+  /** Keyboard shortcut text */
+  textShortcut: string
+  /** Text color for hint/help text */
+  textHint: string
+
+  // ---------------------------------------------------------------------------
+  // Text - Status
+  // ---------------------------------------------------------------------------
+
+  /** Success status text */
+  textSuccess: string
+  /** Error status text */
+  textError: string
+  /** Warning status text */
+  textWarning: string
+  /** Info status text */
+  textInfo: string
+
+  // ---------------------------------------------------------------------------
+  // Backgrounds
+  // ---------------------------------------------------------------------------
+
+  /** Base background color */
+  background: string
+  /** Elevated/raised background (cards, modals) */
+  backgroundElevated: string
+  /** Selected item background */
+  backgroundSelected: string
+  /** Hover state background */
+  backgroundHover: string
+
+  // ---------------------------------------------------------------------------
+  // Borders
   // ---------------------------------------------------------------------------
 
   /** Border color when a region has keyboard focus */
   borderFocused: string
   /** Border color when a region does not have focus */
   borderUnfocused: string
-  /** Text color for the currently selected item */
-  textSelected: string
-  /** Background color for the currently selected item */
-  backgroundSelected: string
-  /** Text color for hint/help text */
-  textHint: string
-  /** Text color for keyboard shortcut indicators */
-  textShortcut: string
+  /** Border color for selected/active items */
+  borderSelected: string
+  /** Subtle border for structural elements */
+  borderSubtle: string
+
+  // ---------------------------------------------------------------------------
+  // Decorative (low contrast intentional)
+  // ---------------------------------------------------------------------------
+
+  /** Divider lines between sections */
+  divider: string
+  /** Tree view guide lines */
+  treeGuide: string
+  /** Indentation guides */
+  indent: string
+
+  // ---------------------------------------------------------------------------
+  // Accents
+  // ---------------------------------------------------------------------------
+
+  /** Primary accent color - used for focus indicators and active elements */
+  accent: string
+  /** Highlight color for keyboard shortcuts and important callouts */
+  highlight: string
+  /** @deprecated Use textMuted instead */
+  muted: string
+
+  // ---------------------------------------------------------------------------
+  // Severity Colors
+  // ---------------------------------------------------------------------------
+
+  /** Critical severity (highest) */
+  severityCritical: string
+  /** Error severity */
+  severityError: string
+  /** Warning severity */
+  severityWarning: string
+  /** Info severity */
+  severityInfo: string
+  /** Success severity */
+  severitySuccess: string
+  /** Muted/low severity */
+  severityMuted: string
+
+  // ---------------------------------------------------------------------------
+  // Data Visualization / Status (legacy, prefer severity* or text*)
+  // ---------------------------------------------------------------------------
+
+  /** Success state color */
+  success: string
+  /** Error state color */
+  error: string
+  /** Warning state color */
+  warning: string
+  /** Info state color */
+  info: string
+
+  // ---------------------------------------------------------------------------
+  // Markdown/Content
+  // ---------------------------------------------------------------------------
+
+  /** Markdown heading color */
+  markdownHeading: string
+  /** Markdown heading 1 color (for special treatment) */
+  markdownHeading1: string
+  /** Markdown code/raw text color */
+  markdownCode: string
+  /** Markdown list marker color */
+  markdownList: string
+  /** Markdown quote color */
+  markdownQuote: string
+  /** Markdown link color */
+  markdownLink: string
 
   // ---------------------------------------------------------------------------
   // Modal/Overlay
@@ -55,19 +161,6 @@ export interface SemanticColors {
   modalBorder: string
   /** Title text color in modals */
   modalTitle: string
-
-  // ---------------------------------------------------------------------------
-  // Data Visualization / Status
-  // ---------------------------------------------------------------------------
-
-  /** Success state color */
-  success: string
-  /** Error state color */
-  error: string
-  /** Warning state color */
-  warning: string
-  /** Info state color */
-  info: string
 }
 
 /**
@@ -91,35 +184,74 @@ export const semanticColorsAtom = atom<SemanticColors>((get) => {
   const p = get(currentPaletteAtom)
 
   return {
-    // Primary roles
-    accent: p.base0D, // Functions/methods → primary accent
-    muted: p.base03, // Comments → muted text
-    text: p.base05, // Default foreground
-    highlight: p.base0A, // Classes/bold → highlight
+    // Text hierarchy
+    text: p.base05, // Primary content
+    textSecondary: p.base04, // Less prominent, readable
+    textMuted: p.base03, // Comments, timestamps
+    textDisabled: p.base03, // Inactive elements
+
+    // Text - interactive
+    textLink: p.base0D, // Clickable references
+    textLinkMuted: p.base03, // Links in muted context
+    textSelected: p.base0D, // Selected item text
+    textShortcut: p.base0A, // Keyboard shortcuts
+    textHint: p.base03, // Hint/help text
+
+    // Text - status
+    textSuccess: p.base0B, // Success
+    textError: p.base08, // Error
+    textWarning: p.base0A, // Warning
+    textInfo: p.base0C, // Info
+
+    // Backgrounds
+    background: p.base00, // Base background
+    backgroundElevated: p.base01, // Cards, modals
+    backgroundSelected: p.base02, // Selection
+    backgroundHover: p.base01, // Hover state
 
     // Borders
-    borderFocused: p.base0D, // Accent for focused
-    borderUnfocused: p.base03, // Muted for unfocused
+    borderFocused: p.base0D, // Focused
+    borderUnfocused: p.base03, // Unfocused
+    borderSelected: p.base0A, // Selected/active
+    borderSubtle: p.base02, // Structural
 
-    // Selection
-    textSelected: p.base0D, // Accent color for selected text
-    backgroundSelected: p.base02, // Selection background
+    // Decorative (low contrast intentional)
+    divider: p.base02, // Section dividers
+    treeGuide: p.base02, // Tree view lines
+    indent: p.base02, // Indentation guides
 
-    // Hints/shortcuts
-    textHint: p.base03, // Muted for hints
-    textShortcut: p.base0A, // Highlight for shortcuts
+    // Accents
+    accent: p.base0D, // Primary accent
+    highlight: p.base0A, // Highlight/attention
+    muted: p.base03, // @deprecated: use textMuted
+
+    // Severity colors
+    severityCritical: p.base08, // Red
+    severityError: p.base08, // Red
+    severityWarning: p.base0A, // Yellow
+    severityInfo: p.base0D, // Blue
+    severitySuccess: p.base0B, // Green
+    severityMuted: p.base03, // Gray
+
+    // Data visualization / status (legacy)
+    success: p.base0B, // Green
+    error: p.base08, // Red
+    warning: p.base0A, // Yellow
+    info: p.base0C, // Cyan
+
+    // Markdown/content
+    markdownHeading: p.base0D, // Headings
+    markdownHeading1: p.base0C, // H1 special treatment
+    markdownCode: p.base0B, // Code/raw
+    markdownList: p.base0A, // List markers
+    markdownQuote: p.base03, // Block quotes
+    markdownLink: p.base0D, // Links
 
     // Modal
-    modalBackground: p.base00, // Default background
-    modalBackgroundSelected: p.base02, // Selection background
-    modalBorder: p.base0D, // Accent for modal borders
-    modalTitle: p.base0D, // Accent for modal titles
-
-    // Data visualization / status
-    success: p.base0B, // Strings/inserted → green
-    error: p.base08, // Variables/deleted → red
-    warning: p.base0A, // Classes/bold → yellow
-    info: p.base0C, // Support → cyan
+    modalBackground: p.base00, // Background
+    modalBackgroundSelected: p.base02, // Selected
+    modalBorder: p.base0D, // Border
+    modalTitle: p.base0D, // Title
   }
 })
 
@@ -136,4 +268,44 @@ export const semanticColorsAtom = atom<SemanticColors>((get) => {
  */
 export function useSemanticColors(): SemanticColors {
   return useAtomValue(semanticColorsAtom)
+}
+
+/**
+ * Severity level type for color mapping.
+ */
+export type SeverityLevel =
+  | 'critical'
+  | 'error'
+  | 'warning'
+  | 'info'
+  | 'success'
+  | 'muted'
+
+/**
+ * Get severity color for a given severity level.
+ *
+ * @example
+ * const colors = useSemanticColors()
+ * const color = getSeverityColor(colors, 'error')
+ */
+export function getSeverityColor(
+  colors: SemanticColors,
+  severity?: SeverityLevel,
+): string {
+  switch (severity) {
+    case 'critical':
+      return colors.severityCritical
+    case 'error':
+      return colors.severityError
+    case 'warning':
+      return colors.severityWarning
+    case 'info':
+      return colors.severityInfo
+    case 'success':
+      return colors.severitySuccess
+    case 'muted':
+      return colors.severityMuted
+    default:
+      return colors.text
+  }
 }

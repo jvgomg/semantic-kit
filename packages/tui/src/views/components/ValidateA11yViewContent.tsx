@@ -11,7 +11,7 @@ import {
   Card,
   CardRow,
 } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { AxeAnalysisResult, WcagLevel } from '@webspecs/core'
 
 type Severity = 'critical' | 'serious' | 'moderate' | 'minor'
@@ -139,22 +139,22 @@ function ConfigContent({
   timeoutMs: number
   timedOut: boolean
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const timeoutSec = Math.round(timeoutMs / 1000)
 
   return (
     <box flexDirection="column" gap={0}>
       <box flexDirection="row">
-        <text fg={palette.base03}>WCAG Level: </text>
-        <text fg={palette.base0D}>{level.toUpperCase()}</text>
+        <text fg={colors.textMuted}>WCAG Level: </text>
+        <text fg={colors.accent}>{level.toUpperCase()}</text>
       </box>
       <box flexDirection="row">
-        <text fg={palette.base03}>Timeout: </text>
-        <text fg={palette.base05}>{timeoutSec}s</text>
+        <text fg={colors.textMuted}>Timeout: </text>
+        <text fg={colors.text}>{timeoutSec}s</text>
       </box>
       {timedOut && (
         <box flexDirection="row" marginTop={1}>
-          <text fg={palette.base0A}>
+          <text fg={colors.textWarning}>
             Page load timed out - results may be incomplete
           </text>
         </box>
@@ -171,10 +171,10 @@ function ViolationsContent({
 }: {
   violations: AxeViolationResult[]
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   if (violations.length === 0) {
     return (
-      <text fg={palette.base0B}>No accessibility violations detected.</text>
+      <text fg={colors.textSuccess}>No accessibility violations detected.</text>
     )
   }
 
@@ -229,9 +229,11 @@ function IncompleteContent({
 }: {
   incomplete: AxeViolationResult[]
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   if (incomplete.length === 0) {
-    return <text fg={palette.base0B}>No items requiring manual review.</text>
+    return (
+      <text fg={colors.textSuccess}>No items requiring manual review.</text>
+    )
   }
 
   return (
@@ -263,9 +265,9 @@ function SummaryContent({
   passes: number
   incomplete: number
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const hasViolations = violations > 0
-  const statusColor = hasViolations ? palette.base08 : palette.base0B
+  const statusColor = hasViolations ? colors.severityError : colors.textSuccess
   const statusText = hasViolations ? 'ISSUES FOUND' : 'PASSED'
   const statusIcon = hasViolations ? '✗' : '✓'
 
@@ -277,18 +279,18 @@ function SummaryContent({
         </text>
       </box>
       <box flexDirection="row" marginTop={1}>
-        <text fg={palette.base03}>Violations: </text>
-        <text fg={violations > 0 ? palette.base08 : palette.base05}>
+        <text fg={colors.textMuted}>Violations: </text>
+        <text fg={violations > 0 ? colors.severityError : colors.text}>
           {violations}
         </text>
       </box>
       <box flexDirection="row">
-        <text fg={palette.base03}>Passed: </text>
-        <text fg={palette.base0B}>{passes}</text>
+        <text fg={colors.textMuted}>Passed: </text>
+        <text fg={colors.textSuccess}>{passes}</text>
       </box>
       <box flexDirection="row">
-        <text fg={palette.base03}>Needs Review: </text>
-        <text fg={incomplete > 0 ? palette.base0A : palette.base05}>
+        <text fg={colors.textMuted}>Needs Review: </text>
+        <text fg={incomplete > 0 ? colors.textWarning : colors.text}>
           {incomplete}
         </text>
       </box>

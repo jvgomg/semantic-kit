@@ -18,7 +18,7 @@ import {
   IssuesContent,
   getIssuesSeverity,
 } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { SocialResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 
@@ -30,7 +30,7 @@ import type { ViewComponentProps } from '../types.js'
  * ASCII card preview mockup
  */
 function CardPreview({ data }: { data: SocialResult }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const CARD_WIDTH = 50
   const innerWidth = CARD_WIDTH - 2
 
@@ -71,45 +71,47 @@ function CardPreview({ data }: { data: SocialResult }): ReactNode {
   return (
     <box flexDirection="column" gap={0}>
       {/* Top border */}
-      <text fg={palette.base03}>{'┌' + '─'.repeat(innerWidth) + '┐'}</text>
+      <text fg={colors.textMuted}>{'┌' + '─'.repeat(innerWidth) + '┐'}</text>
 
       {/* Image area */}
       <text>
-        <span fg={palette.base03}>{'│'}</span>
-        <span fg={palette.base02}>{` ${displayImage}`.padEnd(innerWidth)}</span>
-        <span fg={palette.base03}>{'│'}</span>
+        <span fg={colors.textMuted}>{'│'}</span>
+        <span fg={colors.textMuted}>
+          {` ${displayImage}`.padEnd(innerWidth)}
+        </span>
+        <span fg={colors.textMuted}>{'│'}</span>
       </text>
 
       {/* Divider */}
-      <text fg={palette.base03}>{'│' + '─'.repeat(innerWidth) + '│'}</text>
+      <text fg={colors.textMuted}>{'│' + '─'.repeat(innerWidth) + '│'}</text>
 
       {/* Site name */}
       {displaySite && (
         <text>
-          <span fg={palette.base03}>{'│'}</span>
-          <span fg={palette.base02}>
+          <span fg={colors.textMuted}>{'│'}</span>
+          <span fg={colors.textMuted}>
             {` ${displaySite}`.padEnd(innerWidth)}
           </span>
-          <span fg={palette.base03}>{'│'}</span>
+          <span fg={colors.textMuted}>{'│'}</span>
         </text>
       )}
 
       {/* Title */}
       <text>
-        <span fg={palette.base03}>{'│'}</span>
-        <span fg={palette.base05}>{` ${displayTitle}`.padEnd(innerWidth)}</span>
-        <span fg={palette.base03}>{'│'}</span>
+        <span fg={colors.textMuted}>{'│'}</span>
+        <span fg={colors.text}>{` ${displayTitle}`.padEnd(innerWidth)}</span>
+        <span fg={colors.textMuted}>{'│'}</span>
       </text>
 
       {/* Description */}
       <text>
-        <span fg={palette.base03}>{'│'}</span>
+        <span fg={colors.textMuted}>{'│'}</span>
         <span>{` ${displayDesc}`.padEnd(innerWidth)}</span>
-        <span fg={palette.base03}>{'│'}</span>
+        <span fg={colors.textMuted}>{'│'}</span>
       </text>
 
       {/* Bottom border */}
-      <text fg={palette.base03}>{'└' + '─'.repeat(innerWidth) + '┘'}</text>
+      <text fg={colors.textMuted}>{'└' + '─'.repeat(innerWidth) + '┘'}</text>
     </box>
   )
 }
@@ -125,7 +127,7 @@ export function SocialViewContent({
   data,
   height,
 }: ViewComponentProps<SocialResult>): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const hasOpenGraph = data.openGraph !== null
   const hasTwitter = data.twitter !== null
   const hasAny = hasOpenGraph || hasTwitter
@@ -186,7 +188,7 @@ export function SocialViewContent({
         {hasOpenGraph ? (
           <TagList tags={data.openGraph!.tags} maxValueLength={40} />
         ) : (
-          <text fg={palette.base03}>
+          <text fg={colors.textMuted}>
             No Open Graph tags found. Add og:title, og:description, og:image for
             social previews.
           </text>
@@ -210,7 +212,7 @@ export function SocialViewContent({
         {hasTwitter ? (
           <TagList tags={data.twitter!.tags} maxValueLength={40} />
         ) : (
-          <text fg={palette.base03}>
+          <text fg={colors.textMuted}>
             No Twitter Card tags found. Twitter will fall back to Open Graph
             tags.
           </text>

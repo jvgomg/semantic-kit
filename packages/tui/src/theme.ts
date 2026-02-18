@@ -18,13 +18,13 @@ export type {
   ResolvedTheme,
 } from './theme/registry.js'
 
-export type { SemanticColors } from './theme/semantic.js'
+export type { SemanticColors, SeverityLevel } from './theme/semantic.js'
 
 export type { UseThemeResult } from './theme/hooks.js'
 
 // Hooks (primary API for components)
 export { useTheme, usePalette } from './theme/hooks.js'
-export { useSemanticColors } from './theme/semantic.js'
+export { useSemanticColors, getSeverityColor } from './theme/semantic.js'
 
 // Atoms (for advanced usage)
 export {

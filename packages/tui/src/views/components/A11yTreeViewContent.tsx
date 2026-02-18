@@ -19,7 +19,7 @@ import {
   Tree,
 } from '../../components/ui/index.js'
 import type { TreeNode } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { A11yResult } from '@webspecs/core'
 import type { AriaNode } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
@@ -146,7 +146,7 @@ function MissingHeadingsCard(): ReactNode {
  * Summary section content showing role counts by category.
  */
 function SummaryContent({ data }: { data: A11yResult }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { counts } = data
 
   const landmarkCount = getCategoryTotal(counts, LANDMARK_ROLES)
@@ -159,12 +159,12 @@ function SummaryContent({ data }: { data: A11yResult }): ReactNode {
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Landmarks:</span>{' '}
-          <span fg={landmarkCount > 0 ? palette.base05 : palette.base0A}>
+          <span fg={colors.textMuted}>Landmarks:</span>{' '}
+          <span fg={landmarkCount > 0 ? colors.text : colors.textWarning}>
             {landmarkCount}
           </span>
           {landmarkCount > 0 && (
-            <span fg={palette.base02}>
+            <span fg={colors.textMuted}>
               {' '}
               ({formatCategoryCounts(counts, LANDMARK_ROLES)})
             </span>
@@ -173,10 +173,10 @@ function SummaryContent({ data }: { data: A11yResult }): ReactNode {
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Structural:</span>{' '}
-          <span fg={palette.base05}>{structuralCount}</span>
+          <span fg={colors.textMuted}>Structural:</span>{' '}
+          <span fg={colors.text}>{structuralCount}</span>
           {structuralCount > 0 && (
-            <span fg={palette.base02}>
+            <span fg={colors.textMuted}>
               {' '}
               ({formatCategoryCounts(counts, STRUCTURAL_ROLES)})
             </span>
@@ -185,10 +185,10 @@ function SummaryContent({ data }: { data: A11yResult }): ReactNode {
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Interactive:</span>{' '}
-          <span fg={palette.base05}>{interactiveCount}</span>
+          <span fg={colors.textMuted}>Interactive:</span>{' '}
+          <span fg={colors.text}>{interactiveCount}</span>
           {interactiveCount > 0 && (
-            <span fg={palette.base02}>
+            <span fg={colors.textMuted}>
               {' '}
               ({formatCategoryCounts(counts, INTERACTIVE_ROLES)})
             </span>
@@ -197,8 +197,8 @@ function SummaryContent({ data }: { data: A11yResult }): ReactNode {
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Main Landmark:</span>{' '}
-          <span fg={hasMain ? palette.base0B : palette.base0A}>
+          <span fg={colors.textMuted}>Main Landmark:</span>{' '}
+          <span fg={hasMain ? colors.textSuccess : colors.textWarning}>
             {hasMain ? 'Yes' : 'No'}
           </span>
         </text>
@@ -211,10 +211,10 @@ function SummaryContent({ data }: { data: A11yResult }): ReactNode {
  * Accessibility Tree section content.
  */
 function TreeContent({ data }: { data: A11yResult }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   if (data.parsed.length === 0) {
     return (
-      <text fg={palette.base0A}>
+      <text fg={colors.textWarning}>
         No accessibility tree could be extracted from this page.
       </text>
     )
@@ -233,7 +233,7 @@ export function A11yTreeViewContent({
   data,
   height,
 }: ViewComponentProps<A11yResult>): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { counts, timedOut, parsed } = data
 
   // Calculate totals for summary
@@ -270,7 +270,7 @@ export function A11yTreeViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={palette.base0A}>
+          <text fg={colors.textWarning}>
             The page took too long to load. The accessibility tree shown may be
             incomplete. Consider increasing the timeout.
           </text>

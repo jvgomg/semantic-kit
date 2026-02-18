@@ -68,6 +68,8 @@ export { useTheme, usePalette, type UseThemeResult } from './hooks.js'
 // Semantic colors
 export {
   type SemanticColors,
+  type SeverityLevel,
   semanticColorsAtom,
   useSemanticColors,
+  getSeverityColor,
 } from './semantic.js'

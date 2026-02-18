@@ -6,10 +6,10 @@
  */
 import type { ReactNode } from 'react'
 import {
-  useSectionColors,
+  useSemanticColors,
   getSeverityColor,
-} from '../view-display/section-theme.js'
-import { usePalette } from '../../theme.js'
+  type SeverityLevel,
+} from '../../theme.js'
 
 /**
  * Action that can be performed on a card.
@@ -65,9 +65,9 @@ export function CardRow({
   value,
   muted = false,
 }: CardRowProps): ReactNode {
-  const palette = usePalette()
-  const labelColor = muted ? palette.base02 : palette.base03
-  const valueColor = muted ? palette.base03 : palette.base05
+  const colors = useSemanticColors()
+  const labelColor = muted ? colors.borderSubtle : colors.textMuted
+  const valueColor = muted ? colors.textMuted : colors.text
 
   return (
     <box flexDirection="row">
@@ -86,13 +86,11 @@ function CardHeader({
   icon,
 }: {
   title: string
-  severity?: 'critical' | 'error' | 'warning' | 'info'
+  severity?: SeverityLevel
   icon?: string
 }): ReactNode {
-  const sectionColors = useSectionColors()
-  const titleColor = severity
-    ? getSeverityColor(sectionColors, severity)
-    : sectionColors.defaultText
+  const colors = useSemanticColors()
+  const titleColor = severity ? getSeverityColor(colors, severity) : colors.text
 
   return (
     <text fg={titleColor}>
@@ -106,19 +104,19 @@ function CardHeader({
  * Render card actions as buttons.
  */
 function CardActions({ actions }: { actions: CardAction[] }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
 
   if (actions.length === 0) return null
 
   return (
     <box flexDirection="column" marginTop={1}>
-      <text fg={palette.base02}>{'─'.repeat(40)}</text>
+      <text fg={colors.divider}>{'─'.repeat(40)}</text>
       <box flexDirection="row" gap={2} marginTop={1}>
         {actions.map((action, index) => (
-          <text key={index} fg={palette.base0D}>
+          <text key={index} fg={colors.accent}>
             [{action.label}]
             {action.shortcut && (
-              <span fg={palette.base03}> {action.shortcut}</span>
+              <span fg={colors.textMuted}> {action.shortcut}</span>
             )}
           </text>
         ))}
@@ -141,13 +139,13 @@ export function Card({
   selected = false,
   focused = false,
 }: CardProps): ReactNode {
-  const sectionColors = useSectionColors()
+  const colors = useSemanticColors()
 
   const borderColor = focused
-    ? sectionColors.borderSelected
+    ? colors.borderSelected
     : selected
-      ? sectionColors.borderExpanded
-      : sectionColors.borderCollapsed
+      ? colors.borderFocused
+      : colors.borderUnfocused
 
   return (
     <box

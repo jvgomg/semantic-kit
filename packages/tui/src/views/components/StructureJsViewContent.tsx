@@ -15,7 +15,7 @@ import {
   HeadingOutline,
   type TreeNode,
 } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { StructureJsInternalResult } from '@webspecs/core'
 import type {
   StructureWarning,
@@ -87,10 +87,10 @@ function ViolationsContent({
 }: {
   warnings: StructureWarning[]
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   if (warnings.length === 0) {
     return (
-      <text fg={palette.base0B}>
+      <text fg={colors.textSuccess}>
         All structure checks passed. No accessibility issues detected.
       </text>
     )
@@ -123,26 +123,26 @@ function MetadataContent({
   title: string | null
   language: string | null
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const hasTitle = Boolean(title)
   const hasLanguage = Boolean(language)
 
   return (
     <box flexDirection="column" gap={0}>
       <box flexDirection="row">
-        <text fg={palette.base03}>Title: </text>
+        <text fg={colors.textMuted}>Title: </text>
         {hasTitle ? (
-          <text fg={palette.base05}>{title}</text>
+          <text fg={colors.text}>{title}</text>
         ) : (
-          <text fg={palette.base0A}>(none)</text>
+          <text fg={colors.textWarning}>(none)</text>
         )}
       </box>
       <box flexDirection="row">
-        <text fg={palette.base03}>Language: </text>
+        <text fg={colors.textMuted}>Language: </text>
         {hasLanguage ? (
-          <text fg={palette.base05}>{language}</text>
+          <text fg={colors.text}>{language}</text>
         ) : (
-          <text fg={palette.base0A}>(not set)</text>
+          <text fg={colors.textWarning}>(not set)</text>
         )}
       </box>
     </box>
@@ -159,16 +159,16 @@ function LinksContent({
   internalCount: number
   externalCount: number
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   return (
     <box flexDirection="column" gap={0}>
       <text>
-        <span fg={palette.base03}>Internal: </span>
-        <span fg={palette.base05}>{internalCount}</span>
+        <span fg={colors.textMuted}>Internal: </span>
+        <span fg={colors.text}>{internalCount}</span>
       </text>
       <text>
-        <span fg={palette.base03}>External: </span>
-        <span fg={palette.base05}>{externalCount}</span>
+        <span fg={colors.textMuted}>External: </span>
+        <span fg={colors.text}>{externalCount}</span>
       </text>
     </box>
   )
@@ -185,7 +185,7 @@ export function StructureJsViewContent({
   data,
   height,
 }: ViewComponentProps<StructureJsInternalResult>): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { hydrated: analysis, axeResult, timedOut } = data
 
   // Compute violations section props
@@ -234,7 +234,7 @@ export function StructureJsViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={palette.base0A}>
+          <text fg={colors.textWarning}>
             The page took too long to load. The results shown are from partial
             content. Consider increasing the timeout with --timeout.
           </text>
@@ -289,7 +289,7 @@ export function StructureJsViewContent({
         {hasLandmarks ? (
           <Tree nodes={landmarkTreeNodes} showLines={true} />
         ) : (
-          <text fg={palette.base0A}>No landmark elements found.</text>
+          <text fg={colors.textWarning}>No landmark elements found.</text>
         )}
       </Section>
 
@@ -308,7 +308,7 @@ export function StructureJsViewContent({
         {hasHeadings ? (
           <HeadingOutline headings={analysis.headings.outline} />
         ) : (
-          <text fg={palette.base0A}>No headings found.</text>
+          <text fg={colors.textWarning}>No headings found.</text>
         )}
       </Section>
 

@@ -5,7 +5,7 @@
  */
 import type { ReactNode } from 'react'
 import { Markdown } from './Markdown.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 
 export interface ProseProps {
   /** Full text content */
@@ -59,7 +59,7 @@ export function Prose({
   maxLines = 3,
   wordCount,
 }: ProseProps): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
 
   // Handle truncation
   const { text: displayText, truncated } = truncate
@@ -71,7 +71,7 @@ export function Prose({
       {/* Word count metadata */}
       {wordCount !== undefined && (
         <box marginBottom={1}>
-          <text fg={palette.base03}>{wordCount.toLocaleString()} words</text>
+          <text fg={colors.textMuted}>{wordCount.toLocaleString()} words</text>
         </box>
       )}
 
@@ -89,7 +89,7 @@ export function Prose({
       {/* Truncation indicator */}
       {truncated && (
         <box marginTop={1}>
-          <text fg={palette.base03}>
+          <text fg={colors.textMuted}>
             <em>
               ... ({countWords(content) - countWords(displayText)} more words)
             </em>

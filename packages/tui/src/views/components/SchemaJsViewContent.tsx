@@ -27,7 +27,7 @@ import {
   hasHighSeverityIssues,
   getIssuesSeverity,
 } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { SchemaJsResult, MetatagGroupResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 
@@ -139,7 +139,7 @@ function flattenSchemaProperties(
  * Summary section content
  */
 function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const counts = countSchemaTypes(data)
   const hasOG = data.openGraph !== null
   const hasTwitter = data.twitter !== null
@@ -148,8 +148,8 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>JSON-LD:</span>{' '}
-          <span fg={counts.jsonld > 0 ? palette.base0B : palette.base03}>
+          <span fg={colors.textMuted}>JSON-LD:</span>{' '}
+          <span fg={counts.jsonld > 0 ? colors.textSuccess : colors.textMuted}>
             {counts.jsonld} type{counts.jsonld !== 1 ? 's' : ''}
           </span>
         </text>
@@ -157,8 +157,8 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
       {counts.microdata > 0 && (
         <box flexDirection="row" gap={2}>
           <text>
-            <span fg={palette.base03}>Microdata:</span>{' '}
-            <span fg={palette.base0B}>
+            <span fg={colors.textMuted}>Microdata:</span>{' '}
+            <span fg={colors.textSuccess}>
               {counts.microdata} type{counts.microdata !== 1 ? 's' : ''}
             </span>
           </text>
@@ -167,8 +167,8 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
       {counts.rdfa > 0 && (
         <box flexDirection="row" gap={2}>
           <text>
-            <span fg={palette.base03}>RDFa:</span>{' '}
-            <span fg={palette.base0B}>
+            <span fg={colors.textMuted}>RDFa:</span>{' '}
+            <span fg={colors.textSuccess}>
               {counts.rdfa} type{counts.rdfa !== 1 ? 's' : ''}
             </span>
           </text>
@@ -176,8 +176,8 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
       )}
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Open Graph:</span>{' '}
-          <span fg={hasOG ? palette.base0B : palette.base03}>
+          <span fg={colors.textMuted}>Open Graph:</span>{' '}
+          <span fg={hasOG ? colors.textSuccess : colors.textMuted}>
             {hasOG
               ? `${Object.keys(data.openGraph!.tags).length} tags`
               : 'None'}
@@ -186,8 +186,8 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Twitter Cards:</span>{' '}
-          <span fg={hasTwitter ? palette.base0B : palette.base03}>
+          <span fg={colors.textMuted}>Twitter Cards:</span>{' '}
+          <span fg={hasTwitter ? colors.textSuccess : colors.textMuted}>
             {hasTwitter
               ? `${Object.keys(data.twitter!.tags).length} tags`
               : 'None'}
@@ -210,7 +210,7 @@ function SchemaCard({
   instance: unknown
   index: number
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const properties = flattenSchemaProperties(instance)
     .filter(({ path }) => path !== '@type')
     .slice(0, 8)
@@ -221,7 +221,7 @@ function SchemaCard({
         <CardRow key={idx} label={path} value={formatValue(value, 50)} />
       ))}
       {properties.length === 0 && (
-        <text fg={palette.base03}>(empty schema)</text>
+        <text fg={colors.textMuted}>(empty schema)</text>
       )}
     </Card>
   )
@@ -237,11 +237,11 @@ function SchemaTypeSection({
   schemas: Record<string, unknown[]>
   format: string
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const types = Object.entries(schemas).filter(([key]) => key !== 'undefined')
 
   if (types.length === 0) {
-    return <text fg={palette.base03}>No {format} schemas found.</text>
+    return <text fg={colors.textMuted}>No {format} schemas found.</text>
   }
 
   let globalIndex = 0
@@ -288,11 +288,11 @@ function MetaContent({
 }: {
   metatags: Record<string, string>
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const entries = Object.entries(metatags)
 
   if (entries.length === 0) {
-    return <text fg={palette.base03}>No other metatags found.</text>
+    return <text fg={colors.textMuted}>No other metatags found.</text>
   }
 
   return (
@@ -300,8 +300,8 @@ function MetaContent({
       {entries.map(([name, value], idx) => (
         <box key={idx}>
           <text>
-            <span fg={palette.base0D}>{name}:</span>{' '}
-            <span fg={palette.base05}>{truncate(value, 50)}</span>
+            <span fg={colors.accent}>{name}:</span>{' '}
+            <span fg={colors.text}>{truncate(value, 50)}</span>
           </text>
         </box>
       ))}
@@ -320,7 +320,7 @@ export function SchemaJsViewContent({
   data,
   height,
 }: ViewComponentProps<SchemaJsResult>): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const counts = countSchemaTypes(data)
   const hasOG = data.openGraph !== null
   const hasTwitter = data.twitter !== null
@@ -356,7 +356,7 @@ export function SchemaJsViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={palette.base0A}>
+          <text fg={colors.textWarning}>
             The page took too long to load. The results shown are from partial
             content. Consider increasing the timeout with --timeout.
           </text>
@@ -457,7 +457,7 @@ export function SchemaJsViewContent({
         {hasOG ? (
           <MetatagGroupContent group={data.openGraph!} />
         ) : (
-          <text fg={palette.base03}>
+          <text fg={colors.textMuted}>
             No Open Graph tags found. Add og:title, og:description, og:image for
             social previews.
           </text>
@@ -486,7 +486,7 @@ export function SchemaJsViewContent({
         {hasTwitter ? (
           <MetatagGroupContent group={data.twitter!} />
         ) : (
-          <text fg={palette.base03}>
+          <text fg={colors.textMuted}>
             No Twitter Card tags found. Twitter will fall back to Open Graph
             tags.
           </text>

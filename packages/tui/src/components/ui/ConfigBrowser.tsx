@@ -10,7 +10,7 @@
 import { useMemo, useCallback, type ReactNode } from 'react'
 import { useKeyboard } from '@opentui/react'
 import type { FlattenedConfigNode } from '../../lib/tui-config/index.js'
-import { useSemanticColors, usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import { boxChars } from '../view-display/priorities.js'
 
 // ============================================================================
@@ -51,7 +51,6 @@ export function ConfigBrowser({
   isFocused,
 }: ConfigBrowserProps): ReactNode {
   const colors = useSemanticColors()
-  const palette = usePalette()
 
   // Calculate virtualization bounds
   const visibleRows = height
@@ -218,7 +217,7 @@ export function ConfigBrowser({
           : '  '
         const countBadge =
           isGroup && node.urlCount > 0 ? (
-            <text fg={palette.base03}> ({node.urlCount})</text>
+            <text fg={colors.textMuted}> ({node.urlCount})</text>
           ) : null
 
         // Style differs based on focus state
@@ -237,14 +236,14 @@ export function ConfigBrowser({
         // Expand indicator color
         const expandColor =
           isGroup && isFocused && (isSelected || isAncestorOfSelected)
-            ? palette.base0D
-            : palette.base02
+            ? colors.accent
+            : colors.treeGuide
 
         return (
           <box key={node.id} flexDirection="row">
-            <text fg={palette.base02}>{indent}</text>
+            <text fg={colors.indent}>{indent}</text>
             {isGroup && <text fg={expandColor}>{expandIndicator}</text>}
-            {!isGroup && parentGroup && <text fg={palette.base02}> </text>}
+            {!isGroup && parentGroup && <text fg={colors.indent}> </text>}
             <text {...style}>{node.label}</text>
             {countBadge}
           </box>

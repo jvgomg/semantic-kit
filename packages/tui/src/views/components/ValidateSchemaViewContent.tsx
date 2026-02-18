@@ -11,7 +11,7 @@ import {
   Card,
   CardRow,
 } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { SchemaValidationResult } from '@webspecs/core'
 import type { SchemaTestResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
@@ -88,9 +88,9 @@ function SummaryContent({
   warnings: SchemaTestResult[]
   passed: number
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const hasFailures = failed.length > 0
-  const statusColor = hasFailures ? palette.base08 : palette.base0B
+  const statusColor = hasFailures ? colors.textError : colors.textSuccess
   const statusText = hasFailures ? 'FAILED' : 'PASSED'
   const statusIcon = hasFailures ? '✗' : '✓'
 
@@ -102,18 +102,18 @@ function SummaryContent({
         </text>
       </box>
       <box flexDirection="row" marginTop={1}>
-        <text fg={palette.base03}>Passed: </text>
-        <text fg={palette.base0B}>{passed}</text>
+        <text fg={colors.textMuted}>Passed: </text>
+        <text fg={colors.textSuccess}>{passed}</text>
       </box>
       <box flexDirection="row">
-        <text fg={palette.base03}>Failed: </text>
-        <text fg={failed.length > 0 ? palette.base08 : palette.base05}>
+        <text fg={colors.textMuted}>Failed: </text>
+        <text fg={failed.length > 0 ? colors.textError : colors.text}>
           {failed.length}
         </text>
       </box>
       <box flexDirection="row">
-        <text fg={palette.base03}>Warnings: </text>
-        <text fg={warnings.length > 0 ? palette.base0A : palette.base05}>
+        <text fg={colors.textMuted}>Warnings: </text>
+        <text fg={warnings.length > 0 ? colors.textWarning : colors.text}>
           {warnings.length}
         </text>
       </box>
@@ -129,39 +129,39 @@ function DetectionContent({
 }: {
   result: SchemaValidationResult
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { testResult, detectedDisplayNames } = result
   const hasJsonLd = testResult.schemas.length > 0
   const hasMetatags = detectedDisplayNames.length > 0
 
   if (!hasJsonLd && !hasMetatags) {
-    return <text fg={palette.base0A}>No structured data detected.</text>
+    return <text fg={colors.textWarning}>No structured data detected.</text>
   }
 
   return (
     <box flexDirection="column" gap={0}>
       {hasJsonLd && (
         <box flexDirection="row">
-          <text fg={palette.base03}>JSON-LD Types: </text>
-          <text fg={palette.base05}>{testResult.schemas.join(', ')}</text>
+          <text fg={colors.textMuted}>JSON-LD Types: </text>
+          <text fg={colors.text}>{testResult.schemas.join(', ')}</text>
         </box>
       )}
       {hasMetatags && (
         <box flexDirection="row">
-          <text fg={palette.base03}>Metatag Standards: </text>
-          <text fg={palette.base05}>{detectedDisplayNames.join(', ')}</text>
+          <text fg={colors.textMuted}>Metatag Standards: </text>
+          <text fg={colors.text}>{detectedDisplayNames.join(', ')}</text>
         </box>
       )}
       {result.requiredGroups.length > 0 && (
         <box flexDirection="row" marginTop={1}>
-          <text fg={palette.base03}>Required Groups: </text>
-          <text fg={palette.base0D}>{result.requiredGroups.join(', ')}</text>
+          <text fg={colors.textMuted}>Required Groups: </text>
+          <text fg={colors.accent}>{result.requiredGroups.join(', ')}</text>
         </box>
       )}
       {result.infoGroups.length > 0 && (
         <box flexDirection="row">
-          <text fg={palette.base03}>Info Groups: </text>
-          <text fg={palette.base03}>{result.infoGroups.join(', ')}</text>
+          <text fg={colors.textMuted}>Info Groups: </text>
+          <text fg={colors.textMuted}>{result.infoGroups.join(', ')}</text>
         </box>
       )}
     </box>
@@ -180,9 +180,9 @@ function TestResultsContent({
   severity: 'error' | 'warning' | 'info'
   emptyMessage: string
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   if (tests.length === 0) {
-    return <text fg={palette.base0B}>{emptyMessage}</text>
+    return <text fg={colors.textSuccess}>{emptyMessage}</text>
   }
 
   const icon = severity === 'error' ? '✗' : severity === 'warning' ? '⚠' : 'i'

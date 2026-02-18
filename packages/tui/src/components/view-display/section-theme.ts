@@ -1,10 +1,19 @@
 /**
  * Theme values for the expandable sections framework.
+ *
+ * @deprecated Import directly from '../../theme.js' instead.
+ * This file provides backwards compatibility for components using SectionColors.
  */
-import { usePalette } from '../../theme.js'
+import {
+  useSemanticColors,
+  getSeverityColor as getSemanticSeverityColor,
+  type SemanticColors,
+  type SeverityLevel,
+} from '../../theme.js'
 
 /**
  * Section-specific theme colors.
+ * @deprecated Use SemanticColors from '../../theme.js' instead.
  */
 export interface SectionColors {
   // Borders
@@ -32,58 +41,61 @@ export interface SectionColors {
 }
 
 /**
- * Hook to get section-specific theme colors.
+ * Maps SemanticColors to SectionColors for backwards compatibility.
  */
-export function useSectionColors(): SectionColors {
-  const palette = usePalette()
-
+function mapToSectionColors(colors: SemanticColors): SectionColors {
   return {
     // Borders
-    borderExpanded: palette.base0D, // accent/cyan
-    borderCollapsed: palette.base03, // muted/gray
-    borderSelected: palette.base0A, // highlight/yellow
+    borderExpanded: colors.borderFocused,
+    borderCollapsed: colors.borderUnfocused,
+    borderSelected: colors.borderSelected,
 
     // Severity colors
-    severityCritical: palette.base08, // red
-    severityError: palette.base08, // red
-    severityWarning: palette.base0A, // yellow
-    severityInfo: palette.base0D, // blue/cyan
-    severitySuccess: palette.base0B, // green
-    severityMuted: palette.base03, // gray
+    severityCritical: colors.severityCritical,
+    severityError: colors.severityError,
+    severityWarning: colors.severityWarning,
+    severityInfo: colors.severityInfo,
+    severitySuccess: colors.severitySuccess,
+    severityMuted: colors.severityMuted,
 
     // Text
-    titleExpanded: palette.base05, // default foreground
-    titleCollapsed: palette.base03, // muted
-    summaryText: palette.base03, // muted
-    defaultText: palette.base05, // default foreground
+    titleExpanded: colors.text,
+    titleCollapsed: colors.textMuted,
+    summaryText: colors.textMuted,
+    defaultText: colors.text,
 
     // Indicators
-    expandIndicator: palette.base0D, // accent/cyan
-    countBadge: palette.base0A, // highlight/yellow
+    expandIndicator: colors.accent,
+    countBadge: colors.highlight,
   }
 }
 
 /**
+ * Hook to get section-specific theme colors.
+ * @deprecated Use useSemanticColors() from '../../theme.js' instead.
+ */
+export function useSectionColors(): SectionColors {
+  const colors = useSemanticColors()
+  return mapToSectionColors(colors)
+}
+
+/**
  * Get severity color for a given severity level.
+ * @deprecated Use getSeverityColor() from '../../theme.js' instead.
  */
 export function getSeverityColor(
   sectionColors: SectionColors,
-  severity?: 'critical' | 'error' | 'warning' | 'info' | 'success' | 'muted',
+  severity?: SeverityLevel,
 ): string {
-  switch (severity) {
-    case 'critical':
-      return sectionColors.severityCritical
-    case 'error':
-      return sectionColors.severityError
-    case 'warning':
-      return sectionColors.severityWarning
-    case 'info':
-      return sectionColors.severityInfo
-    case 'success':
-      return sectionColors.severitySuccess
-    case 'muted':
-      return sectionColors.severityMuted
-    default:
-      return sectionColors.defaultText
-  }
+  // Re-use the semantic implementation with semantic color values
+  const colors = {
+    severityCritical: sectionColors.severityCritical,
+    severityError: sectionColors.severityError,
+    severityWarning: sectionColors.severityWarning,
+    severityInfo: sectionColors.severityInfo,
+    severitySuccess: sectionColors.severitySuccess,
+    severityMuted: sectionColors.severityMuted,
+    text: sectionColors.defaultText,
+  } as SemanticColors
+  return getSemanticSeverityColor(colors, severity)
 }

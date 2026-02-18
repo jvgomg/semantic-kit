@@ -5,7 +5,7 @@
  * Used by Social and Schema views for displaying Open Graph and Twitter tags.
  */
 import type { ReactNode } from 'react'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors, type SemanticColors } from '../../theme.js'
 import type { SocialValidationIssue } from '@webspecs/core'
 import type { MetatagGroupResult } from '@webspecs/core'
 
@@ -42,15 +42,15 @@ export function TagList({
   tags,
   maxValueLength = 50,
 }: TagListProps): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
 
   return (
     <box flexDirection="column" gap={0}>
       {Object.entries(tags).map(([key, value], idx) => (
         <box key={idx} paddingLeft={0}>
           <text>
-            <span fg={palette.base0D}>{key}:</span>{' '}
-            <span fg={palette.base05}>{truncate(value, maxValueLength)}</span>
+            <span fg={colors.accent}>{key}:</span>{' '}
+            <span fg={colors.text}>{truncate(value, maxValueLength)}</span>
           </text>
         </box>
       ))}
@@ -61,6 +61,17 @@ export function TagList({
 // ============================================================================
 // Issue Display Components
 // ============================================================================
+
+/**
+ * Get severity colors for issue display.
+ */
+function getSeverityColors(colors: SemanticColors): Record<string, string> {
+  return {
+    high: colors.severityError,
+    medium: colors.severityWarning,
+    low: colors.severityMuted,
+  }
+}
 
 /**
  * Props for IssuesDisplay component.
@@ -74,15 +85,11 @@ export interface IssuesDisplayProps {
  * Display validation issues with severity indicators.
  */
 export function IssuesDisplay({ issues }: IssuesDisplayProps): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
 
   if (issues.length === 0) return null
 
-  const severityColors: Record<string, string> = {
-    high: palette.base08,
-    medium: palette.base0A,
-    low: palette.base03,
-  }
+  const severityColors = getSeverityColors(colors)
 
   const severityLabels: Record<string, string> = {
     high: 'ERROR',
@@ -127,17 +134,13 @@ export interface IssuesContentProps {
  * Use this for standalone issues sections.
  */
 export function IssuesContent({ issues }: IssuesContentProps): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
 
   if (issues.length === 0) {
-    return <text fg={palette.base0B}>No issues found</text>
+    return <text fg={colors.textSuccess}>No issues found</text>
   }
 
-  const severityColors: Record<string, string> = {
-    high: palette.base08,
-    medium: palette.base0A,
-    low: palette.base03,
-  }
+  const severityColors = getSeverityColors(colors)
 
   const severityLabels: Record<string, string> = {
     high: 'ERROR',

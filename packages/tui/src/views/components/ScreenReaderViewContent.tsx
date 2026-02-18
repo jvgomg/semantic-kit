@@ -17,7 +17,7 @@ import {
   Card,
   CardRow,
 } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { ScreenReaderResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 
@@ -67,41 +67,41 @@ function MissingHeadingsCard(): ReactNode {
  * Summary section content
  */
 function SummaryContent({ data }: { data: ScreenReaderResult }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { summary } = data
 
   const getStatusColor = (value: boolean) =>
-    value ? palette.base0B : palette.base08
+    value ? colors.textSuccess : colors.textError
 
   return (
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Page Title:</span>{' '}
-          <span fg={palette.base05}>{summary.pageTitle ?? '(not found)'}</span>
+          <span fg={colors.textMuted}>Page Title:</span>{' '}
+          <span fg={colors.text}>{summary.pageTitle ?? '(not found)'}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Landmarks:</span>{' '}
-          <span fg={palette.base05}>{summary.landmarkCount}</span>
+          <span fg={colors.textMuted}>Landmarks:</span>{' '}
+          <span fg={colors.text}>{summary.landmarkCount}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Headings:</span>{' '}
-          <span fg={palette.base05}>{summary.headingCount}</span>
+          <span fg={colors.textMuted}>Headings:</span>{' '}
+          <span fg={colors.text}>{summary.headingCount}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Links:</span>{' '}
-          <span fg={palette.base05}>{summary.linkCount}</span>
+          <span fg={colors.textMuted}>Links:</span>{' '}
+          <span fg={colors.text}>{summary.linkCount}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Main Landmark:</span>{' '}
+          <span fg={colors.textMuted}>Main Landmark:</span>{' '}
           <span fg={getStatusColor(summary.hasMainLandmark)}>
             {summary.hasMainLandmark ? 'Yes' : 'No'}
           </span>
@@ -109,8 +109,10 @@ function SummaryContent({ data }: { data: ScreenReaderResult }): ReactNode {
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Skip Link:</span>{' '}
-          <span fg={summary.hasSkipLink ? palette.base0B : palette.base0A}>
+          <span fg={colors.textMuted}>Skip Link:</span>{' '}
+          <span
+            fg={summary.hasSkipLink ? colors.textSuccess : colors.textWarning}
+          >
             {summary.hasSkipLink ? 'Yes' : 'No'}
           </span>
         </text>
@@ -123,10 +125,12 @@ function SummaryContent({ data }: { data: ScreenReaderResult }): ReactNode {
  * Landmarks section content
  */
 function LandmarksContent({ data }: { data: ScreenReaderResult }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   if (data.landmarks.length === 0) {
     return (
-      <text fg={palette.base0A}>No landmark regions found on this page.</text>
+      <text fg={colors.textWarning}>
+        No landmark regions found on this page.
+      </text>
     )
   }
 
@@ -135,12 +139,12 @@ function LandmarksContent({ data }: { data: ScreenReaderResult }): ReactNode {
       {data.landmarks.map((landmark, index) => (
         <box key={index} flexDirection="column">
           <text>
-            <span fg={palette.base0D}>{landmark.role}</span>
+            <span fg={colors.accent}>{landmark.role}</span>
             {landmark.name && (
-              <span fg={palette.base03}> "{landmark.name}"</span>
+              <span fg={colors.textMuted}> "{landmark.name}"</span>
             )}
           </text>
-          <text fg={palette.base03}>
+          <text fg={colors.textMuted}>
             {'  '}({landmark.headingCount} headings, {landmark.linkCount} links)
           </text>
         </box>
@@ -153,9 +157,9 @@ function LandmarksContent({ data }: { data: ScreenReaderResult }): ReactNode {
  * Headings section content with tree-like display
  */
 function HeadingsContent({ data }: { data: ScreenReaderResult }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   if (data.headings.length === 0) {
-    return <text fg={palette.base0A}>No headings found on this page.</text>
+    return <text fg={colors.textWarning}>No headings found on this page.</text>
   }
 
   return (
@@ -168,9 +172,9 @@ function HeadingsContent({ data }: { data: ScreenReaderResult }): ReactNode {
             : heading.text
         return (
           <text key={index}>
-            <span fg={palette.base03}>{indent}</span>
-            <span fg={palette.base02}>H{heading.level}</span>
-            <span fg={palette.base05}> {text}</span>
+            <span fg={colors.textMuted}>{indent}</span>
+            <span fg={colors.textMuted}>H{heading.level}</span>
+            <span fg={colors.text}> {text}</span>
           </text>
         )
       })}
@@ -185,7 +189,7 @@ export function ScreenReaderViewContent({
   data,
   height,
 }: ViewComponentProps<ScreenReaderResult>): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { summary } = data
 
   // Check for issues
@@ -238,7 +242,7 @@ export function ScreenReaderViewContent({
             {hasHeadingIssue && <MissingHeadingsCard />}
           </box>
         ) : (
-          <text fg={palette.base0B}>
+          <text fg={colors.textSuccess}>
             All basic accessibility checks passed.
           </text>
         )}

@@ -15,7 +15,7 @@ import {
   Section,
   SectionPriority,
 } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { ReadabilityCompareResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 
@@ -24,12 +24,12 @@ import type { ViewComponentProps } from '../types.js'
  */
 function getJsDependencyColor(
   percentage: number,
-  palette: ReturnType<typeof usePalette>,
+  colors: ReturnType<typeof useSemanticColors>,
 ): string {
-  if (percentage === 0) return palette.base0B
-  if (percentage <= 25) return palette.base0D
-  if (percentage <= 50) return palette.base0A
-  return palette.base08
+  if (percentage === 0) return colors.textSuccess
+  if (percentage <= 25) return colors.accent
+  if (percentage <= 50) return colors.textWarning
+  return colors.textError
 }
 
 /**
@@ -40,11 +40,11 @@ function ComparisonContent({
 }: {
   data: ReadabilityCompareResult
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { comparison } = data
   const depColor = getJsDependencyColor(
     comparison.jsDependentPercentage,
-    palette,
+    colors,
   )
   const hasSections = comparison.sectionsOnlyInRendered.length > 0
 
@@ -52,23 +52,23 @@ function ComparisonContent({
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Static HTML:</span>{' '}
-          <span fg={palette.base05}>
+          <span fg={colors.textMuted}>Static HTML:</span>{' '}
+          <span fg={colors.text}>
             {comparison.staticWordCount.toLocaleString()} words
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Rendered DOM:</span>{' '}
-          <span fg={palette.base05}>
+          <span fg={colors.textMuted}>Rendered DOM:</span>{' '}
+          <span fg={colors.text}>
             {comparison.renderedWordCount.toLocaleString()} words
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>JS-Dependent:</span>{' '}
+          <span fg={colors.textMuted}>JS-Dependent:</span>{' '}
           <span fg={depColor}>
             {comparison.jsDependentWordCount.toLocaleString()} words (
             {comparison.jsDependentPercentage}%)
@@ -78,8 +78,8 @@ function ComparisonContent({
       {hasSections && (
         <box flexDirection="row" gap={2} marginTop={1}>
           <text>
-            <span fg={palette.base03}>JS-Only Sections:</span>{' '}
-            <span fg={palette.base0A}>
+            <span fg={colors.textMuted}>JS-Only Sections:</span>{' '}
+            <span fg={colors.textWarning}>
               {comparison.sectionsOnlyInRendered.length} section(s) hidden from
               static crawlers
             </span>
@@ -97,7 +97,7 @@ export function ReadabilityCompareViewContent({
   data,
   height,
 }: ViewComponentProps<ReadabilityCompareResult>): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { comparison, timedOut } = data
   const hasStaticContent =
     data.static.markdown && data.static.metrics.wordCount > 0
@@ -147,7 +147,7 @@ export function ReadabilityCompareViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={palette.base0A}>
+          <text fg={colors.textWarning}>
             The page took too long to load. The comparison may be based on
             partial content.
           </text>
@@ -178,11 +178,11 @@ export function ReadabilityCompareViewContent({
         scrollable
       >
         {!hasContent ? (
-          <text fg={palette.base0A}>
+          <text fg={colors.textWarning}>
             No content could be extracted from either version.
           </text>
         ) : !hasDifferences ? (
-          <text fg={palette.base03}>
+          <text fg={colors.textMuted}>
             Static and rendered content are identical.
           </text>
         ) : (

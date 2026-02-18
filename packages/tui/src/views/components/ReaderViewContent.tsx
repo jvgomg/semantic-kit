@@ -16,7 +16,7 @@ import {
   SectionPriority,
   Table,
 } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { ReaderResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 
@@ -24,12 +24,12 @@ import type { ViewComponentProps } from '../types.js'
  * Summary section content
  */
 function SummaryContent({ data }: { data: ReaderResult }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { metrics } = data
 
   const getReadabilityStatus = () => {
-    if (metrics.isReaderable) return { text: 'Yes', color: palette.base0B }
-    return { text: 'No', color: palette.base0A }
+    if (metrics.isReaderable) return { text: 'Yes', color: colors.textSuccess }
+    return { text: 'No', color: colors.textWarning }
   }
 
   const readability = getReadabilityStatus()
@@ -38,29 +38,29 @@ function SummaryContent({ data }: { data: ReaderResult }): ReactNode {
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Words:</span>{' '}
-          <span fg={palette.base05}>{metrics.wordCount.toLocaleString()}</span>
+          <span fg={colors.textMuted}>Words:</span>{' '}
+          <span fg={colors.text}>{metrics.wordCount.toLocaleString()}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Characters:</span>{' '}
-          <span fg={palette.base05}>
+          <span fg={colors.textMuted}>Characters:</span>{' '}
+          <span fg={colors.text}>
             {metrics.characterCount.toLocaleString()}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Paragraphs:</span>{' '}
-          <span fg={palette.base05}>
+          <span fg={colors.textMuted}>Paragraphs:</span>{' '}
+          <span fg={colors.text}>
             {metrics.paragraphCount.toLocaleString()}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Readerable:</span>{' '}
+          <span fg={colors.textMuted}>Readerable:</span>{' '}
           <span fg={readability.color}>{readability.text}</span>
         </text>
       </box>
@@ -75,7 +75,7 @@ export function ReaderViewContent({
   data,
   height,
 }: ViewComponentProps<ReaderResult>): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { metrics } = data
   const hasContent = data.markdown && metrics.wordCount > 0
   const hasMetadata = data.title || data.byline || data.siteName || data.excerpt
@@ -124,7 +124,7 @@ export function ReaderViewContent({
         {hasMetadata ? (
           <Table data={metadataItems} variant="borderless" labelWidth={10} />
         ) : (
-          <text fg={palette.base03}>
+          <text fg={colors.textMuted}>
             No title, byline, site name, or excerpt found.
           </text>
         )}
@@ -153,7 +153,7 @@ export function ReaderViewContent({
             />
           </scrollbox>
         ) : (
-          <text fg={palette.base0A}>
+          <text fg={colors.textWarning}>
             No content could be extracted from this page.
           </text>
         )}

@@ -12,7 +12,7 @@ import {
   Card,
   CardRow,
 } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { ViewComponentProps } from '../types.js'
 
 // ============================================================================
@@ -70,8 +70,8 @@ function SummaryContent({
   errors: HtmlValidateMessage[]
   warnings: HtmlValidateMessage[]
 }): ReactNode {
-  const palette = usePalette()
-  const statusColor = report.valid ? palette.base0B : palette.base08
+  const colors = useSemanticColors()
+  const statusColor = report.valid ? colors.textSuccess : colors.textError
   const statusText = report.valid ? 'VALID' : 'INVALID'
   const statusIcon = report.valid ? '✓' : '✗'
 
@@ -83,14 +83,14 @@ function SummaryContent({
         </text>
       </box>
       <box flexDirection="row" marginTop={1}>
-        <text fg={palette.base03}>Errors: </text>
-        <text fg={errors.length > 0 ? palette.base08 : palette.base05}>
+        <text fg={colors.textMuted}>Errors: </text>
+        <text fg={errors.length > 0 ? colors.textError : colors.text}>
           {errors.length}
         </text>
       </box>
       <box flexDirection="row">
-        <text fg={palette.base03}>Warnings: </text>
-        <text fg={warnings.length > 0 ? palette.base0A : palette.base05}>
+        <text fg={colors.textMuted}>Warnings: </text>
+        <text fg={warnings.length > 0 ? colors.textWarning : colors.text}>
           {warnings.length}
         </text>
       </box>
@@ -108,9 +108,9 @@ function MessagesContent({
   messages: HtmlValidateMessage[]
   severity: 'error' | 'warning'
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   if (messages.length === 0) {
-    const color = palette.base0B
+    const color = colors.textSuccess
     const text =
       severity === 'error' ? 'No errors found.' : 'No warnings found.'
     return <text fg={color}>{text}</text>

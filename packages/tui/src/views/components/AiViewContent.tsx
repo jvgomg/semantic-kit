@@ -19,7 +19,7 @@ import {
   CardRow,
   Table,
 } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { AiResult, HiddenContentAnalysis } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 
@@ -70,27 +70,27 @@ function HiddenContentCard({
  * Summary section content
  */
 function SummaryContent({ data }: { data: AiResult }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { hiddenContentAnalysis } = data
 
   const getReadabilityStatus = () => {
-    if (data.isReaderable) return { text: 'Yes', color: palette.base0B }
-    return { text: 'No', color: palette.base0A }
+    if (data.isReaderable) return { text: 'Yes', color: colors.textSuccess }
+    return { text: 'No', color: colors.textWarning }
   }
 
   const getHiddenStatus = () => {
     if (hiddenContentAnalysis.severity === 'none') {
-      return { text: '0%', color: palette.base0B }
+      return { text: '0%', color: colors.textSuccess }
     }
     if (hiddenContentAnalysis.severity === 'low') {
       return {
         text: `${hiddenContentAnalysis.hiddenPercentage}%`,
-        color: palette.base0A,
+        color: colors.textWarning,
       }
     }
     return {
       text: `${hiddenContentAnalysis.hiddenPercentage}%`,
-      color: palette.base08,
+      color: colors.textError,
     }
   }
 
@@ -101,27 +101,27 @@ function SummaryContent({ data }: { data: AiResult }): ReactNode {
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Words:</span>{' '}
-          <span fg={palette.base05}>{data.wordCount.toLocaleString()}</span>
+          <span fg={colors.textMuted}>Words:</span>{' '}
+          <span fg={colors.text}>{data.wordCount.toLocaleString()}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Readerable:</span>{' '}
+          <span fg={colors.textMuted}>Readerable:</span>{' '}
           <span fg={readability.color}>{readability.text}</span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Hidden Content:</span>{' '}
+          <span fg={colors.textMuted}>Hidden Content:</span>{' '}
           <span fg={hidden.color}>{hidden.text}</span>
         </text>
       </box>
       {hiddenContentAnalysis.framework && (
         <box flexDirection="row" gap={2}>
           <text>
-            <span fg={palette.base03}>Framework:</span>{' '}
-            <span fg={palette.base0D}>
+            <span fg={colors.textMuted}>Framework:</span>{' '}
+            <span fg={colors.accent}>
               {hiddenContentAnalysis.framework.name}
             </span>
           </text>
@@ -138,7 +138,7 @@ export function AiViewContent({
   data,
   height,
 }: ViewComponentProps<AiResult>): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { hiddenContentAnalysis } = data
   const hasWarning = hiddenContentAnalysis.severity !== 'none'
   const hasContent = data.markdown && data.wordCount > 0
@@ -190,7 +190,7 @@ export function AiViewContent({
             icon={warningIcon}
           />
         ) : (
-          <text fg={palette.base0B}>
+          <text fg={colors.textSuccess}>
             All checks passed. No hidden content detected.
           </text>
         )}
@@ -221,7 +221,7 @@ export function AiViewContent({
         {hasMetadata ? (
           <Table data={metadataItems} variant="borderless" labelWidth={10} />
         ) : (
-          <text fg={palette.base03}>
+          <text fg={colors.textMuted}>
             No title, author, site name, or excerpt found.
           </text>
         )}
@@ -250,7 +250,7 @@ export function AiViewContent({
             />
           </scrollbox>
         ) : (
-          <text fg={palette.base0A}>
+          <text fg={colors.textWarning}>
             No content could be extracted from this page.
           </text>
         )}

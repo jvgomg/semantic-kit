@@ -18,7 +18,7 @@ import {
   SectionPriority,
   Table,
 } from '../../components/ui/index.js'
-import { usePalette } from '../../theme.js'
+import { useSemanticColors } from '../../theme.js'
 import type { SchemaCompareResult, SchemaResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
 
@@ -59,16 +59,16 @@ function truncate(str: string, maxLength: number): string {
  * Comparison section content
  */
 function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { comparison } = data
   const staticCount = countSchemaTypes(data.static)
   const renderedCount = countSchemaTypes(data.rendered)
 
   const getDiffColor = (added: number, removed: number): string => {
-    if (added > 0 && removed === 0) return palette.base0B
-    if (removed > 0 && added === 0) return palette.base08
-    if (added > 0 || removed > 0) return palette.base0A
-    return palette.base03
+    if (added > 0 && removed === 0) return colors.textSuccess
+    if (removed > 0 && added === 0) return colors.textError
+    if (added > 0 || removed > 0) return colors.textWarning
+    return colors.textMuted
   }
 
   const formatDiff = (added: number, removed: number): string => {
@@ -82,23 +82,23 @@ function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
     <box flexDirection="column" gap={0}>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Static HTML:</span>{' '}
-          <span fg={palette.base05}>
+          <span fg={colors.textMuted}>Static HTML:</span>{' '}
+          <span fg={colors.text}>
             {staticCount} schema type{staticCount !== 1 ? 's' : ''}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Rendered DOM:</span>{' '}
-          <span fg={palette.base05}>
+          <span fg={colors.textMuted}>Rendered DOM:</span>{' '}
+          <span fg={colors.text}>
             {renderedCount} schema type{renderedCount !== 1 ? 's' : ''}
           </span>
         </text>
       </box>
       <box flexDirection="row" gap={2} marginTop={1}>
         <text>
-          <span fg={palette.base03}>JSON-LD:</span>{' '}
+          <span fg={colors.textMuted}>JSON-LD:</span>{' '}
           <span
             fg={getDiffColor(comparison.jsonldAdded, comparison.jsonldRemoved)}
           >
@@ -109,7 +109,7 @@ function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
       {(comparison.microdataAdded > 0 || comparison.microdataRemoved > 0) && (
         <box flexDirection="row" gap={2}>
           <text>
-            <span fg={palette.base03}>Microdata:</span>{' '}
+            <span fg={colors.textMuted}>Microdata:</span>{' '}
             <span
               fg={getDiffColor(
                 comparison.microdataAdded,
@@ -127,7 +127,7 @@ function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
       {(comparison.rdfaAdded > 0 || comparison.rdfaRemoved > 0) && (
         <box flexDirection="row" gap={2}>
           <text>
-            <span fg={palette.base03}>RDFa:</span>{' '}
+            <span fg={colors.textMuted}>RDFa:</span>{' '}
             <span
               fg={getDiffColor(comparison.rdfaAdded, comparison.rdfaRemoved)}
             >
@@ -138,9 +138,13 @@ function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
       )}
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Open Graph:</span>{' '}
+          <span fg={colors.textMuted}>Open Graph:</span>{' '}
           <span
-            fg={comparison.openGraphChanged ? palette.base0A : palette.base03}
+            fg={
+              comparison.openGraphChanged
+                ? colors.textWarning
+                : colors.textMuted
+            }
           >
             {comparison.openGraphChanged ? 'Changed' : 'No change'}
           </span>
@@ -148,9 +152,11 @@ function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
       </box>
       <box flexDirection="row" gap={2}>
         <text>
-          <span fg={palette.base03}>Twitter Cards:</span>{' '}
+          <span fg={colors.textMuted}>Twitter Cards:</span>{' '}
           <span
-            fg={comparison.twitterChanged ? palette.base0A : palette.base03}
+            fg={
+              comparison.twitterChanged ? colors.textWarning : colors.textMuted
+            }
           >
             {comparison.twitterChanged ? 'Changed' : 'No change'}
           </span>
@@ -172,9 +178,9 @@ function SchemaTypeList({
   color: string
   format: string
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   if (types.length === 0) {
-    return <text fg={palette.base03}>No {format} schemas</text>
+    return <text fg={colors.textMuted}>No {format} schemas</text>
   }
 
   return (
@@ -198,7 +204,7 @@ function OpenGraphChangesContent({
 }: {
   data: SchemaCompareResult
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const staticOG = data.static.openGraph?.tags ?? {}
   const renderedOG = data.rendered.openGraph?.tags ?? {}
 
@@ -221,7 +227,7 @@ function OpenGraphChangesContent({
   }
 
   if (changes.length === 0) {
-    return <text fg={palette.base03}>No Open Graph changes detected.</text>
+    return <text fg={colors.textMuted}>No Open Graph changes detected.</text>
   }
 
   return (
@@ -241,7 +247,7 @@ function TwitterChangesContent({
 }: {
   data: SchemaCompareResult
 }): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const staticTw = data.static.twitter?.tags ?? {}
   const renderedTw = data.rendered.twitter?.tags ?? {}
 
@@ -264,7 +270,7 @@ function TwitterChangesContent({
   }
 
   if (changes.length === 0) {
-    return <text fg={palette.base03}>No Twitter Card changes detected.</text>
+    return <text fg={colors.textMuted}>No Twitter Card changes detected.</text>
   }
 
   return (
@@ -287,7 +293,7 @@ export function SchemaCompareViewContent({
   data,
   height,
 }: ViewComponentProps<SchemaCompareResult>): ReactNode {
-  const palette = usePalette()
+  const colors = useSemanticColors()
   const { comparison, timedOut } = data
 
   // Compute added/removed schema types
@@ -360,7 +366,7 @@ export function SchemaCompareViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={palette.base0A}>
+          <text fg={colors.textWarning}>
             The page took too long to load. The comparison may be based on
             partial content.
           </text>
@@ -394,26 +400,26 @@ export function SchemaCompareViewContent({
             {addedJsonld.length > 0 && (
               <SchemaTypeList
                 types={addedJsonld}
-                color={palette.base0B}
+                color={colors.textSuccess}
                 format="JSON-LD"
               />
             )}
             {addedMicrodata.length > 0 && (
               <SchemaTypeList
                 types={addedMicrodata}
-                color={palette.base0B}
+                color={colors.textSuccess}
                 format="Microdata"
               />
             )}
             {addedRdfa.length > 0 && (
               <SchemaTypeList
                 types={addedRdfa}
-                color={palette.base0B}
+                color={colors.textSuccess}
                 format="RDFa"
               />
             )}
             <box marginTop={1}>
-              <text fg={palette.base0A}>
+              <text fg={colors.textWarning}>
                 These schemas are only visible to bots that execute JavaScript.
               </text>
             </box>
@@ -435,26 +441,26 @@ export function SchemaCompareViewContent({
             {removedJsonld.length > 0 && (
               <SchemaTypeList
                 types={removedJsonld}
-                color={palette.base08}
+                color={colors.textError}
                 format="JSON-LD"
               />
             )}
             {removedMicrodata.length > 0 && (
               <SchemaTypeList
                 types={removedMicrodata}
-                color={palette.base08}
+                color={colors.textError}
                 format="Microdata"
               />
             )}
             {removedRdfa.length > 0 && (
               <SchemaTypeList
                 types={removedRdfa}
-                color={palette.base08}
+                color={colors.textError}
                 format="RDFa"
               />
             )}
             <box marginTop={1}>
-              <text fg={palette.base08}>
+              <text fg={colors.textError}>
                 These schemas are removed during JavaScript hydration. This is
                 unusual.
               </text>
@@ -501,7 +507,7 @@ export function SchemaCompareViewContent({
           summary="Static and rendered schemas are identical"
           defaultExpanded={false}
         >
-          <text fg={palette.base03}>
+          <text fg={colors.textMuted}>
             No differences detected between static HTML and JavaScript-rendered
             page. Your structured data does not depend on JavaScript execution.
           </text>
