@@ -22,6 +22,7 @@ Load the appropriate guide based on your task:
 | Terminal UI development | [directives/tui.md](directives/tui.md) |
 | Research documentation | [research/_meta/README.md](research/_meta/README.md) |
 | Test fixtures | [test-server/README.md](test-server/README.md) |
+| Demo recordings | [demos/README.md](demos/README.md) |
 
 ## Skills
 

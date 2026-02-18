@@ -10,3 +10,6 @@ SCRATCH.md
 .turbo
 __pycache__
 *.skill
+
+# Demo recordings (regenerate with vhs)
+demos/output/
