@@ -14,9 +14,6 @@ export const STATUS_BAR_HEIGHT = 1
 
 // Modal dimensions
 export const URL_LIST_WIDTH = 48
-export const HELP_MODAL_WIDTH = 52
-export const HELP_MODAL_HEIGHT = 14
-export const SETTINGS_MODAL_WIDTH = 40
 
 // Types
-export type ModalType = 'help' | 'url-list' | 'settings' | null
+export type ModalType = 'url-list' | null

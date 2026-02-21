@@ -58,3 +58,6 @@ export type {
 } from './SitemapBrowser.js'
 export { ConfigBrowser } from './ConfigBrowser.js'
 export type { ConfigBrowserProps } from './ConfigBrowser.js'
+
+// Dialog components
+export * from '../dialog/index.js'

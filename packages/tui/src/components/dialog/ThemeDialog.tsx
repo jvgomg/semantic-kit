@@ -1,11 +1,11 @@
 /**
- * Settings modal for theme switching.
- * Allows selection of theme and mode preference (Auto, Dark, Light).
+ * Theme Dialog
+ *
+ * Displays theme and mode selection.
  */
 import { useState } from 'react'
 import { useKeyboard } from '@opentui/react'
 import { useAtomValue } from 'jotai'
-import { SETTINGS_MODAL_WIDTH } from './constants.js'
 import {
   useSemanticColors,
   useTheme,
@@ -13,10 +13,16 @@ import {
   type ModePreference,
   type ThemeDefinition,
 } from '../../theme.js'
-import { Modal } from '../ui/Modal.js'
+import { DialogPanel } from './DialogPanel.js'
+import { useDialog } from './DialogContext.js'
 
-export interface SettingsModalProps {
-  onClose: () => void
+// =============================================================================
+// ThemePanel - Content Component
+// =============================================================================
+
+interface ThemePanelProps {
+  focused?: boolean
+  width?: number
 }
 
 type Section = 'theme' | 'mode'
@@ -27,7 +33,7 @@ const MODE_OPTIONS: { value: ModePreference; label: string }[] = [
   { value: 'light', label: 'Light' },
 ]
 
-export function SettingsModal({ onClose }: SettingsModalProps) {
+function ThemePanel({ focused = true, width = 40 }: ThemePanelProps) {
   const colors = useSemanticColors()
   const { theme, availableThemes, setTheme, setModePreference } = useTheme()
   const modePreference = useAtomValue(modePreferenceAtom)
@@ -47,11 +53,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   )
 
   useKeyboard((event) => {
-    // Close modal
-    if (event.name === 'escape' || event.name === 'q') {
-      onClose()
-      return
-    }
+    if (!focused) return
 
     // Switch sections with Tab
     if (event.name === 'tab') {
@@ -73,9 +75,19 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       }
     } else {
       // mode section - horizontal navigation
-      if (event.name === 'left' || event.name === 'h') {
+      if (
+        event.name === 'left' ||
+        event.name === 'h' ||
+        event.name === 'up' ||
+        event.name === 'k'
+      ) {
         setModeIndex((i) => Math.max(0, i - 1))
-      } else if (event.name === 'right' || event.name === 'l') {
+      } else if (
+        event.name === 'right' ||
+        event.name === 'l' ||
+        event.name === 'down' ||
+        event.name === 'j'
+      ) {
         setModeIndex((i) => Math.min(MODE_OPTIONS.length - 1, i + 1))
       } else if (event.name === 'return' || event.name === 'space') {
         const selected = MODE_OPTIONS[modeIndex]
@@ -86,81 +98,76 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
     }
   })
 
-  const innerWidth = SETTINGS_MODAL_WIDTH - 4 // padding
-  const bg = colors.backgroundPanel
-
-  const blank = () => <text bg={bg}>{' '.repeat(innerWidth)}</text>
-
-  // Helper to get mode description for a theme
   const getModeDesc = (t: ThemeDefinition): string => {
     if (t.supportsBothModes) return 'dark + light'
     return `${t.variant} only`
   }
 
-  return (
-    <Modal onClose={onClose}>
-      <text>
-        <strong>Settings</strong>
-      </text>
-      {blank()}
+  const maxNameLength = Math.max(...availableThemes.map((t) => t.name.length))
 
-      {/* Theme Section */}
-      <text
-        fg={activeSection === 'theme' ? colors.text : colors.textMuted}
-        bg={bg}
-      >
+  return (
+    <box flexDirection="column">
+      <text fg={activeSection === 'theme' ? colors.text : colors.textMuted}>
         <strong>Theme</strong>
       </text>
       {availableThemes.map((t, idx) => {
         const isSelected = t.id === theme.id
         const isHighlighted = activeSection === 'theme' && idx === themeIndex
-        const prefix = isSelected ? '●' : '○'
-        const indicator = isHighlighted ? '▸' : ' '
+        const prefix = isSelected ? '\u25cf' : '\u25cb'
+        const indicator = isHighlighted ? '\u25b8' : ' '
+        const modeDesc = getModeDesc(t)
 
         return (
           <text
             key={t.id}
             fg={isHighlighted ? colors.text : colors.textMuted}
-            bg={bg}
           >
-            {`${indicator} ${prefix} ${t.name.padEnd(12)} ${getModeDesc(t)}`.padEnd(
-              innerWidth,
+            {`${indicator} ${prefix} ${t.name.padEnd(maxNameLength + 2)}${modeDesc}`.padEnd(
+              width,
             )}
           </text>
         )
       })}
-      {blank()}
 
-      {/* Mode Section */}
-      <text
-        fg={activeSection === 'mode' ? colors.text : colors.textMuted}
-        bg={bg}
-      >
+      <text>{' '}</text>
+
+      <text fg={activeSection === 'mode' ? colors.text : colors.textMuted}>
         <strong>Mode</strong>
       </text>
-      <box flexDirection="row" backgroundColor={bg}>
-        <text bg={bg}>{'  '}</text>
+      <box flexDirection="row">
+        <text>{'  '}</text>
         {MODE_OPTIONS.map((opt, idx) => {
           const isSelected = opt.value === modePreference
           const isHighlighted = activeSection === 'mode' && idx === modeIndex
-          const prefix = isSelected ? '●' : '○'
+          const prefix = isSelected ? '\u25cf' : '\u25cb'
 
           return (
-            <text
-              key={opt.value}
-              fg={isHighlighted ? colors.text : colors.textMuted}
-              bg={bg}
-            >
+            <text key={opt.value} fg={isHighlighted ? colors.text : colors.textMuted}>
               {`${prefix} ${opt.label}  `}
             </text>
           )
         })}
       </box>
-      {blank()}
+    </box>
+  )
+}
 
-      <text fg={colors.textMuted}>
-        <strong>↑↓ navigate Tab section Esc close</strong>
-      </text>
-    </Modal>
+// =============================================================================
+// ThemeDialog - Main Export
+// =============================================================================
+
+export function ThemeDialog() {
+  const { title, headerHint, handleClose } = useDialog('Theme')
+
+  return (
+    <DialogPanel
+      title={title}
+      headerHint={headerHint}
+      footer="Tab section  ↑↓ navigate  Enter select"
+      width={50}
+      onClose={handleClose}
+    >
+      <ThemePanel focused={true} />
+    </DialogPanel>
   )
 }

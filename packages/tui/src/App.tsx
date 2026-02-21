@@ -22,10 +22,8 @@ import {
   type ModalType,
 } from './state/index.js'
 import {
-  HelpModal,
   MainContent,
   Menu,
-  SettingsModal,
   StatusBar,
   UrlBar,
   UrlList,
@@ -33,6 +31,11 @@ import {
   STATUS_BAR_HEIGHT,
   URL_BAR_HEIGHT,
 } from './components/chrome/index.js'
+import { DialogProvider } from './components/dialog/index.js'
+import {
+  pushDialogAtom,
+  isDialogOpenAtom,
+} from './state/dialog/index.js'
 import { useSemanticColors } from './theme.js'
 import { getDefaultSitemapUrl, isSitemapUrl } from '@webspecs/core'
 // Import views to trigger registration
@@ -70,6 +73,8 @@ export function App({ initialUrl, hasConfig }: AppProps) {
   const invalidateAllViewData = useSetAtom(invalidateAllViewDataAtom)
   const recentUrls = useAtomValue(recentUrlsAtom)
   const initializeMenuIndex = useSetAtom(initializeMenuIndexAtom)
+  const pushDialog = useSetAtom(pushDialogAtom)
+  const isDialogOpen = useAtomValue(isDialogOpenAtom)
 
   // Set initial URL and focus on mount
   useEffect(() => {
@@ -123,8 +128,8 @@ export function App({ initialUrl, hasConfig }: AppProps) {
 
   // Global key bindings (these work when no modal is open)
   useKeyboard((event) => {
-    // Skip if modal is open
-    if (activeModal !== null) return
+    // Skip if modal or dialog is open
+    if (activeModal !== null || isDialogOpen) return
 
     // When URL bar is focused, only handle Tab and Ctrl+C (let input handle the rest)
     const urlBarFocused = focusedRegion === 'url'
@@ -153,9 +158,9 @@ export function App({ initialUrl, hasConfig }: AppProps) {
       return
     }
 
-    // Help modal
+    // Command palette (?)
     if (event.name === '?') {
-      openModal('help')
+      pushDialog({ type: 'command' })  // Opens command dialog (user can navigate to help)
       return
     }
 
@@ -177,9 +182,15 @@ export function App({ initialUrl, hasConfig }: AppProps) {
       return
     }
 
-    // Settings modal (theme switcher)
+    // Theme dialog
     if (event.name === 't') {
-      openModal('settings')
+      pushDialog({ type: 'theme' })  // Opens command dialog at theme view
+      return
+    }
+
+    // Command palette (Ctrl+P)
+    if (event.ctrl && event.name === 'p') {
+      pushDialog({ type: 'command' })
       return
     }
 
@@ -229,7 +240,8 @@ export function App({ initialUrl, hasConfig }: AppProps) {
   const infoPanelMenuOffset = 0 // Menu starts at top of content area
 
   return (
-    <box
+    <DialogProvider>
+      <box
         flexDirection="column"
         width={width}
         height={height}
@@ -335,10 +347,7 @@ export function App({ initialUrl, hasConfig }: AppProps) {
 
         {/* Status Bar */}
         <StatusBar />
-
-        {/* Modals */}
-        {activeModal === 'help' && <HelpModal onClose={closeModal} />}
-        {activeModal === 'settings' && <SettingsModal onClose={closeModal} />}
       </box>
+    </DialogProvider>
   )
 }
