@@ -8,7 +8,6 @@
  * 4. Add tracking in effect.ts persistStateEffect (get the atom)
  */
 import type { ModePreference } from '../../theme.js'
-import type { ModalType } from '../types.js'
 
 /**
  * Schema version for migration support.
@@ -34,8 +33,6 @@ export interface PersistedState {
   url: string
   /** Active menu/view index */
   activeMenuIndex: number
-  /** Active modal (null if none) */
-  activeModal: ModalType
   /** Per-view state: viewId -> PersistedViewState */
   views: Record<string, PersistedViewState>
   /** Active tab in URL list panel */
@@ -58,6 +55,5 @@ export const DEFAULT_PERSISTED_STATE: PersistedState = {
   version: PERSISTED_STATE_VERSION,
   url: '',
   activeMenuIndex: 0,
-  activeModal: null,
   views: {},
 }

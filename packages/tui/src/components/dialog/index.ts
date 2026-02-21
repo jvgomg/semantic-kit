@@ -19,6 +19,9 @@ export { ThemeDialog } from './ThemeDialog.js'
 export { CommandDialog } from './CommandDialog.js'
 export type { CommandDialogProps } from './CommandDialog.js'
 
+export { UrlListDialog } from './UrlListDialog.js'
+export type { UrlListDialogProps } from './UrlListDialog.js'
+
 export { DialogProvider } from './DialogProvider.js'
 export type { DialogProviderProps } from './DialogProvider.js'
 

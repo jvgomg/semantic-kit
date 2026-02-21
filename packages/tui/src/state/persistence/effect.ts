@@ -7,7 +7,6 @@
 import { atomEffect } from 'jotai-effect'
 import { themeIdAtom, modePreferenceAtom } from '../../theme.js'
 import {
-  activeModalAtom,
   urlAtom,
   urlListActiveTabAtom,
   configExpandedGroupsAtom,
@@ -34,7 +33,6 @@ export const persistStateEffect = atomEffect((get) => {
   // atomEffect automatically subscribes to these
   const url = get(urlAtom)
   const activeMenuIndex = get(activeMenuIndexAtom)
-  const activeModal = get(activeModalAtom)
   const viewIds = get(viewDataIdsAtom)
   const urlListActiveTab = get(urlListActiveTabAtom)
   const configExpandedGroups = get(configExpandedGroupsAtom)
@@ -47,7 +45,6 @@ export const persistStateEffect = atomEffect((get) => {
     version: PERSISTED_STATE_VERSION,
     url,
     activeMenuIndex,
-    activeModal,
     views: {},
     urlListActiveTab,
     configExpandedGroups: Array.from(configExpandedGroups),

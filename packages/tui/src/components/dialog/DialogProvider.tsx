@@ -4,9 +4,6 @@
  * Renders children plus any active dialogs from the stack.
  * Only the top dialog is rendered (not stacked visually - each dialog has its own backdrop).
  * Provides DialogContext so dialogs know whether to show "back" or "close".
- *
- * The `url-list` type returns null for now because UrlList has complex integration
- * with App.tsx (sitemap URLs, config, etc.). It will be handled separately.
  */
 import { useMemo, useCallback } from 'react'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -20,6 +17,7 @@ import { DialogContextProvider, type DialogContextValue } from './DialogContext.
 import { CommandDialog } from './CommandDialog.js'
 import { HelpDialog } from './HelpDialog.js'
 import { ThemeDialog } from './ThemeDialog.js'
+import { UrlListDialog } from './UrlListDialog.js'
 
 export interface DialogProviderProps {
   children: React.ReactNode
@@ -64,9 +62,7 @@ export function DialogProvider({
       case 'theme':
         return <ThemeDialog key={entry.id} />
       case 'url-list':
-        // URL list is handled separately in App.tsx for now
-        // because it has complex props (onSelect, columns, rows, etc.)
-        return null
+        return <UrlListDialog key={entry.id} />
       default:
         return null
     }

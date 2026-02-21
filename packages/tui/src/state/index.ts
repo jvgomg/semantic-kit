@@ -10,7 +10,6 @@ export type {
   ViewData,
   ViewDataStatus,
   FocusRegion,
-  ModalType,
   UrlListTab,
 } from './types.js'
 
@@ -37,9 +36,6 @@ export {
   setFocusAtom,
   focusNextAtom,
   focusPreviousAtom,
-  // Modal
-  activeModalAtom,
-  isModalOpenAtom,
   // URL
   urlAtom,
   recentUrlsAtom,

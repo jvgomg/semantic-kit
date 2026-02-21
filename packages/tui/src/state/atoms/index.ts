@@ -11,8 +11,6 @@ export {
   focusPreviousAtom,
 } from './focus.js'
 
-export { activeModalAtom, isModalOpenAtom } from './modal.js'
-
 export { urlAtom, recentUrlsAtom, setUrlAtom } from './url.js'
 
 // Tool navigation atoms are in state/tool-navigation.ts (not in atoms/)

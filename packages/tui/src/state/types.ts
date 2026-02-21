@@ -11,8 +11,6 @@ export type GroupedMenuItem =
 
 export type FocusRegion = 'url' | 'menu' | 'main'
 
-export type ModalType = 'url-list' | null
-
 export type UrlListTab = 'recent' | 'config' | 'sitemap'
 
 // Re-export view data types

@@ -134,9 +134,9 @@ export function CommandDialog(_props: CommandDialogProps) {
         pushDialog({ type: 'help' })
         break
       case 'url-list':
-        // Clear command dialog and show URL list
+        // Replace command dialog with URL list dialog
         clearDialogs()
-        // TODO: Need to trigger URL list modal in App
+        pushDialog({ type: 'url-list' })
         break
       case 'quit':
         renderer.destroy()

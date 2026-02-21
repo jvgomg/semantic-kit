@@ -5,8 +5,8 @@
  * we implement our own focus tracking using Jotai atoms.
  */
 import { atom } from 'jotai'
+import { isDialogOpenAtom } from '../dialog/atoms.js'
 import type { FocusRegion } from '../types.js'
-import { isModalOpenAtom } from './modal.js'
 
 /**
  * The currently focused region.
@@ -22,11 +22,11 @@ export const focusEnabledAtom = atom<boolean>(true)
 
 /**
  * Effective focus enabled state.
- * Automatically disabled when any modal is open, respecting both
- * manual control (focusEnabledAtom) and modal state.
+ * Automatically disabled when any dialog is open, respecting both
+ * manual control (focusEnabledAtom) and dialog state.
  */
 export const effectiveFocusEnabledAtom = atom(
-  (get) => get(focusEnabledAtom) && !get(isModalOpenAtom),
+  (get) => get(focusEnabledAtom) && !get(isDialogOpenAtom),
 )
 
 /**

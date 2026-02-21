@@ -5,7 +5,6 @@ import type { TuiConfig } from '../../lib/tui-config/index.js'
 import { themeIdAtom, modePreferenceAtom } from '../../theme.js'
 import {
   urlAtom,
-  activeModalAtom,
   configStateAtom,
   configExpandedGroupsAtom,
   configSelectedIndexAtom,
@@ -83,10 +82,6 @@ export async function createPersistedStore(
   }
 
   store.set(activeMenuIndexAtom, persisted.activeMenuIndex)
-
-  if (persisted.activeModal) {
-    store.set(activeModalAtom, persisted.activeModal)
-  }
 
   // Restore URL list tab state
   if (persisted.urlListActiveTab) {

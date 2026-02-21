@@ -24,4 +24,3 @@ export {
   STATUS_BAR_HEIGHT,
   URL_LIST_WIDTH,
 } from './constants.js'
-export type { ModalType } from './constants.js'

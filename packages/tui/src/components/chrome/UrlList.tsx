@@ -68,6 +68,8 @@ export interface UrlListProps {
   autoFetchSitemapUrl?: string
   /** If true, start on config tab (when config is loaded) */
   startOnConfig?: boolean
+  /** If true, render without border/title/footer (for embedding in DialogPanel) */
+  embedded?: boolean
 }
 
 // ============================================================================
@@ -247,6 +249,7 @@ export function UrlList({
   defaultSitemapUrl,
   autoFetchSitemapUrl,
   startOnConfig,
+  embedded = false,
 }: UrlListProps) {
   const colors = useSemanticColors()
 
@@ -452,6 +455,34 @@ export function UrlList({
     }
   }
 
+  // Content that's shared between embedded and standalone modes
+  const content = (
+    <>
+      {/* Tab Bar */}
+      <box>
+        <TabBar
+          tabs={tabDefinitions}
+          activeTab={activeTab}
+          onSelect={(id) => handleTabChange(id as UrlListTab)}
+          isFocused={focusedElement === 'tabs'}
+        />
+      </box>
+
+      {/* Tab Content */}
+      {renderTabContent()}
+    </>
+  )
+
+  // Embedded mode: no border/title/footer (DialogPanel provides those)
+  if (embedded) {
+    return (
+      <box flexDirection="column" height={rows}>
+        {content}
+      </box>
+    )
+  }
+
+  // Standalone mode: full chrome with border/title/footer
   return (
     <box
       flexDirection="column"
@@ -465,18 +496,7 @@ export function UrlList({
         <strong>Go to</strong>
       </text>
 
-      {/* Tab Bar */}
-      <box>
-        <TabBar
-          tabs={tabDefinitions}
-          activeTab={activeTab}
-          onSelect={(id) => handleTabChange(id as UrlListTab)}
-          isFocused={focusedElement === 'tabs'}
-        />
-      </box>
-
-      {/* Tab Content */}
-      {renderTabContent()}
+      {content}
 
       {/* Footer hints */}
       <text />
