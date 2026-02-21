@@ -1,8 +1,8 @@
 /**
  * Silent TUI development watcher.
  *
- * Builds @webspecs/core and @webspecs/cli, then watches core for changes and
- * restarts the TUI process on each rebuild. The TUI process gets full terminal
+ * Builds @webspecs/core, then watches both core dist and TUI source for changes,
+ * restarting the TUI process on each change. The TUI process gets full terminal
  * ownership — no Turborepo status lines or orchestrator noise.
  *
  * @webspecs/cli only needs a one-time build because it externalises
@@ -17,6 +17,7 @@ import type { Subprocess } from 'bun'
 const ROOT = join(import.meta.dir, '..')
 const CORE_DIR = join(ROOT, 'packages/core')
 const TUI_DIR = join(ROOT, 'packages/tui')
+const TUI_SRC = join(TUI_DIR, 'src')
 const CORE_DIST = join(CORE_DIR, 'dist/index.js')
 
 // Forward CLI arguments to the TUI process, resolving relative paths to absolute.
@@ -84,20 +85,23 @@ function startTUI(): void {
 
 startTUI()
 
-// ── Watch core dist for rebuild completion ───────────────────────────────────
+// ── Watch for changes and restart TUI ─────────────────────────────────────────
 //
-// When bun --watch finishes a rebuild of core, dist/index.js is updated.
-// We debounce briefly to let the full write settle before restarting the TUI.
+// Watch core dist (rebuilt by background watcher) and TUI source (run directly).
+// Debounce briefly to let writes settle before restarting.
 
 let restartTimer: Timer | null = null
 
-watch(CORE_DIST, () => {
+function scheduleRestart(): void {
   if (restartTimer) clearTimeout(restartTimer)
   restartTimer = setTimeout(() => {
     restartTimer = null
     startTUI()
   }, 150)
-})
+}
+
+watch(CORE_DIST, scheduleRestart)
+watch(TUI_SRC, { recursive: true }, scheduleRestart)
 
 // ── Cleanup on exit ──────────────────────────────────────────────────────────
 
