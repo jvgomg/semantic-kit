@@ -27,7 +27,6 @@ export type {
   // Resolved colors
   ResolvedColors,
   AnsiPalette,
-  ColorMode,
   SeverityLevel,
   // Color key type
   ThemeColorKey,
@@ -39,13 +38,7 @@ export { THEME_COLOR_KEYS } from './types.js'
 // React Hooks
 // =============================================================================
 
-export {
-  useSemanticColors,
-  useTheme,
-  useColors,
-  useColorMode,
-  type UseThemeResult,
-} from './hooks.js'
+export { useSemanticColors, useTheme, useColors, type UseThemeResult } from './hooks.js'
 
 // =============================================================================
 // Jotai Atoms
@@ -60,23 +53,11 @@ export {
   currentThemeAtom,
   effectiveModeAtom,
   resolvedColorsAtom,
-  dimmedColorsAtom,
   setThemeAtom,
   setModePreferenceAtom,
   setDetectedModeAtom,
   setAnsiPaletteAtom,
 } from './atoms.js'
-
-// =============================================================================
-// Color Mode Context
-// =============================================================================
-
-export {
-  ColorModeContext,
-  ColorModeProvider,
-  useColorModeContext,
-  type ColorModeProviderProps,
-} from './provider.js'
 
 // =============================================================================
 // Color Resolution
@@ -87,7 +68,6 @@ export {
   DEFAULT_ANSI_PALETTE,
   resolveColor,
   resolveThemeColors,
-  buildDimmedColors,
   getSeverityColor,
 } from './colors.js'
 

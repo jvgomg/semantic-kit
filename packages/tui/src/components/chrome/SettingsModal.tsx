@@ -98,7 +98,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   }
 
   return (
-    <Modal>
+    <Modal onClose={onClose}>
       <text>
         <strong>Settings</strong>
       </text>

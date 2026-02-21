@@ -11,11 +11,9 @@ import {
   currentThemeAtom,
   availableThemesAtom,
   resolvedColorsAtom,
-  dimmedColorsAtom,
   setThemeAtom,
   setModePreferenceAtom,
 } from './atoms.js'
-import { useColorModeContext } from './provider.js'
 import type {
   ThemeDefinition,
   ThemeVariant,
@@ -29,7 +27,6 @@ import type {
 
 /**
  * Hook for accessing semantic colors in components.
- * Automatically returns dimmed colors when inside a dimmed context.
  *
  * This is the primary hook for getting colors - use this in most components.
  *
@@ -42,11 +39,7 @@ import type {
  * }
  */
 export function useSemanticColors(): ResolvedColors {
-  const mode = useColorModeContext()
-  const normalColors = useAtomValue(resolvedColorsAtom)
-  const dimmedColors = useAtomValue(dimmedColorsAtom)
-
-  return mode === 'dimmed' ? dimmedColors : normalColors
+  return useAtomValue(resolvedColorsAtom)
 }
 
 /**
@@ -117,15 +110,3 @@ export function useColors(): ResolvedColors {
   return useAtomValue(resolvedColorsAtom)
 }
 
-/**
- * Hook to get the current color mode (normal or dimmed).
- *
- * @example
- * function MyComponent() {
- *   const colorMode = useColorMode()
- *   return <text>Color mode: {colorMode}</text>
- * }
- */
-export function useColorMode() {
-  return useColorModeContext()
-}

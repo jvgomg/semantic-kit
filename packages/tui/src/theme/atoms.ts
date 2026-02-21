@@ -6,11 +6,7 @@
  */
 
 import { atom } from 'jotai'
-import {
-  resolveThemeColors,
-  buildDimmedColors,
-  DEFAULT_ANSI_PALETTE,
-} from './colors.js'
+import { resolveThemeColors, DEFAULT_ANSI_PALETTE } from './colors.js'
 import {
   BUILTIN_THEMES,
   DEFAULT_THEME_ID,
@@ -105,16 +101,6 @@ export const resolvedColorsAtom = atom<ResolvedColors>((get) => {
   const palette = get(ansiPaletteAtom)
 
   return resolveThemeColors(theme.json, mode, palette)
-})
-
-/**
- * Dimmed colors for content behind modals.
- */
-export const dimmedColorsAtom = atom<ResolvedColors>((get) => {
-  const colors = get(resolvedColorsAtom)
-  const palette = get(ansiPaletteAtom)
-
-  return buildDimmedColors(colors, palette)
 })
 
 // =============================================================================

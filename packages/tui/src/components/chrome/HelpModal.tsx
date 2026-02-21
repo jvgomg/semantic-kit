@@ -40,7 +40,7 @@ export function HelpModal({ onClose }: HelpModalProps) {
   const blank = () => <text bg={bg}>{' '.repeat(innerWidth)}</text>
 
   return (
-    <Modal>
+    <Modal onClose={onClose}>
       <text>
         <strong>Keyboard Shortcuts</strong>
       </text>

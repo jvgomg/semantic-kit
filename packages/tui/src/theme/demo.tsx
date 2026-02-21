@@ -14,8 +14,7 @@
  */
 
 import type { ReactNode } from 'react'
-import { useTheme, useSemanticColors, useColorMode } from './hooks.js'
-import { ColorModeProvider } from './provider.js'
+import { useTheme, useSemanticColors } from './hooks.js'
 import type { ResolvedColors } from './types.js'
 
 /**
@@ -24,7 +23,6 @@ import type { ResolvedColors } from './types.js'
 export function ThemeDemo() {
   const { theme, mode, availableThemes } = useTheme()
   const colors = useSemanticColors()
-  const colorMode = useColorMode()
 
   return (
     <box flexDirection="column" padding={1} gap={1}>
@@ -32,7 +30,7 @@ export function ThemeDemo() {
       <box flexDirection="column">
         <text fg={colors.primary}>Theme System Demo</text>
         <text fg={colors.textMuted}>
-          Current: {theme.name} ({mode} mode, {colorMode} context)
+          Current: {theme.name} ({mode} mode)
         </text>
       </box>
 
@@ -130,14 +128,6 @@ export function ThemeDemo() {
           <ColorSwatch label="type" color={colors.syntaxType} />
         </ColorSection>
       </box>
-
-      {/* Dimmed Context Demo */}
-      <box flexDirection="column" gap={0} marginTop={1}>
-        <text fg={colors.textMuted}>Dimmed context demo:</text>
-        <ColorModeProvider mode="dimmed">
-          <DimmedDemo />
-        </ColorModeProvider>
-      </box>
     </box>
   )
 }
@@ -187,29 +177,6 @@ function ColorSwatch({
     )
   }
   return <text fg={color}>{label}</text>
-}
-
-/**
- * Demo content shown in dimmed context.
- */
-function DimmedDemo() {
-  const colors = useSemanticColors()
-  const colorMode = useColorMode()
-
-  return (
-    <box
-      flexDirection="row"
-      gap={2}
-      borderStyle="rounded"
-      borderColor={colors.border}
-      padding={1}
-    >
-      <text fg={colors.text}>text ({colorMode})</text>
-      <text fg={colors.primary}>primary</text>
-      <text fg={colors.accent}>accent</text>
-      <text fg={colors.error}>error</text>
-    </box>
-  )
 }
 
 export default ThemeDemo

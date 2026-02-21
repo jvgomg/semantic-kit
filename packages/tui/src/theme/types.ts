@@ -239,11 +239,6 @@ export interface AnsiPalette {
 }
 
 /**
- * Color mode for components (normal or dimmed behind modals).
- */
-export type ColorMode = 'normal' | 'dimmed'
-
-/**
  * Severity level for color mapping.
  */
 export type SeverityLevel =

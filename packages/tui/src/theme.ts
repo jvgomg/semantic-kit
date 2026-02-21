@@ -20,13 +20,11 @@ export {
   type ThemeDefinition,
   type ResolvedColors,
   type AnsiPalette,
-  type ColorMode,
   type SeverityLevel,
   // Hooks
   useSemanticColors,
   useTheme,
   useColors,
-  useColorMode,
   type UseThemeResult,
   // Atoms
   themeIdAtom,
@@ -37,22 +35,15 @@ export {
   currentThemeAtom,
   effectiveModeAtom,
   resolvedColorsAtom,
-  dimmedColorsAtom,
   setThemeAtom,
   setModePreferenceAtom,
   setDetectedModeAtom,
   setAnsiPaletteAtom,
-  // Context
-  ColorModeContext,
-  ColorModeProvider,
-  useColorModeContext,
-  type ColorModeProviderProps,
   // Color utilities
   ANSI,
   DEFAULT_ANSI_PALETTE,
   resolveColor,
   resolveThemeColors,
-  buildDimmedColors,
   getSeverityColor,
   // Theme registry
   BUILTIN_THEMES,

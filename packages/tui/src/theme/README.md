@@ -52,7 +52,6 @@ theme/
     tokyo-night.ts      # Tokyo Night theme
   atoms.ts              # Jotai atoms
   hooks.ts              # React hooks
-  provider.tsx          # Color mode context provider
   demo.tsx              # Demo component
   index.ts              # Main exports
   README.md             # This file
@@ -135,38 +134,44 @@ export const MY_THEME: ThemeDefinition = {
 }
 ```
 
-## Color Mode Context
+## Modal Overlay
 
-The `ColorModeProvider` enables dimmed colors for content behind modals:
+Modals use RGBA opacity overlays (following OpenCode's approach) rather than semantic color dimming:
 
 ```typescript
-import { ColorModeProvider } from './theme/provider.js'
+import { RGBA } from '@opentui/core'
 import { useSemanticColors } from './theme/hooks.js'
 
-function Modal({ children }) {
-  const colors = useSemanticColors() // Normal colors for modal content
+function Modal({ children, onClose }) {
+  const colors = useSemanticColors()
 
   return (
-    <>
-      {/* Background content gets dimmed colors */}
-      <ColorModeProvider mode="dimmed">
-        <BackgroundContent />
-      </ColorModeProvider>
-
-      {/* Modal content uses normal colors */}
-      <box borderColor={colors.borderActive}>
+    <box
+      position="absolute"
+      backgroundColor={RGBA.fromInts(0, 0, 0, 150)} // ~59% opacity black overlay
+      onMouseUp={() => onClose?.()}
+    >
+      <box
+        backgroundColor={colors.backgroundPanel}
+        onMouseUp={(e) => e.stopPropagation()}
+      >
         {children}
       </box>
-    </>
+    </box>
   )
 }
 ```
+
+This approach:
+- Works naturally with any theme (overlay is always semi-transparent black)
+- Supports click-to-dismiss on the overlay
+- Integrates seamlessly with system theme detection
 
 ## Hook API Reference
 
 ### `useSemanticColors()`
 
-Returns all resolved colors as hex strings. Automatically uses dimmed colors when inside a `ColorModeProvider` with `mode="dimmed"`.
+Returns all resolved colors as hex strings.
 
 ```typescript
 const colors = useSemanticColors()
@@ -186,14 +191,6 @@ const {
   setTheme,        // (themeId: string) => void
   setModePreference, // (pref: 'auto' | 'dark' | 'light') => void
 } = useTheme()
-```
-
-### `useColorMode()`
-
-Returns the current color mode context ('normal' or 'dimmed').
-
-```typescript
-const colorMode = useColorMode()
 ```
 
 ## Attribution

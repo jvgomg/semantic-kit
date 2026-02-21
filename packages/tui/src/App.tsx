@@ -33,7 +33,7 @@ import {
   STATUS_BAR_HEIGHT,
   URL_BAR_HEIGHT,
 } from './components/chrome/index.js'
-import { ColorModeContext, useSemanticColors } from './theme.js'
+import { useSemanticColors } from './theme.js'
 import { getDefaultSitemapUrl, isSitemapUrl } from '@webspecs/core'
 // Import views to trigger registration
 import './views/index.js'
@@ -228,15 +228,8 @@ export function App({ initialUrl, hasConfig }: AppProps) {
   // Info panel position: after URL bar (3 rows), relative to menu
   const infoPanelMenuOffset = 0 // Menu starts at top of content area
 
-  // Determine color mode based on modal state
-  // Content behind modals should be dimmed (help, settings modals)
-  // url-list is inline and replaces content, so no dimming needed
-  const colorMode =
-    activeModal === 'help' || activeModal === 'settings' ? 'dimmed' : 'normal'
-
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <box
+    <box
         flexDirection="column"
         width={width}
         height={height}
@@ -347,6 +340,5 @@ export function App({ initialUrl, hasConfig }: AppProps) {
         {activeModal === 'help' && <HelpModal onClose={closeModal} />}
         {activeModal === 'settings' && <SettingsModal onClose={closeModal} />}
       </box>
-    </ColorModeContext.Provider>
   )
 }
