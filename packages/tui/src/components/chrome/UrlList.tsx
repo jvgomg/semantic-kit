@@ -345,8 +345,8 @@ export function UrlList({
   useKeyboard((event) => {
     const { name, shift } = event
 
-    // Global: close panel
-    if (name === 'escape' || (name === 'q' && focusedElement !== 'input')) {
+    // Global: close panel (skip when embedded - dialog handles Escape via useDialog)
+    if (!embedded && (name === 'escape' || (name === 'q' && focusedElement !== 'input'))) {
       onClose()
       return
     }

@@ -52,7 +52,7 @@ export function UrlListDialog() {
     return ''
   }, [url, recentUrls])
 
-  // Handle URL selection: set URL, close dialog, restore focus
+  // Handle URL selection: set URL, close all dialogs, restore focus
   const handleSelect = useCallback(
     (selectedUrl: string) => {
       setUrl(selectedUrl)
@@ -62,12 +62,6 @@ export function UrlListDialog() {
     },
     [setUrl, clearDialogs, enableFocus, focus],
   )
-
-  // Handle close: close dialog and restore focus
-  const handleUrlListClose = useCallback(() => {
-    handleClose()
-    enableFocus()
-  }, [handleClose, enableFocus])
 
   // Calculate dialog dimensions
   const dialogWidth = Math.min(70, termWidth - 4)
@@ -82,11 +76,11 @@ export function UrlListDialog() {
       footer="Tab: switch  ↑↓: navigate  Enter: select"
       width={dialogWidth}
       height={dialogHeight}
-      onClose={handleUrlListClose}
+      onClose={handleClose}
     >
       <UrlList
         onSelect={handleSelect}
-        onClose={handleUrlListClose}
+        onClose={handleClose}
         columns={dialogWidth - 4}
         rows={contentHeight}
         defaultSitemapUrl={defaultSitemapUrl}
