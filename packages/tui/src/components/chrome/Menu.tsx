@@ -12,6 +12,7 @@ import {
   groupedMenuItemsAtom,
   navigateMenuAtom,
   useFocus,
+  isDialogOpenAtom,
   type GroupedMenuItem,
 } from '../../state/index.js'
 import { useSemanticColors } from '../../theme.js'
@@ -30,9 +31,12 @@ export function Menu({ width }: MenuProps) {
   const [activeMenuIndex, setActiveMenuIndex] = useAtom(activeMenuIndexAtom)
   const items = useAtomValue(groupedMenuItemsAtom)
   const navigate = useSetAtom(navigateMenuAtom)
+  const isDialogOpen = useAtomValue(isDialogOpenAtom)
 
-  // Keyboard navigation when focused
+  // Keyboard navigation when focused and no dialog is open
   useKeyboard((key) => {
+    // Don't handle keyboard when a dialog is open - dialog handles its own input
+    if (isDialogOpen) return
     if (!isInputActive) return
 
     switch (key.name) {

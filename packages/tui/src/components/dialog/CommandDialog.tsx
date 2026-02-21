@@ -11,7 +11,9 @@ import { useSetAtom } from 'jotai'
 import {
   pushDialogAtom,
   clearDialogsAtom,
-} from '../../state/dialog/index.js'
+  useFocusManager,
+  invalidateAllViewDataAtom,
+} from '../../state/index.js'
 import { DialogPanel } from './DialogPanel.js'
 import { DialogInput } from './DialogInput.js'
 import { DialogSelect, type DialogSelectOption } from './DialogSelect.js'
@@ -93,6 +95,8 @@ export function CommandDialog(_props: CommandDialogProps) {
   const renderer = useRenderer()
   const pushDialog = useSetAtom(pushDialogAtom)
   const clearDialogs = useSetAtom(clearDialogsAtom)
+  const invalidateAllViewData = useSetAtom(invalidateAllViewDataAtom)
+  const { focus, enableFocus } = useFocusManager()
   const { title, headerHint, handleClose } = useDialog('Commands')
 
   // State
@@ -134,17 +138,20 @@ export function CommandDialog(_props: CommandDialogProps) {
         pushDialog({ type: 'help' })
         break
       case 'url-list':
-        // Replace command dialog with URL list dialog
-        clearDialogs()
         pushDialog({ type: 'url-list' })
         break
       case 'quit':
         renderer.destroy()
         break
       case 'jump-url':
-      case 'reload':
-        // Clear dialogs - action will be handled by App
         clearDialogs()
+        enableFocus()
+        focus('url')
+        break
+      case 'reload':
+        clearDialogs()
+        enableFocus()
+        invalidateAllViewData()
         break
     }
   }

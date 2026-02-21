@@ -15,7 +15,8 @@ import {
   SectionRegistryProvider,
   useViewSections,
 } from '../../state/sections/index.js'
-import { useFocus } from '../../state/index.js'
+import { useFocus, isDialogOpenAtom } from '../../state/index.js'
+import { useAtomValue } from 'jotai'
 
 export interface ViewSectionsProps {
   /** Section components */
@@ -30,6 +31,7 @@ export interface ViewSectionsProps {
 function ViewSectionsInner({ children, height }: ViewSectionsProps): ReactNode {
   // Get focus state to determine if keyboard input is active
   const { isInputActive } = useFocus('main')
+  const isDialogOpen = useAtomValue(isDialogOpenAtom)
 
   // Get section state and actions from the hook
   const {
@@ -43,8 +45,9 @@ function ViewSectionsInner({ children, height }: ViewSectionsProps): ReactNode {
     focusDepth,
   } = useViewSections()
 
-  // Keyboard handling
+  // Keyboard handling - skip when dialog is open (dialog handles its own input)
   useKeyboard((key) => {
+    if (isDialogOpen) return
     if (!isInputActive) return
 
     // At depth 0, handle section-level navigation

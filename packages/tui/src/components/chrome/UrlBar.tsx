@@ -16,6 +16,7 @@ import {
   urlAtom,
   useFocus,
   useFocusManager,
+  isDialogOpenAtom,
 } from '../../state/index.js'
 import { useSemanticColors } from '../../theme.js'
 
@@ -29,6 +30,7 @@ export function UrlBar({ width }: UrlBarProps) {
   const setUrl = useSetAtom(setUrlAtom)
   const { focus: focusManager } = useFocusManager()
   const { isFocused, isInputActive, focus } = useFocus('url')
+  const isDialogOpen = useAtomValue(isDialogOpenAtom)
 
   // Local input state - what's shown in the input
   const [inputValue, setInputValue] = useState(url)
@@ -57,6 +59,8 @@ export function UrlBar({ width }: UrlBarProps) {
 
   // Handle keyboard input for escape and enter keys
   useKeyboard((event) => {
+    // Don't handle keyboard when a dialog is open
+    if (isDialogOpen) return
     if (!isInputActive) return
 
     if (event.name === 'escape') {

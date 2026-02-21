@@ -3,21 +3,19 @@
  *
  * Provides:
  * - Semi-transparent backdrop overlay
- * - Centered content panel with rounded borders
+ * - Centered content panel
  * - Optional header with title and hint text
  * - Optional footer for keybind hints
  * - Backdrop click handling for dismissal
  *
  * Layout:
- * ┌─────────────────────────────────────────┐
- * │  Title                     headerHint   │  <- Header (only if title provided)
- * ├─────────────────────────────────────────┤
- * │                                         │
- * │  {children}                             │  <- Content area
- * │                                         │
- * ├─────────────────────────────────────────┤
- * │  footer text                            │  <- Footer (only if footer provided)
- * └─────────────────────────────────────────┘
+ *   Title                     headerHint     <- Header (only if title provided)
+ * ─────────────────────────────────────────
+ *
+ *   {children}                               <- Content area
+ *
+ * ─────────────────────────────────────────
+ *   footer text                              <- Footer (only if footer provided)
  */
 import { useTerminalDimensions } from '@opentui/react'
 import { RGBA } from '@opentui/core'
@@ -44,12 +42,9 @@ export interface DialogPanelProps {
 
 /**
  * Generate a horizontal line separator.
- * Width accounts for border (2 chars) and padding (4 chars).
  */
 function makeSeparator(dialogWidth: number): string {
-  // Inner width = total width - 2 (border) - 4 (padding left/right)
-  const innerWidth = Math.max(0, dialogWidth - 2)
-  return BOX_HORIZONTAL.repeat(innerWidth)
+  return BOX_HORIZONTAL.repeat(Math.max(0, dialogWidth))
 }
 
 /**
@@ -87,9 +82,7 @@ export function DialogPanel({
       onMouseUp={() => onClose?.()}
     >
       <box
-        borderStyle="rounded"
         flexDirection="column"
-        borderColor={colors.borderActive}
         backgroundColor={colors.backgroundPanel}
         width={width}
         height={height === 'auto' ? undefined : height}

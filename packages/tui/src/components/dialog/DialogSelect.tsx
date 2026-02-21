@@ -221,6 +221,15 @@ export function DialogSelect<T = string>({
     onSelect?.(index, option)
   }
 
+  // Handle mouse hover on an option row
+  const handleItemHover = (index: number) => {
+    const option = options[index]
+    if (!option || option.disabled) return
+    if (index === selectedIndex) return
+
+    onChange?.(index, option)
+  }
+
   // Build render rows with category headers
   const renderRows = buildRenderRows(options)
 
@@ -259,6 +268,7 @@ export function DialogSelect<T = string>({
           <box
             key={key}
             onMouseDown={() => handleItemClick(originalIndex)}
+            onMouseMove={() => handleItemHover(originalIndex)}
             backgroundColor={bgColor}
             flexDirection="column"
           >

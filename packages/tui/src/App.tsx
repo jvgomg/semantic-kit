@@ -114,7 +114,7 @@ export function App({ initialUrl, hasConfig }: AppProps) {
     // Skip if dialog is open
     if (isDialogOpen) return
 
-    // When URL bar is focused, only handle Tab and Ctrl+C (let input handle the rest)
+    // When URL bar is focused, handle global shortcuts then let input handle the rest
     const urlBarFocused = focusedRegion === 'url'
     if (urlBarFocused) {
       // Tab navigation still works
@@ -129,6 +129,11 @@ export function App({ initialUrl, hasConfig }: AppProps) {
       // Ctrl+C still quits
       if (event.ctrl && event.name === 'c') {
         renderer.destroy()
+        return
+      }
+      // Command palette (Ctrl+P) works even when URL bar is focused
+      if (event.ctrl && event.name === 'p') {
+        pushDialog({ type: 'command' })
         return
       }
       // All other keys go to the input
