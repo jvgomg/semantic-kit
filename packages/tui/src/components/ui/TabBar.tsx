@@ -49,10 +49,10 @@ export function TabBar({
 
         // Determine text color based on state
         const textColor = isDisabled
-          ? colors.textHint // Muted/dimmed for disabled
+          ? colors.textMuted // Muted/dimmed for disabled
           : isActive
             ? colors.accent
-            : colors.muted
+            : colors.textMuted
 
         const handleClick = () => {
           if (!isDisabled) {
@@ -77,7 +77,7 @@ export function TabBar({
                 )}
               </text>
             </box>
-            {separator && <text fg={colors.muted}>{separator}</text>}
+            {separator && <text fg={colors.textMuted}>{separator}</text>}
           </box>
         )
       })}

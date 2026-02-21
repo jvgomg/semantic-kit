@@ -26,10 +26,10 @@ function getJsDependencyColor(
   percentage: number,
   colors: ReturnType<typeof useSemanticColors>,
 ): string {
-  if (percentage === 0) return colors.textSuccess
+  if (percentage === 0) return colors.success
   if (percentage <= 25) return colors.accent
-  if (percentage <= 50) return colors.textWarning
-  return colors.textError
+  if (percentage <= 50) return colors.warning
+  return colors.error
 }
 
 /**
@@ -79,7 +79,7 @@ function ComparisonContent({
         <box flexDirection="row" gap={2} marginTop={1}>
           <text>
             <span fg={colors.textMuted}>JS-Only Sections:</span>{' '}
-            <span fg={colors.textWarning}>
+            <span fg={colors.warning}>
               {comparison.sectionsOnlyInRendered.length} section(s) hidden from
               static crawlers
             </span>
@@ -147,7 +147,7 @@ export function ReadabilityCompareViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             The page took too long to load. The comparison may be based on
             partial content.
           </text>
@@ -178,7 +178,7 @@ export function ReadabilityCompareViewContent({
         scrollable
       >
         {!hasContent ? (
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             No content could be extracted from either version.
           </text>
         ) : !hasDifferences ? (

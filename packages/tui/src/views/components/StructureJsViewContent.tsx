@@ -90,7 +90,7 @@ function ViolationsContent({
   const colors = useSemanticColors()
   if (warnings.length === 0) {
     return (
-      <text fg={colors.textSuccess}>
+      <text fg={colors.success}>
         All structure checks passed. No accessibility issues detected.
       </text>
     )
@@ -134,7 +134,7 @@ function MetadataContent({
         {hasTitle ? (
           <text fg={colors.text}>{title}</text>
         ) : (
-          <text fg={colors.textWarning}>(none)</text>
+          <text fg={colors.warning}>(none)</text>
         )}
       </box>
       <box flexDirection="row">
@@ -142,7 +142,7 @@ function MetadataContent({
         {hasLanguage ? (
           <text fg={colors.text}>{language}</text>
         ) : (
-          <text fg={colors.textWarning}>(not set)</text>
+          <text fg={colors.warning}>(not set)</text>
         )}
       </box>
     </box>
@@ -234,7 +234,7 @@ export function StructureJsViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             The page took too long to load. The results shown are from partial
             content. Consider increasing the timeout with --timeout.
           </text>
@@ -289,7 +289,7 @@ export function StructureJsViewContent({
         {hasLandmarks ? (
           <Tree nodes={landmarkTreeNodes} showLines={true} />
         ) : (
-          <text fg={colors.textWarning}>No landmark elements found.</text>
+          <text fg={colors.warning}>No landmark elements found.</text>
         )}
       </Section>
 
@@ -308,7 +308,7 @@ export function StructureJsViewContent({
         {hasHeadings ? (
           <HeadingOutline headings={analysis.headings.outline} />
         ) : (
-          <text fg={colors.textWarning}>No headings found.</text>
+          <text fg={colors.warning}>No headings found.</text>
         )}
       </Section>
 

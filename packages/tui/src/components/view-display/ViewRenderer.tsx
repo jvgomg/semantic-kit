@@ -23,7 +23,7 @@ function ViewLoading({ url }: { url: string }): ReactNode {
     <box flexDirection="column" paddingTop={1} paddingLeft={2}>
       <text fg={colors.text}>Loading...</text>
       <text />
-      <text fg={colors.textHint}>Fetching: {url}</text>
+      <text fg={colors.textMuted}>Fetching: {url}</text>
     </box>
   )
 }

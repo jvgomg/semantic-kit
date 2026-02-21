@@ -1,7 +1,6 @@
 /**
  * Settings modal for theme switching.
- * Allows selection of theme family (Nord, Twilight, Sakura) and
- * variant preference (Auto, Dark, Light).
+ * Allows selection of theme and mode preference (Auto, Dark, Light).
  */
 import { useState } from 'react'
 import { useKeyboard } from '@opentui/react'
@@ -10,19 +9,19 @@ import { SETTINGS_MODAL_WIDTH } from './constants.js'
 import {
   useSemanticColors,
   useTheme,
-  getAllThemeFamilies,
-  variantPreferenceAtom,
+  modePreferenceAtom,
+  type ModePreference,
+  type ThemeDefinition,
 } from '../../theme.js'
-import type { VariantPreference } from '../../theme.js'
 import { Modal } from '../ui/Modal.js'
 
 export interface SettingsModalProps {
   onClose: () => void
 }
 
-type Section = 'family' | 'variant'
+type Section = 'theme' | 'mode'
 
-const VARIANT_OPTIONS: { value: VariantPreference; label: string }[] = [
+const MODE_OPTIONS: { value: ModePreference; label: string }[] = [
   { value: 'auto', label: 'Auto' },
   { value: 'dark', label: 'Dark' },
   { value: 'light', label: 'Light' },
@@ -30,21 +29,20 @@ const VARIANT_OPTIONS: { value: VariantPreference; label: string }[] = [
 
 export function SettingsModal({ onClose }: SettingsModalProps) {
   const colors = useSemanticColors()
-  const { family, setFamily, setVariantPreference } = useTheme()
-  const variantPreference = useAtomValue(variantPreferenceAtom)
+  const { theme, availableThemes, setTheme, setModePreference } = useTheme()
+  const modePreference = useAtomValue(modePreferenceAtom)
 
-  const families = getAllThemeFamilies()
-  const [activeSection, setActiveSection] = useState<Section>('family')
-  const [familyIndex, setFamilyIndex] = useState(() =>
+  const [activeSection, setActiveSection] = useState<Section>('theme')
+  const [themeIndex, setThemeIndex] = useState(() =>
     Math.max(
       0,
-      families.findIndex((f) => f.id === family.id),
+      availableThemes.findIndex((t) => t.id === theme.id),
     ),
   )
-  const [variantIndex, setVariantIndex] = useState(() =>
+  const [modeIndex, setModeIndex] = useState(() =>
     Math.max(
       0,
-      VARIANT_OPTIONS.findIndex((v) => v.value === variantPreference),
+      MODE_OPTIONS.findIndex((m) => m.value === modePreference),
     ),
   )
 
@@ -57,47 +55,46 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
 
     // Switch sections with Tab
     if (event.name === 'tab') {
-      setActiveSection((s) => (s === 'family' ? 'variant' : 'family'))
+      setActiveSection((s) => (s === 'theme' ? 'mode' : 'theme'))
       return
     }
 
     // Navigation within section
-    if (activeSection === 'family') {
+    if (activeSection === 'theme') {
       if (event.name === 'up' || event.name === 'k') {
-        setFamilyIndex((i) => Math.max(0, i - 1))
+        setThemeIndex((i) => Math.max(0, i - 1))
       } else if (event.name === 'down' || event.name === 'j') {
-        setFamilyIndex((i) => Math.min(families.length - 1, i + 1))
+        setThemeIndex((i) => Math.min(availableThemes.length - 1, i + 1))
       } else if (event.name === 'return' || event.name === 'space') {
-        const selected = families[familyIndex]
+        const selected = availableThemes[themeIndex]
         if (selected) {
-          setFamily(selected.id)
+          setTheme(selected.id)
         }
       }
     } else {
-      // variant section - horizontal navigation
+      // mode section - horizontal navigation
       if (event.name === 'left' || event.name === 'h') {
-        setVariantIndex((i) => Math.max(0, i - 1))
+        setModeIndex((i) => Math.max(0, i - 1))
       } else if (event.name === 'right' || event.name === 'l') {
-        setVariantIndex((i) => Math.min(VARIANT_OPTIONS.length - 1, i + 1))
+        setModeIndex((i) => Math.min(MODE_OPTIONS.length - 1, i + 1))
       } else if (event.name === 'return' || event.name === 'space') {
-        const selected = VARIANT_OPTIONS[variantIndex]
+        const selected = MODE_OPTIONS[modeIndex]
         if (selected) {
-          setVariantPreference(selected.value)
+          setModePreference(selected.value)
         }
       }
     }
   })
 
   const innerWidth = SETTINGS_MODAL_WIDTH - 4 // padding
-  const bg = colors.modalBackground
+  const bg = colors.backgroundPanel
 
   const blank = () => <text bg={bg}>{' '.repeat(innerWidth)}</text>
 
-  // Helper to get variant availability description
-  const getVariantDesc = (f: (typeof families)[0]): string => {
-    if (f.dark && f.light) return 'dark + light'
-    if (f.dark) return 'dark only'
-    return 'light only'
+  // Helper to get mode description for a theme
+  const getModeDesc = (t: ThemeDefinition): string => {
+    if (t.supportsBothModes) return 'dark + light'
+    return `${t.variant} only`
   }
 
   return (
@@ -107,26 +104,26 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       </text>
       {blank()}
 
-      {/* Theme Family Section */}
+      {/* Theme Section */}
       <text
-        fg={activeSection === 'family' ? colors.text : colors.textHint}
+        fg={activeSection === 'theme' ? colors.text : colors.textMuted}
         bg={bg}
       >
         <strong>Theme</strong>
       </text>
-      {families.map((f, idx) => {
-        const isSelected = f.id === family.id
-        const isHighlighted = activeSection === 'family' && idx === familyIndex
+      {availableThemes.map((t, idx) => {
+        const isSelected = t.id === theme.id
+        const isHighlighted = activeSection === 'theme' && idx === themeIndex
         const prefix = isSelected ? '●' : '○'
         const indicator = isHighlighted ? '▸' : ' '
 
         return (
           <text
-            key={f.id}
-            fg={isHighlighted ? colors.text : colors.textHint}
+            key={t.id}
+            fg={isHighlighted ? colors.text : colors.textMuted}
             bg={bg}
           >
-            {`${indicator} ${prefix} ${f.name.padEnd(12)} ${getVariantDesc(f)}`.padEnd(
+            {`${indicator} ${prefix} ${t.name.padEnd(12)} ${getModeDesc(t)}`.padEnd(
               innerWidth,
             )}
           </text>
@@ -134,25 +131,24 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       })}
       {blank()}
 
-      {/* Variant Section */}
+      {/* Mode Section */}
       <text
-        fg={activeSection === 'variant' ? colors.text : colors.textHint}
+        fg={activeSection === 'mode' ? colors.text : colors.textMuted}
         bg={bg}
       >
-        <strong>Variant</strong>
+        <strong>Mode</strong>
       </text>
       <box flexDirection="row" backgroundColor={bg}>
         <text bg={bg}>{'  '}</text>
-        {VARIANT_OPTIONS.map((opt, idx) => {
-          const isSelected = opt.value === variantPreference
-          const isHighlighted =
-            activeSection === 'variant' && idx === variantIndex
+        {MODE_OPTIONS.map((opt, idx) => {
+          const isSelected = opt.value === modePreference
+          const isHighlighted = activeSection === 'mode' && idx === modeIndex
           const prefix = isSelected ? '●' : '○'
 
           return (
             <text
               key={opt.value}
-              fg={isHighlighted ? colors.text : colors.textHint}
+              fg={isHighlighted ? colors.text : colors.textMuted}
               bg={bg}
             >
               {`${prefix} ${opt.label}  `}
@@ -162,7 +158,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       </box>
       {blank()}
 
-      <text fg={colors.textHint}>
+      <text fg={colors.textMuted}>
         <strong>↑↓ navigate Tab section Esc close</strong>
       </text>
     </Modal>

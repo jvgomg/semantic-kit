@@ -5,44 +5,63 @@
  * This file provides convenient re-exports for component imports.
  */
 
-// Types
-export type {
-  Base16Palette,
-  ThemeDefinition,
-  ThemeVariant,
-} from './theme/base16.js'
-
-export type {
-  ThemeFamily,
-  VariantPreference,
-  ResolvedTheme,
-} from './theme/registry.js'
-
-export type { SemanticColors, SeverityLevel } from './theme/semantic.js'
-
-export type { UseThemeResult } from './theme/hooks.js'
-
-// Hooks (primary API for components)
-export { useTheme, usePalette } from './theme/hooks.js'
-export { useSemanticColors, getSeverityColor } from './theme/semantic.js'
-
-// Atoms (for advanced usage)
+// Re-export everything from the theme module
 export {
-  themeFamilyIdAtom,
-  variantPreferenceAtom,
-  detectedVariantAtom,
-  resolvedThemeAtom,
-  currentPaletteAtom,
-  setThemeFamilyAtom,
-  setVariantPreferenceAtom,
-  setDetectedVariantAtom,
-} from './theme/atoms.js'
-
-export { semanticColorsAtom } from './theme/semantic.js'
-
-// Registry (for theme switching UI)
-export {
-  THEME_REGISTRY,
-  getAllThemeFamilies,
-  getThemeFamily,
-} from './theme/registry.js'
+  // Types
+  type HexColor,
+  type AnsiIndex,
+  type ColorReference,
+  type DarkLightVariant,
+  type ColorValue,
+  type ThemeColors,
+  type ThemeJson,
+  type ThemeVariant,
+  type ModePreference,
+  type ThemeDefinition,
+  type ResolvedColors,
+  type AnsiPalette,
+  type ColorMode,
+  type SeverityLevel,
+  // Hooks
+  useSemanticColors,
+  useTheme,
+  useColors,
+  useColorMode,
+  type UseThemeResult,
+  // Atoms
+  themeIdAtom,
+  modePreferenceAtom,
+  detectedModeAtom,
+  ansiPaletteAtom,
+  availableThemesAtom,
+  currentThemeAtom,
+  effectiveModeAtom,
+  resolvedColorsAtom,
+  dimmedColorsAtom,
+  setThemeAtom,
+  setModePreferenceAtom,
+  setDetectedModeAtom,
+  setAnsiPaletteAtom,
+  // Context
+  ColorModeContext,
+  ColorModeProvider,
+  useColorModeContext,
+  type ColorModeProviderProps,
+  // Color utilities
+  ANSI,
+  DEFAULT_ANSI_PALETTE,
+  resolveColor,
+  resolveThemeColors,
+  buildDimmedColors,
+  getSeverityColor,
+  // Theme registry
+  BUILTIN_THEMES,
+  DEFAULT_THEME_ID,
+  getTheme,
+  getAllThemes,
+  getDefaultTheme,
+  SYSTEM_THEME,
+  DRACULA_THEME,
+  NORD_THEME,
+  TOKYO_NIGHT_THEME,
+} from './theme/index.js'

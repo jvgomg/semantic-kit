@@ -110,7 +110,7 @@ function CardActions({ actions }: { actions: CardAction[] }): ReactNode {
 
   return (
     <box flexDirection="column" marginTop={1}>
-      <text fg={colors.divider}>{'─'.repeat(40)}</text>
+      <text fg={colors.borderSubtle}>{'─'.repeat(40)}</text>
       <box flexDirection="row" gap={2} marginTop={1}>
         {actions.map((action, index) => (
           <text key={index} fg={colors.accent}>
@@ -144,8 +144,8 @@ export function Card({
   const borderColor = focused
     ? colors.borderSelected
     : selected
-      ? colors.borderFocused
-      : colors.borderUnfocused
+      ? colors.borderActive
+      : colors.borderSubtle
 
   return (
     <box

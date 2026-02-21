@@ -46,7 +46,7 @@ function ComparisonContent({
 
   if (!hasDifferences) {
     return (
-      <text fg={colors.textSuccess}>
+      <text fg={colors.success}>
         No structural differences between static HTML and JS-rendered page.
       </text>
     )
@@ -91,12 +91,12 @@ function MetadataContent({ metadata }: { metadata: MetadataDiff }): ReactNode {
         <box flexDirection="column" gap={0}>
           <text fg={colors.textMuted}>Title:</text>
           <box flexDirection="row" marginLeft={2}>
-            <text fg={colors.textError}>
+            <text fg={colors.error}>
               - {metadata.title.static || '(none)'}
             </text>
           </box>
           <box flexDirection="row" marginLeft={2}>
-            <text fg={colors.textSuccess}>
+            <text fg={colors.success}>
               + {metadata.title.hydrated || '(none)'}
             </text>
           </box>
@@ -106,12 +106,12 @@ function MetadataContent({ metadata }: { metadata: MetadataDiff }): ReactNode {
         <box flexDirection="column" gap={0} marginTop={metadata.title ? 1 : 0}>
           <text fg={colors.textMuted}>Language:</text>
           <box flexDirection="row" marginLeft={2}>
-            <text fg={colors.textError}>
+            <text fg={colors.error}>
               - {metadata.language.static || '(not set)'}
             </text>
           </box>
           <box flexDirection="row" marginLeft={2}>
-            <text fg={colors.textSuccess}>
+            <text fg={colors.success}>
               + {metadata.language.hydrated || '(not set)'}
             </text>
           </box>
@@ -142,7 +142,7 @@ function LandmarksContent({
     <box flexDirection="column" gap={0}>
       {landmarks.map((landmark, i) => {
         const change = landmark.change
-        const changeColor = change > 0 ? colors.textSuccess : colors.textError
+        const changeColor = change > 0 ? colors.success : colors.error
         const changeSymbol = change > 0 ? '+' : ''
 
         return (
@@ -182,10 +182,10 @@ function HeadingsContent({ headings }: { headings: HeadingDiff[] }): ReactNode {
     <box flexDirection="column" gap={0}>
       {added.length > 0 && (
         <box flexDirection="column" gap={0}>
-          <text fg={colors.textSuccess}>Added by JavaScript:</text>
+          <text fg={colors.success}>Added by JavaScript:</text>
           {added.map((heading, i) => (
             <box key={`added-${i}`} flexDirection="row" marginLeft={2}>
-              <text fg={colors.textSuccess}>
+              <text fg={colors.success}>
                 + H{heading.level}: {heading.text}
               </text>
             </box>
@@ -198,10 +198,10 @@ function HeadingsContent({ headings }: { headings: HeadingDiff[] }): ReactNode {
           gap={0}
           marginTop={added.length > 0 ? 1 : 0}
         >
-          <text fg={colors.textError}>Removed by JavaScript:</text>
+          <text fg={colors.error}>Removed by JavaScript:</text>
           {removed.map((heading, i) => (
             <box key={`removed-${i}`} flexDirection="row" marginLeft={2}>
-              <text fg={colors.textError}>
+              <text fg={colors.error}>
                 - H{heading.level}: {heading.text}
               </text>
             </box>
@@ -237,10 +237,10 @@ function LinksContent({ links }: { links: LinkDiff }): ReactNode {
       <box flexDirection="row" gap={1}>
         <text fg={colors.textMuted}>Internal:</text>
         {links.internalAdded > 0 && (
-          <text fg={colors.textSuccess}>+{links.internalAdded}</text>
+          <text fg={colors.success}>+{links.internalAdded}</text>
         )}
         {links.internalRemoved > 0 && (
-          <text fg={colors.textError}>-{links.internalRemoved}</text>
+          <text fg={colors.error}>-{links.internalRemoved}</text>
         )}
         {links.internalAdded === 0 && links.internalRemoved === 0 && (
           <text fg={colors.text}>no change</text>
@@ -251,10 +251,10 @@ function LinksContent({ links }: { links: LinkDiff }): ReactNode {
       <box flexDirection="row" gap={1}>
         <text fg={colors.textMuted}>External:</text>
         {links.externalAdded > 0 && (
-          <text fg={colors.textSuccess}>+{links.externalAdded}</text>
+          <text fg={colors.success}>+{links.externalAdded}</text>
         )}
         {links.externalRemoved > 0 && (
-          <text fg={colors.textError}>-{links.externalRemoved}</text>
+          <text fg={colors.error}>-{links.externalRemoved}</text>
         )}
         {links.externalAdded === 0 && links.externalRemoved === 0 && (
           <text fg={colors.text}>no change</text>
@@ -267,7 +267,7 @@ function LinksContent({ links }: { links: LinkDiff }): ReactNode {
           <text fg={colors.textMuted}>New internal paths:</text>
           {links.newInternalDestinations.slice(0, 5).map((dest, i) => (
             <box key={i} flexDirection="row" marginLeft={2}>
-              <text fg={colors.textSuccess}>+ {dest}</text>
+              <text fg={colors.success}>+ {dest}</text>
             </box>
           ))}
           {links.newInternalDestinations.length > 5 && (
@@ -286,7 +286,7 @@ function LinksContent({ links }: { links: LinkDiff }): ReactNode {
           <text fg={colors.textMuted}>New external domains:</text>
           {links.newExternalDomains.slice(0, 5).map((domain, i) => (
             <box key={i} flexDirection="row" marginLeft={2}>
-              <text fg={colors.textSuccess}>+ {domain}</text>
+              <text fg={colors.success}>+ {domain}</text>
             </box>
           ))}
           {links.newExternalDomains.length > 5 && (
@@ -374,7 +374,7 @@ export function StructureCompareViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             The page took too long to load. The comparison may be based on
             partial content.
           </text>

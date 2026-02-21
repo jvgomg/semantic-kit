@@ -160,7 +160,7 @@ function SummaryContent({ data }: { data: A11yResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>Landmarks:</span>{' '}
-          <span fg={landmarkCount > 0 ? colors.text : colors.textWarning}>
+          <span fg={landmarkCount > 0 ? colors.text : colors.warning}>
             {landmarkCount}
           </span>
           {landmarkCount > 0 && (
@@ -198,7 +198,7 @@ function SummaryContent({ data }: { data: A11yResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>Main Landmark:</span>{' '}
-          <span fg={hasMain ? colors.textSuccess : colors.textWarning}>
+          <span fg={hasMain ? colors.success : colors.warning}>
             {hasMain ? 'Yes' : 'No'}
           </span>
         </text>
@@ -214,7 +214,7 @@ function TreeContent({ data }: { data: A11yResult }): ReactNode {
   const colors = useSemanticColors()
   if (data.parsed.length === 0) {
     return (
-      <text fg={colors.textWarning}>
+      <text fg={colors.warning}>
         No accessibility tree could be extracted from this page.
       </text>
     )
@@ -270,7 +270,7 @@ export function A11yTreeViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             The page took too long to load. The accessibility tree shown may be
             incomplete. Consider increasing the timeout.
           </text>

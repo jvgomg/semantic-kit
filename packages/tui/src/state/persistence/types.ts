@@ -7,7 +7,7 @@
  * 3. Add restoration logic in store.ts createPersistedStore()
  * 4. Add tracking in effect.ts persistStateEffect (get the atom)
  */
-import type { VariantPreference } from '../../theme.js'
+import type { ModePreference } from '../../theme.js'
 import type { ModalType } from '../types.js'
 
 /**
@@ -44,10 +44,10 @@ export interface PersistedState {
   configExpandedGroups?: string[]
   /** Selected index in config browser */
   configSelectedIndex?: number
-  /** Theme family ID */
-  themeFamilyId?: string
-  /** Variant preference (auto, dark, light) */
-  variantPreference?: VariantPreference
+  /** Theme ID */
+  themeId?: string
+  /** Mode preference (auto, dark, light) */
+  modePreference?: ModePreference
 }
 
 /**

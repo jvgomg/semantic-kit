@@ -5,7 +5,7 @@
  * to disk with throttling. It runs at the store level, not React level.
  */
 import { atomEffect } from 'jotai-effect'
-import { themeFamilyIdAtom, variantPreferenceAtom } from '../../theme.js'
+import { themeIdAtom, modePreferenceAtom } from '../../theme.js'
 import {
   activeModalAtom,
   urlAtom,
@@ -39,8 +39,8 @@ export const persistStateEffect = atomEffect((get) => {
   const urlListActiveTab = get(urlListActiveTabAtom)
   const configExpandedGroups = get(configExpandedGroupsAtom)
   const configSelectedIndex = get(configSelectedIndexAtom)
-  const themeFamilyId = get(themeFamilyIdAtom)
-  const variantPreference = get(variantPreferenceAtom)
+  const themeId = get(themeIdAtom)
+  const modePreference = get(modePreferenceAtom)
 
   // Build the persisted state
   const state: PersistedState = {
@@ -52,8 +52,8 @@ export const persistStateEffect = atomEffect((get) => {
     urlListActiveTab,
     configExpandedGroups: Array.from(configExpandedGroups),
     configSelectedIndex,
-    themeFamilyId,
-    variantPreference,
+    themeId,
+    modePreference,
   }
 
   // Collect expanded states for all known views

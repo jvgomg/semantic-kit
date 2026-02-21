@@ -201,7 +201,7 @@ export function SitemapBrowser({
   if (isLoading) {
     return (
       <box flexDirection="column">
-        <text fg={colors.textHint}>Loading sitemap...</text>
+        <text fg={colors.textMuted}>Loading sitemap...</text>
       </box>
     )
   }
@@ -210,7 +210,7 @@ export function SitemapBrowser({
   if (sitemapData && sitemapData.type === 'error') {
     return (
       <box flexDirection="column">
-        <text fg={colors.textError}>Error: {sitemapData.message}</text>
+        <text fg={colors.error}>Error: {sitemapData.message}</text>
       </box>
     )
   }
@@ -221,7 +221,7 @@ export function SitemapBrowser({
       // Sitemap index - show child sitemaps
       return (
         <box flexDirection="column">
-          <text fg={colors.textHint}>Sitemap index with child sitemaps:</text>
+          <text fg={colors.textMuted}>Sitemap index with child sitemaps:</text>
           {sitemapData.sitemaps.slice(0, height - 1).map((sm) => (
             <text key={sm.loc} fg={colors.text}>
               {'   '}
@@ -233,7 +233,7 @@ export function SitemapBrowser({
     }
     return (
       <box flexDirection="column">
-        <text fg={colors.textHint}>Enter a sitemap URL and press Enter</text>
+        <text fg={colors.textMuted}>Enter a sitemap URL and press Enter</text>
       </box>
     )
   }
@@ -282,12 +282,12 @@ export function SitemapBrowser({
         const style = {
           fg: isSelected
             ? isFocused
-              ? colors.textSelected
+              ? colors.text
               : colors.text
             : colors.text,
           bg:
             isSelected && isFocused
-              ? colors.modalBackgroundSelected
+              ? colors.backgroundSelected
               : undefined,
         }
 
@@ -295,11 +295,11 @@ export function SitemapBrowser({
         const expandColor =
           hasChildren && isFocused && (isSelected || isAncestorOfSelected)
             ? colors.accent
-            : colors.treeGuide
+            : colors.borderSubtle
 
         return (
           <box key={node.displayPath} flexDirection="row">
-            <text fg={colors.indent}>{indent}</text>
+            <text fg={colors.borderSubtle}>{indent}</text>
             <text fg={expandColor}>{expandIndicator}</text>
             <text {...style}>{pathDisplay}</text>
             {countBadge}
@@ -307,7 +307,7 @@ export function SitemapBrowser({
         )
       })}
       {showScrollIndicator && (
-        <text fg={colors.textHint}>
+        <text fg={colors.textMuted}>
           {' '}
           [{scrollPercentage}%] {flatNodes.length} items
         </text>

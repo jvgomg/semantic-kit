@@ -89,7 +89,7 @@ function ViolationsContent({
   const colors = useSemanticColors()
   if (warnings.length === 0) {
     return (
-      <text fg={colors.textSuccess}>
+      <text fg={colors.success}>
         All structure checks passed. No accessibility issues detected.
       </text>
     )
@@ -133,7 +133,7 @@ function MetadataContent({
         {hasTitle ? (
           <text fg={colors.text}>{title}</text>
         ) : (
-          <text fg={colors.textWarning}>(none)</text>
+          <text fg={colors.warning}>(none)</text>
         )}
       </box>
       <box flexDirection="row">
@@ -141,7 +141,7 @@ function MetadataContent({
         {hasLanguage ? (
           <text fg={colors.text}>{language}</text>
         ) : (
-          <text fg={colors.textWarning}>(not set)</text>
+          <text fg={colors.warning}>(not set)</text>
         )}
       </box>
     </box>
@@ -270,7 +270,7 @@ export function StructureViewContent({
         {hasLandmarks ? (
           <Tree nodes={landmarkTreeNodes} showLines={true} />
         ) : (
-          <text fg={colors.textWarning}>No landmark elements found.</text>
+          <text fg={colors.warning}>No landmark elements found.</text>
         )}
       </Section>
 
@@ -289,7 +289,7 @@ export function StructureViewContent({
         {hasHeadings ? (
           <HeadingOutline headings={analysis.headings.outline} />
         ) : (
-          <text fg={colors.textWarning}>No headings found.</text>
+          <text fg={colors.warning}>No headings found.</text>
         )}
       </Section>
 

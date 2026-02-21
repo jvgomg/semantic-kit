@@ -32,15 +32,12 @@ export {
   ViewSections,
   boxChars,
   severityToPriority,
-  useSectionColors,
-  getSeverityColor,
 } from '../view-display/index.js'
 export type {
   SectionProps,
   SectionSeverity,
   SectionContainerProps,
   ViewSectionsProps,
-  SectionColors,
 } from '../view-display/index.js'
 
 // Expandable sections framework - Content components

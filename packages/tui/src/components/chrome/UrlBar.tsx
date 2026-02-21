@@ -81,15 +81,15 @@ export function UrlBar({ width }: UrlBarProps) {
     <box
       flexDirection="row"
       borderStyle="rounded"
-      borderColor={isFocused ? colors.borderFocused : colors.borderUnfocused}
-      focusedBorderColor={colors.borderFocused}
+      borderColor={isFocused ? colors.borderActive : colors.borderSubtle}
+      focusedBorderColor={colors.borderActive}
       paddingLeft={1}
       paddingRight={1}
       width={width}
       onMouseDown={() => focus()}
       gap={2}
     >
-      <text fg={colors.muted}>URL: </text>
+      <text fg={colors.textMuted}>URL: </text>
       <>
         <box>
           <input
@@ -98,14 +98,14 @@ export function UrlBar({ width }: UrlBarProps) {
             onInput={handleInputChange}
             focused={isFocused}
             placeholder="Enter URL..."
-            textColor={colors.text}
-            placeholderColor={colors.muted}
+            textColor={isFocused ? colors.text : colors.text}
+            placeholderColor={colors.textMuted}
             cursorColor={colors.accent}
           />
         </box>
         {isDirty && (
           <box>
-            <text fg={colors.highlight}>[Enter]</text>
+            <text fg={colors.accent}>[Enter]</text>
           </box>
         )}
       </>

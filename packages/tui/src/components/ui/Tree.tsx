@@ -110,7 +110,7 @@ function TreeNodeComponent({
     <box flexDirection="column">
       {/* Node line */}
       <box flexDirection="row">
-        <text fg={colors.treeGuide}>
+        <text fg={colors.borderSubtle}>
           {prefix}
           {connector}
         </text>

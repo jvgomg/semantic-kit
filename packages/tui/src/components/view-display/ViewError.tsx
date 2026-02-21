@@ -14,11 +14,11 @@ export function ViewError({ error }: ViewErrorProps): ReactNode {
 
   return (
     <box flexDirection="column" paddingTop={1} paddingLeft={2}>
-      <text fg={colors.textError}>Error</text>
+      <text fg={colors.error}>Error</text>
       <text />
       <text fg={colors.text}>{error}</text>
       <text />
-      <text fg={colors.textHint}>
+      <text fg={colors.textMuted}>
         Try a different URL or check your connection.
       </text>
     </box>

@@ -35,7 +35,7 @@ export function HelpModal({ onClose }: HelpModalProps) {
   const innerWidth = HELP_MODAL_WIDTH - 2
 
   // Helper to render a full-width line with background
-  const bg = colors.modalBackground
+  const bg = colors.backgroundPanel
 
   const blank = () => <text bg={bg}>{' '.repeat(innerWidth)}</text>
 
@@ -47,13 +47,13 @@ export function HelpModal({ onClose }: HelpModalProps) {
       {blank()}
       {shortcuts.map(({ key, desc }) => (
         <text key={key} bg={bg}>
-          <span fg={colors.textShortcut}>{key.padEnd(18)}</span>
+          <span fg={colors.warning}>{key.padEnd(18)}</span>
           {desc.padEnd(innerWidth - 22)}
         </text>
       ))}
       {blank()}
 
-      <text fg={colors.textHint}>
+      <text fg={colors.textMuted}>
         <strong>Press ? or Esc to close</strong>
       </text>
     </Modal>

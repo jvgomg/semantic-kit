@@ -35,7 +35,7 @@ export function ClickableLink({
   underline = true,
 }: ClickableLinkProps): ReactNode {
   const colors = useSemanticColors()
-  const color = muted ? colors.textLinkMuted : colors.textLink
+  const color = muted ? colors.textMuted : colors.primary
   const content = children ?? label ?? href
 
   // OpenTUI's <a> element must be inside a <text> element

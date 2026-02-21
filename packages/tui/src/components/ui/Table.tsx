@@ -126,7 +126,7 @@ export function Table<T extends ScalarDict>({
 
           return (
             <box key={index} flexDirection="row">
-              <text width={effectiveLabelWidth} fg={colors.muted}>
+              <text width={effectiveLabelWidth} fg={colors.textMuted}>
                 {label.padEnd(effectiveLabelWidth)}
               </text>
               <text flexShrink={1}>{value}</text>

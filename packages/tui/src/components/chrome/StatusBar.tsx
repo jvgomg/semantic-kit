@@ -27,7 +27,7 @@ export function StatusBar() {
       gap={3}
     >
       {[...hints[focusedRegion], ...persistent].map((txt) => (
-        <text key={txt} fg={colors.textHint}>
+        <text key={txt} fg={colors.textMuted}>
           {txt}
         </text>
       ))}

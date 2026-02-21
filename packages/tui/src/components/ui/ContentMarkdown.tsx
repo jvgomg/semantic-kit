@@ -28,7 +28,7 @@ export function ContentMarkdown({
   const contentMarkdownStyle = useMemo(() => {
     return SyntaxStyle.fromStyles({
       'markup.heading.1': {
-        fg: RGBA.fromHex(colors.markdownHeading1),
+        fg: RGBA.fromHex(colors.accent),
         bold: true,
         underline: true,
       },
@@ -56,7 +56,7 @@ export function ContentMarkdown({
       'markup.strong': { fg: RGBA.fromHex(colors.text), bold: true },
       'markup.italic': { fg: RGBA.fromHex(colors.text), italic: true },
       'markup.list': { fg: RGBA.fromHex(colors.markdownList) },
-      'markup.quote': { fg: RGBA.fromHex(colors.markdownQuote), italic: true },
+      'markup.quote': { fg: RGBA.fromHex(colors.markdownBlockQuote), italic: true },
       'markup.raw': { fg: RGBA.fromHex(colors.markdownCode) },
       'markup.raw.block': { fg: RGBA.fromHex(colors.markdownCode) },
       'markup.link': { fg: RGBA.fromHex(colors.markdownLink), underline: true },

@@ -33,7 +33,7 @@ import {
   STATUS_BAR_HEIGHT,
   URL_BAR_HEIGHT,
 } from './components/chrome/index.js'
-import { useSemanticColors } from './theme.js'
+import { ColorModeContext, useSemanticColors } from './theme.js'
 import { getDefaultSitemapUrl, isSitemapUrl } from '@webspecs/core'
 // Import views to trigger registration
 import './views/index.js'
@@ -228,106 +228,125 @@ export function App({ initialUrl, hasConfig }: AppProps) {
   // Info panel position: after URL bar (3 rows), relative to menu
   const infoPanelMenuOffset = 0 // Menu starts at top of content area
 
+  // Determine color mode based on modal state
+  // Content behind modals should be dimmed (help, settings modals)
+  // url-list is inline and replaces content, so no dimming needed
+  const colorMode =
+    activeModal === 'help' || activeModal === 'settings' ? 'dimmed' : 'normal'
+
   return (
-    <box flexDirection="column" width={width} height={height}>
-      {/* URL Bar */}
-      <UrlBar width={width} />
+    <ColorModeContext.Provider value={colorMode}>
+      <box
+        flexDirection="column"
+        width={width}
+        height={height}
+        backgroundColor={colors.background}
+      >
+        {/* URL Bar */}
+        <UrlBar width={width} />
 
-      {/* URL List (inline, replaces main content when shown) */}
-      {activeModal === 'url-list' ? (
-        <UrlList
-          onSelect={handleUrlListSelect}
-          onClose={closeModal}
-          columns={width}
-          rows={contentHeight}
-          defaultSitemapUrl={defaultSitemapUrl}
-          autoFetchSitemapUrl={
-            initialUrl && isSitemapUrl(initialUrl) ? initialUrl : undefined
-          }
-          startOnConfig={hasConfig && !initialUrl}
-        />
-      ) : (
-        /* Main layout: Menu + Content + Info Panel overlay */
-        <box flexDirection="row" height={contentHeight} position="relative">
-          {/* Menu (Sidebar) - uses <select> for built-in keyboard navigation */}
-          <Menu width={menuWidth} />
+        {/* URL List (inline, replaces main content when shown) */}
+        {activeModal === 'url-list' ? (
+          <UrlList
+            onSelect={handleUrlListSelect}
+            onClose={closeModal}
+            columns={width}
+            rows={contentHeight}
+            defaultSitemapUrl={defaultSitemapUrl}
+            autoFetchSitemapUrl={
+              initialUrl && isSitemapUrl(initialUrl) ? initialUrl : undefined
+            }
+            startOnConfig={hasConfig && !initialUrl}
+          />
+        ) : (
+          /* Main layout: Menu + Content + Info Panel overlay */
+          <box flexDirection="row" height={contentHeight} position="relative">
+            {/* Menu (Sidebar) - uses <select> for built-in keyboard navigation */}
+            <Menu width={menuWidth} />
 
-          {/* Main Content */}
-          <MainContent height={contentHeight} width={contentWidth} />
+            {/* Main Content */}
+            <MainContent height={contentHeight} width={contentWidth} />
 
-          {/* Info Panel (Overlay) - only shown when menu is focused */}
-          {focusedRegion === 'menu' &&
-            (() => {
-              const innerWidth = INFO_PANEL_WIDTH - 2
-              const bg = colors.modalBackground
-              const title = activeItem?.label ?? 'No Selection'
-              const desc = `Description for ${activeItem?.label ?? 'the selected view'}. This panel follows the currently selected menu item.`
+            {/* Info Panel (Overlay) - only shown when menu is focused */}
+            {focusedRegion === 'menu' &&
+              (() => {
+                const innerWidth = INFO_PANEL_WIDTH - 2
+                const bg = colors.backgroundPanel
+                const title = activeItem?.label ?? 'No Selection'
+                const desc = `Description for ${activeItem?.label ?? 'the selected view'}. This panel follows the currently selected menu item.`
 
-              // Word wrap helper
-              const wrapText = (text: string, width: number): string[] => {
-                const words = text.split(' ')
-                const lines: string[] = []
-                let line = ''
-                for (const word of words) {
-                  if (line.length + word.length + 1 <= width) {
-                    line += (line ? ' ' : '') + word
-                  } else {
-                    if (line) lines.push(line)
-                    line = word
+                // Word wrap helper
+                const wrapText = (text: string, width: number): string[] => {
+                  const words = text.split(' ')
+                  const lines: string[] = []
+                  let line = ''
+                  for (const word of words) {
+                    if (line.length + word.length + 1 <= width) {
+                      line += (line ? ' ' : '') + word
+                    } else {
+                      if (line) lines.push(line)
+                      line = word
+                    }
                   }
+                  if (line) lines.push(line)
+                  return lines
                 }
-                if (line) lines.push(line)
-                return lines
-              }
-              const descLines = wrapText(desc, innerWidth - 2)
+                const descLines = wrapText(desc, innerWidth - 2)
 
-              const blank = () => <text bg={bg}>{' '.repeat(innerWidth)}</text>
-              const row = (content: string, color?: string, bold?: boolean) => (
-                <text fg={color} bg={bg}>
-                  {bold ? (
-                    <strong>{(' ' + content).padEnd(innerWidth)}</strong>
-                  ) : (
-                    (' ' + content).padEnd(innerWidth)
-                  )}
-                </text>
-              )
+                const blank = () => (
+                  <text bg={bg}>{' '.repeat(innerWidth)}</text>
+                )
+                const row = (
+                  content: string,
+                  color?: string,
+                  bold?: boolean,
+                ) => (
+                  <text fg={color} bg={bg}>
+                    {bold ? (
+                      <strong>{(' ' + content).padEnd(innerWidth)}</strong>
+                    ) : (
+                      (' ' + content).padEnd(innerWidth)
+                    )}
+                  </text>
+                )
 
-              return (
-                <box
-                  position="absolute"
-                  left={menuWidth}
-                  top={infoPanelMenuOffset + activeMenuIndex}
-                >
-                  <box flexDirection="row" alignItems="flex-start">
-                    <text fg={colors.muted}>─</text>
-                    <box
-                      borderStyle="rounded"
-                      borderColor={colors.muted}
-                      flexDirection="column"
-                    >
-                      {blank()}
-                      {row(title, colors.text, true)}
-                      {blank()}
-                      {descLines.map((line, idx) => (
-                        <text key={idx} fg={colors.textHint} bg={bg}>
-                          {(' ' + line).padEnd(innerWidth)}
-                        </text>
-                      ))}
-                      {blank()}
+                return (
+                  <box
+                    position="absolute"
+                    left={menuWidth}
+                    top={infoPanelMenuOffset + activeMenuIndex}
+                  >
+                    <box flexDirection="row" alignItems="flex-start">
+                      <text fg={colors.textMuted}>─</text>
+                      <box
+                        borderStyle="rounded"
+                        borderColor={colors.textMuted}
+                        flexDirection="column"
+                      >
+                        {blank()}
+                        {row(title, colors.text, true)}
+                        {blank()}
+                        {descLines.map((line, idx) => (
+                          <text key={idx} fg={colors.textMuted} bg={bg}>
+                            {(' ' + line).padEnd(innerWidth)}
+                          </text>
+                        ))}
+                        {blank()}
+                      </box>
                     </box>
                   </box>
-                </box>
-              )
-            })()}
-        </box>
-      )}
+                )
+              })()}
+          </box>
+        )}
 
-      {/* Status Bar */}
-      <StatusBar />
+        {/* Status Bar */}
+        <StatusBar />
 
-      {/* Modals */}
-      {activeModal === 'help' && <HelpModal onClose={closeModal} />}
-      {activeModal === 'settings' && <SettingsModal onClose={closeModal} />}
-    </box>
+        {/* Modals */}
+        {activeModal === 'help' && <HelpModal onClose={closeModal} />}
+        {activeModal === 'settings' && <SettingsModal onClose={closeModal} />}
+      </box>
+    </ColorModeContext.Provider>
   )
 }

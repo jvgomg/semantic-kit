@@ -40,7 +40,7 @@ function SummaryContent({ data }: { data: GoogleResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>Page Title:</span>{' '}
-          <span fg={hasTitle ? colors.textSuccess : colors.textWarning}>
+          <span fg={hasTitle ? colors.success : colors.warning}>
             {hasTitle ? 'Present' : 'Missing'}
           </span>
         </text>
@@ -48,7 +48,7 @@ function SummaryContent({ data }: { data: GoogleResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>Meta Description:</span>{' '}
-          <span fg={hasDescription ? colors.textSuccess : colors.textWarning}>
+          <span fg={hasDescription ? colors.success : colors.warning}>
             {hasDescription ? 'Present' : 'Missing'}
           </span>
         </text>
@@ -56,7 +56,7 @@ function SummaryContent({ data }: { data: GoogleResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>Structured Data:</span>{' '}
-          <span fg={hasSchemas ? colors.textSuccess : colors.textMuted}>
+          <span fg={hasSchemas ? colors.success : colors.textMuted}>
             {data.counts.schemas} schema{data.counts.schemas !== 1 ? 's' : ''}
           </span>
         </text>
@@ -64,7 +64,7 @@ function SummaryContent({ data }: { data: GoogleResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>Headings:</span>{' '}
-          <span fg={hasHeadings ? colors.text : colors.textWarning}>
+          <span fg={hasHeadings ? colors.text : colors.warning}>
             {data.counts.headings}
           </span>
         </text>
@@ -317,7 +317,7 @@ export function GoogleViewContent({
             <HeadingOutline headings={data.headings.outline} />
           </scrollbox>
         ) : (
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             No headings found. Add heading structure for better SEO.
           </text>
         )}

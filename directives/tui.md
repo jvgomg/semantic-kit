@@ -386,3 +386,61 @@ export const myActionAtom = atom(null, (get, set, value: string) => {
 
 2. Export from `src/tui/state/atoms/index.ts`
 3. Run `bun run typecheck`
+
+## Theme System
+
+The TUI uses an OpenCode-inspired theme system with ANSI-first colors and semantic color roles.
+
+**Reference**: This theme system is based on [OpenCode's theming approach](https://github.com/anomalyco/opencode).
+
+### Documentation
+
+See `packages/tui/src/theme/README.md` for complete documentation including:
+- Color value types (hex, ANSI indices, references, dark/light variants)
+- All 60+ semantic color properties
+- How to add new built-in themes
+- Hook API reference
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `theme/types.ts` | TypeScript interfaces for colors, themes |
+| `theme/colors.ts` | Color resolution logic (ANSI → hex) |
+| `theme/system-theme.ts` | ANSI-first default theme |
+| `theme/themes/` | Built-in themes (Dracula, Nord, Tokyo Night) |
+| `theme/atoms-new.ts` | Jotai atoms for new theme system |
+| `theme/hooks-new.ts` | React hooks (`useSemanticColors`, `useTheme`) |
+| `theme/provider.tsx` | Color mode context for dimmed colors |
+| `theme/legacy/` | Old Base16 theme system (to be removed) |
+
+### OpenCode Reference
+
+Key reference files from OpenCode's implementation:
+- Theme types: `packages/opencode/src/cli/cmd/tui/context/theme.tsx`
+- Built-in themes: `packages/opencode/src/cli/cmd/tui/context/theme/*.json`
+
+### Usage
+
+```typescript
+import { useSemanticColors, useTheme } from './theme/hooks-new.js'
+
+function MyComponent() {
+  const colors = useSemanticColors()
+
+  return (
+    <text fg={colors.primary}>Primary text</text>
+    <text fg={colors.textMuted}>Muted text</text>
+    <text fg={colors.error}>Error message</text>
+  )
+}
+
+function ThemeSwitcher() {
+  const { theme, availableThemes, setTheme, mode, setModePreference } = useTheme()
+  // Build theme switching UI
+}
+```
+
+### Migration Status
+
+The legacy Base16 theme system is in `theme/legacy/`. Components currently use the legacy system via `../../theme.js`. The new system uses `hooks-new.ts` and `atoms-new.ts`. Once migration is complete, the legacy folder will be removed.

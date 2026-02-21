@@ -1,63 +1,120 @@
 /**
  * Theme State Atoms
  *
- * Jotai atoms for managing theme state. Provides both primitive atoms
- * for direct state access and derived atoms for computed values.
+ * Jotai atoms for the OpenCode-style theme system.
+ * These atoms manage theme selection, mode preference, and color resolution.
  */
 
 import { atom } from 'jotai'
-import type { ThemeVariant } from './base16.js'
 import {
-  THEME_REGISTRY,
-  resolveTheme,
-  type ResolvedTheme,
-  type VariantPreference,
-} from './registry.js'
+  resolveThemeColors,
+  buildDimmedColors,
+  DEFAULT_ANSI_PALETTE,
+} from './colors.js'
+import {
+  BUILTIN_THEMES,
+  DEFAULT_THEME_ID,
+  getTheme,
+  getAllThemes,
+} from './themes/index.js'
+import type {
+  ThemeDefinition,
+  ThemeVariant,
+  ModePreference,
+  AnsiPalette,
+  ResolvedColors,
+} from './types.js'
 
 // =============================================================================
 // Primitive Atoms
 // =============================================================================
 
 /**
- * The currently selected theme family ID.
- * Defaults to the registry's default family.
+ * The currently selected theme ID.
+ * Defaults to "system" for terminal-native colors.
  */
-export const themeFamilyIdAtom = atom<string>(THEME_REGISTRY.defaultFamilyId)
+export const themeIdAtom = atom<string>(DEFAULT_THEME_ID)
 
 /**
- * User's variant preference: 'auto', 'dark', or 'light'.
- * 'auto' uses the detected terminal theme mode.
+ * User's mode preference: 'auto', 'dark', or 'light'.
+ * 'auto' uses terminal detection when available.
  */
-export const variantPreferenceAtom = atom<VariantPreference>('auto')
+export const modePreferenceAtom = atom<ModePreference>('auto')
 
 /**
- * The terminal's detected theme variant.
+ * The terminal's detected mode (dark or light).
  * null when detection hasn't run or isn't available.
  */
-export const detectedVariantAtom = atom<ThemeVariant | null>(null)
+export const detectedModeAtom = atom<ThemeVariant | null>(null)
+
+/**
+ * The terminal's ANSI color palette.
+ * Used by the system theme to render terminal-native colors.
+ * Falls back to DEFAULT_ANSI_PALETTE when not detected.
+ */
+export const ansiPaletteAtom = atom<AnsiPalette>(DEFAULT_ANSI_PALETTE)
 
 // =============================================================================
 // Derived Atoms
 // =============================================================================
 
 /**
- * The fully resolved theme based on current settings.
- * Combines family selection, user preference, and detection.
+ * All available themes for the theme picker.
  */
-export const resolvedThemeAtom = atom<ResolvedTheme>((get) => {
-  return resolveTheme(
-    get(themeFamilyIdAtom),
-    get(variantPreferenceAtom),
-    get(detectedVariantAtom),
-  )
+export const availableThemesAtom = atom<ThemeDefinition[]>(() => {
+  return getAllThemes()
 })
 
 /**
- * Convenience atom for direct access to the current palette.
- * Use this when you only need the colors, not family/variant info.
+ * The current theme definition.
+ * Falls back to default theme if selected theme ID is not found.
  */
-export const currentPaletteAtom = atom((get) => {
-  return get(resolvedThemeAtom).definition.palette
+export const currentThemeAtom = atom<ThemeDefinition>((get) => {
+  const themeId = get(themeIdAtom)
+  return getTheme(themeId) ?? BUILTIN_THEMES[DEFAULT_THEME_ID]
+})
+
+/**
+ * The effective mode (dark or light) based on preference and detection.
+ */
+export const effectiveModeAtom = atom<ThemeVariant>((get) => {
+  const preference = get(modePreferenceAtom)
+
+  if (preference === 'dark' || preference === 'light') {
+    return preference
+  }
+
+  // 'auto' - use detection or fall back to theme's default variant
+  const detected = get(detectedModeAtom)
+  if (detected !== null) {
+    return detected
+  }
+
+  // No detection - use theme's default variant
+  const theme = get(currentThemeAtom)
+  return theme.variant
+})
+
+/**
+ * Fully resolved colors for the current theme and mode.
+ * All values are hex strings ready for use in components.
+ */
+export const resolvedColorsAtom = atom<ResolvedColors>((get) => {
+  const theme = get(currentThemeAtom)
+  const mode = get(effectiveModeAtom)
+  const palette = get(ansiPaletteAtom)
+
+  return resolveThemeColors(theme.json, mode, palette)
+})
+
+/**
+ * Dimmed colors for content behind modals.
+ */
+export const dimmedColorsAtom = atom<ResolvedColors>((get) => {
+  const colors = get(resolvedColorsAtom)
+  const palette = get(ansiPaletteAtom)
+
+  return buildDimmedColors(colors, palette)
 })
 
 // =============================================================================
@@ -65,31 +122,43 @@ export const currentPaletteAtom = atom((get) => {
 // =============================================================================
 
 /**
- * Action atom to change the theme family.
- * Usage: const setFamily = useSetAtom(setThemeFamilyAtom)
+ * Action atom to change the theme.
  */
-export const setThemeFamilyAtom = atom(null, (_get, set, familyId: string) => {
-  set(themeFamilyIdAtom, familyId)
+export const setThemeAtom = atom(null, (_get, set, themeId: string) => {
+  if (getTheme(themeId)) {
+    set(themeIdAtom, themeId)
+  } else {
+    console.warn(`Unknown theme ID: "${themeId}", using default`)
+    set(themeIdAtom, DEFAULT_THEME_ID)
+  }
 })
 
 /**
- * Action atom to change the variant preference.
- * Usage: const setPreference = useSetAtom(setVariantPreferenceAtom)
+ * Action atom to change the mode preference.
  */
-export const setVariantPreferenceAtom = atom(
+export const setModePreferenceAtom = atom(
   null,
-  (_get, set, preference: VariantPreference) => {
-    set(variantPreferenceAtom, preference)
+  (_get, set, preference: ModePreference) => {
+    set(modePreferenceAtom, preference)
   },
 )
 
 /**
- * Action atom to update the detected variant from terminal detection.
- * Called internally by the theme detection system.
+ * Action atom to update the detected mode from terminal detection.
  */
-export const setDetectedVariantAtom = atom(
+export const setDetectedModeAtom = atom(
   null,
-  (_get, set, variant: ThemeVariant | null) => {
-    set(detectedVariantAtom, variant)
+  (_get, set, mode: ThemeVariant | null) => {
+    set(detectedModeAtom, mode)
+  },
+)
+
+/**
+ * Action atom to update the ANSI palette from terminal detection.
+ */
+export const setAnsiPaletteAtom = atom(
+  null,
+  (_get, set, palette: AnsiPalette) => {
+    set(ansiPaletteAtom, palette)
   },
 )

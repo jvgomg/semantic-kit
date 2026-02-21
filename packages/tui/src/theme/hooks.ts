@@ -6,69 +6,126 @@
 
 import { useAtomValue, useSetAtom } from 'jotai'
 import {
-  currentPaletteAtom,
-  resolvedThemeAtom,
-  setThemeFamilyAtom,
-  setVariantPreferenceAtom,
+  themeIdAtom,
+  effectiveModeAtom,
+  currentThemeAtom,
+  availableThemesAtom,
+  resolvedColorsAtom,
+  dimmedColorsAtom,
+  setThemeAtom,
+  setModePreferenceAtom,
 } from './atoms.js'
-import type { Base16Palette, ThemeVariant } from './base16.js'
-import type { ThemeFamily, VariantPreference } from './registry.js'
+import { useColorModeContext } from './provider.js'
+import type {
+  ThemeDefinition,
+  ThemeVariant,
+  ModePreference,
+  ResolvedColors,
+} from './types.js'
+
+// =============================================================================
+// Primary Hooks
+// =============================================================================
+
+/**
+ * Hook for accessing semantic colors in components.
+ * Automatically returns dimmed colors when inside a dimmed context.
+ *
+ * This is the primary hook for getting colors - use this in most components.
+ *
+ * @example
+ * function MyComponent() {
+ *   const colors = useSemanticColors()
+ *   return (
+ *     <text fg={colors.accent}>Accented text</text>
+ *   )
+ * }
+ */
+export function useSemanticColors(): ResolvedColors {
+  const mode = useColorModeContext()
+  const normalColors = useAtomValue(resolvedColorsAtom)
+  const dimmedColors = useAtomValue(dimmedColorsAtom)
+
+  return mode === 'dimmed' ? dimmedColors : normalColors
+}
 
 /**
  * Return type for the useTheme hook.
  */
 export interface UseThemeResult {
-  /** Current theme family */
-  family: ThemeFamily
-  /** Current resolved variant (what's actually being used) */
-  variant: ThemeVariant
-  /** Current Base16 color palette */
-  palette: Base16Palette
-  /** Change the theme family */
-  setFamily: (familyId: string) => void
-  /** Change the variant preference */
-  setVariantPreference: (preference: VariantPreference) => void
+  /** Current theme definition */
+  theme: ThemeDefinition
+  /** Current theme ID */
+  themeId: string
+  /** Current effective mode (dark or light) */
+  mode: ThemeVariant
+  /** All available themes */
+  availableThemes: ThemeDefinition[]
+  /** Change the current theme */
+  setTheme: (themeId: string) => void
+  /** Change the mode preference */
+  setModePreference: (preference: ModePreference) => void
 }
 
 /**
  * Hook for accessing and modifying the current theme.
  *
  * @example
- * function MyComponent() {
- *   const { palette, variant, setFamily } = useTheme()
+ * function ThemePicker() {
+ *   const { theme, availableThemes, setTheme, mode, setModePreference } = useTheme()
  *
  *   return (
- *     <text fg={palette.base0D}>
- *       Current variant: {variant}
- *     </text>
+ *     <box>
+ *       <text>Current theme: {theme.name}</text>
+ *       <text>Mode: {mode}</text>
+ *     </box>
  *   )
  * }
  */
 export function useTheme(): UseThemeResult {
-  const resolved = useAtomValue(resolvedThemeAtom)
-  const palette = useAtomValue(currentPaletteAtom)
-  const setFamily = useSetAtom(setThemeFamilyAtom)
-  const setVariantPreference = useSetAtom(setVariantPreferenceAtom)
+  const theme = useAtomValue(currentThemeAtom)
+  const themeId = useAtomValue(themeIdAtom)
+  const mode = useAtomValue(effectiveModeAtom)
+  const availableThemes = useAtomValue(availableThemesAtom)
+  const setTheme = useSetAtom(setThemeAtom)
+  const setModePreference = useSetAtom(setModePreferenceAtom)
 
   return {
-    family: resolved.family,
-    variant: resolved.variant,
-    palette,
-    setFamily,
-    setVariantPreference,
+    theme,
+    themeId,
+    mode,
+    availableThemes,
+    setTheme,
+    setModePreference,
   }
 }
 
 /**
- * Hook for read-only access to the current palette.
- * Use this when you only need colors and don't need to modify the theme.
+ * Hook for read-only access to the current resolved colors.
+ * Use this when you need all colors but don't need theme switching controls.
+ *
+ * Note: This returns the same colors regardless of dimmed context.
+ * For context-aware colors, use useSemanticColors() instead.
  *
  * @example
  * function MyComponent() {
- *   const palette = usePalette()
- *   return <text fg={palette.base0B}>Success!</text>
+ *   const colors = useColors()
+ *   return <text fg={colors.primary}>Primary colored text</text>
  * }
  */
-export function usePalette(): Base16Palette {
-  return useAtomValue(currentPaletteAtom)
+export function useColors(): ResolvedColors {
+  return useAtomValue(resolvedColorsAtom)
+}
+
+/**
+ * Hook to get the current color mode (normal or dimmed).
+ *
+ * @example
+ * function MyComponent() {
+ *   const colorMode = useColorMode()
+ *   return <text>Color mode: {colorMode}</text>
+ * }
+ */
+export function useColorMode() {
+  return useColorModeContext()
 }

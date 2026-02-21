@@ -15,7 +15,7 @@ import {
   SectionPriority,
   type SectionSeverity,
 } from './priorities.js'
-import { useSectionColors, getSeverityColor } from './section-theme.js'
+import { useSemanticColors, getSeverityColor } from '../../theme.js'
 
 export interface SectionProps {
   /** Unique identifier within parent container */
@@ -73,38 +73,34 @@ export function Section({
   children,
 }: SectionProps): ReactNode {
   // Get theme colors
-  const sectionColors = useSectionColors()
+  const colors = useSemanticColors()
 
   // Get state from the section hook (self-registers on mount)
   const { isExpanded, isSelected } = useSection(id, defaultExpanded, priority)
 
   // Get border color based on state
   const getBorderColor = (): string => {
-    if (isSelected) return sectionColors.borderSelected
-    if (severity) return getSeverityColor(sectionColors, severity)
-    if (isExpanded) return sectionColors.borderExpanded
-    return sectionColors.borderCollapsed
+    if (isSelected) return colors.borderSelected
+    if (severity) return getSeverityColor(colors, severity)
+    if (isExpanded) return colors.borderActive
+    return colors.borderSubtle
   }
 
   const borderColor = getBorderColor()
   const indicator = isExpanded ? boxChars.expanded : boxChars.collapsed
   const countText = count !== undefined ? ` (${count})` : ''
-  const titleColor = severity
-    ? getSeverityColor(sectionColors, severity)
-    : sectionColors.defaultText
-  const bracketColor = isSelected
-    ? sectionColors.expandIndicator
-    : sectionColors.borderCollapsed
+  const titleColor = severity ? getSeverityColor(colors, severity) : colors.text
+  const bracketColor = isSelected ? colors.accent : colors.borderSubtle
 
   // Build title with indicator on the left: [▼] {icon} TITLE (count)
   const titleContent = (
     <text>
       <span fg={bracketColor}>[</span>
-      <span fg={sectionColors.expandIndicator}>{indicator}</span>
+      <span fg={colors.accent}>{indicator}</span>
       <span fg={bracketColor}>]</span>
       {icon && <span fg={titleColor}> {icon}</span>}
       <span fg={titleColor}> {title}</span>
-      {countText && <span fg={sectionColors.countBadge}>{countText}</span>}
+      {countText && <span fg={colors.accent}>{countText}</span>}
     </text>
   )
 
@@ -129,7 +125,7 @@ export function Section({
         {summaryLines_.length > 0 && (
           <box flexDirection="column" marginTop={1}>
             {summaryLines_.map((line, i) => (
-              <text key={i} fg={sectionColors.summaryText}>
+              <text key={i} fg={colors.textMuted}>
                 {line}
               </text>
             ))}

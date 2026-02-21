@@ -71,7 +71,7 @@ function SummaryContent({ data }: { data: ScreenReaderResult }): ReactNode {
   const { summary } = data
 
   const getStatusColor = (value: boolean) =>
-    value ? colors.textSuccess : colors.textError
+    value ? colors.success : colors.error
 
   return (
     <box flexDirection="column" gap={0}>
@@ -111,7 +111,7 @@ function SummaryContent({ data }: { data: ScreenReaderResult }): ReactNode {
         <text>
           <span fg={colors.textMuted}>Skip Link:</span>{' '}
           <span
-            fg={summary.hasSkipLink ? colors.textSuccess : colors.textWarning}
+            fg={summary.hasSkipLink ? colors.success : colors.warning}
           >
             {summary.hasSkipLink ? 'Yes' : 'No'}
           </span>
@@ -128,7 +128,7 @@ function LandmarksContent({ data }: { data: ScreenReaderResult }): ReactNode {
   const colors = useSemanticColors()
   if (data.landmarks.length === 0) {
     return (
-      <text fg={colors.textWarning}>
+      <text fg={colors.warning}>
         No landmark regions found on this page.
       </text>
     )
@@ -159,7 +159,7 @@ function LandmarksContent({ data }: { data: ScreenReaderResult }): ReactNode {
 function HeadingsContent({ data }: { data: ScreenReaderResult }): ReactNode {
   const colors = useSemanticColors()
   if (data.headings.length === 0) {
-    return <text fg={colors.textWarning}>No headings found on this page.</text>
+    return <text fg={colors.warning}>No headings found on this page.</text>
   }
 
   return (
@@ -242,7 +242,7 @@ export function ScreenReaderViewContent({
             {hasHeadingIssue && <MissingHeadingsCard />}
           </box>
         ) : (
-          <text fg={colors.textSuccess}>
+          <text fg={colors.success}>
             All basic accessibility checks passed.
           </text>
         )}

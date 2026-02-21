@@ -177,7 +177,7 @@ export function ConfigBrowser({
   if (flattenedNodes.length === 0) {
     return (
       <box flexDirection="column">
-        <text fg={colors.textHint}>No URLs in config</text>
+        <text fg={colors.textMuted}>No URLs in config</text>
       </box>
     )
   }
@@ -224,12 +224,12 @@ export function ConfigBrowser({
         const style = {
           fg: isSelected
             ? isFocused
-              ? colors.textSelected
+              ? colors.text
               : colors.text
             : colors.text,
           bg:
             isSelected && isFocused
-              ? colors.modalBackgroundSelected
+              ? colors.backgroundSelected
               : undefined,
         }
 
@@ -237,20 +237,20 @@ export function ConfigBrowser({
         const expandColor =
           isGroup && isFocused && (isSelected || isAncestorOfSelected)
             ? colors.accent
-            : colors.treeGuide
+            : colors.borderSubtle
 
         return (
           <box key={node.id} flexDirection="row">
-            <text fg={colors.indent}>{indent}</text>
+            <text fg={colors.borderSubtle}>{indent}</text>
             {isGroup && <text fg={expandColor}>{expandIndicator}</text>}
-            {!isGroup && parentGroup && <text fg={colors.indent}> </text>}
+            {!isGroup && parentGroup && <text fg={colors.borderSubtle}> </text>}
             <text {...style}>{node.label}</text>
             {countBadge}
           </box>
         )
       })}
       {showScrollIndicator && (
-        <text fg={colors.textHint}>
+        <text fg={colors.textMuted}>
           {' '}
           [{scrollPercentage}%] {flattenedNodes.length} items
         </text>

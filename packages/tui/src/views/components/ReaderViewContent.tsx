@@ -28,8 +28,8 @@ function SummaryContent({ data }: { data: ReaderResult }): ReactNode {
   const { metrics } = data
 
   const getReadabilityStatus = () => {
-    if (metrics.isReaderable) return { text: 'Yes', color: colors.textSuccess }
-    return { text: 'No', color: colors.textWarning }
+    if (metrics.isReaderable) return { text: 'Yes', color: colors.success }
+    return { text: 'No', color: colors.warning }
   }
 
   const readability = getReadabilityStatus()
@@ -153,7 +153,7 @@ export function ReaderViewContent({
             />
           </scrollbox>
         ) : (
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             No content could be extracted from this page.
           </text>
         )}

@@ -154,7 +154,7 @@ function ConfigContent({
       </box>
       {timedOut && (
         <box flexDirection="row" marginTop={1}>
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             Page load timed out - results may be incomplete
           </text>
         </box>
@@ -174,7 +174,7 @@ function ViolationsContent({
   const colors = useSemanticColors()
   if (violations.length === 0) {
     return (
-      <text fg={colors.textSuccess}>No accessibility violations detected.</text>
+      <text fg={colors.success}>No accessibility violations detected.</text>
     )
   }
 
@@ -232,7 +232,7 @@ function IncompleteContent({
   const colors = useSemanticColors()
   if (incomplete.length === 0) {
     return (
-      <text fg={colors.textSuccess}>No items requiring manual review.</text>
+      <text fg={colors.success}>No items requiring manual review.</text>
     )
   }
 
@@ -267,7 +267,7 @@ function SummaryContent({
 }): ReactNode {
   const colors = useSemanticColors()
   const hasViolations = violations > 0
-  const statusColor = hasViolations ? colors.severityError : colors.textSuccess
+  const statusColor = hasViolations ? colors.error : colors.success
   const statusText = hasViolations ? 'ISSUES FOUND' : 'PASSED'
   const statusIcon = hasViolations ? '✗' : '✓'
 
@@ -280,17 +280,17 @@ function SummaryContent({
       </box>
       <box flexDirection="row" marginTop={1}>
         <text fg={colors.textMuted}>Violations: </text>
-        <text fg={violations > 0 ? colors.severityError : colors.text}>
+        <text fg={violations > 0 ? colors.error : colors.text}>
           {violations}
         </text>
       </box>
       <box flexDirection="row">
         <text fg={colors.textMuted}>Passed: </text>
-        <text fg={colors.textSuccess}>{passes}</text>
+        <text fg={colors.success}>{passes}</text>
       </box>
       <box flexDirection="row">
         <text fg={colors.textMuted}>Needs Review: </text>
-        <text fg={incomplete > 0 ? colors.textWarning : colors.text}>
+        <text fg={incomplete > 0 ? colors.warning : colors.text}>
           {incomplete}
         </text>
       </box>

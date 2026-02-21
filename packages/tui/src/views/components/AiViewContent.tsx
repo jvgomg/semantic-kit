@@ -74,23 +74,23 @@ function SummaryContent({ data }: { data: AiResult }): ReactNode {
   const { hiddenContentAnalysis } = data
 
   const getReadabilityStatus = () => {
-    if (data.isReaderable) return { text: 'Yes', color: colors.textSuccess }
-    return { text: 'No', color: colors.textWarning }
+    if (data.isReaderable) return { text: 'Yes', color: colors.success }
+    return { text: 'No', color: colors.warning }
   }
 
   const getHiddenStatus = () => {
     if (hiddenContentAnalysis.severity === 'none') {
-      return { text: '0%', color: colors.textSuccess }
+      return { text: '0%', color: colors.success }
     }
     if (hiddenContentAnalysis.severity === 'low') {
       return {
         text: `${hiddenContentAnalysis.hiddenPercentage}%`,
-        color: colors.textWarning,
+        color: colors.warning,
       }
     }
     return {
       text: `${hiddenContentAnalysis.hiddenPercentage}%`,
-      color: colors.textError,
+      color: colors.error,
     }
   }
 
@@ -190,7 +190,7 @@ export function AiViewContent({
             icon={warningIcon}
           />
         ) : (
-          <text fg={colors.textSuccess}>
+          <text fg={colors.success}>
             All checks passed. No hidden content detected.
           </text>
         )}
@@ -250,7 +250,7 @@ export function AiViewContent({
             />
           </scrollbox>
         ) : (
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             No content could be extracted from this page.
           </text>
         )}

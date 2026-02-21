@@ -57,9 +57,9 @@ function SummaryContent({ data }: { data: A11yCompareResult }): ReactNode {
           <span
             fg={
               nodeDiff > 0
-                ? colors.textSuccess
+                ? colors.success
                 : nodeDiff < 0
-                  ? colors.textError
+                  ? colors.error
                   : colors.text
             }
           >
@@ -73,8 +73,8 @@ function SummaryContent({ data }: { data: A11yCompareResult }): ReactNode {
           <span
             fg={
               diff.countChanges.length > 0
-                ? colors.textWarning
-                : colors.textSuccess
+                ? colors.warning
+                : colors.success
             }
           >
             {diff.countChanges.length}
@@ -84,7 +84,7 @@ function SummaryContent({ data }: { data: A11yCompareResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>Elements Added:</span>{' '}
-          <span fg={diff.added.length > 0 ? colors.textSuccess : colors.text}>
+          <span fg={diff.added.length > 0 ? colors.success : colors.text}>
             {diff.added.length}
           </span>
         </text>
@@ -92,7 +92,7 @@ function SummaryContent({ data }: { data: A11yCompareResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>Elements Removed:</span>{' '}
-          <span fg={diff.removed.length > 0 ? colors.textError : colors.text}>
+          <span fg={diff.removed.length > 0 ? colors.error : colors.text}>
             {diff.removed.length}
           </span>
         </text>
@@ -169,7 +169,7 @@ function ElementsAddedContent({
     <box flexDirection="column" gap={0}>
       {displayItems.map((line, index) => (
         <text key={index}>
-          <span fg={colors.textSuccess}>+ </span>
+          <span fg={colors.success}>+ </span>
           <span fg={colors.text}>{formatSnapshotLine(line)}</span>
         </text>
       ))}
@@ -205,7 +205,7 @@ function ElementsRemovedContent({
     <box flexDirection="column" gap={0}>
       {displayItems.map((line, index) => (
         <text key={index}>
-          <span fg={colors.textError}>- </span>
+          <span fg={colors.error}>- </span>
           <span fg={colors.text}>{formatSnapshotLine(line)}</span>
         </text>
       ))}
@@ -273,7 +273,7 @@ export function A11yTreeCompareViewContent({
           summary="Page load timed out - comparison may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             {data.static.timedOut && data.hydrated.timedOut
               ? 'Both static and rendered fetches timed out.'
               : data.static.timedOut

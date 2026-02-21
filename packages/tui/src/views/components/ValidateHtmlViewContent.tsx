@@ -71,7 +71,7 @@ function SummaryContent({
   warnings: HtmlValidateMessage[]
 }): ReactNode {
   const colors = useSemanticColors()
-  const statusColor = report.valid ? colors.textSuccess : colors.textError
+  const statusColor = report.valid ? colors.success : colors.error
   const statusText = report.valid ? 'VALID' : 'INVALID'
   const statusIcon = report.valid ? '✓' : '✗'
 
@@ -84,13 +84,13 @@ function SummaryContent({
       </box>
       <box flexDirection="row" marginTop={1}>
         <text fg={colors.textMuted}>Errors: </text>
-        <text fg={errors.length > 0 ? colors.textError : colors.text}>
+        <text fg={errors.length > 0 ? colors.error : colors.text}>
           {errors.length}
         </text>
       </box>
       <box flexDirection="row">
         <text fg={colors.textMuted}>Warnings: </text>
-        <text fg={warnings.length > 0 ? colors.textWarning : colors.text}>
+        <text fg={warnings.length > 0 ? colors.warning : colors.text}>
           {warnings.length}
         </text>
       </box>
@@ -110,7 +110,7 @@ function MessagesContent({
 }): ReactNode {
   const colors = useSemanticColors()
   if (messages.length === 0) {
-    const color = colors.textSuccess
+    const color = colors.success
     const text =
       severity === 'error' ? 'No errors found.' : 'No warnings found.'
     return <text fg={color}>{text}</text>

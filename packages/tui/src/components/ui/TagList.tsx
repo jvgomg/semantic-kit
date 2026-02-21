@@ -5,7 +5,7 @@
  * Used by Social and Schema views for displaying Open Graph and Twitter tags.
  */
 import type { ReactNode } from 'react'
-import { useSemanticColors, type SemanticColors } from '../../theme.js'
+import { useSemanticColors, type ResolvedColors } from '../../theme.js'
 import type { SocialValidationIssue } from '@webspecs/core'
 import type { MetatagGroupResult } from '@webspecs/core'
 
@@ -65,11 +65,11 @@ export function TagList({
 /**
  * Get severity colors for issue display.
  */
-function getSeverityColors(colors: SemanticColors): Record<string, string> {
+function getSeverityColors(colors: ResolvedColors): Record<string, string> {
   return {
-    high: colors.severityError,
-    medium: colors.severityWarning,
-    low: colors.severityMuted,
+    high: colors.error,
+    medium: colors.warning,
+    low: colors.textMuted,
   }
 }
 
@@ -137,7 +137,7 @@ export function IssuesContent({ issues }: IssuesContentProps): ReactNode {
   const colors = useSemanticColors()
 
   if (issues.length === 0) {
-    return <text fg={colors.textSuccess}>No issues found</text>
+    return <text fg={colors.success}>No issues found</text>
   }
 
   const severityColors = getSeverityColors(colors)

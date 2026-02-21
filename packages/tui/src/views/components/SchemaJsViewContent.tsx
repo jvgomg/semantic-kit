@@ -149,7 +149,7 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>JSON-LD:</span>{' '}
-          <span fg={counts.jsonld > 0 ? colors.textSuccess : colors.textMuted}>
+          <span fg={counts.jsonld > 0 ? colors.success : colors.textMuted}>
             {counts.jsonld} type{counts.jsonld !== 1 ? 's' : ''}
           </span>
         </text>
@@ -158,7 +158,7 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
         <box flexDirection="row" gap={2}>
           <text>
             <span fg={colors.textMuted}>Microdata:</span>{' '}
-            <span fg={colors.textSuccess}>
+            <span fg={colors.success}>
               {counts.microdata} type{counts.microdata !== 1 ? 's' : ''}
             </span>
           </text>
@@ -168,7 +168,7 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
         <box flexDirection="row" gap={2}>
           <text>
             <span fg={colors.textMuted}>RDFa:</span>{' '}
-            <span fg={colors.textSuccess}>
+            <span fg={colors.success}>
               {counts.rdfa} type{counts.rdfa !== 1 ? 's' : ''}
             </span>
           </text>
@@ -177,7 +177,7 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>Open Graph:</span>{' '}
-          <span fg={hasOG ? colors.textSuccess : colors.textMuted}>
+          <span fg={hasOG ? colors.success : colors.textMuted}>
             {hasOG
               ? `${Object.keys(data.openGraph!.tags).length} tags`
               : 'None'}
@@ -187,7 +187,7 @@ function SummaryContent({ data }: { data: SchemaJsResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>Twitter Cards:</span>{' '}
-          <span fg={hasTwitter ? colors.textSuccess : colors.textMuted}>
+          <span fg={hasTwitter ? colors.success : colors.textMuted}>
             {hasTwitter
               ? `${Object.keys(data.twitter!.tags).length} tags`
               : 'None'}
@@ -356,7 +356,7 @@ export function SchemaJsViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             The page took too long to load. The results shown are from partial
             content. Consider increasing the timeout with --timeout.
           </text>

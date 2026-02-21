@@ -24,11 +24,11 @@ function formatLinkDensity(
 ): { text: string; color: string } {
   const percentage = (density * 100).toFixed(1)
   if (density < 0.1) {
-    return { text: `${percentage}% (low)`, color: colors.textSuccess }
+    return { text: `${percentage}% (low)`, color: colors.success }
   } else if (density < 0.3) {
-    return { text: `${percentage}% (moderate)`, color: colors.textWarning }
+    return { text: `${percentage}% (moderate)`, color: colors.warning }
   } else {
-    return { text: `${percentage}% (high)`, color: colors.textError }
+    return { text: `${percentage}% (high)`, color: colors.error }
   }
 }
 
@@ -40,8 +40,8 @@ function MetricsContent({ data }: { data: ReadabilityJsResult }): ReactNode {
   const { metrics } = data
 
   const getReadabilityStatus = () => {
-    if (metrics.isReaderable) return { text: 'Yes', color: colors.textSuccess }
-    return { text: 'No', color: colors.textWarning }
+    if (metrics.isReaderable) return { text: 'Yes', color: colors.success }
+    return { text: 'No', color: colors.warning }
   }
 
   const readability = getReadabilityStatus()
@@ -135,7 +135,7 @@ export function ReadabilityJsViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             The page took too long to load. The results shown are from partial
             content. Consider increasing the timeout with --timeout.
           </text>
@@ -199,7 +199,7 @@ export function ReadabilityJsViewContent({
             />
           </scrollbox>
         ) : (
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             No content could be extracted from this page.
           </text>
         )}

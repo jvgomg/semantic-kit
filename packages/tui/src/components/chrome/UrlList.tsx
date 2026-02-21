@@ -96,7 +96,7 @@ function RecentTabContent({
   }))
 
   if (urls.length === 0) {
-    return <text fg={colors.textHint}>No recent URLs</text>
+    return <text fg={colors.textMuted}>No recent URLs</text>
   }
 
   return (
@@ -142,8 +142,8 @@ function ConfigTabContent({
   if (!hasConfigData) {
     return (
       <box flexDirection="column">
-        <text fg={colors.textHint}>No config loaded.</text>
-        <text fg={colors.textHint}>
+        <text fg={colors.textMuted}>No config loaded.</text>
+        <text fg={colors.textMuted}>
           Use --config flag to load a YAML config file.
         </text>
       </box>
@@ -204,18 +204,18 @@ function SitemapTabContent({
         flexDirection="row"
         borderStyle="single"
         borderColor={
-          inputFocused ? colors.borderFocused : colors.borderUnfocused
+          inputFocused ? colors.borderActive : colors.borderSubtle
         }
         onMouseDown={onInputFocus}
       >
-        <text fg={colors.textHint}>URL: </text>
+        <text fg={colors.textMuted}>URL: </text>
         <input
           value={inputValue}
           onChange={onInputChange}
           focused={inputFocused}
           placeholder="Enter sitemap URL..."
           textColor={colors.text}
-          placeholderColor={colors.textHint}
+          placeholderColor={colors.textMuted}
           cursorColor={colors.accent}
         />
       </box>
@@ -457,7 +457,7 @@ export function UrlList({
       flexDirection="column"
       height={rows}
       borderStyle="rounded"
-      borderColor={colors.borderUnfocused}
+      borderColor={colors.borderSubtle}
       paddingLeft={1}
       paddingRight={1}
     >
@@ -480,7 +480,7 @@ export function UrlList({
 
       {/* Footer hints */}
       <text />
-      <text fg={colors.textHint}>Tab: switch | Enter: select | Esc: close</text>
+      <text fg={colors.textMuted}>Tab: switch | Enter: select | Esc: close</text>
     </box>
   )
 }

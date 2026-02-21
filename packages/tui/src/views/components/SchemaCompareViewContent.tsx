@@ -65,9 +65,9 @@ function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
   const renderedCount = countSchemaTypes(data.rendered)
 
   const getDiffColor = (added: number, removed: number): string => {
-    if (added > 0 && removed === 0) return colors.textSuccess
-    if (removed > 0 && added === 0) return colors.textError
-    if (added > 0 || removed > 0) return colors.textWarning
+    if (added > 0 && removed === 0) return colors.success
+    if (removed > 0 && added === 0) return colors.error
+    if (added > 0 || removed > 0) return colors.warning
     return colors.textMuted
   }
 
@@ -142,7 +142,7 @@ function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
           <span
             fg={
               comparison.openGraphChanged
-                ? colors.textWarning
+                ? colors.warning
                 : colors.textMuted
             }
           >
@@ -155,7 +155,7 @@ function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
           <span fg={colors.textMuted}>Twitter Cards:</span>{' '}
           <span
             fg={
-              comparison.twitterChanged ? colors.textWarning : colors.textMuted
+              comparison.twitterChanged ? colors.warning : colors.textMuted
             }
           >
             {comparison.twitterChanged ? 'Changed' : 'No change'}
@@ -366,7 +366,7 @@ export function SchemaCompareViewContent({
           summary="Page load timed out - results may be incomplete"
           defaultExpanded={false}
         >
-          <text fg={colors.textWarning}>
+          <text fg={colors.warning}>
             The page took too long to load. The comparison may be based on
             partial content.
           </text>
@@ -400,26 +400,26 @@ export function SchemaCompareViewContent({
             {addedJsonld.length > 0 && (
               <SchemaTypeList
                 types={addedJsonld}
-                color={colors.textSuccess}
+                color={colors.success}
                 format="JSON-LD"
               />
             )}
             {addedMicrodata.length > 0 && (
               <SchemaTypeList
                 types={addedMicrodata}
-                color={colors.textSuccess}
+                color={colors.success}
                 format="Microdata"
               />
             )}
             {addedRdfa.length > 0 && (
               <SchemaTypeList
                 types={addedRdfa}
-                color={colors.textSuccess}
+                color={colors.success}
                 format="RDFa"
               />
             )}
             <box marginTop={1}>
-              <text fg={colors.textWarning}>
+              <text fg={colors.warning}>
                 These schemas are only visible to bots that execute JavaScript.
               </text>
             </box>
@@ -441,26 +441,26 @@ export function SchemaCompareViewContent({
             {removedJsonld.length > 0 && (
               <SchemaTypeList
                 types={removedJsonld}
-                color={colors.textError}
+                color={colors.error}
                 format="JSON-LD"
               />
             )}
             {removedMicrodata.length > 0 && (
               <SchemaTypeList
                 types={removedMicrodata}
-                color={colors.textError}
+                color={colors.error}
                 format="Microdata"
               />
             )}
             {removedRdfa.length > 0 && (
               <SchemaTypeList
                 types={removedRdfa}
-                color={colors.textError}
+                color={colors.error}
                 format="RDFa"
               />
             )}
             <box marginTop={1}>
-              <text fg={colors.textError}>
+              <text fg={colors.error}>
                 These schemas are removed during JavaScript hydration. This is
                 unusual.
               </text>

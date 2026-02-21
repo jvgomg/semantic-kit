@@ -10,7 +10,7 @@ import { createRoot } from '@opentui/react'
 import { Provider } from 'jotai'
 import { App } from './App.js'
 import { createPersistedStore, flushPersistedState } from './state/index.js'
-import { setDetectedVariantAtom } from './theme/index.js'
+import { setDetectedModeAtom } from './theme/index.js'
 import type { TuiConfig } from './lib/tui-config/index.js'
 
 // Mouse handling is built into OpenTUI via component props:
@@ -33,12 +33,12 @@ function initializeThemeDetection(
 ): void {
   // Set initial theme mode if already detected
   if (renderer.themeMode) {
-    store.set(setDetectedVariantAtom, renderer.themeMode)
+    store.set(setDetectedModeAtom, renderer.themeMode)
   }
 
   // Subscribe to theme mode changes
   renderer.on('theme_mode', (mode: ThemeMode) => {
-    store.set(setDetectedVariantAtom, mode)
+    store.set(setDetectedModeAtom, mode)
   })
 }
 

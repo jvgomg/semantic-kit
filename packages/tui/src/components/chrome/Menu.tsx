@@ -59,8 +59,8 @@ export function Menu({ width }: MenuProps) {
       flexDirection="column"
       width={width}
       borderStyle="rounded"
-      borderColor={colors.borderUnfocused}
-      focusedBorderColor={colors.borderFocused}
+      borderColor={colors.borderSubtle}
+      focusedBorderColor={colors.borderActive}
       focusable
       focused={isFocused}
       onMouseDown={() => focus()}
@@ -97,7 +97,7 @@ function MenuHeader({ label }: { label: string }) {
 
   return (
     <box paddingLeft={1} paddingTop={1}>
-      <text fg={colors.muted}>
+      <text fg={colors.textMuted}>
         <strong>{label}</strong>
       </text>
     </box>
@@ -121,7 +121,7 @@ function MenuViewItem({
   const colors = useSemanticColors()
   const bgColor = isSelected ? colors.backgroundSelected : 'transparent'
   const fgColor = isSelected
-    ? colors.textSelected
+    ? colors.text
     : isFocused
       ? colors.text
       : colors.text

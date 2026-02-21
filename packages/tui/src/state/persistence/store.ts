@@ -2,7 +2,7 @@
  * Jotai store initialization with pre-loaded persisted state.
  */
 import type { TuiConfig } from '../../lib/tui-config/index.js'
-import { themeFamilyIdAtom, variantPreferenceAtom } from '../../theme.js'
+import { themeIdAtom, modePreferenceAtom } from '../../theme.js'
 import {
   urlAtom,
   activeModalAtom,
@@ -102,11 +102,11 @@ export async function createPersistedStore(
   }
 
   // Restore theme state
-  if (persisted.themeFamilyId) {
-    store.set(themeFamilyIdAtom, persisted.themeFamilyId)
+  if (persisted.themeId) {
+    store.set(themeIdAtom, persisted.themeId)
   }
-  if (persisted.variantPreference) {
-    store.set(variantPreferenceAtom, persisted.variantPreference)
+  if (persisted.modePreference) {
+    store.set(modePreferenceAtom, persisted.modePreference)
   }
 
   // Restore per-view section state (only expanded overrides are persisted)

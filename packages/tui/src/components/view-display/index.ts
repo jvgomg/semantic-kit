@@ -21,5 +21,3 @@ export { Section, SectionPriority } from './Section.js'
 export type { SectionProps, SectionSeverity } from './Section.js'
 
 export { boxChars, severityToPriority } from './priorities.js'
-export { useSectionColors, getSeverityColor } from './section-theme.js'
-export type { SectionColors } from './section-theme.js'

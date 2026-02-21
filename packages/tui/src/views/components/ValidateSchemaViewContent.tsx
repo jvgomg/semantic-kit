@@ -90,7 +90,7 @@ function SummaryContent({
 }): ReactNode {
   const colors = useSemanticColors()
   const hasFailures = failed.length > 0
-  const statusColor = hasFailures ? colors.textError : colors.textSuccess
+  const statusColor = hasFailures ? colors.error : colors.success
   const statusText = hasFailures ? 'FAILED' : 'PASSED'
   const statusIcon = hasFailures ? '✗' : '✓'
 
@@ -103,17 +103,17 @@ function SummaryContent({
       </box>
       <box flexDirection="row" marginTop={1}>
         <text fg={colors.textMuted}>Passed: </text>
-        <text fg={colors.textSuccess}>{passed}</text>
+        <text fg={colors.success}>{passed}</text>
       </box>
       <box flexDirection="row">
         <text fg={colors.textMuted}>Failed: </text>
-        <text fg={failed.length > 0 ? colors.textError : colors.text}>
+        <text fg={failed.length > 0 ? colors.error : colors.text}>
           {failed.length}
         </text>
       </box>
       <box flexDirection="row">
         <text fg={colors.textMuted}>Warnings: </text>
-        <text fg={warnings.length > 0 ? colors.textWarning : colors.text}>
+        <text fg={warnings.length > 0 ? colors.warning : colors.text}>
           {warnings.length}
         </text>
       </box>
@@ -135,7 +135,7 @@ function DetectionContent({
   const hasMetatags = detectedDisplayNames.length > 0
 
   if (!hasJsonLd && !hasMetatags) {
-    return <text fg={colors.textWarning}>No structured data detected.</text>
+    return <text fg={colors.warning}>No structured data detected.</text>
   }
 
   return (
@@ -182,7 +182,7 @@ function TestResultsContent({
 }): ReactNode {
   const colors = useSemanticColors()
   if (tests.length === 0) {
-    return <text fg={colors.textSuccess}>{emptyMessage}</text>
+    return <text fg={colors.success}>{emptyMessage}</text>
   }
 
   const icon = severity === 'error' ? '✗' : severity === 'warning' ? '⚠' : 'i'

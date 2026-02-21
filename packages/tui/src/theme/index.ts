@@ -1,75 +1,108 @@
 /**
  * semantic-kit TUI Theme System
  *
- * Uses Base16 color schemes from the tinted-theming project.
- * https://github.com/tinted-theming/schemes
- *
- * ## Quick Start
- *
- * ```typescript
- * // In a component - reactive to theme changes
- * const { palette, variant } = useTheme()
- * const colors = useSemanticColors()
- *
- * // For semantic color roles (recommended)
- * <text fg={colors.accent}>Accented text</text>
- *
- * // For direct palette access (when semantic doesn't fit)
- * <text fg={palette.base0B}>Success color</text>
- * ```
- *
- * ## Architecture
- *
- * - `base16.ts` - Type definitions and hardcoded theme data
- * - `registry.ts` - Theme family grouping and resolution logic
- * - `atoms.ts` - Jotai state atoms for theme settings
- * - `hooks.ts` - React hooks for component access
- * - `semantic.ts` - Maps Base16 to semantic UI roles
+ * This is the main entry point for the theme system.
+ * Based on OpenCode's ANSI-first theming approach.
  *
  * @module
  */
 
-// Base16 types and definitions
-export {
-  type Base16Palette,
-  type ThemeDefinition,
-  type ThemeVariant,
-  THEME_DEFINITIONS,
-} from './base16.js'
+// =============================================================================
+// Core Types
+// =============================================================================
 
-// Registry and resolution
-export {
-  type ThemeFamily,
-  type ThemeRegistry,
-  type VariantPreference,
-  type ResolvedTheme,
-  THEME_REGISTRY,
-  getThemeFamily,
-  getDefaultThemeFamily,
-  getAllThemeFamilies,
-  resolveTheme,
-} from './registry.js'
+export type {
+  // Color value types
+  HexColor,
+  AnsiIndex,
+  ColorReference,
+  DarkLightVariant,
+  ColorValue,
+  // Theme structure
+  ThemeColors,
+  ThemeJson,
+  ThemeVariant,
+  ModePreference,
+  ThemeDefinition,
+  // Resolved colors
+  ResolvedColors,
+  AnsiPalette,
+  ColorMode,
+  SeverityLevel,
+  // Color key type
+  ThemeColorKey,
+} from './types.js'
 
-// Jotai atoms
+export { THEME_COLOR_KEYS } from './types.js'
+
+// =============================================================================
+// React Hooks
+// =============================================================================
+
 export {
-  themeFamilyIdAtom,
-  variantPreferenceAtom,
-  detectedVariantAtom,
-  resolvedThemeAtom,
-  currentPaletteAtom,
-  setThemeFamilyAtom,
-  setVariantPreferenceAtom,
-  setDetectedVariantAtom,
+  useSemanticColors,
+  useTheme,
+  useColors,
+  useColorMode,
+  type UseThemeResult,
+} from './hooks.js'
+
+// =============================================================================
+// Jotai Atoms
+// =============================================================================
+
+export {
+  themeIdAtom,
+  modePreferenceAtom,
+  detectedModeAtom,
+  ansiPaletteAtom,
+  availableThemesAtom,
+  currentThemeAtom,
+  effectiveModeAtom,
+  resolvedColorsAtom,
+  dimmedColorsAtom,
+  setThemeAtom,
+  setModePreferenceAtom,
+  setDetectedModeAtom,
+  setAnsiPaletteAtom,
 } from './atoms.js'
 
-// React hooks
-export { useTheme, usePalette, type UseThemeResult } from './hooks.js'
+// =============================================================================
+// Color Mode Context
+// =============================================================================
 
-// Semantic colors
 export {
-  type SemanticColors,
-  type SeverityLevel,
-  semanticColorsAtom,
-  useSemanticColors,
+  ColorModeContext,
+  ColorModeProvider,
+  useColorModeContext,
+  type ColorModeProviderProps,
+} from './provider.js'
+
+// =============================================================================
+// Color Resolution
+// =============================================================================
+
+export {
+  ANSI,
+  DEFAULT_ANSI_PALETTE,
+  resolveColor,
+  resolveThemeColors,
+  buildDimmedColors,
   getSeverityColor,
-} from './semantic.js'
+} from './colors.js'
+
+// =============================================================================
+// Theme Registry
+// =============================================================================
+
+export {
+  BUILTIN_THEMES,
+  DEFAULT_THEME_ID,
+  getTheme,
+  getAllThemes,
+  getDefaultTheme,
+  SYSTEM_THEME,
+  DRACULA_THEME,
+  NORD_THEME,
+  TOKYO_NIGHT_THEME,
+} from './themes/index.js'
