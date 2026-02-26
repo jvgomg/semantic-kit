@@ -8,7 +8,6 @@ import {
   configStateAtom,
   configExpandedGroupsAtom,
   configSelectedIndexAtom,
-  urlListActiveTabAtom,
 } from '../atoms/index.js'
 import { sectionsAtomFamily } from '../sections/atoms.js'
 import { createAppStore } from '../store.js'
@@ -82,11 +81,6 @@ export async function createPersistedStore(
   }
 
   store.set(activeMenuIndexAtom, persisted.activeMenuIndex)
-
-  // Restore URL list tab state
-  if (persisted.urlListActiveTab) {
-    store.set(urlListActiveTabAtom, persisted.urlListActiveTab)
-  }
 
   // Restore config browser state
   if (persisted.configExpandedGroups) {

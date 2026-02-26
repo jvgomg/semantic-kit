@@ -11,6 +11,3 @@ export const MENU_INDICATOR_WIDTH = 2 // "▸ " prefix
 export const INFO_PANEL_WIDTH = 36
 export const URL_BAR_HEIGHT = 3
 export const STATUS_BAR_HEIGHT = 1
-
-// Dialog dimensions
-export const URL_LIST_WIDTH = 48

@@ -84,10 +84,10 @@ export function App({ initialUrl, hasConfig }: AppProps) {
     }
 
     if (initialUrl) {
-      // If it's a sitemap URL, open URL list dialog on sitemap tab
+      // If it's a sitemap URL, open sitemap dialog with auto-fetch
       if (isSitemapUrl(initialUrl)) {
         pushDialog({
-          type: 'url-list',
+          type: 'sitemap',
           props: { autoFetchSitemapUrl: initialUrl },
         })
         disableFocus()
@@ -96,11 +96,8 @@ export function App({ initialUrl, hasConfig }: AppProps) {
         focus('main')
       }
     } else if (hasConfig) {
-      // Config loaded without URL - auto-open URL list on Config tab
-      pushDialog({
-        type: 'url-list',
-        props: { startOnConfig: true },
-      })
+      // Config loaded without URL - auto-open preset URLs dialog
+      pushDialog({ type: 'preset-urls' })
       disableFocus()
     } else {
       focus('url')
@@ -158,9 +155,9 @@ export function App({ initialUrl, hasConfig }: AppProps) {
       return
     }
 
-    // Open URL list (Shift+G)
+    // Open Recent URLs (Shift+G)
     if (event.name === 'G' || (event.name === 'g' && event.shift)) {
-      pushDialog({ type: 'url-list' })
+      pushDialog({ type: 'recent-urls' })
       disableFocus()
       return
     }

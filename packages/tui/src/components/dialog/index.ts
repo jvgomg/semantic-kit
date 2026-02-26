@@ -34,8 +34,12 @@ export { ThemeDialog } from './ThemeDialog.js'
 export { CommandDialog } from './CommandDialog.js'
 export type { CommandDialogProps } from './CommandDialog.js'
 
-export { UrlListDialog } from './UrlListDialog.js'
-export type { UrlListDialogProps } from './UrlListDialog.js'
+export { RecentUrlsDialog } from './RecentUrlsDialog.js'
+
+export { PresetUrlsDialog } from './PresetUrlsDialog.js'
+
+export { SitemapDialog } from './SitemapDialog.js'
+export type { SitemapDialogProps } from './SitemapDialog.js'
 
 // Dialog stack management
 export { DialogProvider } from './DialogProvider.js'

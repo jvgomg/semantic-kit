@@ -11,7 +11,5 @@ export type GroupedMenuItem =
 
 export type FocusRegion = 'url' | 'menu' | 'main'
 
-export type UrlListTab = 'recent' | 'config' | 'sitemap'
-
 // Re-export view data types
 export type { ViewData, ViewDataStatus } from './view-data/types.js'

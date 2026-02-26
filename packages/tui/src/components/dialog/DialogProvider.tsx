@@ -17,7 +17,9 @@ import { DialogContextProvider, type DialogContextValue } from './DialogContext.
 import { CommandDialog } from './CommandDialog.js'
 import { HelpDialog } from './HelpDialog.js'
 import { ThemeDialog } from './ThemeDialog.js'
-import { UrlListDialog } from './UrlListDialog.js'
+import { RecentUrlsDialog } from './RecentUrlsDialog.js'
+import { PresetUrlsDialog } from './PresetUrlsDialog.js'
+import { SitemapDialog } from './SitemapDialog.js'
 
 export interface DialogProviderProps {
   children: React.ReactNode
@@ -61,8 +63,12 @@ export function DialogProvider({
         return <HelpDialog key={entry.id} />
       case 'theme':
         return <ThemeDialog key={entry.id} />
-      case 'url-list':
-        return <UrlListDialog key={entry.id} />
+      case 'recent-urls':
+        return <RecentUrlsDialog key={entry.id} />
+      case 'preset-urls':
+        return <PresetUrlsDialog key={entry.id} />
+      case 'sitemap':
+        return <SitemapDialog key={entry.id} />
       default:
         return null
     }

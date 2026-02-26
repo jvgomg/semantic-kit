@@ -19,7 +19,7 @@ interface HelpPanelProps {
 const shortcuts = [
   { key: 'Tab / Shift+Tab', desc: 'Cycle focus between regions' },
   { key: 'g', desc: 'Jump to URL bar' },
-  { key: 'G (Shift+g)', desc: 'Open URL list' },
+  { key: 'G (Shift+g)', desc: 'Recent URLs' },
   { key: 't', desc: 'Open settings (theme)' },
   { key: 'r', desc: 'Reload current view' },
   { key: '?', desc: 'Toggle this help' },

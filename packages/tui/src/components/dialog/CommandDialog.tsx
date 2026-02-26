@@ -30,7 +30,7 @@ interface Command {
   label: string
   category: 'Navigation' | 'Settings' | 'Help'
   keybind: string
-  action: 'jump-url' | 'url-list' | 'reload' | 'theme' | 'help' | 'quit'
+  action: 'jump-url' | 'recent-urls' | 'preset-urls' | 'sitemap' | 'reload' | 'theme' | 'help' | 'quit'
 }
 
 // =============================================================================
@@ -46,11 +46,25 @@ const COMMANDS: Command[] = [
     action: 'jump-url',
   },
   {
-    id: 'url-list',
-    label: 'Open URL list',
+    id: 'recent-urls',
+    label: 'Recent URLs',
     category: 'Navigation',
     keybind: 'G',
-    action: 'url-list',
+    action: 'recent-urls',
+  },
+  {
+    id: 'preset-urls',
+    label: 'Preset URLs (config)',
+    category: 'Navigation',
+    keybind: '',
+    action: 'preset-urls',
+  },
+  {
+    id: 'sitemap',
+    label: 'Load Sitemap',
+    category: 'Navigation',
+    keybind: '',
+    action: 'sitemap',
   },
   {
     id: 'reload',
@@ -137,8 +151,14 @@ export function CommandDialog(_props: CommandDialogProps) {
       case 'help':
         pushDialog({ type: 'help' })
         break
-      case 'url-list':
-        pushDialog({ type: 'url-list' })
+      case 'recent-urls':
+        pushDialog({ type: 'recent-urls' })
+        break
+      case 'preset-urls':
+        pushDialog({ type: 'preset-urls' })
+        break
+      case 'sitemap':
+        pushDialog({ type: 'sitemap' })
         break
       case 'quit':
         renderer.destroy()

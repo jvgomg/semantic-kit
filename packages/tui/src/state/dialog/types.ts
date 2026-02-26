@@ -4,7 +4,7 @@
  */
 
 /** Dialog types supported by the system */
-export type DialogType = 'command' | 'help' | 'theme' | 'url-list'
+export type DialogType = 'command' | 'help' | 'theme' | 'recent-urls' | 'preset-urls' | 'sitemap'
 
 /** Entry in the dialog stack */
 export interface DialogEntry {

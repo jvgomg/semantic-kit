@@ -12,9 +12,6 @@ export type { MainContentProps } from './MainContent.js'
 
 export { StatusBar } from './StatusBar.js'
 
-export { UrlList } from './UrlList.js'
-export type { UrlListProps } from './UrlList.js'
-
 export {
   MENU_PADDING_X,
   MENU_BORDER_WIDTH,
@@ -22,5 +19,4 @@ export {
   INFO_PANEL_WIDTH,
   URL_BAR_HEIGHT,
   STATUS_BAR_HEIGHT,
-  URL_LIST_WIDTH,
 } from './constants.js'
