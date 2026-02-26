@@ -6,6 +6,7 @@
 import { useSemanticColors } from '../../theme.js'
 import { DialogPanel } from './DialogPanel.js'
 import { useDialog } from './DialogContext.js'
+import { useDialogGutter } from './DialogGutterContext.js'
 
 // =============================================================================
 // HelpPanel - Content Component
@@ -29,10 +30,11 @@ const shortcuts = [
 
 function HelpPanel({ width: _width = 46 }: HelpPanelProps) {
   const colors = useSemanticColors()
+  const { gutter } = useDialogGutter()
   const keyWidth = 18
 
   return (
-    <box flexDirection="column">
+    <box flexDirection="column" paddingLeft={gutter} paddingRight={gutter}>
       {shortcuts.map(({ key, desc }) => (
         <text key={key}>
           <span fg={colors.warning}>{key.padEnd(keyWidth)}</span>

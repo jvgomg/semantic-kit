@@ -160,7 +160,7 @@ export function CommandDialog(_props: CommandDialogProps) {
     <DialogPanel
       title={title}
       headerHint={headerHint}
-      footer="↑↓ Navigate  Enter Select  Esc Close"
+      // footer="↑↓ Navigate  Enter Select  Esc Close"
       width={50}
       onClose={handleClose}
     >
@@ -176,7 +176,7 @@ export function CommandDialog(_props: CommandDialogProps) {
         focused={true}
         onChange={(idx) => setSelectedIndex(idx)}
         onSelect={(_idx, opt) => executeCommand(opt.value)}
-        height={10}
+        maxHeight={10}
       />
     </DialogPanel>
   )

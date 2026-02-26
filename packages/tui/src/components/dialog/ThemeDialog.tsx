@@ -1,7 +1,7 @@
 /**
  * Theme Dialog
  *
- * Displays theme and mode selection.
+ * Displays theme and mode selection with consistent gutter alignment.
  */
 import { useState } from 'react'
 import { useKeyboard } from '@opentui/react'
@@ -15,6 +15,7 @@ import {
 } from '../../theme.js'
 import { DialogPanel } from './DialogPanel.js'
 import { useDialog } from './DialogContext.js'
+import { useDialogGutter } from './DialogGutterContext.js'
 
 // =============================================================================
 // ThemePanel - Content Component
@@ -35,6 +36,7 @@ const MODE_OPTIONS: { value: ModePreference; label: string }[] = [
 
 function ThemePanel({ focused = true, width = 40 }: ThemePanelProps) {
   const colors = useSemanticColors()
+  const { gutter, indicatorWidth } = useDialogGutter()
   const { theme, availableThemes, setTheme, setModePreference } = useTheme()
   const modePreference = useAtomValue(modePreferenceAtom)
 
@@ -107,9 +109,14 @@ function ThemePanel({ focused = true, width = 40 }: ThemePanelProps) {
 
   return (
     <box flexDirection="column">
-      <text fg={activeSection === 'theme' ? colors.text : colors.textMuted}>
-        <strong>Theme</strong>
-      </text>
+      {/* Theme section header */}
+      <box paddingLeft={gutter}>
+        <text fg={activeSection === 'theme' ? colors.text : colors.textMuted}>
+          <strong>Theme</strong>
+        </text>
+      </box>
+
+      {/* Theme options - indicator in gutter, content aligned */}
       {availableThemes.map((t, idx) => {
         const isSelected = t.id === theme.id
         const isHighlighted = activeSection === 'theme' && idx === themeIndex
@@ -118,24 +125,33 @@ function ThemePanel({ focused = true, width = 40 }: ThemePanelProps) {
         const modeDesc = getModeDesc(t)
 
         return (
-          <text
-            key={t.id}
-            fg={isHighlighted ? colors.text : colors.textMuted}
-          >
-            {`${indicator} ${prefix} ${t.name.padEnd(maxNameLength + 2)}${modeDesc}`.padEnd(
-              width,
-            )}
-          </text>
+          <box key={t.id} flexDirection="row">
+            <text
+              fg={isHighlighted ? colors.text : colors.textMuted}
+              width={indicatorWidth}
+            >
+              {indicator}
+            </text>
+            <text fg={isHighlighted ? colors.text : colors.textMuted}>
+              {`${prefix} ${t.name.padEnd(maxNameLength + 2)}${modeDesc}`.padEnd(
+                width - indicatorWidth,
+              )}
+            </text>
+          </box>
         )
       })}
 
       <text>{' '}</text>
 
-      <text fg={activeSection === 'mode' ? colors.text : colors.textMuted}>
-        <strong>Mode</strong>
-      </text>
-      <box flexDirection="row">
-        <text>{'  '}</text>
+      {/* Mode section header */}
+      <box paddingLeft={gutter}>
+        <text fg={activeSection === 'mode' ? colors.text : colors.textMuted}>
+          <strong>Mode</strong>
+        </text>
+      </box>
+
+      {/* Mode options - inline, gutter-aligned */}
+      <box flexDirection="row" paddingLeft={gutter}>
         {MODE_OPTIONS.map((opt, idx) => {
           const isSelected = opt.value === modePreference
           const isHighlighted = activeSection === 'mode' && idx === modeIndex

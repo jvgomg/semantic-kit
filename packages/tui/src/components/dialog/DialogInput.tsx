@@ -4,14 +4,17 @@
  * Provides:
  * - Styled text input with theme colors
  * - Placeholder text support
- * - Search prompt prefix
+ * - Consistent gutter alignment with other dialog content
  *
  * Example rendering:
  * ┌─────────────────────────────────────────┐
- * │ > Search commands...                    │  <- Input with placeholder
+ * │  Search commands...                     │  <- Input with placeholder
+ * │                                         │  <- Blank line (marginBottom)
+ * │  Suggested                              │  <- Options start here
  * └─────────────────────────────────────────┘
  */
 import { useSemanticColors } from '../../theme.js'
+import { useDialogGutter } from './DialogGutterContext.js'
 
 export interface DialogInputProps {
   /** Current input value */
@@ -31,6 +34,7 @@ export interface DialogInputProps {
  *
  * Uses OpenTUI's input element with theme-aware styling.
  * The `focused` prop controls whether the input is active for typing.
+ * Aligns with other dialog content using the gutter context.
  */
 export function DialogInput({
   value,
@@ -40,13 +44,13 @@ export function DialogInput({
   width,
 }: DialogInputProps) {
   const colors = useSemanticColors()
+  const { gutter } = useDialogGutter()
 
-  // Calculate input width accounting for the prompt character and gap
-  const inputWidth = width !== undefined ? Math.max(1, width - 2) : undefined
+  // Calculate input width accounting for the gutter margins
+  const inputWidth = width !== undefined ? Math.max(1, width - gutter * 2) : undefined
 
   return (
-    <box flexDirection="row" alignItems="center" gap={1}>
-      <text fg={colors.textMuted}>{'>'}</text>
+    <box paddingLeft={gutter} paddingRight={gutter} marginBottom={1}>
       <input
         value={value}
         onInput={onChange}

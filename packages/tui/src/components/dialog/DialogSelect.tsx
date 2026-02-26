@@ -6,12 +6,20 @@
  * - Footer text (right-aligned keybind hints)
  * - Full-row highlighting
  * - Keyboard and mouse navigation
+ * - Scrollable list with centered selection
+ *
+ * Uses the dialog gutter context for consistent alignment:
+ * - Category headers align to gutter margin
+ * - Option indicators occupy gutter space (don't add to it)
+ * - Descriptions are indented to match option labels
  *
  * Based on OpenCode's DialogSelect approach.
  */
-import { useKeyboard } from '@opentui/react'
-import { boxChars } from '../view-display/priorities.js'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useKeyboard, useTerminalDimensions } from '@opentui/react'
+import type { ScrollBoxRenderable } from '@opentui/core'
 import { useSemanticColors } from '../../theme.js'
+import { useDialogGutter } from './DialogGutterContext.js'
 
 // =============================================================================
 // Types
@@ -45,8 +53,8 @@ export interface DialogSelectProps<T = string> {
   selectedIndex: number
   /** Whether the component is focused for keyboard input */
   focused?: boolean
-  /** Fixed height for the select container */
-  height?: number
+  /** Maximum height for the scrollable list */
+  maxHeight?: number
   /** Fixed width for the select container */
   width?: number
 
@@ -160,7 +168,7 @@ export function DialogSelect<T = string>({
   options = [],
   selectedIndex = 0,
   focused = false,
-  height,
+  maxHeight: maxHeightProp,
   width,
   showDescription = true,
   wrapSelection = false,
@@ -168,11 +176,90 @@ export function DialogSelect<T = string>({
   onSelect,
 }: DialogSelectProps<T>) {
   const colors = useSemanticColors()
+  const { gutter, indicatorWidth } = useDialogGutter()
+  const { height: termHeight } = useTerminalDimensions()
+
+  // Track input mode to avoid synthetic mouse events during keyboard nav
+  const [inputMode, setInputMode] = useState<'keyboard' | 'mouse'>('keyboard')
+
+  // Scrollbox ref for programmatic scrolling
+  const scrollRef = useRef<ScrollBoxRenderable | null>(null)
+
+  // Calculate actual row count (options + category headers with spacing)
+  const renderRows = useMemo(() => buildRenderRows(options), [options])
+  const totalRows = useMemo(() => {
+    let count = 0
+    renderRows.forEach((row, index) => {
+      if (row.type === 'category') {
+        // Category headers add spacing above (except first)
+        count += index > 0 ? 2 : 1
+      } else {
+        count += 1
+      }
+    })
+    return count
+  }, [renderRows])
+
+  // Calculate maxHeight like OpenCode: min(rows, half terminal height - overhead)
+  // Overhead accounts for dialog header, footer, input, padding
+  const computedMaxHeight = useMemo(() => {
+    const maxFromTerminal = Math.floor(termHeight / 2) - 6
+    if (maxHeightProp !== undefined) {
+      return Math.min(maxHeightProp, maxFromTerminal, totalRows)
+    }
+    return Math.min(maxFromTerminal, totalRows)
+  }, [termHeight, maxHeightProp, totalRows])
+
+  /**
+   * Scroll to center the selected item in the viewport.
+   * Uses setTimeout to ensure it runs after layout.
+   */
+  const scrollToSelected = useCallback((index: number, center = false) => {
+    // Use setTimeout to ensure this runs after the render cycle
+    setTimeout(() => {
+      const scroll = scrollRef.current
+      if (!scroll) return
+
+      // Find the target element by its id
+      const targetId = `option-${index}`
+      const target = scroll.getChildren().find((child) => child.id === targetId)
+      if (!target) return
+
+      const y = target.y - scroll.y
+
+      if (center) {
+        // Center the item in the viewport
+        const centerOffset = Math.floor(scroll.height / 2)
+        scroll.scrollBy(y - centerOffset)
+      } else {
+        // Just ensure it's visible
+        if (y >= scroll.height) {
+          scroll.scrollBy(y - scroll.height + 1)
+        }
+        if (y < 0) {
+          scroll.scrollBy(y)
+          // If at the first item, scroll to top
+          if (index === 0) {
+            scroll.scrollTo(0)
+          }
+        }
+      }
+    }, 0)
+  }, [])
+
+  // Scroll to selected item when selection changes via keyboard
+  useEffect(() => {
+    if (inputMode === 'keyboard') {
+      scrollToSelected(selectedIndex, true)
+    }
+  }, [selectedIndex, inputMode, scrollToSelected])
 
   // Keyboard navigation when focused
   useKeyboard((key) => {
     if (!focused) return
     if (options.length === 0) return
+
+    setInputMode('keyboard')
 
     switch (key.name) {
       case 'up':
@@ -201,6 +288,51 @@ export function DialogSelect<T = string>({
         }
         break
       }
+      case 'pageup': {
+        // Move up by ~10 items
+        let newIndex = selectedIndex
+        for (let i = 0; i < 10; i++) {
+          const next = findNextValidIndex(options, newIndex, 'up', false)
+          if (next === newIndex) break
+          newIndex = next
+        }
+        if (newIndex !== selectedIndex) {
+          onChange?.(newIndex, options[newIndex]!)
+        }
+        break
+      }
+      case 'pagedown': {
+        // Move down by ~10 items
+        let newIndex = selectedIndex
+        for (let i = 0; i < 10; i++) {
+          const next = findNextValidIndex(options, newIndex, 'down', false)
+          if (next === newIndex) break
+          newIndex = next
+        }
+        if (newIndex !== selectedIndex) {
+          onChange?.(newIndex, options[newIndex]!)
+        }
+        break
+      }
+      case 'home': {
+        const newIndex = findNextValidIndex(options, -1, 'down', false)
+        if (newIndex !== selectedIndex) {
+          onChange?.(newIndex, options[newIndex]!)
+        }
+        break
+      }
+      case 'end': {
+        const newIndex = findNextValidIndex(
+          options,
+          options.length,
+          'up',
+          false
+        )
+        if (newIndex !== selectedIndex) {
+          onChange?.(newIndex, options[newIndex]!)
+        }
+        break
+      }
       case 'enter':
       case 'return': {
         const option = options[selectedIndex]
@@ -213,84 +345,113 @@ export function DialogSelect<T = string>({
   })
 
   // Handle clicking on an option row
-  const handleItemClick = (index: number) => {
-    const option = options[index]
-    if (!option || option.disabled) return
+  const handleItemClick = useCallback(
+    (index: number) => {
+      const option = options[index]
+      if (!option || option.disabled) return
 
-    onChange?.(index, option)
-    onSelect?.(index, option)
-  }
+      onChange?.(index, option)
+      onSelect?.(index, option)
+    },
+    [options, onChange, onSelect]
+  )
 
   // Handle mouse hover on an option row
-  const handleItemHover = (index: number) => {
-    const option = options[index]
-    if (!option || option.disabled) return
-    if (index === selectedIndex) return
+  const handleItemHover = useCallback(
+    (index: number) => {
+      if (inputMode !== 'mouse') return
+      const option = options[index]
+      if (!option || option.disabled) return
+      if (index === selectedIndex) return
 
-    onChange?.(index, option)
-  }
+      onChange?.(index, option)
+    },
+    [options, selectedIndex, inputMode, onChange]
+  )
 
-  // Build render rows with category headers
-  const renderRows = buildRenderRows(options)
+  // Handle mouse move - switch to mouse mode
+  const handleMouseMove = useCallback(() => {
+    setInputMode('mouse')
+  }, [])
 
   return (
-    <box flexDirection="column" height={height} width={width}>
+    <scrollbox
+      ref={(r: ScrollBoxRenderable) => {
+        scrollRef.current = r
+      }}
+      flexDirection="column"
+      maxHeight={computedMaxHeight}
+      width={width}
+      scrollbarOptions={{ visible: false }}
+    >
       {renderRows.map((row, rowIndex) => {
-        if (row.type === 'category') {
-          // Render category header
+          if (row.type === 'category') {
+            // Render category header - aligned to gutter margin
+            // Add spacing above if not the first element
+            return (
+              <box
+                key={`cat-${rowIndex}-${row.label}`}
+                paddingLeft={gutter}
+                marginTop={rowIndex > 0 ? 1 : 0}
+              >
+                <text fg={colors.textMuted}>
+                  <strong>{row.label}</strong>
+                </text>
+              </box>
+            )
+          }
+
+          // Render option row
+          const { option, originalIndex } = row
+          const isSelected = originalIndex === selectedIndex
+          const isDisabled = option.disabled
+
+          const bgColor = isSelected ? colors.backgroundSelected : undefined
+          const fgColor = isDisabled
+            ? colors.textMuted
+            : isSelected
+              ? colors.text
+              : colors.text
+          const footerColor = colors.textMuted
+
+          // Indicator character (▶ when selected, space otherwise)
+          const indicatorChar = isSelected ? '▶' : ' '
+
           return (
-            <box key={`cat-${rowIndex}-${row.label}`} flexDirection="row">
-              <text fg={colors.textMuted}>
-                {'  '}
-                <strong>{row.label.toUpperCase()}</strong>
-              </text>
+            <box
+              key={`opt-${originalIndex}-${option.label}`}
+              id={`option-${originalIndex}`}
+              onMouseDown={() => handleItemClick(originalIndex)}
+              onMouseMove={handleMouseMove}
+              onMouseOver={() => handleItemHover(originalIndex)}
+              backgroundColor={bgColor}
+              flexDirection="column"
+            >
+              {/* Main row: indicator + label + spacer + footer */}
+              {/* Indicator is positioned so label starts at gutter margin */}
+              <box flexDirection="row" justifyContent="space-between">
+                <box flexDirection="row" paddingLeft={gutter - indicatorWidth}>
+                  <text fg={fgColor} width={indicatorWidth}>
+                    {indicatorChar}
+                  </text>
+                  <text fg={fgColor}>{option.label}</text>
+                </box>
+                {option.footer && (
+                  <text fg={footerColor} paddingRight={gutter}>
+                    {option.footer}
+                  </text>
+                )}
+              </box>
+
+              {/* Description row - indented to align with option labels */}
+              {showDescription && option.description && (
+                <box paddingLeft={gutter}>
+                  <text fg={colors.textMuted}>{option.description}</text>
+                </box>
+              )}
             </box>
           )
-        }
-
-        // Render option row
-        const { option, originalIndex } = row
-        const isSelected = originalIndex === selectedIndex
-        const isDisabled = option.disabled
-
-        const bgColor = isSelected ? colors.backgroundSelected : undefined
-        const fgColor = isDisabled
-          ? colors.textMuted
-          : isSelected
-            ? colors.text
-            : colors.text
-        const footerColor = colors.textMuted
-
-        const key = `opt-${originalIndex}-${option.label}`
-        const indicator = isSelected ? `${boxChars.collapsed} ` : '  '
-
-        return (
-          <box
-            key={key}
-            onMouseDown={() => handleItemClick(originalIndex)}
-            onMouseMove={() => handleItemHover(originalIndex)}
-            backgroundColor={bgColor}
-            flexDirection="column"
-          >
-            {/* Main row: indicator + label + spacer + footer */}
-            <box flexDirection="row" justifyContent="space-between">
-              <box flexDirection="row">
-                <text fg={fgColor}>{indicator}</text>
-                <text fg={fgColor}>{option.label}</text>
-              </box>
-              {option.footer && <text fg={footerColor}>{option.footer}</text>}
-            </box>
-
-            {/* Description row (optional) */}
-            {showDescription && option.description && (
-              <box flexDirection="row">
-                <text fg={colors.textMuted}>{'    '}</text>
-                <text fg={colors.textMuted}>{option.description}</text>
-              </box>
-            )}
-          </box>
-        )
-      })}
-    </box>
+        })}
+    </scrollbox>
   )
 }

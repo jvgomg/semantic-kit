@@ -7,19 +7,27 @@
  * - Optional header with title and hint text
  * - Optional footer for keybind hints
  * - Backdrop click handling for dismissal
+ * - Gutter context for consistent child alignment
  *
  * Layout:
  *   Title                     headerHint     <- Header (only if title provided)
  * ─────────────────────────────────────────
  *
- *   {children}                               <- Content area
+ *   {children}                               <- Content area (no padding, children use gutter)
  *
  * ─────────────────────────────────────────
  *   footer text                              <- Footer (only if footer provided)
  */
+import { useMemo } from 'react'
 import { useTerminalDimensions } from '@opentui/react'
 import { RGBA } from '@opentui/core'
 import { useSemanticColors } from '../../theme.js'
+import {
+  DIALOG_WIDTH,
+  DIALOG_GUTTER,
+  DIALOG_INDICATOR_WIDTH,
+} from './constants.js'
+import { DialogGutterProvider } from './DialogGutterContext.js'
 
 // Box-drawing characters for separators
 const BOX_HORIZONTAL = '─'
@@ -32,10 +40,10 @@ export interface DialogPanelProps {
   headerHint?: string
   /** Footer text, e.g., "↑↓ Navigate  Enter Select" (optional) */
   footer?: string
-  /** Width of the dialog (default: 50) */
+  /** Width of the dialog (default: DIALOG_WIDTH) */
   width?: number
-  /** Height of the dialog - 'auto' or number (default: 'auto') */
-  height?: number | 'auto'
+  /** Gutter (left/right margin) for content alignment (default: DIALOG_GUTTER) */
+  gutter?: number
   /** Called when clicking the backdrop */
   onClose?: () => void
 }
@@ -58,8 +66,8 @@ export function DialogPanel({
   title,
   headerHint,
   footer,
-  width = 50,
-  height = 'auto',
+  width = DIALOG_WIDTH,
+  gutter = DIALOG_GUTTER,
   onClose,
 }: DialogPanelProps) {
   const colors = useSemanticColors()
@@ -69,6 +77,18 @@ export function DialogPanel({
   const hasFooter = Boolean(footer)
   const separator = makeSeparator(width)
 
+  // Position dialog near top of screen (like OpenCode)
+  const topPadding = Math.floor(termHeight / 4)
+
+  // Memoize gutter context value to avoid unnecessary re-renders
+  const gutterContextValue = useMemo(
+    () => ({
+      gutter,
+      indicatorWidth: DIALOG_INDICATOR_WIDTH,
+    }),
+    [gutter],
+  )
+
   return (
     <box
       position="absolute"
@@ -76,8 +96,8 @@ export function DialogPanel({
       height={termHeight}
       left={0}
       top={0}
-      justifyContent="center"
       alignItems="center"
+      paddingTop={topPadding}
       backgroundColor={RGBA.fromInts(0, 0, 0, 150)}
       onMouseUp={() => onClose?.()}
     >
@@ -85,18 +105,18 @@ export function DialogPanel({
         flexDirection="column"
         backgroundColor={colors.backgroundPanel}
         width={width}
-        height={height === 'auto' ? undefined : height}
+        maxWidth={termWidth - 2}
+        paddingTop={1}
         onMouseUp={(e) => e.stopPropagation()}
       >
         {/* Header row */}
         {hasHeader && (
-          <>
+          <box flexDirection="column">
             <box
               flexDirection="row"
               justifyContent="space-between"
-              paddingLeft={2}
-              paddingRight={2}
-              paddingTop={1}
+              paddingLeft={gutter}
+              paddingRight={gutter}
               paddingBottom={1}
             >
               <text fg={colors.text}>
@@ -105,35 +125,30 @@ export function DialogPanel({
               {headerHint && <text fg={colors.textMuted}>{headerHint}</text>}
             </box>
             <text fg={colors.borderSubtle}>{separator}</text>
-          </>
+          </box>
         )}
 
         {/* Content area */}
-        <box
-          flexDirection="column"
-          paddingLeft={2}
-          paddingRight={2}
-          paddingTop={1}
-          paddingBottom={1}
-          flexGrow={1}
-        >
-          {children}
-        </box>
+        <DialogGutterProvider value={gutterContextValue}>
+          <box flexDirection="column" paddingTop={1} paddingBottom={1}>
+            {children}
+          </box>
+        </DialogGutterProvider>
 
         {/* Footer row */}
         {hasFooter && (
-          <>
+          <box flexDirection="column">
             <text fg={colors.borderSubtle}>{separator}</text>
             <box
               flexDirection="row"
-              paddingLeft={2}
-              paddingRight={2}
+              paddingLeft={gutter}
+              paddingRight={gutter}
               paddingTop={1}
               paddingBottom={1}
             >
               <text fg={colors.textMuted}>{footer}</text>
             </box>
-          </>
+          </box>
         )}
       </box>
     </box>

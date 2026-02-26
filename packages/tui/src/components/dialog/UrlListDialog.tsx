@@ -6,10 +6,10 @@
  */
 import { useCallback, useMemo } from 'react'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useTerminalDimensions } from '@opentui/react'
 import { getDefaultSitemapUrl } from '@webspecs/core'
 import { DialogPanel } from './DialogPanel.js'
 import { useDialog } from './DialogContext.js'
+import { DIALOG_GUTTER, DIALOG_WIDTH, DIALOG_MAX_HEIGHT } from './constants.js'
 import { UrlList } from '../chrome/UrlList.js'
 import {
   urlAtom,
@@ -27,7 +27,6 @@ export interface UrlListDialogProps {
 }
 
 export function UrlListDialog() {
-  const { width: termWidth, height: termHeight } = useTerminalDimensions()
   const { title, headerHint, handleClose } = useDialog('Go to')
   const { focus, enableFocus } = useFocusManager()
 
@@ -63,26 +62,21 @@ export function UrlListDialog() {
     [setUrl, clearDialogs, enableFocus, focus],
   )
 
-  // Calculate dialog dimensions
-  const dialogWidth = Math.min(70, termWidth - 4)
-  const dialogHeight = Math.min(20, termHeight - 4)
-  // Content height for UrlList (subtract DialogPanel header/footer/padding)
-  const contentHeight = Math.max(1, dialogHeight - 8)
+  // Content width for UrlList (dialog width minus gutters)
+  const contentWidth = DIALOG_WIDTH - DIALOG_GUTTER * 2
 
   return (
     <DialogPanel
       title={title}
       headerHint={headerHint}
       footer="Tab: switch  ↑↓: navigate  Enter: select"
-      width={dialogWidth}
-      height={dialogHeight}
       onClose={handleClose}
     >
       <UrlList
         onSelect={handleSelect}
         onClose={handleClose}
-        columns={dialogWidth - 4}
-        rows={contentHeight}
+        columns={contentWidth}
+        rows={DIALOG_MAX_HEIGHT}
         defaultSitemapUrl={defaultSitemapUrl}
         autoFetchSitemapUrl={dialogProps.autoFetchSitemapUrl}
         startOnConfig={dialogProps.startOnConfig}
