@@ -24,7 +24,8 @@ export type {
   IssuesContentProps,
 } from './TagList.js'
 
-// Expandable sections framework - re-exported from view-display for backwards compatibility
+// Expandable sections framework - re-exported from view-display for convenience
+// (view components can import all UI primitives from a single location)
 export {
   Section,
   SectionPriority,
@@ -58,6 +59,3 @@ export type {
 } from './SitemapBrowser.js'
 export { ConfigBrowser } from './ConfigBrowser.js'
 export type { ConfigBrowserProps } from './ConfigBrowser.js'
-
-// Dialog components
-export * from '../dialog/index.js'
