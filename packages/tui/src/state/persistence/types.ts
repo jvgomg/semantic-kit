@@ -35,6 +35,8 @@ export interface PersistedState {
   activeMenuIndex: number
   /** Per-view state: viewId -> PersistedViewState */
   views: Record<string, PersistedViewState>
+  /** Recent URLs history (most recent first) */
+  recentUrls?: string[]
   /** Expanded groups in config browser */
   configExpandedGroups?: string[]
   /** Selected index in config browser */

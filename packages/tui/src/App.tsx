@@ -6,9 +6,10 @@
  */
 import { useEffect } from 'react'
 import { useKeyboard, useRenderer, useTerminalDimensions } from '@opentui/react'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import {
   urlAtom,
+  setUrlAtom,
   groupedMenuItemsAtom,
   menuWidthAtom,
   activeMenuIndexAtom,
@@ -52,12 +53,13 @@ export interface AppProps {
 
 export function App({ initialUrl, hasConfig }: AppProps) {
   const renderer = useRenderer()
-  const { focus, focusNext, focusPrevious, disableFocus } = useFocusManager()
+  const { focus, focusNext, focusPrevious } = useFocusManager()
   const { width, height } = useTerminalDimensions()
   const colors = useSemanticColors()
 
   // Atoms
-  const [url, setUrlState] = useAtom(urlAtom)
+  const url = useAtomValue(urlAtom)
+  const setUrl = useSetAtom(setUrlAtom)
   const groupedMenuItems = useAtomValue(groupedMenuItemsAtom)
   const menuWidth = useAtomValue(menuWidthAtom)
   const activeMenuIndex = useAtomValue(activeMenuIndexAtom)
@@ -74,10 +76,8 @@ export function App({ initialUrl, hasConfig }: AppProps) {
 
     // If state was restored from persistence
     if (url) {
-      // If a dialog was open, keep focus disabled
-      if (isDialogOpen) {
-        disableFocus()
-      } else {
+      // Focus is automatically disabled when a dialog is open via effectiveFocusEnabledAtom
+      if (!isDialogOpen) {
         focus('main')
       }
       return
@@ -90,15 +90,15 @@ export function App({ initialUrl, hasConfig }: AppProps) {
           type: 'sitemap',
           props: { autoFetchSitemapUrl: initialUrl },
         })
-        disableFocus()
+        // Focus is automatically disabled when dialog opens via effectiveFocusEnabledAtom
       } else {
-        setUrlState(initialUrl)
+        setUrl(initialUrl)
         focus('main')
       }
     } else if (hasConfig) {
       // Config loaded without URL - auto-open preset URLs dialog
       pushDialog({ type: 'preset-urls' })
-      disableFocus()
+      // Focus is automatically disabled when dialog opens via effectiveFocusEnabledAtom
     } else {
       focus('url')
     }
@@ -158,7 +158,7 @@ export function App({ initialUrl, hasConfig }: AppProps) {
     // Open Recent URLs (Shift+G)
     if (event.name === 'G' || (event.name === 'g' && event.shift)) {
       pushDialog({ type: 'recent-urls' })
-      disableFocus()
+      // Focus is automatically disabled when dialog opens via effectiveFocusEnabledAtom
       return
     }
 

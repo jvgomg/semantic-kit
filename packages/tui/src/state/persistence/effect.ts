@@ -8,6 +8,7 @@ import { atomEffect } from 'jotai-effect'
 import { themeIdAtom, modePreferenceAtom } from '../../theme.js'
 import {
   urlAtom,
+  recentUrlsAtom,
   configExpandedGroupsAtom,
   configSelectedIndexAtom,
 } from '../atoms/index.js'
@@ -31,6 +32,7 @@ export const persistStateEffect = atomEffect((get) => {
   // Track all atoms we want to persist
   // atomEffect automatically subscribes to these
   const url = get(urlAtom)
+  const recentUrls = get(recentUrlsAtom)
   const activeMenuIndex = get(activeMenuIndexAtom)
   const viewIds = get(viewDataIdsAtom)
   const configExpandedGroups = get(configExpandedGroupsAtom)
@@ -44,6 +46,7 @@ export const persistStateEffect = atomEffect((get) => {
     url,
     activeMenuIndex,
     views: {},
+    recentUrls,
     configExpandedGroups: Array.from(configExpandedGroups),
     configSelectedIndex,
     themeId,

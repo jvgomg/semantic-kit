@@ -11,7 +11,7 @@ export {
   focusPreviousAtom,
 } from './focus.js'
 
-export { urlAtom, recentUrlsAtom, setUrlAtom } from './url.js'
+export { urlAtom, recentUrlsAtom, setUrlAtom, addRecentUrlAtom } from './url.js'
 
 // Tool navigation atoms are in state/tool-navigation.ts (not in atoms/)
 

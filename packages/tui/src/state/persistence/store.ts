@@ -5,6 +5,7 @@ import type { TuiConfig } from '../../lib/tui-config/index.js'
 import { themeIdAtom, modePreferenceAtom } from '../../theme.js'
 import {
   urlAtom,
+  recentUrlsAtom,
   configStateAtom,
   configExpandedGroupsAtom,
   configSelectedIndexAtom,
@@ -78,6 +79,11 @@ export async function createPersistedStore(
   // Only restore URL if it was persisted (not empty) and matches session
   if (persisted.url) {
     store.set(urlAtom, persisted.url)
+  }
+
+  // Restore recent URLs
+  if (persisted.recentUrls && persisted.recentUrls.length > 0) {
+    store.set(recentUrlsAtom, persisted.recentUrls)
   }
 
   store.set(activeMenuIndexAtom, persisted.activeMenuIndex)
