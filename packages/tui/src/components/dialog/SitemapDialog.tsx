@@ -2,11 +2,11 @@
  * SitemapDialog - Dialog for loading and browsing sitemaps.
  *
  * Two-part layout: DialogInput for URL + SitemapBrowser for tree.
- * Internal focus state cycles between input and tree.
+ * Focus scope with 'input' and 'tree' regions.
  * Enter on input triggers fetch, Enter on tree selects URL.
  * Accepts autoFetchSitemapUrl prop for auto-loading.
  */
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useCallback, useMemo, useEffect, useState } from 'react'
 import { useKeyboard } from '@opentui/react'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { getDefaultSitemapUrl } from '@webspecs/core'
@@ -26,7 +26,10 @@ import {
   sitemapExpandedPathsAtom,
   fetchSitemapAtom,
   resetSitemapSelectionAtom,
-  useFocusManager,
+  useFocusScope,
+  useFocusRegion,
+  useFocusNavigation,
+  setFocusInScopeAtom,
 } from '../../state/index.js'
 import { clearDialogsAtom, activeDialogAtom } from '../../state/dialog/index.js'
 
@@ -35,13 +38,26 @@ export interface SitemapDialogProps {
   autoFetchSitemapUrl?: string
 }
 
-type FocusRegion = 'input' | 'tree'
+// Scope ID for this dialog
+const SCOPE_ID = 'sitemap-dialog'
 
 export function SitemapDialog() {
+  // Register focus scope with input and tree regions
+  useFocusScope({
+    id: SCOPE_ID,
+    regions: ['input', 'tree'],
+    initialRegion: 'input',
+  })
+
+  // Get focus state for regions
+  const { isFocused: inputFocused } = useFocusRegion({ id: SCOPE_ID, region: 'input' })
+  const { isFocused: treeFocused } = useFocusRegion({ id: SCOPE_ID, region: 'tree' })
+  const { focusNext } = useFocusNavigation()
+  const setFocusInScope = useSetAtom(setFocusInScopeAtom)
+
   const colors = useSemanticColors()
   const { gutter } = useDialogGutter()
   const { title, headerHint, handleClose } = useDialog('Load Sitemap')
-  const { focus, enableFocus } = useFocusManager()
 
   // Get props from dialog stack
   const activeDialog = useAtomValue(activeDialogAtom)
@@ -72,11 +88,10 @@ export function SitemapDialog() {
     return ''
   }, [url, recentUrls])
 
-  // Local state
+  // Local state for input value
   const [inputValue, setInputValue] = useState(
     dialogProps.autoFetchSitemapUrl || defaultSitemapUrl,
   )
-  const [focusRegion, setFocusRegion] = useState<FocusRegion>('input')
 
   // Check if tree has data
   const hasTreeData =
@@ -96,10 +111,10 @@ export function SitemapDialog() {
 
   // Auto-focus tree when data loads
   useEffect(() => {
-    if (hasTreeData && focusRegion === 'input') {
-      setFocusRegion('tree')
+    if (hasTreeData && inputFocused) {
+      setFocusInScope({ scopeId: SCOPE_ID, region: 'tree' })
     }
-  }, [hasTreeData, focusRegion])
+  }, [hasTreeData, inputFocused, setFocusInScope])
 
   // Handle sitemap fetch
   const handleFetchSitemap = useCallback(() => {
@@ -109,45 +124,44 @@ export function SitemapDialog() {
     }
   }, [inputValue, resetSitemapSelection, fetchSitemap])
 
-  // Handle URL selection from tree
+  // Handle URL selection from tree - focus auto-restored when dialog closes
   const handleSelect = useCallback(
     (selectedUrl: string) => {
       setUrl(selectedUrl)
       clearDialogs()
-      enableFocus()
-      focus('menu')
+      // Focus automatically restored when scope pops!
     },
-    [setUrl, clearDialogs, enableFocus, focus],
+    [setUrl, clearDialogs],
   )
 
   // Keyboard handling for focus navigation
   useKeyboard((event) => {
     const { name } = event
 
-    // Tab: cycle focus
+    // Tab: cycle focus between input and tree
     if (name === 'tab') {
       if (hasTreeData) {
-        setFocusRegion((prev) => (prev === 'input' ? 'tree' : 'input'))
+        focusNext() // Cycles between 'input' and 'tree'
       }
       return
     }
 
     // Input focused
-    if (focusRegion === 'input') {
+    if (inputFocused) {
       if (name === 'return') {
         handleFetchSitemap()
         return
       }
       if (name === 'down' && hasTreeData) {
-        setFocusRegion('tree')
+        setFocusInScope({ scopeId: SCOPE_ID, region: 'tree' })
         return
       }
     }
 
     // Tree focused
-    if (focusRegion === 'tree') {
+    if (treeFocused) {
       if (name === 'up' && sitemapSelectedIndex === 0) {
-        setFocusRegion('input')
+        setFocusInScope({ scopeId: SCOPE_ID, region: 'input' })
       }
     }
   })
@@ -171,7 +185,7 @@ export function SitemapDialog() {
           flexDirection="row"
           borderStyle="single"
           borderColor={
-            focusRegion === 'input' ? colors.borderActive : colors.borderSubtle
+            inputFocused ? colors.borderActive : colors.borderSubtle
           }
           marginBottom={1}
         >
@@ -179,7 +193,7 @@ export function SitemapDialog() {
           <input
             value={inputValue}
             onChange={setInputValue}
-            focused={focusRegion === 'input'}
+            focused={inputFocused}
             placeholder="Enter sitemap URL..."
             textColor={colors.text}
             placeholderColor={colors.textMuted}
@@ -198,7 +212,7 @@ export function SitemapDialog() {
             onExpandedPathsChange={setExpandedPaths}
             onSelect={handleSelect}
             height={contentHeight}
-            isFocused={focusRegion === 'tree'}
+            isFocused={treeFocused}
           />
         </box>
       </box>

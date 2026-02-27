@@ -6,6 +6,7 @@
 import { useState } from 'react'
 import { useKeyboard } from '@opentui/react'
 import { useAtomValue } from 'jotai'
+import { useFocusScope } from '../../state/index.js'
 import {
   useSemanticColors,
   useTheme,
@@ -173,6 +174,14 @@ function ThemePanel({ focused = true, width = 40 }: ThemePanelProps) {
 // =============================================================================
 
 export function ThemeDialog() {
+  // Register focus scope - auto-restores previous focus on unmount
+  // Internal section navigation (theme/mode) is handled via local state
+  useFocusScope({
+    id: 'theme-dialog',
+    regions: ['content'],
+    initialRegion: 'content',
+  })
+
   const { title, headerHint, handleClose } = useDialog('Theme')
 
   return (

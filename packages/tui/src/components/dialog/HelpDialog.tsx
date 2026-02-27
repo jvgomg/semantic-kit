@@ -3,6 +3,7 @@
  *
  * Displays keyboard shortcuts in a dialog.
  */
+import { useFocusScope } from '../../state/index.js'
 import { useSemanticColors } from '../../theme.js'
 import { DialogPanel } from './DialogPanel.js'
 import { useDialog } from './DialogContext.js'
@@ -50,6 +51,13 @@ function HelpPanel({ width: _width = 46 }: HelpPanelProps) {
 // =============================================================================
 
 export function HelpDialog() {
+  // Register focus scope - auto-restores previous focus on unmount
+  useFocusScope({
+    id: 'help-dialog',
+    regions: ['content'],
+    initialRegion: 'content',
+  })
+
   const { title, headerHint, handleClose } = useDialog('Help', {
     closeKeys: ['q'],
   })

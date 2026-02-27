@@ -6,7 +6,7 @@
  */
 import type { ReactNode } from 'react'
 import { useAtomValue } from 'jotai'
-import { urlAtom, useFocus, activeViewAtom } from '../../state/index.js'
+import { urlAtom, useFocusRegion, activeViewAtom } from '../../state/index.js'
 import { useSemanticColors } from '../../theme.js'
 import { ViewEmpty } from './ViewEmpty.js'
 import { ViewError } from './ViewError.js'
@@ -29,7 +29,7 @@ function ViewLoading({ url }: { url: string }): ReactNode {
 }
 
 export function ViewRenderer({ height, width }: ViewRendererProps) {
-  const { focus } = useFocus('main')
+  const { focus } = useFocusRegion({ region: 'main' })
 
   // Read view with data from atom
   const view = useAtomValue(activeViewAtom)

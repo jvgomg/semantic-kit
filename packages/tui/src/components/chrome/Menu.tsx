@@ -11,8 +11,8 @@ import {
   activeMenuIndexAtom,
   groupedMenuItemsAtom,
   navigateMenuAtom,
-  useFocus,
-  isDialogOpenAtom,
+  useFocusRegion,
+  useIsAppScopeActive,
   type GroupedMenuItem,
 } from '../../state/index.js'
 import { useSemanticColors } from '../../theme.js'
@@ -27,16 +27,16 @@ export interface MenuProps {
  */
 export function Menu({ width }: MenuProps) {
   const colors = useSemanticColors()
-  const { isFocused, isInputActive, focus } = useFocus('menu')
+  const { isFocused, isInputActive, focus } = useFocusRegion({ region: 'menu' })
   const [activeMenuIndex, setActiveMenuIndex] = useAtom(activeMenuIndexAtom)
   const items = useAtomValue(groupedMenuItemsAtom)
   const navigate = useSetAtom(navigateMenuAtom)
-  const isDialogOpen = useAtomValue(isDialogOpenAtom)
+  const isAppScopeActive = useIsAppScopeActive()
 
-  // Keyboard navigation when focused and no dialog is open
+  // Keyboard navigation when focused and app scope is active
   useKeyboard((key) => {
-    // Don't handle keyboard when a dialog is open - dialog handles its own input
-    if (isDialogOpen) return
+    // Don't handle keyboard when a dialog scope is active
+    if (!isAppScopeActive) return
     if (!isInputActive) return
 
     switch (key.name) {

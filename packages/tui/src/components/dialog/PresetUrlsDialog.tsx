@@ -3,7 +3,7 @@
  *
  * Reuses the ConfigBrowser component for tree navigation.
  * Shows "No config loaded" message when hasConfigAtom is false.
- * On selection: sets URL, clears dialogs, restores focus.
+ * On selection: sets URL, clears dialogs. Focus is auto-restored by scope system.
  */
 import { useCallback } from 'react'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -19,15 +19,21 @@ import {
   configSelectedIndexAtom,
   configExpandedGroupsAtom,
   setUrlAtom,
-  useFocusManager,
+  useFocusScope,
 } from '../../state/index.js'
 import { clearDialogsAtom } from '../../state/dialog/index.js'
 
 export function PresetUrlsDialog() {
+  // Register focus scope - auto-restores previous focus on unmount
+  useFocusScope({
+    id: 'preset-urls-dialog',
+    regions: ['tree'],
+    initialRegion: 'tree',
+  })
+
   const colors = useSemanticColors()
   const { gutter } = useDialogGutter()
   const { title, headerHint, handleClose } = useDialog('Preset URLs')
-  const { focus, enableFocus } = useFocusManager()
 
   // Atoms
   const hasConfig = useAtomValue(hasConfigAtom)
@@ -37,15 +43,14 @@ export function PresetUrlsDialog() {
   const setUrl = useSetAtom(setUrlAtom)
   const clearDialogs = useSetAtom(clearDialogsAtom)
 
-  // Handle URL selection
+  // Handle URL selection - focus is auto-restored when dialog unmounts
   const handleSelect = useCallback(
     (url: string) => {
       setUrl(url)
       clearDialogs()
-      enableFocus()
-      focus('menu')
+      // Focus automatically restored when scope pops!
     },
-    [setUrl, clearDialogs, enableFocus, focus],
+    [setUrl, clearDialogs],
   )
 
   // No config loaded state

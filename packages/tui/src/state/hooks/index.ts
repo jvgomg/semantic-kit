@@ -1,4 +1,4 @@
 /**
  * Re-export all state hooks.
+ * Note: Focus hooks are now in state/focus-scope/hooks.ts
  */
-export { useFocus, useFocusManager } from './useFocus.js'

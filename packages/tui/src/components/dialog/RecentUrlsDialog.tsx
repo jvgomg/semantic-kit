@@ -2,7 +2,7 @@
  * RecentUrlsDialog - Dialog for selecting from recent URLs.
  *
  * Uses DialogSelect for the URL list with keyboard navigation.
- * On selection: sets URL, clears dialogs, restores focus.
+ * On selection: sets URL, clears dialogs. Focus is auto-restored by scope system.
  */
 import { useCallback, useMemo, useState } from 'react'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -14,15 +14,21 @@ import { useSemanticColors } from '../../theme.js'
 import {
   recentUrlsAtom,
   setUrlAtom,
-  useFocusManager,
+  useFocusScope,
 } from '../../state/index.js'
 import { clearDialogsAtom } from '../../state/dialog/index.js'
 
 export function RecentUrlsDialog() {
+  // Register focus scope - auto-restores previous focus on unmount
+  useFocusScope({
+    id: 'recent-urls-dialog',
+    regions: ['list'],
+    initialRegion: 'list',
+  })
+
   const colors = useSemanticColors()
   const { gutter } = useDialogGutter()
   const { title, headerHint, handleClose } = useDialog('Recent URLs')
-  const { focus, enableFocus } = useFocusManager()
 
   // Atoms
   const recentUrls = useAtomValue(recentUrlsAtom)
@@ -40,15 +46,14 @@ export function RecentUrlsDialog() {
     }))
   }, [recentUrls])
 
-  // Handle URL selection
+  // Handle URL selection - focus is auto-restored when dialog unmounts
   const handleSelect = useCallback(
     (_index: number, option: DialogSelectOption<string>) => {
       setUrl(option.value)
       clearDialogs()
-      enableFocus()
-      focus('menu')
+      // Focus automatically restored when scope pops!
     },
-    [setUrl, clearDialogs, enableFocus, focus],
+    [setUrl, clearDialogs],
   )
 
   // Empty state

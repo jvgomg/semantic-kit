@@ -1,15 +1,7 @@
 /**
  * Re-export all atoms from a single location.
  */
-export {
-  focusedRegionAtom,
-  focusEnabledAtom,
-  effectiveFocusEnabledAtom,
-  focusableRegions,
-  setFocusAtom,
-  focusNextAtom,
-  focusPreviousAtom,
-} from './focus.js'
+// Focus atoms are now in state/focus-scope/atoms.ts
 
 export { urlAtom, recentUrlsAtom, setUrlAtom, addRecentUrlAtom } from './url.js'
 

@@ -14,9 +14,10 @@ import {
   menuWidthAtom,
   activeMenuIndexAtom,
   focusedRegionAtom,
+  isAppScopeActiveAtom,
   invalidateAllViewDataAtom,
   initializeMenuIndexAtom,
-  useFocusManager,
+  useFocusNavigation,
 } from './state/index.js'
 import {
   MainContent,
@@ -28,10 +29,7 @@ import {
   URL_BAR_HEIGHT,
 } from './components/chrome/index.js'
 import { DialogProvider } from './components/dialog/index.js'
-import {
-  pushDialogAtom,
-  isDialogOpenAtom,
-} from './state/dialog/index.js'
+import { pushDialogAtom } from './state/dialog/index.js'
 import { useSemanticColors } from './theme.js'
 import { isSitemapUrl } from '@webspecs/core'
 // Import views to trigger registration
@@ -53,7 +51,7 @@ export interface AppProps {
 
 export function App({ initialUrl, hasConfig }: AppProps) {
   const renderer = useRenderer()
-  const { focus, focusNext, focusPrevious } = useFocusManager()
+  const { focus, focusNext, focusPrevious } = useFocusNavigation()
   const { width, height } = useTerminalDimensions()
   const colors = useSemanticColors()
 
@@ -67,7 +65,7 @@ export function App({ initialUrl, hasConfig }: AppProps) {
   const invalidateAllViewData = useSetAtom(invalidateAllViewDataAtom)
   const initializeMenuIndex = useSetAtom(initializeMenuIndexAtom)
   const pushDialog = useSetAtom(pushDialogAtom)
-  const isDialogOpen = useAtomValue(isDialogOpenAtom)
+  const isAppScopeActive = useAtomValue(isAppScopeActiveAtom)
 
   // Set initial URL and focus on mount
   useEffect(() => {
@@ -76,8 +74,8 @@ export function App({ initialUrl, hasConfig }: AppProps) {
 
     // If state was restored from persistence
     if (url) {
-      // Focus is automatically disabled when a dialog is open via effectiveFocusEnabledAtom
-      if (!isDialogOpen) {
+      // Focus navigation is scoped - only focus app region if app scope is active
+      if (isAppScopeActive) {
         focus('main')
       }
       return
@@ -90,7 +88,7 @@ export function App({ initialUrl, hasConfig }: AppProps) {
           type: 'sitemap',
           props: { autoFetchSitemapUrl: initialUrl },
         })
-        // Focus is automatically disabled when dialog opens via effectiveFocusEnabledAtom
+        // Focus is automatically scoped - dialog will push its own scope
       } else {
         setUrl(initialUrl)
         focus('main')
@@ -98,7 +96,7 @@ export function App({ initialUrl, hasConfig }: AppProps) {
     } else if (hasConfig) {
       // Config loaded without URL - auto-open preset URLs dialog
       pushDialog({ type: 'preset-urls' })
-      // Focus is automatically disabled when dialog opens via effectiveFocusEnabledAtom
+      // Focus is automatically scoped - dialog will push its own scope
     } else {
       focus('url')
     }
@@ -106,10 +104,10 @@ export function App({ initialUrl, hasConfig }: AppProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Global key bindings (these work when no dialog is open)
+  // Global key bindings (these work when app scope is active)
   useKeyboard((event) => {
-    // Skip if dialog is open
-    if (isDialogOpen) return
+    // Skip if a dialog scope is active
+    if (!isAppScopeActive) return
 
     // When URL bar is focused, handle global shortcuts then let input handle the rest
     const urlBarFocused = focusedRegion === 'url'
@@ -158,7 +156,7 @@ export function App({ initialUrl, hasConfig }: AppProps) {
     // Open Recent URLs (Shift+G)
     if (event.name === 'G' || (event.name === 'g' && event.shift)) {
       pushDialog({ type: 'recent-urls' })
-      // Focus is automatically disabled when dialog opens via effectiveFocusEnabledAtom
+      // Focus is automatically scoped - dialog will push its own scope
       return
     }
 

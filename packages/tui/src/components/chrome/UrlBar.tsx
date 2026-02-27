@@ -14,9 +14,9 @@ import { useEffect, useRef, useState } from 'react'
 import {
   setUrlAtom,
   urlAtom,
-  useFocus,
-  useFocusManager,
-  isDialogOpenAtom,
+  useFocusRegion,
+  useFocusNavigation,
+  useIsAppScopeActive,
 } from '../../state/index.js'
 import { useSemanticColors } from '../../theme.js'
 
@@ -28,9 +28,9 @@ export function UrlBar({ width }: UrlBarProps) {
   const colors = useSemanticColors()
   const url = useAtomValue(urlAtom)
   const setUrl = useSetAtom(setUrlAtom)
-  const { focus: focusManager } = useFocusManager()
-  const { isFocused, isInputActive, focus } = useFocus('url')
-  const isDialogOpen = useAtomValue(isDialogOpenAtom)
+  const { focus: focusRegion } = useFocusNavigation()
+  const { isFocused, isInputActive, focus } = useFocusRegion({ region: 'url' })
+  const isAppScopeActive = useIsAppScopeActive()
 
   // Local input state - what's shown in the input
   const [inputValue, setInputValue] = useState(url)
@@ -59,8 +59,8 @@ export function UrlBar({ width }: UrlBarProps) {
 
   // Handle keyboard input for escape and enter keys
   useKeyboard((event) => {
-    // Don't handle keyboard when a dialog is open
-    if (isDialogOpen) return
+    // Don't handle keyboard when a dialog scope is active
+    if (!isAppScopeActive) return
     if (!isInputActive) return
 
     if (event.name === 'escape') {
@@ -78,7 +78,7 @@ export function UrlBar({ width }: UrlBarProps) {
       setUrl(inputValue)
       lastSyncedUrlRef.current = inputValue
     }
-    focusManager('menu')
+    focusRegion('menu')
   }
 
   return (

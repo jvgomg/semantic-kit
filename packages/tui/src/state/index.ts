@@ -9,8 +9,39 @@ export type {
   GroupedMenuItem,
   ViewData,
   ViewDataStatus,
-  FocusRegion,
 } from './types.js'
+
+// Focus Scope (new system)
+export {
+  // Types
+  type FocusScopeConfig,
+  type FocusScopeEntry,
+  type AppFocusRegion,
+  APP_SCOPE,
+  // Atoms
+  focusScopeStackAtom,
+  activeScopeAtom,
+  focusedRegionAtom,
+  isAppScopeActiveAtom,
+  getScopeByIdAtom,
+  pushScopeAtom,
+  popScopeAtom,
+  setFocusAtom,
+  focusNextAtom,
+  focusPreviousAtom,
+  setFocusInScopeAtom,
+  // Hooks
+  useFocusScope,
+  useFocusRegion,
+  useFocusNavigation,
+  useIsAppScopeActive,
+  // Backward compatibility
+  useFocus,
+  useFocusManager,
+} from './focus-scope/index.js'
+
+// Re-export AppFocusRegion as FocusRegion for backward compatibility
+export type { AppFocusRegion as FocusRegion } from './focus-scope/index.js'
 
 // Tool Navigation (sidebar menu)
 export {
@@ -27,14 +58,6 @@ export { viewAtomFamily, activeViewAtom, type View } from './view-atoms.js'
 
 // Atoms
 export {
-  // Focus
-  focusedRegionAtom,
-  focusEnabledAtom,
-  effectiveFocusEnabledAtom,
-  focusableRegions,
-  setFocusAtom,
-  focusNextAtom,
-  focusPreviousAtom,
   // URL
   urlAtom,
   recentUrlsAtom,
@@ -67,8 +90,7 @@ export {
   initConfigStateAtom,
 } from './atoms/index.js'
 
-// Hooks
-export { useFocus, useFocusManager } from './hooks/index.js'
+// Hooks (other than focus - focus hooks are exported from focus-scope above)
 
 // View (primitive layer)
 export * from './view/index.js'

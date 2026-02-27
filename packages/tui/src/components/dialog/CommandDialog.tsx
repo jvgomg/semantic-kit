@@ -11,7 +11,8 @@ import { useSetAtom } from 'jotai'
 import {
   pushDialogAtom,
   clearDialogsAtom,
-  useFocusManager,
+  useFocusScope,
+  useFocusNavigation,
   invalidateAllViewDataAtom,
 } from '../../state/index.js'
 import { DialogPanel } from './DialogPanel.js'
@@ -106,11 +107,18 @@ const COMMANDS: Command[] = [
  * Commands can trigger actions or push other dialogs onto the stack.
  */
 export function CommandDialog(_props: CommandDialogProps) {
+  // Register focus scope - auto-restores previous focus on unmount
+  useFocusScope({
+    id: 'command-dialog',
+    regions: ['search', 'list'],
+    initialRegion: 'search',
+  })
+
   const renderer = useRenderer()
   const pushDialog = useSetAtom(pushDialogAtom)
   const clearDialogs = useSetAtom(clearDialogsAtom)
   const invalidateAllViewData = useSetAtom(invalidateAllViewDataAtom)
-  const { focus, enableFocus } = useFocusManager()
+  const { focus } = useFocusNavigation()
   const { title, headerHint, handleClose } = useDialog('Commands')
 
   // State
@@ -140,6 +148,7 @@ export function CommandDialog(_props: CommandDialogProps) {
   }, [filteredCommands])
 
   // Execute a command by its action
+  // Focus is auto-restored when dialog closes via scope system
   const executeCommand = (commandId: string) => {
     const command = COMMANDS.find((cmd) => cmd.id === commandId)
     if (!command) return
@@ -165,13 +174,14 @@ export function CommandDialog(_props: CommandDialogProps) {
         break
       case 'jump-url':
         clearDialogs()
-        enableFocus()
-        focus('url')
+        // Focus will be restored to previous scope, then we override to 'url'
+        // Use a small delay to ensure scope cleanup happens first
+        setTimeout(() => focus('url'), 0)
         break
       case 'reload':
         clearDialogs()
-        enableFocus()
         invalidateAllViewData()
+        // Focus automatically restored when scope pops!
         break
     }
   }
