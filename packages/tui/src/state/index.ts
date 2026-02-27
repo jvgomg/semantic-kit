@@ -51,6 +51,7 @@ export {
   activeViewIdAtom,
   navigateMenuAtom,
   initializeMenuIndexAtom,
+  switchToViewAtom,
 } from './tool-navigation.js'
 
 // View Atoms (combines view definitions with fetched data)

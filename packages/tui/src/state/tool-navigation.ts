@@ -107,3 +107,19 @@ export const navigateMenuAtom = atom(
     }
   },
 )
+
+/**
+ * Switch to a specific view by its ID.
+ * Returns true if the view was found and switched to, false otherwise.
+ */
+export const switchToViewAtom = atom(null, (get, set, viewId: string) => {
+  const items = get(groupedMenuItemsAtom)
+  const index = items.findIndex(
+    (item) => item.type === 'view' && item.id === viewId,
+  )
+  if (index >= 0) {
+    set(activeMenuIndexAtom, index)
+    return true
+  }
+  return false
+})

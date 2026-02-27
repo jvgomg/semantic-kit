@@ -1,9 +1,10 @@
 /**
  * CommandDialog - The main command palette for the TUI.
  *
- * Shows a searchable list of commands. Selecting a command either:
- * - Executes an action (quit, reload, etc.)
- * - Pushes another dialog onto the stack (theme, help)
+ * Shows a searchable list of commands including:
+ * - Lenses and Tools (view switching)
+ * - Navigation commands (URL, reload, etc.)
+ * - Settings and Help
  */
 import { useState, useMemo, useEffect } from 'react'
 import { useRenderer } from '@opentui/react'
@@ -14,7 +15,9 @@ import {
   useFocusScope,
   useFocusNavigation,
   invalidateAllViewDataAtom,
+  switchToViewAtom,
 } from '../../state/index.js'
+import { getAllCommands } from '../../commands.js'
 import { DialogPanel } from './DialogPanel.js'
 import { DialogInput } from './DialogInput.js'
 import { DialogSelect, type DialogSelectOption } from './DialogSelect.js'
@@ -25,77 +28,6 @@ import { useDialog } from './DialogContext.js'
 // =============================================================================
 
 export interface CommandDialogProps {}
-
-interface Command {
-  id: string
-  label: string
-  category: 'Navigation' | 'Settings' | 'Help'
-  keybind: string
-  action: 'jump-url' | 'recent-urls' | 'preset-urls' | 'sitemap' | 'reload' | 'theme' | 'help' | 'quit'
-}
-
-// =============================================================================
-// Command Definitions
-// =============================================================================
-
-const COMMANDS: Command[] = [
-  {
-    id: 'jump-url',
-    label: 'Jump to URL bar',
-    category: 'Navigation',
-    keybind: 'g',
-    action: 'jump-url',
-  },
-  {
-    id: 'recent-urls',
-    label: 'Recent URLs',
-    category: 'Navigation',
-    keybind: 'G',
-    action: 'recent-urls',
-  },
-  {
-    id: 'preset-urls',
-    label: 'Preset URLs (config)',
-    category: 'Navigation',
-    keybind: '',
-    action: 'preset-urls',
-  },
-  {
-    id: 'sitemap',
-    label: 'Load Sitemap',
-    category: 'Navigation',
-    keybind: '',
-    action: 'sitemap',
-  },
-  {
-    id: 'reload',
-    label: 'Reload current view',
-    category: 'Navigation',
-    keybind: 'r',
-    action: 'reload',
-  },
-  {
-    id: 'theme',
-    label: 'Change theme',
-    category: 'Settings',
-    keybind: 't',
-    action: 'theme',
-  },
-  {
-    id: 'help',
-    label: 'Keyboard shortcuts',
-    category: 'Help',
-    keybind: '?',
-    action: 'help',
-  },
-  {
-    id: 'quit',
-    label: 'Quit application',
-    category: 'Help',
-    keybind: 'q',
-    action: 'quit',
-  },
-]
 
 // =============================================================================
 // Component
@@ -118,8 +50,12 @@ export function CommandDialog(_props: CommandDialogProps) {
   const pushDialog = useSetAtom(pushDialogAtom)
   const clearDialogs = useSetAtom(clearDialogsAtom)
   const invalidateAllViewData = useSetAtom(invalidateAllViewDataAtom)
+  const switchToView = useSetAtom(switchToViewAtom)
   const { focus } = useFocusNavigation()
   const { title, headerHint, handleClose } = useDialog('Commands')
+
+  // Get all commands from central registry
+  const allCommands = useMemo(() => getAllCommands(), [])
 
   // State
   const [search, setSearch] = useState('')
@@ -127,10 +63,10 @@ export function CommandDialog(_props: CommandDialogProps) {
 
   // Filter commands by search string (case-insensitive match on label)
   const filteredCommands = useMemo(() => {
-    if (!search.trim()) return COMMANDS
+    if (!search.trim()) return allCommands
     const query = search.toLowerCase()
-    return COMMANDS.filter((cmd) => cmd.label.toLowerCase().includes(query))
-  }, [search])
+    return allCommands.filter((cmd) => cmd.label.toLowerCase().includes(query))
+  }, [search, allCommands])
 
   // Reset selectedIndex when search changes
   useEffect(() => {
@@ -150,38 +86,32 @@ export function CommandDialog(_props: CommandDialogProps) {
   // Execute a command by its action
   // Focus is auto-restored when dialog closes via scope system
   const executeCommand = (commandId: string) => {
-    const command = COMMANDS.find((cmd) => cmd.id === commandId)
+    const command = allCommands.find((cmd) => cmd.id === commandId)
     if (!command) return
 
-    switch (command.action) {
-      case 'theme':
-        pushDialog({ type: 'theme' })
-        break
-      case 'help':
-        pushDialog({ type: 'help' })
-        break
-      case 'recent-urls':
-        pushDialog({ type: 'recent-urls' })
-        break
-      case 'preset-urls':
-        pushDialog({ type: 'preset-urls' })
-        break
-      case 'sitemap':
-        pushDialog({ type: 'sitemap' })
-        break
-      case 'quit':
-        renderer.destroy()
-        break
-      case 'jump-url':
+    const action = command.action
+
+    switch (action.type) {
+      case 'switch-view':
         clearDialogs()
-        // Focus will be restored to previous scope, then we override to 'url'
+        switchToView(action.viewId)
+        break
+      case 'push-dialog':
+        pushDialog({ type: action.dialog })
+        break
+      case 'clear-dialogs-and-focus':
+        clearDialogs()
+        // Focus will be restored to previous scope, then we override to target
         // Use a small delay to ensure scope cleanup happens first
-        setTimeout(() => focus('url'), 0)
+        setTimeout(() => focus(action.target), 0)
         break
       case 'reload':
         clearDialogs()
         invalidateAllViewData()
         // Focus automatically restored when scope pops!
+        break
+      case 'quit':
+        renderer.destroy()
         break
     }
   }
