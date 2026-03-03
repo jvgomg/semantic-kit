@@ -1,10 +1,8 @@
 import type {
-  AxeStaticResult,
-  StructureAnalysis,
-  StructureComparison,
-  StructureWarning,
   LandmarkNode,
   LinkGroup,
+  StructureAnalysis,
+  StructureComparison,
 } from '@webspecs/core'
 import type { OutputFormat } from '../../lib/arguments.js'
 import {
@@ -16,7 +14,6 @@ import {
   formatIssues,
   formatTable,
   type FormatterContext,
-  type Issue,
   type TableRow,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
@@ -27,145 +24,15 @@ import type {
   FormatStructureJsOptions,
   FormatStructureCompareOptions,
 } from './types.js'
+import { buildIssues, buildIssuesJs, buildIssuesCompare } from './issues.js'
 
-// ============================================================================
-// Issue Building
-// ============================================================================
-
-/**
- * Convert a StructureWarning to an Issue.
- */
-function warningToIssue(warning: StructureWarning): Issue {
-  return {
-    type: warning.severity === 'error' ? 'error' : 'warning',
-    severity: warning.severity === 'error' ? 'high' : 'medium',
-    title: warning.message,
-    description: warning.details ?? '',
-  }
-}
-
-/**
- * Build issues for structure command.
- * Issues are ordered by priority:
- * 1. Missing page title
- * 2. Missing language attribute
- * 3. axe-core violations (converted from StructureWarning)
- */
-export function buildIssues(
-  analysis: StructureAnalysis,
-  axeResult: AxeStaticResult,
-): Issue[] {
-  const issues: Issue[] = []
-
-  // 1. Missing title
-  if (!analysis.title) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Missing Page Title',
-      description: 'The page does not have a <title> element.',
-      tip: 'Add a descriptive <title> element inside <head>.',
-    })
-  }
-
-  // 2. Missing language
-  if (!analysis.language) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Missing Language Attribute',
-      description: 'The <html> element does not have a lang attribute.',
-      tip: 'Add lang="en" (or appropriate language code) to the <html> element.',
-    })
-  }
-
-  // 3. axe-core violations
-  for (const violation of axeResult.violationWarnings) {
-    issues.push(warningToIssue(violation))
-  }
-
-  return issues
-}
-
-/**
- * Build issues for structure:js command.
- * Same as structure issues plus timeout warning.
- */
-export function buildIssuesJs(
-  analysis: StructureAnalysis,
-  axeResult: AxeStaticResult,
-  timedOut: boolean,
-): Issue[] {
-  const issues: Issue[] = []
-
-  // 1. Timeout
-  if (timedOut) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Timeout Reached',
-      description:
-        'Rendering exceeded timeout. Analysis shows partial content.',
-      tip: 'Increase timeout with --timeout or optimize page load.',
-    })
-  }
-
-  // 2. Missing title
-  if (!analysis.title) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Missing Page Title',
-      description: 'The page does not have a <title> element.',
-      tip: 'Add a descriptive <title> element inside <head>.',
-    })
-  }
-
-  // 3. Missing language
-  if (!analysis.language) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Missing Language Attribute',
-      description: 'The <html> element does not have a lang attribute.',
-      tip: 'Add lang="en" (or appropriate language code) to the <html> element.',
-    })
-  }
-
-  // 4. axe-core violations
-  for (const violation of axeResult.violationWarnings) {
-    issues.push(warningToIssue(violation))
-  }
-
-  return issues
-}
-
-/**
- * Build issues for structure:compare command.
- * Returns empty array (success case uses successMessage).
- */
-export function buildIssuesCompare(
-  _comparison: StructureComparison,
-  timedOut: boolean,
-): Issue[] {
-  const issues: Issue[] = []
-
-  // 1. Timeout
-  if (timedOut) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Timeout Reached',
-      description: 'Rendering exceeded timeout. Comparison may be incomplete.',
-      tip: 'Increase timeout with --timeout or optimize page load.',
-    })
-  }
-
-  // Note: We don't add issues for differences - that's informational, not an issue.
-  // The successMessage "No structural differences detected" handles the success case.
-
-  return issues
-}
+// Re-export for backwards compatibility
+export {
+  buildIssues,
+  buildIssuesJs,
+  buildIssuesCompare,
+  type StructureIssue,
+} from './issues.js'
 
 // ============================================================================
 // Formatting Helpers

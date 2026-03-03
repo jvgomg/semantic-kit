@@ -19,11 +19,14 @@ import {
   formatTable,
   formatTableGroups,
   type FormatterContext,
-  type Issue,
   type TableGroup,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
 import type { ReadabilityCompareResult, SectionInfo } from './types.js'
+import { buildCompareIssues } from './issues.js'
+
+// Re-export for backwards compatibility
+export { buildCompareIssues, type ReadabilityIssue } from './issues.js'
 
 // ============================================================================
 // Table Groups
@@ -204,69 +207,6 @@ export function formatReadabilityJsOutput(
 // ============================================================================
 // Compare Output
 // ============================================================================
-
-/**
- * Build an array of issues from the compare result.
- */
-export function buildCompareIssues(result: ReadabilityCompareResult): Issue[] {
-  const issues: Issue[] = []
-  const { comparison, timedOut, rendered } = result
-
-  // 1. Timeout warning
-  if (timedOut) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Page Load Timeout',
-      description:
-        'Rendering exceeded timeout. Analysis shows partial content.',
-      tip: 'Increase timeout with --timeout or optimize page load.',
-    })
-  }
-
-  // 2. No content extracted
-  if (rendered.metrics.wordCount === 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'high',
-      title: 'No Content Extracted',
-      description: 'No main content could be extracted from the rendered page.',
-    })
-  }
-
-  // 3. High JS dependency (>50%)
-  if (comparison.jsDependentPercentage > 50) {
-    issues.push({
-      type: 'warning',
-      severity: 'high',
-      title: 'High JavaScript Dependency',
-      description: `${comparison.jsDependentPercentage}% of content requires JavaScript. Search bots may miss ${comparison.jsDependentWordCount.toLocaleString()} words.`,
-      tip: 'Consider server-side rendering for SEO-critical content.',
-    })
-  }
-  // 4. Some JS dependency (>0% and <=50%)
-  else if (comparison.jsDependentPercentage > 0) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'Some JavaScript Content',
-      description: `${comparison.jsDependentPercentage}% of content requires JavaScript (${comparison.jsDependentWordCount.toLocaleString()} words).`,
-    })
-  }
-
-  // 5. Sections hidden from bots
-  if (comparison.sectionsOnlyInRendered.length > 0) {
-    const count = comparison.sectionsOnlyInRendered.length
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'Sections Hidden from Bots',
-      description: `${count} section${count === 1 ? '' : 's'} only appear after JavaScript execution.`,
-    })
-  }
-
-  return issues
-}
 
 /**
  * Format sections that are only visible after JavaScript execution.

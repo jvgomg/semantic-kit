@@ -1,7 +1,14 @@
 // @webspecs/core - Core analyzers, extractors, and validators
 
 // Shared types
-export type { Issue, IssueType, IssueSeverity } from './types.js'
+export type {
+  Issue,
+  IssueType,
+  IssueSeverity,
+  IssueCode,
+  SourceLocation,
+  AnyIssue,
+} from './types.js'
 
 // HTML fetching
 export { fetchHtmlContent } from './fetch.js'
@@ -153,6 +160,7 @@ export {
 // Metadata extraction and validation
 export {
   type SocialValidationIssue,
+  type SocialIssueMetadata,
   type ValidationSeverity,
   type NormalizedMetatags,
   type TagRequirements,
@@ -257,6 +265,9 @@ export type {
 
 // Screen reader analysis
 export { analyzeScreenReaderExperience } from './screen-reader-analysis.js'
+
+// Issue generation
+export * from './issues/index.js'
 
 // Runner functions (orchestrate core analysis functions into typed results)
 export {

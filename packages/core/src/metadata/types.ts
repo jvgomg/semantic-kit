@@ -17,9 +17,28 @@ import type { Issue, IssueSeverity, IssueType } from '../types.js'
 export type ValidationSeverity = 'error' | 'warning' | 'info'
 
 /**
- * Social validation issue extending base Issue with metadata-specific fields.
+ * Metadata for social validation issues.
+ * Used with Issue<SocialIssueMetadata> for typed metadata access.
  */
-export interface SocialValidationIssue extends Issue {
+export interface SocialIssueMetadata {
+  /** The tag this issue relates to */
+  tag: string
+  /** The actual value (if applicable) */
+  value?: string
+  /** Character limit (for length issues) */
+  limit?: number
+  /** Actual character count (for length issues) */
+  actual?: number
+}
+
+/**
+ * Social validation issue extending base Issue with metadata-specific fields.
+ *
+ * @deprecated Use `Issue<SocialIssueMetadata>` instead. This interface is kept
+ * for backwards compatibility but the fields are now available in the generic
+ * Issue.metadata property.
+ */
+export interface SocialValidationIssue extends Issue<SocialIssueMetadata> {
   /** Unique code identifying this issue type */
   code: string
   /** The tag this issue relates to */

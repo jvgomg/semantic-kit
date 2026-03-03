@@ -6,10 +6,13 @@ import {
   createFormatterContext,
   formatIssues,
   formatTable,
-  type Issue,
   type TableRow,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
+import { buildIssues, buildCompareIssues } from './issues.js'
+
+// Re-export for backwards compatibility
+export { buildIssues, buildCompareIssues, type SchemaIssue } from './issues.js'
 
 // ============================================================================
 // Helpers
@@ -92,62 +95,6 @@ function flattenSchemaProperties(
   }
 
   return results
-}
-
-/**
- * Check if result has any structured data
- */
-function hasAnyData(result: SchemaResult): boolean {
-  const jsonldSchemas = Object.keys(result.jsonld).filter(
-    (k) => k !== 'undefined',
-  )
-  const microdataSchemas = Object.keys(result.microdata).filter(
-    (k) => k !== 'undefined',
-  )
-  const rdfaSchemas = Object.keys(result.rdfa).filter((k) => k !== 'undefined')
-
-  return (
-    jsonldSchemas.length > 0 ||
-    microdataSchemas.length > 0 ||
-    rdfaSchemas.length > 0 ||
-    result.openGraph !== null ||
-    result.twitter !== null
-  )
-}
-
-// ============================================================================
-// Issue Building
-// ============================================================================
-
-/**
- * Build an array of issues from the schema result.
- *
- * Issues include:
- * 1. No structured data (info) - when no data found at all
- * 2. Validation issues from result.issues (presence + quality checks)
- */
-export function buildIssues(result: SchemaResult): Issue[] {
-  const issues: Issue[] = []
-
-  // 1. No structured data found
-  if (!hasAnyData(result)) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'No Structured Data Found',
-      description: 'This page has no structured data.',
-      tip: 'Consider adding JSON-LD for rich search results, Open Graph for social sharing.',
-    })
-    return issues
-  }
-
-  // 2. Include validation issues (presence + quality checks)
-  // These are already SocialValidationIssue which extends Issue
-  if (result.issues) {
-    issues.push(...result.issues)
-  }
-
-  return issues
 }
 
 // ============================================================================
@@ -520,93 +467,6 @@ export function formatSchemaOutput(
 // ============================================================================
 // Compare Output
 // ============================================================================
-
-/**
- * Build an array of issues from the schema compare result.
- */
-export function buildCompareIssues(result: SchemaCompareResult): Issue[] {
-  const issues: Issue[] = []
-  const { comparison, timedOut } = result
-
-  // 1. Timeout warning
-  if (timedOut) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Page Load Timeout',
-      description:
-        'Rendering exceeded timeout. Analysis shows partial content.',
-      tip: 'Increase timeout with --timeout or optimize page load.',
-    })
-  }
-
-  // 2. No differences found
-  if (!comparison.hasDifferences) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'No Schema Differences',
-      description:
-        'Static and JavaScript-rendered pages have identical structured data.',
-    })
-    return issues
-  }
-
-  // 3. JSON-LD added by JavaScript
-  if (comparison.jsonldAdded > 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'JSON-LD Added by JavaScript',
-      description: `${comparison.jsonldAdded} JSON-LD schema type${comparison.jsonldAdded === 1 ? '' : 's'} only appear after JavaScript execution.`,
-      tip: 'Search engines may not see JavaScript-injected schemas. Consider server-side rendering.',
-    })
-  }
-
-  // 4. Microdata added by JavaScript
-  if (comparison.microdataAdded > 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Microdata Added by JavaScript',
-      description: `${comparison.microdataAdded} Microdata schema type${comparison.microdataAdded === 1 ? '' : 's'} only appear after JavaScript execution.`,
-    })
-  }
-
-  // 5. RDFa added by JavaScript
-  if (comparison.rdfaAdded > 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'RDFa Added by JavaScript',
-      description: `${comparison.rdfaAdded} RDFa schema type${comparison.rdfaAdded === 1 ? '' : 's'} only appear after JavaScript execution.`,
-    })
-  }
-
-  // 6. Open Graph changed
-  if (comparison.openGraphChanged) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'Open Graph Tags Changed',
-      description:
-        'Open Graph tags differ between static and JavaScript-rendered pages.',
-    })
-  }
-
-  // 7. Twitter Cards changed
-  if (comparison.twitterChanged) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'Twitter Card Tags Changed',
-      description:
-        'Twitter Card tags differ between static and JavaScript-rendered pages.',
-    })
-  }
-
-  return issues
-}
 
 /**
  * Build the COMPARISON table for schema:compare output.

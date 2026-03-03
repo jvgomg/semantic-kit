@@ -15,19 +15,17 @@ export interface FormatterContext {
 }
 
 // ============================================================================
-// Issue Types (moved from issues.ts)
+// Issue Types (re-exported from core)
 // ============================================================================
 
-export type IssueType = 'error' | 'warning' | 'info'
-export type IssueSeverity = 'low' | 'medium' | 'high'
-
-export interface Issue {
-  type: IssueType
-  severity: IssueSeverity
-  title: string
-  description: string
-  tip?: string
-}
+export type {
+  Issue,
+  IssueType,
+  IssueSeverity,
+  IssueCode,
+  SourceLocation,
+  AnyIssue,
+} from '@webspecs/core'
 
 // ============================================================================
 // Table Types (moved from format-table.ts)

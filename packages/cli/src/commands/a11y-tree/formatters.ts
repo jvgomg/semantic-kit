@@ -11,10 +11,13 @@ import {
   createFormatterContext,
   formatIssues,
   formatTableGroups,
-  type Issue,
   type TableGroup,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
+import { buildIssues, buildCompareIssues } from './issues.js'
+
+// Re-export for backwards compatibility
+export { buildIssues, buildCompareIssues, type A11yTreeIssue } from './issues.js'
 
 // ============================================================================
 // Role Categories
@@ -49,112 +52,6 @@ const INTERACTIVE_ROLES = [
   'listbox',
   'slider',
 ]
-
-// ============================================================================
-// Issue Building - A11y / A11y:js
-// ============================================================================
-
-/**
- * Build an array of issues from the A11y result.
- * Issues are ordered by priority:
- * 1. Timeout (warning/medium)
- * 2. Missing main landmark (warning/medium)
- * 3. No headings found (warning/medium)
- */
-export function buildIssues(result: A11yResult): Issue[] {
-  const issues: Issue[] = []
-
-  // 1. Timeout
-  if (result.timedOut) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Page Load Timeout',
-      description:
-        'The page did not finish loading within the timeout period. The accessibility tree may be incomplete.',
-      tip: 'Increase the timeout with --timeout or check if the page has performance issues.',
-    })
-  }
-
-  // 2. Missing main landmark
-  if (!result.counts['main']) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Missing Main Landmark',
-      description:
-        'No <main> element found. Screen readers use landmarks for navigation.',
-      tip: 'Add a <main> element to wrap your primary content.',
-    })
-  }
-
-  // 3. No headings
-  if (!result.counts['heading']) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'No Headings Found',
-      description:
-        'No heading elements found. Headings provide document structure and navigation.',
-      tip: 'Add heading elements (h1-h6) to organize your content.',
-    })
-  }
-
-  return issues
-}
-
-// ============================================================================
-// Issue Building - A11y:compare
-// ============================================================================
-
-/**
- * Build an array of issues from the A11y:compare result.
- * Issues are ordered by priority:
- * 1. Timeout (warning/medium)
- * 2. JS removes elements (warning/medium)
- * 3. JS adds many elements (info/low)
- */
-export function buildCompareIssues(result: A11yCompareResult): Issue[] {
-  const issues: Issue[] = []
-
-  // 1. Timeout
-  if (result.static.timedOut || result.hydrated.timedOut) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Page Load Timeout',
-      description:
-        'One or more page loads timed out. The comparison may be incomplete.',
-      tip: 'Increase the timeout with --timeout or check if the page has performance issues.',
-    })
-  }
-
-  // 2. JS removes elements
-  if (result.diff.removed.length > 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: `JavaScript Removes ${result.diff.removed.length} Elements`,
-      description:
-        'JavaScript removes some accessibility elements. This may indicate content that disappears after hydration.',
-      tip: 'Check if important content is being hidden or replaced by JavaScript.',
-    })
-  }
-
-  // 3. JS adds many elements
-  if (result.diff.added.length > 10) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: `JavaScript Adds ${result.diff.added.length} Elements`,
-      description:
-        'JavaScript adds many accessibility elements. This content is not available to crawlers that do not execute JavaScript.',
-      tip: 'Consider server-side rendering for important content.',
-    })
-  }
-
-  return issues
-}
 
 // ============================================================================
 // Table Groups - A11y / A11y:js

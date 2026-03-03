@@ -1,72 +1,16 @@
-import type { ValidateSchemaResult, SchemaTestResult } from '@webspecs/core'
+import type { ValidateSchemaResult, AnyIssue } from '@webspecs/core'
 import {
   createFormatterContext,
   formatIssues,
   formatTableGroups,
-  type Issue,
   type TableGroup,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
 import type { SchemaRenderOptions, SchemaValidationResult } from './types.js'
+import { buildIssues } from './issues.js'
 
-// ============================================================================
-// Issue Building
-// ============================================================================
-
-/**
- * Build an array of issues from the schema validation result.
- * Severity mapping:
- * - Failed required tests -> error/high
- * - Warnings -> warning/medium
- * - Failed info-only tests -> info/low
- */
-export function buildIssues(result: SchemaValidationResult): Issue[] {
-  const issues: Issue[] = []
-  const { testResult, requiredGroups } = result
-
-  const isRequired = (group: string) =>
-    requiredGroups.length === 0 || requiredGroups.includes(group)
-
-  // Failed required tests -> error/high
-  for (const test of testResult.failed) {
-    if (isRequired(test.group)) {
-      issues.push(buildIssueFromTest(test, 'error', 'high'))
-    } else {
-      // Failed info-only tests -> info/low
-      issues.push(buildIssueFromTest(test, 'info', 'low'))
-    }
-  }
-
-  // Warnings -> warning/medium
-  for (const test of testResult.warnings) {
-    if (isRequired(test.group)) {
-      issues.push(buildIssueFromTest(test, 'warning', 'medium'))
-    } else {
-      issues.push(buildIssueFromTest(test, 'info', 'low'))
-    }
-  }
-
-  return issues
-}
-
-/**
- * Build a single issue from a schema test result.
- */
-function buildIssueFromTest(
-  test: SchemaTestResult,
-  type: Issue['type'],
-  severity: Issue['severity'],
-): Issue {
-  const title = `${test.group}: ${test.test}`
-  const description = test.error?.message ?? test.description ?? 'Test failed'
-
-  return {
-    type,
-    severity,
-    title,
-    description,
-  }
-}
+// Re-export for backwards compatibility
+export { buildIssues, type SchemaIssue } from './issues.js'
 
 // ============================================================================
 // Table Groups
@@ -192,7 +136,7 @@ export function formatSchemaValidationOutput(
 export function buildJsonResult(
   result: SchemaValidationResult,
   target: string,
-): { result: ValidateSchemaResult; issues: Issue[] } {
+): { result: ValidateSchemaResult; issues: AnyIssue[] } {
   const jsonResult: ValidateSchemaResult = {
     target,
     schemas: result.testResult.schemas,

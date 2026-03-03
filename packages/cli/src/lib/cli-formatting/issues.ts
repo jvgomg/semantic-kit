@@ -5,7 +5,7 @@
 
 import { colorize, colors } from './colors.js'
 import { wrapText } from './text.js'
-import type { FormatterContext, Issue, IssueType } from './types.js'
+import type { FormatterContext, AnyIssue, IssueType } from './types.js'
 
 // ============================================================================
 // Constants
@@ -38,7 +38,7 @@ const ISSUE_COLORS: Record<IssueType, (s: string) => string> = {
  * ```
  */
 function formatIssueTty(
-  issue: Issue,
+  issue: AnyIssue,
   ctx: FormatterContext,
   options?: { compact?: boolean },
 ): string {
@@ -93,7 +93,7 @@ function formatIssueTty(
  * ```
  */
 function formatIssuePlain(
-  issue: Issue,
+  issue: AnyIssue,
   options?: { compact?: boolean },
 ): string {
   const typeLabel = `${issue.type}/${issue.severity}`
@@ -122,14 +122,14 @@ function formatIssuePlain(
  * Format a single issue for terminal display.
  * Automatically uses TTY or plain formatting based on context mode.
  *
- * @param issue - The issue to format
+ * @param issue - The issue to format (accepts any issue type)
  * @param ctx - Formatter context with mode and width
  * @param options - Formatting options
  * @param options.compact - If true, omit the tip line
  * @returns Formatted issue string
  */
 export function formatIssue(
-  issue: Issue,
+  issue: AnyIssue,
   ctx: FormatterContext,
   options?: { compact?: boolean },
 ): string {
@@ -144,7 +144,7 @@ export function formatIssue(
  * Issues are separated by blank lines for readability.
  * Includes a header in TTY mode.
  *
- * @param issues - Array of issues to format
+ * @param issues - Array of issues to format (accepts any issue type)
  * @param ctx - Formatter context with mode and width
  * @param options - Formatting options
  * @param options.compact - If true, omit tip lines from all issues
@@ -152,7 +152,7 @@ export function formatIssue(
  * @returns Formatted issues string, or empty string if no issues and no successMessage
  */
 export function formatIssues(
-  issues: Issue[],
+  issues: AnyIssue[],
   ctx: FormatterContext,
   options?: { compact?: boolean; successMessage?: string },
 ): string {

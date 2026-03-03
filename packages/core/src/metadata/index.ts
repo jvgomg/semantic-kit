@@ -8,6 +8,7 @@
 // Types
 export {
   type SocialValidationIssue,
+  type SocialIssueMetadata,
   type ValidationSeverity,
   type NormalizedMetatags,
   type TagRequirements,

@@ -6,8 +6,11 @@
  */
 import type { ReactNode } from 'react'
 import { useSemanticColors, type ResolvedColors } from '../../theme.js'
-import type { SocialValidationIssue } from '@webspecs/core'
-import type { MetatagGroupResult } from '@webspecs/core'
+import type { AnyIssue, MetatagGroupResult } from '@webspecs/core'
+import {
+  hasHighSeverityIssues as coreHasHighSeverityIssues,
+  getHighestSeverity,
+} from '@webspecs/core'
 
 /**
  * Props for the TagList component.
@@ -77,8 +80,8 @@ function getSeverityColors(colors: ResolvedColors): Record<string, string> {
  * Props for IssuesDisplay component.
  */
 export interface IssuesDisplayProps {
-  /** Validation issues to display */
-  issues: SocialValidationIssue[]
+  /** Validation issues to display (accepts any issue type) */
+  issues: AnyIssue[]
 }
 
 /**
@@ -113,20 +116,21 @@ export function IssuesDisplay({ issues }: IssuesDisplayProps): ReactNode {
 
 /**
  * Check if a metatag group has any high-severity issues.
+ * Uses core's hasHighSeverityIssues helper.
  */
 export function hasHighSeverityIssues(
   group: MetatagGroupResult | null,
 ): boolean {
   if (!group) return false
-  return group.issues.some((issue) => issue.severity === 'high')
+  return coreHasHighSeverityIssues(group.issues)
 }
 
 /**
  * Props for IssuesContent component.
  */
 export interface IssuesContentProps {
-  /** Validation issues to display */
-  issues: SocialValidationIssue[]
+  /** Validation issues to display (accepts any issue type) */
+  issues: AnyIssue[]
 }
 
 /**
@@ -164,11 +168,13 @@ export function IssuesContent({ issues }: IssuesContentProps): ReactNode {
 
 /**
  * Compute section severity from issues array.
+ * Maps issue severity to UI severity.
  */
 export function getIssuesSeverity(
-  issues: SocialValidationIssue[],
+  issues: AnyIssue[],
 ): 'error' | 'warning' | undefined {
-  const hasErrors = issues.some((i) => i.severity === 'high')
-  const hasWarnings = issues.some((i) => i.severity === 'medium')
-  return hasErrors ? 'error' : hasWarnings ? 'warning' : undefined
+  const highest = getHighestSeverity(issues)
+  if (highest === 'high') return 'error'
+  if (highest === 'medium') return 'warning'
+  return undefined
 }

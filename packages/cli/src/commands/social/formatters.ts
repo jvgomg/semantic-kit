@@ -9,7 +9,6 @@ import {
   colors,
   createFormatterContext,
   type FormatterContext,
-  type Issue,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
 import type {
@@ -17,6 +16,9 @@ import type {
   SocialTagGroup,
   SocialValidationIssue,
 } from './types.js'
+
+// Re-export for backwards compatibility
+export { buildIssues, type SocialIssue } from './issues.js'
 
 // ============================================================================
 // Constants
@@ -29,60 +31,6 @@ const CARD_CORNER_TR = '┐'
 const CARD_CORNER_BL = '└'
 const CARD_CORNER_BR = '┘'
 const CARD_VERTICAL = '│'
-
-// ============================================================================
-// Issue Building
-// ============================================================================
-
-/**
- * Build CLI issues from social result.
- *
- * SocialValidationIssue extends Issue, so validation issues can be used directly.
- */
-export function buildIssues(result: SocialResult): Issue[] {
-  const issues: Issue[] = []
-
-  // No social tags at all
-  if (!result.openGraph && !result.twitter) {
-    issues.push({
-      type: 'warning',
-      severity: 'high',
-      title: 'No Social Meta Tags',
-      description: 'The page has no Open Graph or Twitter Card tags.',
-      tip: 'Add og:title, og:description, and og:image tags for better link previews.',
-    })
-    return issues
-  }
-
-  // Include validation issues directly (they extend Issue)
-  issues.push(...result.issues)
-
-  // No Open Graph tags
-  if (!result.openGraph) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'No Open Graph Tags',
-      description:
-        'The page has no Open Graph tags. Facebook, LinkedIn, WhatsApp, and other platforms will use fallbacks.',
-      tip: 'Add og:title, og:description, og:image, og:url, and og:type tags.',
-    })
-  }
-
-  // No preview image
-  if (!result.preview.image) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'No Preview Image',
-      description:
-        'No og:image or twitter:image found. Link previews will appear without an image.',
-      tip: 'Add an og:image tag with a 1200x630px image for best results.',
-    })
-  }
-
-  return issues
-}
 
 // ============================================================================
 // ASCII Card Preview

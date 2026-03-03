@@ -18,6 +18,9 @@ export {
   type Issue,
   type IssueSeverity,
   type IssueType,
+  type IssueCode,
+  type SourceLocation,
+  type AnyIssue,
   type TableGroup,
   type TableRow,
 } from './types.js'

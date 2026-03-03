@@ -3,7 +3,7 @@
  * Provides consistent structure for programmatic consumption.
  */
 
-import type { Issue } from './cli-formatting/index.js'
+import type { AnyIssue } from './cli-formatting/index.js'
 import { VERSION } from './version.js'
 
 // ============================================================================
@@ -33,7 +33,7 @@ export interface CommandInfo {
 export interface JsonEnvelope<T> {
   command: CommandInfo
   result: T
-  issues: Issue[]
+  issues: AnyIssue[]
 }
 
 // ============================================================================
@@ -48,7 +48,7 @@ export interface CreateEnvelopeOptions<T> {
   target: string
   durationMs: number
   result: T
-  issues?: Issue[]
+  issues?: AnyIssue[]
 }
 
 // ============================================================================

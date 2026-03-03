@@ -12,72 +12,13 @@ import {
   createFormatterContext,
   formatIssues,
   formatTableGroups,
-  type Issue,
   type TableGroup,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
+import { buildIssues } from './issues.js'
 
-// ============================================================================
-// Issue Building
-// ============================================================================
-
-/**
- * Build issues based on accessibility analysis.
- */
-export function buildIssues(result: ScreenReaderResult): Issue[] {
-  const issues: Issue[] = []
-  const { summary } = result
-
-  // Timeout warning
-  if (result.timedOut) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Page Load Timeout',
-      description:
-        'The page did not finish loading within the timeout period. The accessibility analysis may be incomplete.',
-      tip: 'Increase the timeout with --timeout or check if the page has performance issues.',
-    })
-  }
-
-  // Missing main landmark
-  if (!summary.hasMainLandmark) {
-    issues.push({
-      type: 'warning',
-      severity: 'high',
-      title: 'Missing Main Landmark',
-      description:
-        'No <main> element found. Screen reader users rely on landmarks to quickly navigate to primary content.',
-      tip: 'Add a <main> element to wrap your primary content.',
-    })
-  }
-
-  // No headings
-  if (summary.headingCount === 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'high',
-      title: 'No Headings Found',
-      description:
-        'No heading elements found. Screen reader users navigate by headings to understand page structure.',
-      tip: 'Add heading elements (h1-h6) to organize your content hierarchically.',
-    })
-  }
-
-  // No skip link (info level)
-  if (!summary.hasSkipLink && summary.linkCount > 10) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'No Skip Link Detected',
-      description:
-        'No skip link found. Skip links help keyboard and screen reader users bypass navigation.',
-      tip: 'Add a "Skip to main content" link at the start of the page.',
-    })
-  }
-
-  return issues
-}
+// Re-export for backwards compatibility
+export { buildIssues, type ScreenReaderIssue } from './issues.js'
 
 // ============================================================================
 // Table Groups

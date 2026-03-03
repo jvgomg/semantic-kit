@@ -19,7 +19,7 @@ import type { ReadabilityCompareResult } from '@webspecs/cli/commands/readabilit
 import type { SocialResult } from '@webspecs/cli/commands/social/types.js'
 import type { JsonEnvelope } from '@webspecs/cli/lib/json-envelope.js'
 import type {
-  Issue,
+  AnyIssue,
   A11yCompareResult,
   A11yResult,
   AiResult,
@@ -116,7 +116,7 @@ type ResultFor<S extends string> =
 
 export interface CliResult<T> {
   data: T | null
-  issues: Issue[]
+  issues: AnyIssue[]
   exitCode: number
   stderr: string
   stdout: string
@@ -222,7 +222,7 @@ async function exec<T>(
   const exitCode = await proc.exited
 
   let data: T | null = null
-  let issues: Issue[] = []
+  let issues: AnyIssue[] = []
   if (exitCode === 0 && stdout.trim()) {
     try {
       const jsonMatch = stdout.match(/\{[\s\S]*\}/)

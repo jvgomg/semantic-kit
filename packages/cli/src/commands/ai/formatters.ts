@@ -1,116 +1,16 @@
-import type { AiResult, HiddenContentAnalysis } from '@webspecs/core'
+import type { AiResult } from '@webspecs/core'
 import type { OutputFormat } from '../../lib/arguments.js'
 import {
   createFormatterContext,
   formatIssues,
   formatTableGroups,
-  type Issue,
   type TableGroup,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
+import { buildIssues } from './issues.js'
 
-// ============================================================================
-// Issue Building
-// ============================================================================
-
-/**
- * Build an array of issues from the AI result.
- * Issues are ordered by priority (highest first):
- * 1. Framework/streaming detection (high severity first)
- * 2. No content extracted
- * 3. Readability warning
- * 4. Short content warning
- */
-export function buildIssues(result: AiResult): Issue[] {
-  const issues: Issue[] = []
-  const { hiddenContentAnalysis } = result
-
-  // 1. Framework/streaming detection (high severity)
-  if (hiddenContentAnalysis.hasStreamingContent) {
-    const streamingIssue = buildStreamingIssue(hiddenContentAnalysis)
-    if (streamingIssue) {
-      issues.push(streamingIssue)
-    }
-  }
-
-  // 2. No content extracted
-  if (result.wordCount === 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'high',
-      title: 'No Content Extracted',
-      description:
-        'No main content could be extracted from this page. The page may rely heavily on JavaScript, have an unusual structure, or contain very little text.',
-      tip: 'Use --raw to see the static HTML that AI crawlers receive.',
-    })
-  }
-
-  // 3. Readability warning (only if we have some content)
-  if (!result.isReaderable && result.wordCount > 0) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Content Extraction Warning',
-      description:
-        'This page may not be suitable for content extraction (isProbablyReaderable: false).',
-      tip: 'Consider adding semantic HTML elements like <article>, <main>, or structured headings.',
-    })
-  }
-
-  // 4. Short content warning (only if no streaming and has some content)
-  if (
-    result.wordCount > 0 &&
-    result.wordCount < 100 &&
-    !hiddenContentAnalysis.hasStreamingContent
-  ) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'Short Content',
-      description: `Very short content extracted (${result.wordCount} words). The page may be JavaScript-heavy.`,
-      tip: 'Use --raw to see the static HTML that AI crawlers receive.',
-    })
-  }
-
-  return issues
-}
-
-/**
- * Build a streaming/hidden content issue based on detection results.
- */
-function buildStreamingIssue(analysis: HiddenContentAnalysis): Issue | null {
-  const {
-    framework,
-    severity,
-    hiddenWordCount,
-    visibleWordCount,
-    hiddenPercentage,
-  } = analysis
-
-  if (severity === 'none') return null
-
-  const isHighSeverity = severity === 'high'
-
-  if (framework) {
-    // Framework-specific message
-    return {
-      type: 'warning',
-      severity: isHighSeverity ? 'high' : 'low',
-      title: `${framework.name} Streaming Detected`,
-      description: `${hiddenPercentage}% of content is hidden. Visible: ~${visibleWordCount.toLocaleString()} words, Hidden: ~${hiddenWordCount.toLocaleString()} words.${isHighSeverity ? ' AI crawlers will NOT see the hidden content.' : ' Most content is visible to AI crawlers.'}`,
-      tip: 'Disable JavaScript in your browser and reload to verify what crawlers see.',
-    }
-  }
-
-  // Generic hidden content message
-  return {
-    type: 'warning',
-    severity: isHighSeverity ? 'high' : 'low',
-    title: 'Hidden Content Detected',
-    description: `${hiddenPercentage}% of content is hidden. Visible: ~${visibleWordCount.toLocaleString()} words, Hidden: ~${hiddenWordCount.toLocaleString()} words.${isHighSeverity ? ' This pattern is common with streaming SSR frameworks (Next.js, Remix, Nuxt, SvelteKit).' : ''}`,
-    tip: 'Disable JavaScript in your browser and reload to verify what crawlers see.',
-  }
-}
+// Re-export for backwards compatibility
+export { buildIssues, type AiIssue } from './issues.js'
 
 // ============================================================================
 // Table Groups

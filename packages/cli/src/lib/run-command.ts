@@ -10,7 +10,7 @@
  */
 
 import type { OutputFormat } from './arguments.js'
-import type { Issue } from './cli-formatting/index.js'
+import type { AnyIssue } from './cli-formatting/index.js'
 import { createJsonEnvelope } from './json-envelope.js'
 import { type OutputMode } from './output-mode.js'
 import { VERSION } from './version.js'
@@ -100,7 +100,7 @@ async function runWithSpinner<T>(options: {
  */
 export interface JsonResult<R = unknown> {
   result: R
-  issues: Issue[]
+  issues: AnyIssue[]
 }
 
 export interface RunCommandOptions<T> {

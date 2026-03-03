@@ -12,70 +12,13 @@ import {
   formatHeadingOutline,
   formatTable,
   type FormatterContext,
-  type Issue,
   type TableRow,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
 import type { GoogleResult, GoogleSchemaItem } from './types.js'
 
-// ============================================================================
-// Issue Building
-// ============================================================================
-
-/**
- * Build issues for the Google lens.
- * Issues are warnings about SEO/structured data problems.
- */
-export function buildIssues(result: GoogleResult): Issue[] {
-  const issues: Issue[] = []
-
-  // Missing page title
-  if (!result.metadata.title) {
-    issues.push({
-      type: 'warning',
-      severity: 'high',
-      title: 'Missing Page Title',
-      description: 'The page does not have a <title> element.',
-      tip: 'Add a descriptive <title> element for better search visibility.',
-    })
-  }
-
-  // Missing meta description
-  if (!result.metadata.description) {
-    issues.push({
-      type: 'warning',
-      severity: 'medium',
-      title: 'Missing Meta Description',
-      description: 'The page does not have a <meta name="description"> tag.',
-      tip: 'Add a meta description to control how your page appears in search results.',
-    })
-  }
-
-  // Missing canonical URL
-  if (!result.metadata.canonical) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'No Canonical URL',
-      description: 'The page does not have a <link rel="canonical"> tag.',
-      tip: 'Consider adding a canonical URL to prevent duplicate content issues.',
-    })
-  }
-
-  // No structured data
-  if (result.schemas.length === 0) {
-    issues.push({
-      type: 'info',
-      severity: 'low',
-      title: 'No Google-Recognized Structured Data',
-      description:
-        'No JSON-LD schemas found that Google uses for rich results.',
-      tip: 'Add structured data (Article, Product, FAQ, etc.) to enable rich results.',
-    })
-  }
-
-  return issues
-}
+// Re-export for backwards compatibility
+export { buildIssues, type GoogleIssue } from './issues.js'
 
 // ============================================================================
 // Formatting Helpers

@@ -1,50 +1,18 @@
 import type {
   ValidateHtmlResult,
   HtmlValidateReport,
-  HtmlValidateMessage,
+  AnyIssue,
 } from '@webspecs/core'
 import type { OutputFormat } from '../../lib/arguments.js'
 import {
   createFormatterContext,
   formatIssues,
-  type Issue,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
+import { buildIssues } from './issues.js'
 
-// ============================================================================
-// Issue Building
-// ============================================================================
-
-/**
- * Build an array of issues from the html-validate report.
- * Severity mapping:
- * - severity 2 -> error/high
- * - severity 1 -> warning/medium
- */
-export function buildIssues(report: HtmlValidateReport): Issue[] {
-  const issues: Issue[] = []
-
-  for (const result of report.results) {
-    for (const message of result.messages) {
-      issues.push(buildIssueFromMessage(message))
-    }
-  }
-
-  return issues
-}
-
-/**
- * Build a single issue from an html-validate message.
- */
-function buildIssueFromMessage(message: HtmlValidateMessage): Issue {
-  const isError = message.severity === 2
-  return {
-    type: isError ? 'error' : 'warning',
-    severity: isError ? 'high' : 'medium',
-    title: message.ruleId,
-    description: `${message.message} (line ${message.line}, col ${message.column})`,
-  }
-}
+// Re-export for backwards compatibility
+export { buildIssues, type HtmlIssue } from './issues.js'
 
 // ============================================================================
 // Result Building
@@ -124,7 +92,7 @@ export function formatValidateHtmlOutput(
 export function buildJsonResult(
   report: HtmlValidateReport,
   target: string,
-): { result: ValidateHtmlResult; issues: Issue[] } {
+): { result: ValidateHtmlResult; issues: AnyIssue[] } {
   return {
     result: buildValidateHtmlResult(report, target),
     issues: buildIssues(report),

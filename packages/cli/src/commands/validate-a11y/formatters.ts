@@ -1,104 +1,16 @@
-import type { ValidateA11yResult, AxeViolationResult } from '@webspecs/core'
+import type { ValidateA11yResult, AnyIssue } from '@webspecs/core'
 import {
   createFormatterContext,
   formatIssues,
   formatTableGroups,
-  type Issue,
   type TableGroup,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
 import type { AxeAnalysisResult, RenderOptions, WcagLevel } from './types.js'
+import { buildIssues } from './issues.js'
 
-// ============================================================================
-// Issue Building
-// ============================================================================
-
-/**
- * Build an array of issues from the axe analysis result.
- * Severity mapping:
- * - critical -> error/high
- * - serious -> error/medium
- * - moderate -> warning/medium
- * - minor -> info/low
- * - Incomplete (if not ignored) -> warning/low with "Needs manual review: " prefix
- */
-export function buildIssues(
-  result: AxeAnalysisResult,
-  ignoreIncomplete: boolean = false,
-): Issue[] {
-  const issues: Issue[] = []
-  const { results } = result
-
-  // Process violations
-  for (const violation of results.violations) {
-    issues.push(buildIssueFromViolation(violation))
-  }
-
-  // Process incomplete checks (if not ignored)
-  if (!ignoreIncomplete) {
-    for (const incomplete of results.incomplete as AxeViolationResult[]) {
-      issues.push(buildIssueFromIncomplete(incomplete))
-    }
-  }
-
-  return issues
-}
-
-/**
- * Build a single issue from an axe violation.
- */
-function buildIssueFromViolation(violation: AxeViolationResult): Issue {
-  const impact = violation.impact ?? 'moderate'
-  const { type, severity } = mapImpactToSeverity(impact)
-
-  const title = `[${impact}] ${violation.id}`
-  const nodeCount = violation.nodes.length
-  const description = `${violation.help}. Affects ${nodeCount} element(s).`
-
-  return {
-    type,
-    severity,
-    title,
-    description,
-    tip: violation.helpUrl || undefined,
-  }
-}
-
-/**
- * Build a single issue from an incomplete check.
- */
-function buildIssueFromIncomplete(incomplete: AxeViolationResult): Issue {
-  const nodeCount = incomplete.nodes.length
-  const description = `${incomplete.help}. Affects ${nodeCount} element(s).`
-
-  return {
-    type: 'warning',
-    severity: 'low',
-    title: `Needs manual review: ${incomplete.id}`,
-    description,
-    tip: incomplete.helpUrl || undefined,
-  }
-}
-
-/**
- * Map axe impact to issue type and severity.
- */
-function mapImpactToSeverity(impact: string): {
-  type: Issue['type']
-  severity: Issue['severity']
-} {
-  switch (impact) {
-    case 'critical':
-      return { type: 'error', severity: 'high' }
-    case 'serious':
-      return { type: 'error', severity: 'medium' }
-    case 'moderate':
-      return { type: 'warning', severity: 'medium' }
-    case 'minor':
-    default:
-      return { type: 'info', severity: 'low' }
-  }
-}
+// Re-export for backwards compatibility
+export { buildIssues, type A11yIssue } from './issues.js'
 
 // ============================================================================
 // Table Groups
@@ -223,7 +135,7 @@ export function buildJsonResult(
   url: string,
   level: WcagLevel,
   ignoreIncomplete: boolean,
-): { result: ValidateA11yResult; issues: Issue[] } {
+): { result: ValidateA11yResult; issues: AnyIssue[] } {
   const { results, timedOut } = result
   const hasIncomplete = results.incomplete.length > 0
 

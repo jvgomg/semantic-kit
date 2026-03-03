@@ -11,6 +11,7 @@
 
 import {
   type SocialValidationIssue,
+  type SocialIssueMetadata,
   type ValidationSeverity,
   OPEN_GRAPH_REQUIREMENTS,
   TWITTER_CARD_REQUIREMENTS,
@@ -60,6 +61,7 @@ export function isAbsoluteUrl(url: string): boolean {
 
 /**
  * Create a SocialValidationIssue with proper Issue fields populated.
+ * Populates both legacy fields (tag, value, etc.) and new metadata field.
  */
 function createIssue(
   code: string,
@@ -70,6 +72,13 @@ function createIssue(
   extra?: { value?: string; limit?: number; actual?: number },
 ): SocialValidationIssue {
   const { type, severity: issueSeverity } = severityToIssue(severity)
+
+  // Build metadata object
+  const metadata: SocialIssueMetadata = {
+    tag,
+    ...extra,
+  }
+
   return {
     type,
     severity: issueSeverity,
@@ -77,6 +86,9 @@ function createIssue(
     description: message,
     tip,
     code,
+    // New generic metadata field
+    metadata,
+    // Legacy fields for backwards compatibility
     tag,
     ...extra,
   }
