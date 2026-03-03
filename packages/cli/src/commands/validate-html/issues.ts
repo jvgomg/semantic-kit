@@ -3,10 +3,10 @@
  *
  * Re-exports from @webspecs/core for backwards compatibility.
  */
-import type { HtmlValidateReport } from '@webspecs/core'
 import {
   buildHtmlIssues,
   HTML_CODE_PREFIX,
+  type HtmlValidateReport,
   type HtmlIssue,
   type HtmlIssueMetadata,
 } from '@webspecs/core'

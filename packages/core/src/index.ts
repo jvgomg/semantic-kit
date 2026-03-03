@@ -160,7 +160,6 @@ export {
 // Metadata extraction and validation
 export {
   type SocialValidationIssue,
-  type SocialIssueMetadata,
   type ValidationSeverity,
   type NormalizedMetatags,
   type TagRequirements,
@@ -184,7 +183,6 @@ export {
   validateImageAltText,
   validateTwitterCard,
   validateSocialTags,
-  sortIssuesBySeverity,
 } from './metadata/index.js'
 
 // Social preview

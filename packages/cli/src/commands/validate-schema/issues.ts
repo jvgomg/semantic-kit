@@ -3,10 +3,10 @@
  *
  * Re-exports from @webspecs/core for backwards compatibility.
  */
-import type { SchemaValidationResult } from '@webspecs/core'
 import {
   buildSchemaValidationIssues,
   SCHEMA_CODE_PREFIX,
+  type SchemaValidationResult,
   type SchemaValidationIssue,
   type SchemaValidationIssueMetadata,
 } from '@webspecs/core'

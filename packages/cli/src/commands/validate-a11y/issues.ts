@@ -3,10 +3,10 @@
  *
  * Re-exports from @webspecs/core for backwards compatibility.
  */
-import type { AxeAnalysisResult } from '@webspecs/core'
 import {
   buildA11yIssues,
   A11Y_CODE_PREFIX,
+  type AxeAnalysisResult,
   type A11yIssue,
   type A11yIssueMetadata,
 } from '@webspecs/core'

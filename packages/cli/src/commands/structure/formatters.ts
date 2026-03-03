@@ -17,6 +17,7 @@ import {
   type TableRow,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
+import { buildIssues, buildIssuesJs, buildIssuesCompare } from './issues.js'
 import type {
   TuiStructureResult,
   StructureJsInternalResult,
@@ -24,7 +25,6 @@ import type {
   FormatStructureJsOptions,
   FormatStructureCompareOptions,
 } from './types.js'
-import { buildIssues, buildIssuesJs, buildIssuesCompare } from './issues.js'
 
 // Re-export for backwards compatibility
 export {

@@ -22,8 +22,8 @@ import {
   type TableGroup,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
-import type { ReadabilityCompareResult, SectionInfo } from './types.js'
 import { buildCompareIssues } from './issues.js'
+import type { ReadabilityCompareResult, SectionInfo } from './types.js'
 
 // Re-export for backwards compatibility
 export { buildCompareIssues, type ReadabilityIssue } from './issues.js'

@@ -6,8 +6,8 @@ import {
   type TableGroup,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
-import type { AxeAnalysisResult, RenderOptions, WcagLevel } from './types.js'
 import { buildIssues } from './issues.js'
+import type { AxeAnalysisResult, RenderOptions, WcagLevel } from './types.js'
 
 // Re-export for backwards compatibility
 export { buildIssues, type A11yIssue } from './issues.js'

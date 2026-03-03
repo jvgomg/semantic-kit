@@ -6,8 +6,8 @@ import {
   type TableGroup,
 } from '../../lib/cli-formatting/index.js'
 import type { OutputMode } from '../../lib/output-mode.js'
-import type { SchemaRenderOptions, SchemaValidationResult } from './types.js'
 import { buildIssues } from './issues.js'
+import type { SchemaRenderOptions, SchemaValidationResult } from './types.js'
 
 // Re-export for backwards compatibility
 export { buildIssues, type SchemaIssue } from './issues.js'

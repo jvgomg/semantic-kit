@@ -3,8 +3,12 @@
  *
  * Re-exports from @webspecs/core for backwards compatibility.
  */
-import type { Issue, StructureAnalysis, StructureComparison } from '@webspecs/core'
-import type { AxeStaticResult } from '@webspecs/core'
+import type {
+  Issue,
+  StructureAnalysis,
+  StructureComparison,
+  AxeStaticResult,
+} from '@webspecs/core'
 import {
   buildStructureIssues,
   buildStructureCompareIssues,
