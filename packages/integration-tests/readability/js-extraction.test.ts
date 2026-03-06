@@ -4,9 +4,8 @@
  * Tests Readability extraction from JavaScript-rendered HTML.
  */
 
-import type { ReadabilityJsResult } from '@webspecs/core'
 import { describe, it, expect } from 'bun:test'
-import { run, runCommand } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('readability:js command - extraction', () => {
@@ -85,10 +84,8 @@ describe('readability:js command - extraction', () => {
 
   describe('timeout option', () => {
     it('accepts custom timeout', async () => {
-      const { data, exitCode } = await runCommand<ReadabilityJsResult>(
-        'readability:js',
-        `${getBaseUrl()}/good/semantic-article.html`,
-        ['--timeout', '10000'],
+      const { data, exitCode } = await run(
+        `readability:js ${getBaseUrl()}/good/semantic-article.html --timeout 10000`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()

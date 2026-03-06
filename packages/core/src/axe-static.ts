@@ -203,8 +203,6 @@ export interface AxeStaticOptions {
    * - 'all': All JSDOM-safe rules for comprehensive analysis
    */
   ruleSet?: RuleSet
-  /** @deprecated Use ruleSet instead. Only run structure-related rules (default: true) */
-  structureOnly?: boolean
   /** Additional rules to enable (from JSDOM_SAFE_RULES) */
   enableRules?: string[]
   /** Rules to disable */
@@ -222,8 +220,6 @@ export interface AxeStaticResult {
   violationWarnings: StructureWarning[]
   /** Incomplete checks converted to StructureWarning format (issues that need review) */
   issueWarnings: StructureWarning[]
-  /** Combined warnings (violations + issues) - deprecated, use violationWarnings and issueWarnings */
-  warnings: StructureWarning[]
 }
 
 // ============================================================================
@@ -289,12 +285,7 @@ export async function runAxeOnStaticHtml(
   html: string,
   options: AxeStaticOptions = {},
 ): Promise<AxeStaticResult> {
-  const {
-    ruleSet,
-    structureOnly = true, // deprecated, but still supported
-    enableRules = [],
-    disableRules = [],
-  } = options
+  const { ruleSet = 'structure', enableRules = [], disableRules = [] } = options
 
   // Create jsdom instance - don't run scripts as we only need the DOM structure
   const dom = new JSDOM(html, {
@@ -312,16 +303,9 @@ export async function runAxeOnStaticHtml(
   globalThis.window = window as unknown as Window & typeof globalThis
   globalThis.document = document as unknown as Document
 
-  // Determine which rules to run based on ruleSet or legacy structureOnly
-  let baseRules: readonly string[]
-  if (ruleSet === 'all') {
-    baseRules = JSDOM_SAFE_RULES
-  } else if (ruleSet === 'structure' || structureOnly) {
-    baseRules = STRUCTURE_RULES
-  } else {
-    // No restriction - but we still limit to safe rules
-    baseRules = JSDOM_SAFE_RULES
-  }
+  // Determine which rules to run based on ruleSet
+  const baseRules: readonly string[] =
+    ruleSet === 'all' ? JSDOM_SAFE_RULES : STRUCTURE_RULES
 
   // Combine base rules with any additional enabled rules
   // Filter enableRules to only include safe rules
@@ -368,7 +352,6 @@ export async function runAxeOnStaticHtml(
       incomplete: results.incomplete,
       violationWarnings,
       issueWarnings,
-      warnings: [...violationWarnings, ...issueWarnings], // Combined for backwards compat
     }
   } finally {
     // Restore globals

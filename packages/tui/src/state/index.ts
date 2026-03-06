@@ -35,9 +35,6 @@ export {
   useFocusRegion,
   useFocusNavigation,
   useIsAppScopeActive,
-  // Backward compatibility
-  useFocus,
-  useFocusManager,
 } from './focus-scope/index.js'
 
 // Re-export AppFocusRegion as FocusRegion for backward compatibility

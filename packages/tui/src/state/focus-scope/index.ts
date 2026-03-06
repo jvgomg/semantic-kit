@@ -70,9 +70,6 @@ export {
   useFocusRegion,
   useFocusNavigation,
   useIsAppScopeActive,
-  // Backward compatibility
-  useFocus,
-  useFocusManager,
 } from './hooks.js'
 
 export type { UseFocusRegionOptions } from './hooks.js'

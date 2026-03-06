@@ -35,7 +35,7 @@ describe('social command - validation', () => {
       )
       expect(urlIssue).toBeDefined()
       expect(urlIssue!.severity).toBe('high')
-      expect(urlIssue!.tag).toBe('og:url')
+      expect(urlIssue!.metadata.tag).toBe('og:url')
     })
   })
 
@@ -52,9 +52,9 @@ describe('social command - validation', () => {
       )
       expect(titleIssue).toBeDefined()
       expect(titleIssue!.severity).toBe('medium')
-      expect(titleIssue!.tag).toBe('og:title')
-      expect(titleIssue!.limit).toBe(60)
-      expect(titleIssue!.actual).toBeGreaterThan(60)
+      expect(titleIssue!.metadata.tag).toBe('og:title')
+      expect(titleIssue!.metadata.limit).toBe(60)
+      expect(titleIssue!.metadata.actual).toBeGreaterThan(60)
     })
   })
 
@@ -71,9 +71,9 @@ describe('social command - validation', () => {
       )
       expect(descIssue).toBeDefined()
       expect(descIssue!.severity).toBe('medium')
-      expect(descIssue!.tag).toBe('og:description')
-      expect(descIssue!.limit).toBe(155)
-      expect(descIssue!.actual).toBeGreaterThan(155)
+      expect(descIssue!.metadata.tag).toBe('og:description')
+      expect(descIssue!.metadata.limit).toBe(155)
+      expect(descIssue!.metadata.actual).toBeGreaterThan(155)
     })
   })
 
@@ -108,7 +108,7 @@ describe('social command - validation', () => {
       )
       expect(cardIssue).toBeDefined()
       expect(cardIssue!.severity).toBe('low')
-      expect(cardIssue!.tag).toBe('twitter:card')
+      expect(cardIssue!.metadata.tag).toBe('twitter:card')
     })
   })
 

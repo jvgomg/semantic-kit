@@ -30,16 +30,6 @@ export interface PageMetadata {
 }
 
 /**
- * Social meta tags organized by prefix.
- */
-export interface SocialTags {
-  /** Open Graph tags (og:*) */
-  openGraph: Record<string, string>
-  /** Twitter Card tags (twitter:*) */
-  twitter: Record<string, string>
-}
-
-/**
  * Resolved preview data for display.
  * Uses platform-accurate fallback chains.
  */
@@ -118,21 +108,3 @@ export function buildSocialPreview(
   }
 }
 
-/**
- * Build preview data from SocialTags format.
- *
- * This is a convenience wrapper for buildSocialPreview that accepts
- * the SocialTags format used in older code.
- */
-export function buildPreview(
-  tags: SocialTags,
-  pageMetadata: PageMetadata,
-  targetUrl: string,
-): SocialPreview {
-  return buildSocialPreview(
-    tags.openGraph,
-    tags.twitter,
-    pageMetadata,
-    targetUrl,
-  )
-}

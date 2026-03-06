@@ -122,7 +122,7 @@ function filterIssuesByPrefix(
   issues: SocialValidationIssue[],
   prefix: string,
 ): SocialValidationIssue[] {
-  return issues.filter((issue) => issue.tag.startsWith(prefix))
+  return issues.filter((issue) => issue.metadata.tag.startsWith(prefix))
 }
 
 /**
@@ -671,7 +671,10 @@ export async function fetchStructure(
   const baseUrl = target.startsWith('http') ? target : null
   const analysis = analyzeStructure(document, baseUrl)
   const axeResult = await runAxeOnStaticHtml(html, { ruleSet: 'structure' })
-  analysis.warnings = axeResult.warnings
+  analysis.warnings = [
+    ...axeResult.violationWarnings,
+    ...axeResult.issueWarnings,
+  ]
 
   return { url: target, analysis, axeResult }
 }
@@ -703,7 +706,10 @@ export async function fetchStructureJs(
 
   const ruleSet: RuleSet = allRules ? 'all' : 'structure'
   const axeResult = await runAxeOnStaticHtml(hydratedHtml, { ruleSet })
-  hydratedAnalysis.warnings = axeResult.warnings
+  hydratedAnalysis.warnings = [
+    ...axeResult.violationWarnings,
+    ...axeResult.issueWarnings,
+  ]
 
   if (axeResult.incomplete.length > 0) {
     const ruleIds = axeResult.incomplete.map((r) => r.id).join(', ')

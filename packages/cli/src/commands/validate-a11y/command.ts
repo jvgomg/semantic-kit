@@ -1,3 +1,4 @@
+import { parseWcagLevel } from '@webspecs/core'
 import {
   validateFormat,
   validateTimeout,
@@ -6,7 +7,7 @@ import {
 import { resolveOutputMode } from '../../lib/output-mode.js'
 import { runCommand } from '../../lib/run-command.js'
 import { buildJsonResult, formatA11yValidationOutput } from './formatters.js'
-import { runAxeAnalysis, parseLevel } from './runner.js'
+import { runAxeAnalysis } from './runner.js'
 import {
   VALID_FORMATS,
   type RenderOptions,
@@ -23,7 +24,7 @@ export async function validateA11yCommand(
   requireUrl(url, 'validate:a11y')
 
   const format = validateFormat(options.format, VALID_FORMATS)
-  const level = parseLevel(options.level)
+  const level = parseWcagLevel(options.level)
   const timeoutMs = validateTimeout(options.timeout)
   const ignoreIncomplete = options.ignoreIncomplete ?? false
   const mode = resolveOutputMode(options)

@@ -4,9 +4,8 @@
  * Tests comparison of Readability extraction between static and JS-rendered HTML.
  */
 
-import type { ReadabilityCompareResult } from '@webspecs/cli/commands/readability/types.js'
 import { describe, it, expect } from 'bun:test'
-import { run, runCommand } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('readability:compare command', () => {
@@ -122,10 +121,8 @@ describe('readability:compare command', () => {
 
   describe('timeout option', () => {
     it('accepts custom timeout', async () => {
-      const { data, exitCode } = await runCommand<ReadabilityCompareResult>(
-        'readability:compare',
-        `${getBaseUrl()}/good/semantic-article.html`,
-        ['--timeout', '10000'],
+      const { data, exitCode } = await run(
+        `readability:compare ${getBaseUrl()}/good/semantic-article.html --timeout 10000`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -134,9 +131,8 @@ describe('readability:compare command', () => {
 
   describe('URL validation', () => {
     it('requires URL (rejects file paths)', async () => {
-      const { exitCode, stderr } = await runCommand<ReadabilityCompareResult>(
-        'readability:compare',
-        '/some/local/file.html',
+      const { exitCode, stderr } = await run(
+        `readability:compare /some/local/file.html`,
       )
       expect(exitCode).not.toBe(0)
       expect(stderr).toContain('requires a URL')

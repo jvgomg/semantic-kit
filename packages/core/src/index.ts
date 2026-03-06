@@ -188,11 +188,9 @@ export {
 // Social preview
 export {
   type PageMetadata,
-  type SocialTags,
   type SocialPreview,
   extractPageMetadata,
   buildSocialPreview,
-  buildPreview,
 } from './preview.js'
 
 // Structured data validation

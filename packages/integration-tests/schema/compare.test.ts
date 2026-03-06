@@ -4,9 +4,8 @@
  * Tests structured data comparison between static and JS-rendered HTML.
  */
 
-import type { SchemaCompareResult } from '@webspecs/core'
 import { describe, it, expect } from 'bun:test'
-import { run, runCommand } from '../utils/cli.js'
+import { run } from '../utils/cli.js'
 import { getBaseUrl } from '../utils/server.js'
 
 describe('schema:compare command', () => {
@@ -82,10 +81,8 @@ describe('schema:compare command', () => {
 
   describe('timeout option', () => {
     it('accepts custom timeout', async () => {
-      const { data, exitCode } = await runCommand<SchemaCompareResult>(
-        'schema:compare',
-        `${getBaseUrl()}/good/semantic-article.html`,
-        ['--timeout', '10000'],
+      const { data, exitCode } = await run(
+        `schema:compare ${getBaseUrl()}/good/semantic-article.html --timeout 10000`,
       )
       expect(exitCode).toBe(0)
       expect(data).not.toBeNull()
@@ -94,9 +91,8 @@ describe('schema:compare command', () => {
 
   describe('URL validation', () => {
     it('requires URL (not file path)', async () => {
-      const { exitCode, stderr } = await runCommand<SchemaCompareResult>(
-        'schema:compare',
-        'test-server/fixtures/good/semantic-article.html',
+      const { exitCode, stderr } = await run(
+        `schema:compare test-server/fixtures/good/semantic-article.html`,
       )
       expect(exitCode).toBe(1)
       expect(stderr).toContain('requires a URL')

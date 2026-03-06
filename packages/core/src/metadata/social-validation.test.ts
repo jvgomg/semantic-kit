@@ -71,8 +71,8 @@ describe('validateOgUrl', () => {
     expect(issue).not.toBeNull()
     expect(issue!.severity).toBe('high')
     expect(issue!.code).toBe('og-url-not-absolute')
-    expect(issue!.tag).toBe('og:url')
-    expect(issue!.value).toBe('/page')
+    expect(issue!.metadata.tag).toBe('og:url')
+    expect(issue!.metadata.value).toBe('/page')
   })
 
   it('returns error for URL without protocol', () => {
@@ -108,15 +108,15 @@ describe('validateOgTitleLength', () => {
     expect(issue).not.toBeNull()
     expect(issue!.severity).toBe('medium')
     expect(issue!.code).toBe('og-title-too-long')
-    expect(issue!.tag).toBe('og:title')
-    expect(issue!.limit).toBe(60)
-    expect(issue!.actual).toBe(61)
+    expect(issue!.metadata.tag).toBe('og:title')
+    expect(issue!.metadata.limit).toBe(60)
+    expect(issue!.metadata.actual).toBe(61)
   })
 
   it('returns warning with correct actual length for long title', () => {
     const title = 'a'.repeat(100)
     const issue = validateOgTitleLength(title)
-    expect(issue!.actual).toBe(100)
+    expect(issue!.metadata.actual).toBe(100)
   })
 })
 
@@ -140,9 +140,9 @@ describe('validateOgDescriptionLength', () => {
     expect(issue).not.toBeNull()
     expect(issue!.severity).toBe('medium')
     expect(issue!.code).toBe('og-description-too-long')
-    expect(issue!.tag).toBe('og:description')
-    expect(issue!.limit).toBe(155)
-    expect(issue!.actual).toBe(156)
+    expect(issue!.metadata.tag).toBe('og:description')
+    expect(issue!.metadata.limit).toBe(155)
+    expect(issue!.metadata.actual).toBe(156)
   })
 })
 
@@ -280,7 +280,7 @@ describe('validateTwitterCard', () => {
     expect(issue).not.toBeNull()
     expect(issue!.severity).toBe('low')
     expect(issue!.code).toBe('twitter-card-missing')
-    expect(issue!.tag).toBe('twitter:card')
+    expect(issue!.metadata.tag).toBe('twitter:card')
   })
 
   it('returns null when twitter:card is present', () => {
