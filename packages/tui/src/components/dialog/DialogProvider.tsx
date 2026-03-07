@@ -13,7 +13,10 @@ import {
   clearDialogsAtom,
   type DialogEntry,
 } from '../../state/dialog/index.js'
-import { DialogContextProvider, type DialogContextValue } from './DialogContext.js'
+import {
+  DialogContextProvider,
+  type DialogContextValue,
+} from './DialogContext.js'
 import { CommandDialog } from './CommandDialog.js'
 import { HelpDialog } from './HelpDialog.js'
 import { ThemeDialog } from './ThemeDialog.js'

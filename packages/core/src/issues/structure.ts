@@ -19,7 +19,8 @@ export const STRUCTURE_CODES = {
   TIMEOUT: 'structure-timeout',
 } as const
 
-export type StructureCode = (typeof STRUCTURE_CODES)[keyof typeof STRUCTURE_CODES]
+export type StructureCode =
+  (typeof STRUCTURE_CODES)[keyof typeof STRUCTURE_CODES]
 
 // ============================================================================
 // Input Types

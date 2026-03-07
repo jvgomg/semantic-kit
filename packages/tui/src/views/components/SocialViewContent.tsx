@@ -76,11 +76,13 @@ function ImageAsciiDisplay({
 
   if (loading) {
     return (
-      <text>
-        <span fg={colors.textMuted}>{'│'}</span>
-        <span fg={colors.textMuted}>{' Loading image...'.padEnd(width)}</span>
-        <span fg={colors.textMuted}>{'│'}</span>
-      </text>
+      <box flexDirection="column">
+        <text>
+          <span fg={colors.textMuted}>{'│'}</span>
+          <span fg={colors.textMuted}>{' Loading image...'.padEnd(width)}</span>
+          <span fg={colors.textMuted}>{'│'}</span>
+        </text>
+      </box>
     )
   }
 
@@ -88,17 +90,19 @@ function ImageAsciiDisplay({
     // Fallback to URL display
     const displayImage = `[IMG] ${truncateMiddle(imageUrl, width - 8)}`
     return (
-      <text>
-        <span fg={colors.textMuted}>{'│'}</span>
-        <span fg={colors.textMuted}>{` ${displayImage}`.padEnd(width)}</span>
-        <span fg={colors.textMuted}>{'│'}</span>
-      </text>
+      <box flexDirection="column">
+        <text>
+          <span fg={colors.textMuted}>{'│'}</span>
+          <span fg={colors.textMuted}>{` ${displayImage}`.padEnd(width)}</span>
+          <span fg={colors.textMuted}>{'│'}</span>
+        </text>
+      </box>
     )
   }
 
   // Render ASCII art lines
   return (
-    <>
+    <box flexDirection="column">
       {result.lines.map((line, i) => (
         <text key={i}>
           <span fg={colors.textMuted}>{'│'}</span>
@@ -106,7 +110,7 @@ function ImageAsciiDisplay({
           <span fg={colors.textMuted}>{'│'}</span>
         </text>
       ))}
-    </>
+    </box>
   )
 }
 

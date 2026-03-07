@@ -1,7 +1,10 @@
 /**
  * HTML validation issue generation.
  */
-import type { Report as HtmlValidateReport, Message as HtmlValidateMessage } from 'html-validate'
+import type {
+  Report as HtmlValidateReport,
+  Message as HtmlValidateMessage,
+} from 'html-validate'
 import type { Issue } from '../types.js'
 import type { HtmlIssueMetadata } from './types.js'
 

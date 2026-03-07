@@ -265,4 +265,3 @@ export function run<S extends string>(
   }
   return cache.get(command)! as Promise<CliResult<ResultFor<S>>>
 }
-

@@ -143,7 +143,7 @@ export function App({ initialUrl, hasConfig }: AppProps) {
 
     // Command palette (?)
     if (event.name === '?') {
-      pushDialog({ type: 'command' })  // Opens command dialog (user can navigate to help)
+      pushDialog({ type: 'command' }) // Opens command dialog (user can navigate to help)
       return
     }
 
@@ -168,7 +168,7 @@ export function App({ initialUrl, hasConfig }: AppProps) {
 
     // Theme dialog
     if (event.name === 't') {
-      pushDialog({ type: 'theme' })  // Opens command dialog at theme view
+      pushDialog({ type: 'theme' }) // Opens command dialog at theme view
       return
     }
 
@@ -247,14 +247,8 @@ export function App({ initialUrl, hasConfig }: AppProps) {
               }
               const descLines = wrapText(desc, innerWidth - 2)
 
-              const blank = () => (
-                <text bg={bg}>{' '.repeat(innerWidth)}</text>
-              )
-              const row = (
-                content: string,
-                color?: string,
-                bold?: boolean,
-              ) => (
+              const blank = () => <text bg={bg}>{' '.repeat(innerWidth)}</text>
+              const row = (content: string, color?: string, bold?: boolean) => (
                 <text fg={color} bg={bg}>
                   {bold ? (
                     <strong>{(' ' + content).padEnd(innerWidth)}</strong>

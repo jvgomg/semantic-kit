@@ -11,11 +11,7 @@ import { DialogSelect, type DialogSelectOption } from './DialogSelect.js'
 import { useDialog } from './DialogContext.js'
 import { useDialogGutter } from './DialogGutterContext.js'
 import { useSemanticColors } from '../../theme.js'
-import {
-  recentUrlsAtom,
-  setUrlAtom,
-  useFocusScope,
-} from '../../state/index.js'
+import { recentUrlsAtom, setUrlAtom, useFocusScope } from '../../state/index.js'
 import { clearDialogsAtom } from '../../state/dialog/index.js'
 
 export function RecentUrlsDialog() {

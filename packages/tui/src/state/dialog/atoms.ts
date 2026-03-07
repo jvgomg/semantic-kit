@@ -33,14 +33,18 @@ export const activeDialogAtom = atom((get) => {
  */
 export const pushDialogAtom = atom(
   null,
-  (get, set, payload: { type: DialogType; props?: Record<string, unknown> }) => {
+  (
+    get,
+    set,
+    payload: { type: DialogType; props?: Record<string, unknown> },
+  ) => {
     const entry: DialogEntry = {
       id: generateDialogId(),
       type: payload.type,
       props: payload.props,
     }
     set(dialogStackAtom, [...get(dialogStackAtom), entry])
-  }
+  },
 )
 
 /**
@@ -65,7 +69,11 @@ export const clearDialogsAtom = atom(null, (_get, set) => {
  */
 export const replaceDialogAtom = atom(
   null,
-  (get, set, payload: { type: DialogType; props?: Record<string, unknown> }) => {
+  (
+    get,
+    set,
+    payload: { type: DialogType; props?: Record<string, unknown> },
+  ) => {
     const stack = get(dialogStackAtom)
     const entry: DialogEntry = {
       id: generateDialogId(),
@@ -79,5 +87,5 @@ export const replaceDialogAtom = atom(
       // No dialog to replace, just push
       set(dialogStackAtom, [entry])
     }
-  }
+  },
 )

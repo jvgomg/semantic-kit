@@ -140,11 +140,7 @@ function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
         <text>
           <span fg={colors.textMuted}>Open Graph:</span>{' '}
           <span
-            fg={
-              comparison.openGraphChanged
-                ? colors.warning
-                : colors.textMuted
-            }
+            fg={comparison.openGraphChanged ? colors.warning : colors.textMuted}
           >
             {comparison.openGraphChanged ? 'Changed' : 'No change'}
           </span>
@@ -154,9 +150,7 @@ function ComparisonContent({ data }: { data: SchemaCompareResult }): ReactNode {
         <text>
           <span fg={colors.textMuted}>Twitter Cards:</span>{' '}
           <span
-            fg={
-              comparison.twitterChanged ? colors.warning : colors.textMuted
-            }
+            fg={comparison.twitterChanged ? colors.warning : colors.textMuted}
           >
             {comparison.twitterChanged ? 'Changed' : 'No change'}
           </span>

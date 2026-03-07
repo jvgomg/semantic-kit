@@ -142,7 +142,7 @@ function ThemePanel({ focused = true, width = 40 }: ThemePanelProps) {
         )
       })}
 
-      <text>{' '}</text>
+      <text> </text>
 
       {/* Mode section header */}
       <box paddingLeft={gutter}>
@@ -159,7 +159,10 @@ function ThemePanel({ focused = true, width = 40 }: ThemePanelProps) {
           const prefix = isSelected ? '\u25cf' : '\u25cb'
 
           return (
-            <text key={opt.value} fg={isHighlighted ? colors.text : colors.textMuted}>
+            <text
+              key={opt.value}
+              fg={isHighlighted ? colors.text : colors.textMuted}
+            >
               {`${prefix} ${opt.label}  `}
             </text>
           )

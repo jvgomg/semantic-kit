@@ -16,7 +16,10 @@ import {
 // ============================================================================
 
 export { SCHEMA_CODE_PREFIX }
-export type { SchemaValidationIssue as SchemaIssue, SchemaValidationIssueMetadata as SchemaIssueMetadata }
+export type {
+  SchemaValidationIssue as SchemaIssue,
+  SchemaValidationIssueMetadata as SchemaIssueMetadata,
+}
 
 // ============================================================================
 // Issue Builder (wrapper function for backwards compatibility)

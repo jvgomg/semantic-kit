@@ -23,9 +23,10 @@ export type AxeImpact = 'critical' | 'serious' | 'moderate' | 'minor'
  *
  * Used by validate-a11y and structure commands.
  */
-export function mapAxeImpactToSeverity(
-  impact: AxeImpact | null | undefined,
-): { type: IssueType; severity: IssueSeverity } {
+export function mapAxeImpactToSeverity(impact: AxeImpact | null | undefined): {
+  type: IssueType
+  severity: IssueSeverity
+} {
   switch (impact) {
     case 'critical':
       return { type: 'error', severity: 'high' }

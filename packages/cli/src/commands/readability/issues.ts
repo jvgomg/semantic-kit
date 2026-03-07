@@ -4,7 +4,10 @@
  * Re-exports from @webspecs/core for backwards compatibility.
  */
 import type { Issue, ReadabilityCompareResult } from '@webspecs/core'
-import { buildReadabilityCompareIssues, READABILITY_CODES } from '@webspecs/core'
+import {
+  buildReadabilityCompareIssues,
+  READABILITY_CODES,
+} from '@webspecs/core'
 
 // ============================================================================
 // Re-exports from core

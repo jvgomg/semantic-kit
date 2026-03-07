@@ -71,19 +71,22 @@ export const getScopeByIdAtom = atom((get) => {
  * Push a new scope onto the stack.
  * Saves the current focus state in the previous scope for restoration.
  */
-export const pushScopeAtom = atom(null, (get, set, config: FocusScopeConfig) => {
-  const stack = get(focusScopeStackAtom)
+export const pushScopeAtom = atom(
+  null,
+  (get, set, config: FocusScopeConfig) => {
+    const stack = get(focusScopeStackAtom)
 
-  // Determine initial region
-  const initialRegion = config.initialRegion ?? config.regions[0]
+    // Determine initial region
+    const initialRegion = config.initialRegion ?? config.regions[0]
 
-  const newEntry: FocusScopeEntry = {
-    config,
-    focusedRegion: initialRegion,
-  }
+    const newEntry: FocusScopeEntry = {
+      config,
+      focusedRegion: initialRegion,
+    }
 
-  set(focusScopeStackAtom, [...stack, newEntry])
-})
+    set(focusScopeStackAtom, [...stack, newEntry])
+  },
+)
 
 /**
  * Pop the current scope from the stack.
@@ -127,10 +130,7 @@ export const setFocusAtom = atom(null, (get, set, region: string) => {
     focusedRegion: region,
   }
 
-  set(focusScopeStackAtom, [
-    ...stack.slice(0, activeIndex),
-    updatedEntry,
-  ])
+  set(focusScopeStackAtom, [...stack.slice(0, activeIndex), updatedEntry])
 })
 
 /**
@@ -153,10 +153,7 @@ export const focusNextAtom = atom(null, (get, set) => {
     focusedRegion: nextRegion,
   }
 
-  set(focusScopeStackAtom, [
-    ...stack.slice(0, activeIndex),
-    updatedEntry,
-  ])
+  set(focusScopeStackAtom, [...stack.slice(0, activeIndex), updatedEntry])
 })
 
 /**
@@ -179,10 +176,7 @@ export const focusPreviousAtom = atom(null, (get, set) => {
     focusedRegion: prevRegion,
   }
 
-  set(focusScopeStackAtom, [
-    ...stack.slice(0, activeIndex),
-    updatedEntry,
-  ])
+  set(focusScopeStackAtom, [...stack.slice(0, activeIndex), updatedEntry])
 })
 
 /**

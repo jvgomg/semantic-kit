@@ -227,10 +227,7 @@ export function ConfigBrowser({
               ? colors.text
               : colors.text
             : colors.text,
-          bg:
-            isSelected && isFocused
-              ? colors.backgroundSelected
-              : undefined,
+          bg: isSelected && isFocused ? colors.backgroundSelected : undefined,
         }
 
         // Expand indicator color

@@ -3,7 +3,11 @@
  *
  * Re-exports from @webspecs/core for backwards compatibility.
  */
-import type { AnyIssue, SchemaResult, SchemaCompareResult } from '@webspecs/core'
+import type {
+  AnyIssue,
+  SchemaResult,
+  SchemaCompareResult,
+} from '@webspecs/core'
 import {
   buildSchemaIssues,
   buildSchemaCompareIssues,

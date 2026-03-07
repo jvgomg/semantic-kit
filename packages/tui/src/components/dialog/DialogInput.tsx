@@ -47,7 +47,8 @@ export function DialogInput({
   const { gutter } = useDialogGutter()
 
   // Calculate input width accounting for the gutter margins
-  const inputWidth = width !== undefined ? Math.max(1, width - gutter * 2) : undefined
+  const inputWidth =
+    width !== undefined ? Math.max(1, width - gutter * 2) : undefined
 
   return (
     <box paddingLeft={gutter} paddingRight={gutter} marginBottom={1}>

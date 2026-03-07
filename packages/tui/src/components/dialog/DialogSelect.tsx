@@ -120,7 +120,7 @@ function findNextValidIndex<T>(
   options: DialogSelectOption<T>[],
   currentIndex: number,
   direction: 'up' | 'down',
-  wrapSelection: boolean
+  wrapSelection: boolean,
 ): number {
   const len = options.length
   if (len === 0) return currentIndex
@@ -268,7 +268,7 @@ export function DialogSelect<T = string>({
           options,
           selectedIndex,
           'up',
-          wrapSelection
+          wrapSelection,
         )
         if (newIndex !== selectedIndex) {
           onChange?.(newIndex, options[newIndex]!)
@@ -281,7 +281,7 @@ export function DialogSelect<T = string>({
           options,
           selectedIndex,
           'down',
-          wrapSelection
+          wrapSelection,
         )
         if (newIndex !== selectedIndex) {
           onChange?.(newIndex, options[newIndex]!)
@@ -326,7 +326,7 @@ export function DialogSelect<T = string>({
           options,
           options.length,
           'up',
-          false
+          false,
         )
         if (newIndex !== selectedIndex) {
           onChange?.(newIndex, options[newIndex]!)
@@ -353,7 +353,7 @@ export function DialogSelect<T = string>({
       onChange?.(index, option)
       onSelect?.(index, option)
     },
-    [options, onChange, onSelect]
+    [options, onChange, onSelect],
   )
 
   // Handle mouse hover on an option row
@@ -366,7 +366,7 @@ export function DialogSelect<T = string>({
 
       onChange?.(index, option)
     },
-    [options, selectedIndex, inputMode, onChange]
+    [options, selectedIndex, inputMode, onChange],
   )
 
   // Handle mouse move - switch to mouse mode
@@ -385,73 +385,73 @@ export function DialogSelect<T = string>({
       scrollbarOptions={{ visible: false }}
     >
       {renderRows.map((row, rowIndex) => {
-          if (row.type === 'category') {
-            // Render category header - aligned to gutter margin
-            // Add spacing above if not the first element
-            return (
-              <box
-                key={`cat-${rowIndex}-${row.label}`}
-                paddingLeft={gutter}
-                marginTop={rowIndex > 0 ? 1 : 0}
-              >
-                <text fg={colors.textMuted}>
-                  <strong>{row.label}</strong>
-                </text>
-              </box>
-            )
-          }
-
-          // Render option row
-          const { option, originalIndex } = row
-          const isSelected = originalIndex === selectedIndex
-          const isDisabled = option.disabled
-
-          const bgColor = isSelected ? colors.backgroundSelected : undefined
-          const fgColor = isDisabled
-            ? colors.textMuted
-            : isSelected
-              ? colors.text
-              : colors.text
-          const footerColor = colors.textMuted
-
-          // Indicator character (▶ when selected, space otherwise)
-          const indicatorChar = isSelected ? '▶' : ' '
-
+        if (row.type === 'category') {
+          // Render category header - aligned to gutter margin
+          // Add spacing above if not the first element
           return (
             <box
-              key={`opt-${originalIndex}-${option.label}`}
-              id={`option-${originalIndex}`}
-              onMouseDown={() => handleItemClick(originalIndex)}
-              onMouseMove={handleMouseMove}
-              onMouseOver={() => handleItemHover(originalIndex)}
-              backgroundColor={bgColor}
-              flexDirection="column"
+              key={`cat-${rowIndex}-${row.label}`}
+              paddingLeft={gutter}
+              marginTop={rowIndex > 0 ? 1 : 0}
             >
-              {/* Main row: indicator + label + spacer + footer */}
-              {/* Indicator is positioned so label starts at gutter margin */}
-              <box flexDirection="row" justifyContent="space-between">
-                <box flexDirection="row" paddingLeft={gutter - indicatorWidth}>
-                  <text fg={fgColor} width={indicatorWidth}>
-                    {indicatorChar}
-                  </text>
-                  <text fg={fgColor}>{option.label}</text>
-                </box>
-                {option.footer && (
-                  <text fg={footerColor} paddingRight={gutter}>
-                    {option.footer}
-                  </text>
-                )}
-              </box>
-
-              {/* Description row - indented to align with option labels */}
-              {showDescription && option.description && (
-                <box paddingLeft={gutter}>
-                  <text fg={colors.textMuted}>{option.description}</text>
-                </box>
-              )}
+              <text fg={colors.textMuted}>
+                <strong>{row.label}</strong>
+              </text>
             </box>
           )
-        })}
+        }
+
+        // Render option row
+        const { option, originalIndex } = row
+        const isSelected = originalIndex === selectedIndex
+        const isDisabled = option.disabled
+
+        const bgColor = isSelected ? colors.backgroundSelected : undefined
+        const fgColor = isDisabled
+          ? colors.textMuted
+          : isSelected
+            ? colors.text
+            : colors.text
+        const footerColor = colors.textMuted
+
+        // Indicator character (▶ when selected, space otherwise)
+        const indicatorChar = isSelected ? '▶' : ' '
+
+        return (
+          <box
+            key={`opt-${originalIndex}-${option.label}`}
+            id={`option-${originalIndex}`}
+            onMouseDown={() => handleItemClick(originalIndex)}
+            onMouseMove={handleMouseMove}
+            onMouseOver={() => handleItemHover(originalIndex)}
+            backgroundColor={bgColor}
+            flexDirection="column"
+          >
+            {/* Main row: indicator + label + spacer + footer */}
+            {/* Indicator is positioned so label starts at gutter margin */}
+            <box flexDirection="row" justifyContent="space-between">
+              <box flexDirection="row" paddingLeft={gutter - indicatorWidth}>
+                <text fg={fgColor} width={indicatorWidth}>
+                  {indicatorChar}
+                </text>
+                <text fg={fgColor}>{option.label}</text>
+              </box>
+              {option.footer && (
+                <text fg={footerColor} paddingRight={gutter}>
+                  {option.footer}
+                </text>
+              )}
+            </box>
+
+            {/* Description row - indented to align with option labels */}
+            {showDescription && option.description && (
+              <box paddingLeft={gutter}>
+                <text fg={colors.textMuted}>{option.description}</text>
+              </box>
+            )}
+          </box>
+        )
+      })}
     </scrollbox>
   )
 }

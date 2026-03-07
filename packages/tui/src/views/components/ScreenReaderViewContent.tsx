@@ -110,9 +110,7 @@ function SummaryContent({ data }: { data: ScreenReaderResult }): ReactNode {
       <box flexDirection="row" gap={2}>
         <text>
           <span fg={colors.textMuted}>Skip Link:</span>{' '}
-          <span
-            fg={summary.hasSkipLink ? colors.success : colors.warning}
-          >
+          <span fg={summary.hasSkipLink ? colors.success : colors.warning}>
             {summary.hasSkipLink ? 'Yes' : 'No'}
           </span>
         </text>
@@ -128,9 +126,7 @@ function LandmarksContent({ data }: { data: ScreenReaderResult }): ReactNode {
   const colors = useSemanticColors()
   if (data.landmarks.length === 0) {
     return (
-      <text fg={colors.warning}>
-        No landmark regions found on this page.
-      </text>
+      <text fg={colors.warning}>No landmark regions found on this page.</text>
     )
   }
 

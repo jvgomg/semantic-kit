@@ -109,4 +109,3 @@ export function useTheme(): UseThemeResult {
 export function useColors(): ResolvedColors {
   return useAtomValue(resolvedColorsAtom)
 }
-

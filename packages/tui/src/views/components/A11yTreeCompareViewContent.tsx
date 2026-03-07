@@ -71,11 +71,7 @@ function SummaryContent({ data }: { data: A11yCompareResult }): ReactNode {
         <text>
           <span fg={colors.textMuted}>Roles Changed:</span>{' '}
           <span
-            fg={
-              diff.countChanges.length > 0
-                ? colors.warning
-                : colors.success
-            }
+            fg={diff.countChanges.length > 0 ? colors.warning : colors.success}
           >
             {diff.countChanges.length}
           </span>

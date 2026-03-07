@@ -5,11 +5,7 @@
  */
 
 // Types
-export type {
-  GroupedMenuItem,
-  ViewData,
-  ViewDataStatus,
-} from './types.js'
+export type { GroupedMenuItem, ViewData, ViewDataStatus } from './types.js'
 
 // Focus Scope (new system)
 export {

@@ -50,8 +50,14 @@ export function SitemapDialog() {
   })
 
   // Get focus state for regions
-  const { isFocused: inputFocused } = useFocusRegion({ id: SCOPE_ID, region: 'input' })
-  const { isFocused: treeFocused } = useFocusRegion({ id: SCOPE_ID, region: 'tree' })
+  const { isFocused: inputFocused } = useFocusRegion({
+    id: SCOPE_ID,
+    region: 'input',
+  })
+  const { isFocused: treeFocused } = useFocusRegion({
+    id: SCOPE_ID,
+    region: 'tree',
+  })
   const { focusNext } = useFocusNavigation()
   const setFocusInScope = useSetAtom(setFocusInScopeAtom)
 
@@ -184,9 +190,7 @@ export function SitemapDialog() {
           paddingRight={gutter}
           flexDirection="row"
           borderStyle="single"
-          borderColor={
-            inputFocused ? colors.borderActive : colors.borderSubtle
-          }
+          borderColor={inputFocused ? colors.borderActive : colors.borderSubtle}
           marginBottom={1}
         >
           <text fg={colors.textMuted}>URL: </text>

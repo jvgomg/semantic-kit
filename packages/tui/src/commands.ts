@@ -10,11 +10,19 @@ import { getAllViews, type ViewDefinition } from './views/index.js'
 // Types
 // =============================================================================
 
-export type CommandCategory = 'Lenses' | 'Tools' | 'Navigation' | 'Settings' | 'Help'
+export type CommandCategory =
+  | 'Lenses'
+  | 'Tools'
+  | 'Navigation'
+  | 'Settings'
+  | 'Help'
 
 export type CommandAction =
   | { type: 'switch-view'; viewId: string }
-  | { type: 'push-dialog'; dialog: 'theme' | 'help' | 'recent-urls' | 'preset-urls' | 'sitemap' }
+  | {
+      type: 'push-dialog'
+      dialog: 'theme' | 'help' | 'recent-urls' | 'preset-urls' | 'sitemap'
+    }
   | { type: 'clear-dialogs-and-focus'; target: 'url' }
   | { type: 'reload' }
   | { type: 'quit' }
@@ -112,8 +120,12 @@ function viewToCommand(view: ViewDefinition): CommandDefinition {
 export function getAllCommands(): CommandDefinition[] {
   const views = getAllViews()
 
-  const lensCommands = views.filter((v) => v.category === 'lens').map(viewToCommand)
-  const toolCommands = views.filter((v) => v.category === 'tool').map(viewToCommand)
+  const lensCommands = views
+    .filter((v) => v.category === 'lens')
+    .map(viewToCommand)
+  const toolCommands = views
+    .filter((v) => v.category === 'tool')
+    .map(viewToCommand)
 
   return [...lensCommands, ...toolCommands, ...STATIC_COMMANDS]
 }
@@ -121,7 +133,9 @@ export function getAllCommands(): CommandDefinition[] {
 /**
  * Get commands filtered by category.
  */
-export function getCommandsByCategory(category: CommandCategory): CommandDefinition[] {
+export function getCommandsByCategory(
+  category: CommandCategory,
+): CommandDefinition[] {
   return getAllCommands().filter((cmd) => cmd.category === category)
 }
 
@@ -153,7 +167,8 @@ export function getGroupedMenuCommands(): GroupedCommandItem[] {
   if (lenses.length > 0) {
     items.push({ type: 'header', label: 'LENSES' })
     for (const cmd of lenses) {
-      const viewId = cmd.action.type === 'switch-view' ? cmd.action.viewId : undefined
+      const viewId =
+        cmd.action.type === 'switch-view' ? cmd.action.viewId : undefined
       items.push({ type: 'command', id: cmd.id, label: cmd.label, viewId })
     }
   }
@@ -162,7 +177,8 @@ export function getGroupedMenuCommands(): GroupedCommandItem[] {
   if (tools.length > 0) {
     items.push({ type: 'header', label: 'TOOLS' })
     for (const cmd of tools) {
-      const viewId = cmd.action.type === 'switch-view' ? cmd.action.viewId : undefined
+      const viewId =
+        cmd.action.type === 'switch-view' ? cmd.action.viewId : undefined
       items.push({ type: 'command', id: cmd.id, label: cmd.label, viewId })
     }
   }

@@ -91,9 +91,7 @@ function MetadataContent({ metadata }: { metadata: MetadataDiff }): ReactNode {
         <box flexDirection="column" gap={0}>
           <text fg={colors.textMuted}>Title:</text>
           <box flexDirection="row" marginLeft={2}>
-            <text fg={colors.error}>
-              - {metadata.title.static || '(none)'}
-            </text>
+            <text fg={colors.error}>- {metadata.title.static || '(none)'}</text>
           </box>
           <box flexDirection="row" marginLeft={2}>
             <text fg={colors.success}>

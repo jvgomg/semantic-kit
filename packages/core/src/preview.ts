@@ -107,4 +107,3 @@ export function buildSocialPreview(
     siteName: openGraph['og:site_name'] || null,
   }
 }
-

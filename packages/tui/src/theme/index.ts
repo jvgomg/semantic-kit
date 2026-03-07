@@ -38,7 +38,12 @@ export { THEME_COLOR_KEYS } from './types.js'
 // React Hooks
 // =============================================================================
 
-export { useSemanticColors, useTheme, useColors, type UseThemeResult } from './hooks.js'
+export {
+  useSemanticColors,
+  useTheme,
+  useColors,
+  type UseThemeResult,
+} from './hooks.js'
 
 // =============================================================================
 // Jotai Atoms

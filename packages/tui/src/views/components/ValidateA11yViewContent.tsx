@@ -231,9 +231,7 @@ function IncompleteContent({
 }): ReactNode {
   const colors = useSemanticColors()
   if (incomplete.length === 0) {
-    return (
-      <text fg={colors.success}>No items requiring manual review.</text>
-    )
+    return <text fg={colors.success}>No items requiring manual review.</text>
   }
 
   return (

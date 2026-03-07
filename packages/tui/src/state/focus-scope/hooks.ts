@@ -185,4 +185,3 @@ export function useFocusNavigation(): {
 export function useIsAppScopeActive(): boolean {
   return useAtomValue(isAppScopeActiveAtom)
 }
-

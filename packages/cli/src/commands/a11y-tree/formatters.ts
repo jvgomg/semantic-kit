@@ -17,7 +17,11 @@ import type { OutputMode } from '../../lib/output-mode.js'
 import { buildIssues, buildCompareIssues } from './issues.js'
 
 // Re-export for backwards compatibility
-export { buildIssues, buildCompareIssues, type A11yTreeIssue } from './issues.js'
+export {
+  buildIssues,
+  buildCompareIssues,
+  type A11yTreeIssue,
+} from './issues.js'
 
 // ============================================================================
 // Role Categories
