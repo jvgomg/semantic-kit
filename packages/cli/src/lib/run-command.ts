@@ -47,7 +47,7 @@ const FRAME_INTERVAL = 80
  */
 async function runWithSpinner<T>(options: {
   fetch: () => Promise<T>
-  render: (result: T) => string
+  render: (result: T) => string | Promise<string>
   spinnerMessage: string
   completionMessage: string
 }): Promise<T> {
@@ -81,7 +81,7 @@ async function runWithSpinner<T>(options: {
     stopSpinner()
     console.log(`${completionMessage}. Took ${formatDuration(duration)}.`)
     console.log('')
-    console.log(render(result))
+    console.log(await render(result))
     return result
   } catch (error) {
     stopSpinner()
@@ -119,7 +119,7 @@ export interface RunCommandOptions<T> {
   /** Message to show after completion (e.g., "AI bot analysis for https://example.com") */
   completionMessage?: string
   /** Function to render result as terminal output (for full/compact/brief formats) */
-  render: (result: T) => string
+  render: (result: T) => string | Promise<string>
   /** Function to build JSON output data (for json format) */
   json: (result: T) => JsonResult
 }
@@ -183,7 +183,7 @@ export async function runCommand<T>(options: RunCommandOptions<T>): Promise<T> {
   const duration = performance.now() - startTime
   console.log(`${resolvedCompletionMessage}. Took ${formatDuration(duration)}.`)
   console.log('')
-  console.log(render(result))
+  console.log(await render(result))
   return result
 }
 

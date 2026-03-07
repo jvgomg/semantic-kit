@@ -3,6 +3,7 @@
  *
  * Formats social lens results for CLI output, including ASCII card preview.
  */
+import { fetchAndRenderAscii } from '@webspecs/image-ascii'
 import type { OutputFormat } from '../../lib/arguments.js'
 import {
   colorize,
@@ -39,10 +40,10 @@ const CARD_VERTICAL = '│'
 /**
  * Create an ASCII mockup of a social card preview.
  */
-function formatCardPreview(
+async function formatCardPreview(
   result: SocialResult,
   ctx: FormatterContext,
-): string[] {
+): Promise<string[]> {
   const lines: string[] = []
   const innerWidth = CARD_WIDTH - 2
 
@@ -55,16 +56,36 @@ function formatCardPreview(
     ),
   )
 
-  // Image area (simplified - just shows image URL or placeholder)
+  // Image area - try to render ASCII art, fall back to URL display
   const imageUrl = result.preview.image
   if (imageUrl) {
-    // Account for " [IMG] " prefix (7 chars) when truncating URL
-    const truncatedUrl = truncateMiddle(imageUrl, innerWidth - 8)
-    lines.push(
-      colorize(CARD_VERTICAL, colors.gray, ctx) +
-        colorize(` [IMG] ${truncatedUrl}`.padEnd(innerWidth), colors.dim, ctx) +
-        colorize(CARD_VERTICAL, colors.gray, ctx),
-    )
+    const imgResult = await fetchAndRenderAscii(imageUrl, {
+      width: innerWidth,
+      timeout: 5000,
+    })
+
+    if (imgResult.ok) {
+      // Add ASCII art lines with card borders
+      for (const imgLine of imgResult.lines) {
+        lines.push(
+          colorize(CARD_VERTICAL, colors.gray, ctx) +
+            imgLine +
+            colorize(CARD_VERTICAL, colors.gray, ctx),
+        )
+      }
+    } else {
+      // Fallback to URL display on error
+      const truncatedUrl = truncateMiddle(imageUrl, innerWidth - 8)
+      lines.push(
+        colorize(CARD_VERTICAL, colors.gray, ctx) +
+          colorize(
+            ` [IMG] ${truncatedUrl}`.padEnd(innerWidth),
+            colors.dim,
+            ctx,
+          ) +
+          colorize(CARD_VERTICAL, colors.gray, ctx),
+      )
+    }
   } else {
     lines.push(
       colorize(CARD_VERTICAL, colors.gray, ctx) +
@@ -268,11 +289,11 @@ function formatIssues(
 /**
  * Format terminal output - full or compact mode.
  */
-function formatTerminal(
+async function formatTerminal(
   result: SocialResult,
   ctx: FormatterContext,
   options?: { compact?: boolean },
-): string {
+): Promise<string> {
   const compact = options?.compact ?? false
   const sections: string[] = []
 
@@ -282,7 +303,7 @@ function formatTerminal(
   } else {
     sections.push('PREVIEW')
   }
-  sections.push(...formatCardPreview(result, ctx))
+  sections.push(...(await formatCardPreview(result, ctx)))
 
   // [ISSUES] section
   if (result.issues.length > 0) {
@@ -344,11 +365,11 @@ function formatTerminal(
  * Format Social lens result for terminal output.
  * JSON format is handled directly by runCommand.
  */
-export function formatSocialOutput(
+export async function formatSocialOutput(
   result: SocialResult,
   format: OutputFormat,
   mode: OutputMode,
-): string {
+): Promise<string> {
   const ctx = createFormatterContext(mode)
 
   switch (format) {

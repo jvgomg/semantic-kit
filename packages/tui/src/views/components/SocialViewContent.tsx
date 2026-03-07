@@ -4,12 +4,16 @@
  * Custom TUI rendering for the Social lens using the expandable sections framework.
  *
  * Sections:
- * 1. Preview - ASCII mockup of social card
+ * 1. Preview - ASCII mockup of social card with og:image rendering
  * 2. Issues - Validation issues with severity
  * 3. Open Graph - All OG tags
  * 4. Twitter Cards - All Twitter tags
  */
-import type { ReactNode } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
+import {
+  fetchAndRenderAscii,
+  type AsciiImageResult,
+} from '@webspecs/image-ascii'
 import {
   SectionContainer,
   Section,
@@ -21,6 +25,90 @@ import {
 import { useSemanticColors } from '../../theme.js'
 import type { SocialResult } from '@webspecs/core'
 import type { ViewComponentProps } from '../types.js'
+
+// ============================================================================
+// Image ASCII Component
+// ============================================================================
+
+/**
+ * Renders an og:image as ASCII art with loading state
+ */
+function ImageAsciiDisplay({
+  imageUrl,
+  width,
+}: {
+  imageUrl: string
+  width: number
+}): ReactNode {
+  const colors = useSemanticColors()
+  const [result, setResult] = useState<AsciiImageResult | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+
+    setLoading(true)
+    fetchAndRenderAscii(imageUrl, { width, timeout: 5000 })
+      .then((res) => {
+        if (!cancelled) {
+          setResult(res)
+          setLoading(false)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setResult(null)
+          setLoading(false)
+        }
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [imageUrl, width])
+
+  // Truncate URL for fallback display
+  const truncateMiddle = (text: string, maxLen: number): string => {
+    if (text.length <= maxLen) return text
+    const half = Math.floor((maxLen - 3) / 2)
+    return text.slice(0, half) + '...' + text.slice(-half)
+  }
+
+  if (loading) {
+    return (
+      <text>
+        <span fg={colors.textMuted}>{'│'}</span>
+        <span fg={colors.textMuted}>{' Loading image...'.padEnd(width)}</span>
+        <span fg={colors.textMuted}>{'│'}</span>
+      </text>
+    )
+  }
+
+  if (!result?.ok) {
+    // Fallback to URL display
+    const displayImage = `[IMG] ${truncateMiddle(imageUrl, width - 8)}`
+    return (
+      <text>
+        <span fg={colors.textMuted}>{'│'}</span>
+        <span fg={colors.textMuted}>{` ${displayImage}`.padEnd(width)}</span>
+        <span fg={colors.textMuted}>{'│'}</span>
+      </text>
+    )
+  }
+
+  // Render ASCII art lines
+  return (
+    <>
+      {result.lines.map((line, i) => (
+        <text key={i}>
+          <span fg={colors.textMuted}>{'│'}</span>
+          <span>{line}</span>
+          <span fg={colors.textMuted}>{'│'}</span>
+        </text>
+      ))}
+    </>
+  )
+}
 
 // ============================================================================
 // Card Preview Component
@@ -39,12 +127,6 @@ function CardPreview({ data }: { data: SocialResult }): ReactNode {
     return text.slice(0, maxLen - 3) + '...'
   }
 
-  const truncateMiddle = (text: string, maxLen: number): string => {
-    if (text.length <= maxLen) return text
-    const half = Math.floor((maxLen - 3) / 2)
-    return text.slice(0, half) + '...' + text.slice(-half)
-  }
-
   // Extract domain from URL
   const getDomain = (url: string | null): string | null => {
     if (!url) return null
@@ -61,9 +143,6 @@ function CardPreview({ data }: { data: SocialResult }): ReactNode {
   const imageUrl = data.preview.image
 
   // Truncate for display
-  const displayImage = imageUrl
-    ? `[IMG] ${truncateMiddle(imageUrl, innerWidth - 8)}`
-    : '[No image]'
   const displayTitle = truncate(title, innerWidth - 2)
   const displayDesc = truncate(description, innerWidth - 2)
   const displaySite = siteName ? truncate(siteName, innerWidth - 2) : null
@@ -73,14 +152,16 @@ function CardPreview({ data }: { data: SocialResult }): ReactNode {
       {/* Top border */}
       <text fg={colors.textMuted}>{'┌' + '─'.repeat(innerWidth) + '┐'}</text>
 
-      {/* Image area */}
-      <text>
-        <span fg={colors.textMuted}>{'│'}</span>
-        <span fg={colors.textMuted}>
-          {` ${displayImage}`.padEnd(innerWidth)}
-        </span>
-        <span fg={colors.textMuted}>{'│'}</span>
-      </text>
+      {/* Image area - ASCII art or fallback */}
+      {imageUrl ? (
+        <ImageAsciiDisplay imageUrl={imageUrl} width={innerWidth} />
+      ) : (
+        <text>
+          <span fg={colors.textMuted}>{'│'}</span>
+          <span fg={colors.textMuted}>{' [No image]'.padEnd(innerWidth)}</span>
+          <span fg={colors.textMuted}>{'│'}</span>
+        </text>
+      )}
 
       {/* Divider */}
       <text fg={colors.textMuted}>{'│' + '─'.repeat(innerWidth) + '│'}</text>
