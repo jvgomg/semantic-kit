@@ -1,0 +1,51 @@
+{
+  "name": "@webspecs/image-ascii",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Convert images to ANSI art for terminal display",
+  "author": "James Greenaway",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jvgomg/semantic-kit.git",
+    "directory": "packages/image-ascii"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ascii-art",
+    "ansi",
+    "terminal",
+    "image",
+    "og-image",
+    "preview",
+    "typescript"
+  ],
+  "sideEffects": false,
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun run build.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test src/",
+    "lint": "eslint .",
+    "pretty": "prettier --write .",
+    "pretty:check": "prettier --check .",
+    "dev:watch": "bun run build.ts --watch",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "jimp": "^1.6.0"
+  }
+}
