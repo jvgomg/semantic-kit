@@ -42,3 +42,17 @@ export {
   validateSocialTags,
   sortIssuesBySeverity,
 } from './social-validation.js'
+
+// Image URL Validation (async)
+export {
+  SUPPORTED_IMAGE_TYPES,
+  PARTIAL_SUPPORT_IMAGE_TYPES,
+  VALID_IMAGE_TYPES,
+  PLATFORM_SIZE_LIMITS,
+  UNIVERSAL_SIZE_LIMIT,
+  DEFAULT_TIMEOUT_MS,
+  type ImageValidationResult,
+  type ImageValidationOptions,
+  validateImageUrl,
+  validateImageUrls,
+} from './image-validation.js'

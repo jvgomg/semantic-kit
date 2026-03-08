@@ -4,6 +4,7 @@ title: 'Add ASCII image preview for og:image in social command'
 status: To Do
 assignee: []
 created_date: '2026-02-16 14:52'
+updated_date: '2026-03-08 12:25'
 labels:
   - research-backed
   - lens-social
@@ -93,4 +94,5 @@ Example output:
 - [ ] #7 Image fetch has reasonable timeout (e.g., 5 seconds)
 - [ ] #8 Research page updated with toolCoverage entry
 - [ ] #9 CHANGELOG entry references research page and version
+- [ ] #10 ASCII preview shows clear "broken image" state when og:image URL returns 404 or other errors (not just fallback to URL)
 <!-- AC:END -->

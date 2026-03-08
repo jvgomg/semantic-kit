@@ -29,10 +29,10 @@ describe('social command - tag extraction', () => {
       )
       expect(data!.openGraph!.tags['og:type']).toBe('article')
       expect(data!.openGraph!.tags['og:image']).toBe(
-        'http://localhost:4000/images/social-preview.png',
+        'http://localhost:4050/images/social-preview.png',
       )
       expect(data!.openGraph!.tags['og:url']).toBe(
-        'http://localhost:4000/good/social-complete.html',
+        'http://localhost:4050/good/social-complete.html',
       )
       expect(data!.openGraph!.tags['og:site_name']).toBe('Semantic Kit')
     })
@@ -100,7 +100,7 @@ describe('social command - tag extraction', () => {
         'A page demonstrating complete Open Graph and Twitter Card implementations.',
       )
       expect(data!.preview.image).toBe(
-        'http://localhost:4000/images/social-preview.png',
+        'http://localhost:4050/images/social-preview.png',
       )
       expect(data!.preview.siteName).toBe('Semantic Kit')
     })

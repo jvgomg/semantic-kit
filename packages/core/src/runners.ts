@@ -34,6 +34,7 @@ import {
   validateSocialTags,
   sortIssuesBySeverity,
   groupMetatagsByPrefix,
+  validateImageUrls,
 } from './metadata/index.js'
 import type { SocialValidationIssue } from './metadata/types.js'
 import {
@@ -618,12 +619,22 @@ export async function fetchSocial(target: string): Promise<SocialResult> {
   )
 
   const normalizedTags = normalizeMetatags(data.metatags)
-  const issues = sortIssuesBySeverity(
-    validateSocialTags(normalizedTags, {
-      checkPresence: true,
-      checkQuality: true,
-    }),
+  const syncIssues = validateSocialTags(normalizedTags, {
+    checkPresence: true,
+    checkQuality: true,
+  })
+
+  // Validate image URLs (async - checks HTTP accessibility, content-type, size)
+  const imageUrls: Record<string, string | undefined> = {
+    'og:image': normalizedTags['og:image'],
+    'twitter:image': normalizedTags['twitter:image'],
+  }
+  const imageValidationResults = await validateImageUrls(imageUrls)
+  const imageIssues = Object.values(imageValidationResults).flatMap(
+    (result) => result.issues,
   )
+
+  const issues = sortIssuesBySeverity([...syncIssues, ...imageIssues])
 
   const ogCount = openGraph ? Object.keys(openGraph.tags).length : 0
   const twCount = twitter ? Object.keys(twitter.tags).length : 0

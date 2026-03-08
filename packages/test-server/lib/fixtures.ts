@@ -77,7 +77,20 @@ function getContentType(filePath: string): string {
   if (filePath.endsWith('.json')) return 'application/json; charset=utf-8'
   if (filePath.endsWith('.css')) return 'text/css; charset=utf-8'
   if (filePath.endsWith('.js')) return 'text/javascript; charset=utf-8'
+  if (filePath.endsWith('.png')) return 'image/png'
+  if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) return 'image/jpeg'
+  if (filePath.endsWith('.gif')) return 'image/gif'
+  if (filePath.endsWith('.webp')) return 'image/webp'
+  if (filePath.endsWith('.svg')) return 'image/svg+xml'
   return 'application/octet-stream'
+}
+
+/**
+ * Check if a file is binary (non-text)
+ */
+function isBinaryFile(filePath: string): boolean {
+  const binaryExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.pdf']
+  return binaryExtensions.some((ext) => filePath.endsWith(ext))
 }
 
 /**
@@ -136,9 +149,11 @@ export async function serveFixture(
     return Response.redirect(meta.redirect, meta.redirectStatus || 302)
   }
 
-  // Read file content
+  // Read file content (binary for images, text for others)
   const file = Bun.file(filePath)
-  const content = await file.text()
+  const content = isBinaryFile(filePath)
+    ? await file.arrayBuffer()
+    : await file.text()
 
   // Build headers
   const headers: Record<string, string> = {
