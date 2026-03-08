@@ -12,6 +12,9 @@ toolCoverage:
   - finding: "Character limit warnings (60 title, 155 description)"
     command: social
     since: v0.0.17
+  - finding: "ASCII art preview of og:image in terminal with 1200×630 dimension awareness"
+    command: social
+    since: v0.0.18
 ---
 
 # Open Graph and Social Metadata Validation

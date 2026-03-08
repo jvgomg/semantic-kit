@@ -9,6 +9,28 @@ export interface FetchImageOptions {
 }
 
 /**
+ * RGB color tuple [r, g, b] with values 0-255.
+ */
+export type RGB = [number, number, number]
+
+/**
+ * A single character cell with foreground and background colors.
+ */
+export interface ColoredCell {
+  /** The character to render (half-block) */
+  char: string
+  /** Foreground color as RGB tuple */
+  fg: RGB
+  /** Background color as RGB tuple */
+  bg: RGB
+}
+
+/**
+ * A row of colored cells representing one line of ASCII art.
+ */
+export type ColoredRow = ColoredCell[]
+
+/**
  * Options for rendering an image as ASCII art.
  */
 export interface RenderOptions {
@@ -18,6 +40,13 @@ export interface RenderOptions {
   height?: number
   /** Character aspect ratio (width/height). Default: 0.5 (chars are ~2x taller than wide) */
   charAspectRatio?: number
+  /**
+   * Output mode:
+   * - 'ansi': Returns strings with ANSI escape codes (for CLI)
+   * - 'data': Returns structured color data (for TUI/React)
+   * Default: 'ansi'
+   */
+  outputMode?: 'ansi' | 'data'
 }
 
 /**
@@ -69,21 +98,53 @@ export type ImageFetchResult =
   | { ok: false; error: ImageFetchError }
 
 /**
- * Result of an ASCII render operation (discriminated union).
+ * Result of an ASCII render operation with ANSI output (discriminated union).
  */
-export type ImageRenderResult =
-  | { ok: true; lines: string[]; width: number; height: number }
+export type ImageRenderResultAnsi =
+  | { ok: true; mode: 'ansi'; lines: string[]; width: number; height: number }
   | { ok: false; error: ImageRenderError }
 
 /**
- * Combined result for fetch and render operations.
+ * Result of an ASCII render operation with structured data output.
  */
-export type AsciiImageResult =
+export type ImageRenderResultData =
+  | { ok: true; mode: 'data'; rows: ColoredRow[]; width: number; height: number }
+  | { ok: false; error: ImageRenderError }
+
+/**
+ * Result of an ASCII render operation (discriminated union).
+ */
+export type ImageRenderResult = ImageRenderResultAnsi | ImageRenderResultData
+
+/**
+ * Combined result for fetch and render operations with ANSI output.
+ */
+export type AsciiImageResultAnsi =
   | {
       ok: true
+      mode: 'ansi'
       lines: string[]
       width: number
       height: number
       contentType: string
     }
   | { ok: false; error: ImageFetchError | ImageRenderError }
+
+/**
+ * Combined result for fetch and render operations with data output.
+ */
+export type AsciiImageResultData =
+  | {
+      ok: true
+      mode: 'data'
+      rows: ColoredRow[]
+      width: number
+      height: number
+      contentType: string
+    }
+  | { ok: false; error: ImageFetchError | ImageRenderError }
+
+/**
+ * Combined result for fetch and render operations.
+ */
+export type AsciiImageResult = AsciiImageResultAnsi | AsciiImageResultData

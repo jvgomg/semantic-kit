@@ -1,6 +1,12 @@
 import { Chalk } from 'chalk'
 import { Jimp, intToRGBA } from 'jimp'
-import type { RenderOptions, ImageRenderResult } from './types.js'
+import type {
+  RenderOptions,
+  ImageRenderResult,
+  ColoredRow,
+  ColoredCell,
+  RGB,
+} from './types.js'
 
 /** Unicode lower half-block character for half-block rendering */
 const HALF_BLOCK = '\u2584'
@@ -36,6 +42,7 @@ export async function renderAscii(
     width = DEFAULT_WIDTH,
     height,
     charAspectRatio = DEFAULT_CHAR_ASPECT_RATIO,
+    outputMode = 'ansi',
   } = options
 
   // Validate dimensions
@@ -120,6 +127,42 @@ export async function renderAscii(
   }
 
   // Render the image using half-block characters
+  if (outputMode === 'data') {
+    // Return structured color data for React/TUI rendering
+    const rows: ColoredRow[] = []
+
+    for (let charRow = 0; charRow < targetHeight; charRow++) {
+      const row: ColoredCell[] = []
+      const topPixelY = charRow * 2
+      const bottomPixelY = charRow * 2 + 1
+
+      for (let x = 0; x < targetWidth; x++) {
+        const topColor = image.getPixelColor(x, topPixelY)
+        const bottomColor = image.getPixelColor(x, bottomPixelY)
+
+        const topRgba = intToRGBA(topColor)
+        const bottomRgba = intToRGBA(bottomColor)
+
+        row.push({
+          char: HALF_BLOCK,
+          fg: [bottomRgba.r, bottomRgba.g, bottomRgba.b] as RGB,
+          bg: [topRgba.r, topRgba.g, topRgba.b] as RGB,
+        })
+      }
+
+      rows.push(row)
+    }
+
+    return {
+      ok: true,
+      mode: 'data',
+      rows,
+      width: targetWidth,
+      height: targetHeight,
+    }
+  }
+
+  // Return ANSI-colored strings for CLI rendering
   const lines: string[] = []
 
   for (let charRow = 0; charRow < targetHeight; charRow++) {
@@ -148,6 +191,7 @@ export async function renderAscii(
 
   return {
     ok: true,
+    mode: 'ansi',
     lines,
     width: targetWidth,
     height: targetHeight,

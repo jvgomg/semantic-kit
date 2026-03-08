@@ -56,33 +56,45 @@ async function formatCardPreview(
     ),
   )
 
-  // Image area - try to render ASCII art, fall back to URL display
+  // Image area - try to render ASCII art (TTY only), fall back to URL display
   const imageUrl = result.preview.image
   if (imageUrl) {
-    const imgResult = await fetchAndRenderAscii(imageUrl, {
-      width: innerWidth,
-      timeout: 5000,
-    })
+    // Only attempt ASCII rendering in TTY mode
+    if (ctx.mode === 'tty') {
+      const imgResult = await fetchAndRenderAscii(imageUrl, {
+        width: innerWidth,
+        timeout: 5000,
+        outputMode: 'ansi',
+      })
 
-    if (imgResult.ok) {
-      // Add ASCII art lines with card borders
-      for (const imgLine of imgResult.lines) {
+      if (imgResult.ok && imgResult.mode === 'ansi') {
+        // Add ASCII art lines with card borders
+        for (const imgLine of imgResult.lines) {
+          lines.push(
+            colorize(CARD_VERTICAL, colors.gray, ctx) +
+              imgLine +
+              colorize(CARD_VERTICAL, colors.gray, ctx),
+          )
+        }
+      } else if (!imgResult.ok) {
+        // Show broken image indicator with URL on error
+        const truncatedUrl = truncateMiddle(imageUrl, innerWidth - 12)
         lines.push(
           colorize(CARD_VERTICAL, colors.gray, ctx) +
-            imgLine +
+            colorize(
+              ` [IMG ERR] ${truncatedUrl}`.padEnd(innerWidth),
+              colors.red,
+              ctx,
+            ) +
             colorize(CARD_VERTICAL, colors.gray, ctx),
         )
       }
     } else {
-      // Fallback to URL display on error
+      // Non-TTY mode: show URL placeholder without fetching
       const truncatedUrl = truncateMiddle(imageUrl, innerWidth - 8)
       lines.push(
         colorize(CARD_VERTICAL, colors.gray, ctx) +
-          colorize(
-            ` [IMG] ${truncatedUrl}`.padEnd(innerWidth),
-            colors.dim,
-            ctx,
-          ) +
+          ` [IMG] ${truncatedUrl}`.padEnd(innerWidth) +
           colorize(CARD_VERTICAL, colors.gray, ctx),
       )
     }

@@ -98,7 +98,7 @@ describe('renderAscii', () => {
       const result = await renderAscii(buffer, { width: 5 })
 
       expect(result.ok).toBe(true)
-      if (result.ok) {
+      if (result.ok && result.mode === 'ansi') {
         expect(result.width).toBe(5)
         expect(result.height).toBeGreaterThan(0)
         expect(result.lines.length).toBe(result.height)
@@ -120,7 +120,7 @@ describe('renderAscii', () => {
       const result = await renderAscii(buffer, { width: 10, height: 5 })
 
       expect(result.ok).toBe(true)
-      if (result.ok) {
+      if (result.ok && result.mode === 'ansi') {
         expect(result.height).toBe(5)
         expect(result.lines.length).toBe(5)
       }
@@ -153,12 +153,16 @@ describe('renderAscii', () => {
   })
 
   describe('output format', () => {
-    it('produces lines with ANSI escape codes', async () => {
+    it('produces lines with ANSI escape codes in ansi mode', async () => {
       const buffer = await createTestImage(10, 10, 0xff0000ff) // Red image
-      const result = await renderAscii(buffer, { width: 5, height: 2 })
+      const result = await renderAscii(buffer, {
+        width: 5,
+        height: 2,
+        outputMode: 'ansi',
+      })
 
       expect(result.ok).toBe(true)
-      if (result.ok) {
+      if (result.ok && result.mode === 'ansi') {
         // Each line should contain ANSI escape codes
         for (const line of result.lines) {
           expect(line).toContain('\x1b[') // ANSI escape sequence
@@ -166,15 +170,39 @@ describe('renderAscii', () => {
       }
     })
 
-    it('uses half-block characters', async () => {
+    it('uses half-block characters in ansi mode', async () => {
       const buffer = await createTestImage(4, 4, 0x00ff00ff) // Green image
-      const result = await renderAscii(buffer, { width: 4, height: 2 })
+      const result = await renderAscii(buffer, {
+        width: 4,
+        height: 2,
+        outputMode: 'ansi',
+      })
 
       expect(result.ok).toBe(true)
-      if (result.ok) {
+      if (result.ok && result.mode === 'ansi') {
         // Should contain the lower half-block character
         const allText = result.lines.join('')
         expect(allText).toContain('\u2584')
+      }
+    })
+
+    it('produces structured data in data mode', async () => {
+      const buffer = await createTestImage(4, 4, 0xff0000ff) // Red image
+      const result = await renderAscii(buffer, {
+        width: 4,
+        height: 2,
+        outputMode: 'data',
+      })
+
+      expect(result.ok).toBe(true)
+      if (result.ok && result.mode === 'data') {
+        expect(result.rows.length).toBe(2)
+        expect(result.rows[0].length).toBe(4)
+        // Each cell should have char, fg, and bg
+        const cell = result.rows[0][0]
+        expect(cell.char).toBe('\u2584')
+        expect(cell.fg).toHaveLength(3)
+        expect(cell.bg).toHaveLength(3)
       }
     })
   })
@@ -203,7 +231,7 @@ describe('renderAscii', () => {
   })
 
   describe('color rendering', () => {
-    it('renders different colors for top and bottom pixels', async () => {
+    it('renders different colors for top and bottom pixels in ansi mode', async () => {
       // Create an image with red top half and blue bottom half
       const buffer = await createGradientImage(
         4,
@@ -212,10 +240,14 @@ describe('renderAscii', () => {
         0x0000ffff, // Blue bottom
       )
 
-      const result = await renderAscii(buffer, { width: 4, height: 2 })
+      const result = await renderAscii(buffer, {
+        width: 4,
+        height: 2,
+        outputMode: 'ansi',
+      })
 
       expect(result.ok).toBe(true)
-      if (result.ok) {
+      if (result.ok && result.mode === 'ansi') {
         // The output should contain different color codes
         // (exact values depend on chalk's RGB encoding)
         expect(result.lines.length).toBe(2)
@@ -223,6 +255,28 @@ describe('renderAscii', () => {
         for (const line of result.lines) {
           expect(line.length).toBeGreaterThan(4) // More than just 4 half-blocks
         }
+      }
+    })
+
+    it('captures colors correctly in data mode', async () => {
+      // Create a simple red image
+      const buffer = await createTestImage(4, 4, 0xff0000ff) // Red
+
+      const result = await renderAscii(buffer, {
+        width: 4,
+        height: 2,
+        outputMode: 'data',
+      })
+
+      expect(result.ok).toBe(true)
+      if (result.ok && result.mode === 'data') {
+        expect(result.rows.length).toBe(2)
+        // Check that red color is captured correctly
+        const firstCell = result.rows[0][0]
+        expect(firstCell.bg[0]).toBeGreaterThan(200) // Red channel high in bg
+        expect(firstCell.fg[0]).toBeGreaterThan(200) // Red channel high in fg
+        expect(firstCell.bg[1]).toBeLessThan(50) // Green channel low
+        expect(firstCell.bg[2]).toBeLessThan(50) // Blue channel low
       }
     })
   })

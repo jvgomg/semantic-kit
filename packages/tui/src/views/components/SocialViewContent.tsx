@@ -12,7 +12,8 @@
 import { useState, useEffect, type ReactNode } from 'react'
 import {
   fetchAndRenderAscii,
-  type AsciiImageResult,
+  type AsciiImageResultData,
+  type RGB,
 } from '@webspecs/image-ascii'
 import {
   SectionContainer,
@@ -31,6 +32,13 @@ import type { ViewComponentProps } from '../types.js'
 // ============================================================================
 
 /**
+ * Convert RGB tuple to hex color string
+ */
+function rgbToHex([r, g, b]: RGB): string {
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+}
+
+/**
  * Renders an og:image as ASCII art with loading state
  */
 function ImageAsciiDisplay({
@@ -41,23 +49,29 @@ function ImageAsciiDisplay({
   width: number
 }): ReactNode {
   const colors = useSemanticColors()
-  const [result, setResult] = useState<AsciiImageResult | null>(null)
+  const [result, setResult] = useState<AsciiImageResultData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     let cancelled = false
 
     setLoading(true)
-    fetchAndRenderAscii(imageUrl, { width, timeout: 5000 })
+    setError(false)
+    fetchAndRenderAscii(imageUrl, { width, timeout: 5000, outputMode: 'data' })
       .then((res) => {
         if (!cancelled) {
-          setResult(res)
+          if (res.ok && res.mode === 'data') {
+            setResult(res)
+          } else {
+            setError(true)
+          }
           setLoading(false)
         }
       })
       .catch(() => {
         if (!cancelled) {
-          setResult(null)
+          setError(true)
           setLoading(false)
         }
       })
@@ -86,27 +100,31 @@ function ImageAsciiDisplay({
     )
   }
 
-  if (!result?.ok) {
-    // Fallback to URL display
-    const displayImage = `[IMG] ${truncateMiddle(imageUrl, width - 8)}`
+  if (error || !result?.ok) {
+    // Show broken image indicator with URL on error
+    const displayImage = `[IMG ERR] ${truncateMiddle(imageUrl, width - 12)}`
     return (
       <box flexDirection="column">
         <text>
           <span fg={colors.textMuted}>{'│'}</span>
-          <span fg={colors.textMuted}>{` ${displayImage}`.padEnd(width)}</span>
+          <span fg={colors.error}>{` ${displayImage}`.padEnd(width)}</span>
           <span fg={colors.textMuted}>{'│'}</span>
         </text>
       </box>
     )
   }
 
-  // Render ASCII art lines
+  // Render ASCII art with proper colors
   return (
     <box flexDirection="column">
-      {result.lines.map((line, i) => (
-        <text key={i}>
+      {result.rows.map((row, rowIdx) => (
+        <text key={rowIdx}>
           <span fg={colors.textMuted}>{'│'}</span>
-          <span>{line}</span>
+          {row.map((cell, cellIdx) => (
+            <span key={cellIdx} fg={rgbToHex(cell.fg)} bg={rgbToHex(cell.bg)}>
+              {cell.char}
+            </span>
+          ))}
           <span fg={colors.textMuted}>{'│'}</span>
         </text>
       ))}

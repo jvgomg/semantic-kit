@@ -1,10 +1,10 @@
 ---
 id: TASK-041
 title: 'Add ASCII image preview for og:image in social command'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-02-16 14:52'
-updated_date: '2026-03-08 12:25'
+updated_date: '2026-03-08 13:06'
 labels:
   - research-backed
   - lens-social
@@ -85,14 +85,47 @@ Example output:
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 og:image is fetched and rendered as ASCII art in TTY mode
-- [ ] #2 ASCII preview maintains approximate aspect ratio of original image
-- [ ] #3 Preview renders within the social card mockup boundaries
-- [ ] #4 Graceful fallback to URL placeholder when image fetch fails or times out
-- [ ] #5 Non-TTY mode continues to show URL placeholder (no ASCII)
-- [ ] #6 TUI displays ASCII image preview in the card preview component
-- [ ] #7 Image fetch has reasonable timeout (e.g., 5 seconds)
-- [ ] #8 Research page updated with toolCoverage entry
-- [ ] #9 CHANGELOG entry references research page and version
-- [ ] #10 ASCII preview shows clear "broken image" state when og:image URL returns 404 or other errors (not just fallback to URL)
+- [x] #1 og:image is fetched and rendered as ASCII art in TTY mode
+- [x] #2 ASCII preview maintains approximate aspect ratio of original image
+- [x] #3 Preview renders within the social card mockup boundaries
+- [x] #4 Graceful fallback to URL placeholder when image fetch fails or times out
+- [x] #5 Non-TTY mode continues to show URL placeholder (no ASCII)
+- [x] #6 TUI displays ASCII image preview in the card preview component
+- [x] #7 Image fetch has reasonable timeout (e.g., 5 seconds)
+- [x] #8 Research page updated with toolCoverage entry
+- [x] #9 CHANGELOG entry references research page and version
+- [x] #10 ASCII preview shows clear "broken image" state when og:image URL returns 404 or other errors (not just fallback to URL)
 <!-- AC:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## Summary
+
+Completed the ASCII image preview feature for the `social` command. The og:image is now rendered as colored ASCII art using half-block characters directly in the terminal, giving users immediate visual feedback about their social preview image.
+
+### Changes Made
+
+**packages/cli/src/commands/social/formatters.ts**
+- Added TTY mode check to skip ASCII fetch in non-TTY mode (for performance)
+- Changed error fallback from `[IMG] url` to `[IMG ERR] url` with red color for clear broken image indication
+
+**packages/tui/src/views/components/SocialViewContent.tsx**
+- Changed error state from `[IMG] url` to `[IMG ERR] url` with error color styling
+
+**research/topics/social-metadata/open-graph-validation.md**
+- Added toolCoverage entry for ASCII art preview feature (since v0.0.18)
+
+**packages/cli/CHANGELOG.md** and **packages/tui/CHANGELOG.md**
+- Added changelog entries documenting the feature with research reference
+
+### Testing
+
+- All unit tests pass (130 tests)
+- Lint passes
+- Build succeeds
+
+### Research Reference
+
+[[open-graph-validation]] (research-v0.6.0) - Image dimension requirements (1200×630 universal recommendation)
+<!-- SECTION:FINAL_SUMMARY:END -->
