@@ -599,6 +599,22 @@ export async function fetchSocial(target: string): Promise<SocialResult> {
   const grouped = groupMetatagsByPrefix(data.metatags)
   const pageMetadata = extractPageMetadata(html)
 
+  // Resolve relative image URLs against the target URL
+  const baseUrl = target.startsWith('http') ? target : undefined
+  if (baseUrl) {
+    for (const tags of [grouped.openGraph, grouped.twitter]) {
+      for (const key of Object.keys(tags)) {
+        if (key.includes('image') && tags[key]) {
+          try {
+            tags[key] = new URL(tags[key], baseUrl).href
+          } catch {
+            // Leave as-is if URL resolution fails
+          }
+        }
+      }
+    }
+  }
+
   function buildTagGroup(
     name: string,
     prefix: string,
@@ -623,6 +639,19 @@ export async function fetchSocial(target: string): Promise<SocialResult> {
     checkPresence: true,
     checkQuality: true,
   })
+
+  // Resolve image URLs in normalizedTags as well (used for validation)
+  if (baseUrl) {
+    for (const key of ['og:image', 'twitter:image'] as const) {
+      if (normalizedTags[key]) {
+        try {
+          normalizedTags[key] = new URL(normalizedTags[key]!, baseUrl).href
+        } catch {
+          // Leave as-is if URL resolution fails
+        }
+      }
+    }
+  }
 
   // Validate image URLs (async - checks HTTP accessibility, content-type, size)
   const imageUrls: Record<string, string | undefined> = {
