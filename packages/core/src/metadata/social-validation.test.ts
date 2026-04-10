@@ -20,6 +20,7 @@ import {
   validateSocialTags,
   sortIssuesBySeverity,
 } from './social-validation.js'
+import type { SocialValidationIssue } from './types.js'
 
 describe('validation constants', () => {
   it('TITLE_CHAR_LIMIT is 60 characters', () => {
@@ -355,46 +356,46 @@ describe('validateSocialTags', () => {
 
 describe('sortIssuesBySeverity', () => {
   it('sorts errors before warnings before info', () => {
-    const issues = [
+    const issues: SocialValidationIssue[] = [
       {
         code: 'info-1',
-        severity: 'low' as const,
-        type: 'info' as const,
+        severity: 'low',
+        type: 'info',
         title: 'Info',
         description: '',
-        tag: '',
+        metadata: { tag: '' },
       },
       {
         code: 'error-1',
-        severity: 'high' as const,
-        type: 'error' as const,
+        severity: 'high',
+        type: 'error',
         title: 'Error',
         description: '',
-        tag: '',
+        metadata: { tag: '' },
       },
       {
         code: 'warning-1',
-        severity: 'medium' as const,
-        type: 'warning' as const,
+        severity: 'medium',
+        type: 'warning',
         title: 'Warning',
         description: '',
-        tag: '',
+        metadata: { tag: '' },
       },
       {
         code: 'info-2',
-        severity: 'low' as const,
-        type: 'info' as const,
+        severity: 'low',
+        type: 'info',
         title: 'Info',
         description: '',
-        tag: '',
+        metadata: { tag: '' },
       },
       {
         code: 'error-2',
-        severity: 'high' as const,
-        type: 'error' as const,
+        severity: 'high',
+        type: 'error',
         title: 'Error',
         description: '',
-        tag: '',
+        metadata: { tag: '' },
       },
     ]
 
@@ -408,22 +409,22 @@ describe('sortIssuesBySeverity', () => {
   })
 
   it('does not mutate original array', () => {
-    const issues = [
+    const issues: SocialValidationIssue[] = [
       {
         code: 'info-1',
-        severity: 'low' as const,
-        type: 'info' as const,
+        severity: 'low',
+        type: 'info',
         title: 'Info',
         description: '',
-        tag: '',
+        metadata: { tag: '' },
       },
       {
         code: 'error-1',
-        severity: 'high' as const,
-        type: 'error' as const,
+        severity: 'high',
+        type: 'error',
         title: 'Error',
         description: '',
-        tag: '',
+        metadata: { tag: '' },
       },
     ]
 

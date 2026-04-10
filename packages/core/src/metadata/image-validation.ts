@@ -108,7 +108,7 @@ export interface ImageValidationOptions {
   /** Check if format has universal support (default: true) */
   checkFormat?: boolean
   /** Custom fetch function for testing */
-  fetch?: typeof globalThis.fetch
+  fetch?: (input: string | URL | Request, init?: RequestInit) => Promise<Response>
 }
 
 // ============================================================================

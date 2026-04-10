@@ -5,10 +5,9 @@
     "baseUrl": ".",
     "paths": {
       "@webspecs/core": ["../core/src/index.ts"],
-      "@webspecs/cli/*": ["../cli/dist/*"]
+      "@webspecs/cli/*": ["../cli/src/*"]
     }
   },
-  "references": [{ "path": "../core" }, { "path": "../cli" }],
   "include": ["**/*"],
   "exclude": ["node_modules"]
 }

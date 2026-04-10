@@ -5,6 +5,7 @@
   "description": "Next.js streaming fixture for webspecs testing",
   "scripts": {
     "dev": "bun --bun next dev",
+    "typecheck": "tsc --noEmit",
     "pretty": "prettier --write .",
     "pretty:check": "prettier --check ."
   },

@@ -2,16 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@opentui/react"
   },
-  "references": [
-    { "path": "./packages/core" },
-    { "path": "./packages/cli" },
-    { "path": "./packages/tui" },
-    { "path": "./packages/integration-tests" },
-    { "path": "./packages/test-server" }
-  ],
   "include": [],
   "exclude": ["node_modules", "dist", "packages"]
 }

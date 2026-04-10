@@ -26,7 +26,7 @@ beforeAll(() => {
       super()
       return mockDate
     }
-    static now() {
+    static override now() {
       return mockDate.getTime()
     }
   } as DateConstructor

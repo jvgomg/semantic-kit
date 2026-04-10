@@ -18,13 +18,22 @@ export interface BinaryBuildConfig {
   version: string
 }
 
-const COMPILED_TARGETS = [
+const COMPILED_TARGETS: ReadonlyArray<{
+  target:
+    | 'bun-darwin-arm64'
+    | 'bun-darwin-x64'
+    | 'bun-linux-x64'
+    | 'bun-linux-arm64'
+    | 'bun-windows-x64'
+  suffix: string
+  ext?: string
+}> = [
   { target: 'bun-darwin-arm64', suffix: 'darwin-arm64' },
   { target: 'bun-darwin-x64', suffix: 'darwin-x64' },
   { target: 'bun-linux-x64', suffix: 'linux-x64' },
   { target: 'bun-linux-arm64', suffix: 'linux-arm64' },
   { target: 'bun-windows-x64', suffix: 'windows-x64', ext: '.exe' },
-] as const
+]
 
 /**
  * Clean and recreate the binaries output directory.
@@ -54,7 +63,7 @@ export async function buildSystemBinaries(
     await Bun.build({
       entrypoints: [entry],
       outdir,
-      target,
+      target: 'bun',
       compile: { target, outfile },
       external,
       ...(define ? { define } : {}),
@@ -105,7 +114,7 @@ export async function reportSizes(outdir: string): Promise<void> {
 
   let totalBytes = 0
   for (const file of files.sort()) {
-    const size = await Bun.file(`${outdir}/${file}`).size
+    const size = Bun.file(`${outdir}/${file}`).size
     totalBytes += size
     const sizeMB = (size / 1024 / 1024).toFixed(2)
     console.log(`  ${file.padEnd(35)} ${sizeMB.padStart(8)} MB`)

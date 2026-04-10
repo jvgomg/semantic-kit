@@ -56,8 +56,8 @@ describe('validateFormat', () => {
   // which is challenging in Bun. In practice, validateFormat will
   // call process.exit(1) when given an invalid format.
   describe('invalid inputs (calls process.exit)', () => {
-    it.todo('exits with error when format is invalid')
-    it.todo('exits with helpful error message listing allowed formats')
+    it.todo('exits with error when format is invalid', () => {})
+    it.todo('exits with helpful error message listing allowed formats', () => {})
   })
 })
 
@@ -94,10 +94,10 @@ describe('validateTimeout', () => {
 
   // Note: Testing invalid timeout requires mocking process.exit
   describe('invalid inputs (calls process.exit)', () => {
-    it.todo('exits with error when timeout is not a number')
-    it.todo('exits with error when timeout is zero')
-    it.todo('exits with error when timeout is negative')
-    it.todo('exits with error when timeout is NaN')
+    it.todo('exits with error when timeout is not a number', () => {})
+    it.todo('exits with error when timeout is zero', () => {})
+    it.todo('exits with error when timeout is negative', () => {})
+    it.todo('exits with error when timeout is NaN', () => {})
   })
 })
 
@@ -184,10 +184,10 @@ describe('isUrl', () => {
 // Note: requireUrl calls process.exit on failure, which is hard to test
 // without mocking. We document the expected behavior here.
 describe('requireUrl', () => {
-  it.todo('does not exit when target is a valid http URL')
-  it.todo('does not exit when target is a valid https URL')
-  it.todo('exits with error when target is a file path')
-  it.todo('exits with error message including command name')
-  it.todo('exits with custom reason when provided')
-  it.todo('exits with default reason when not provided')
+  it.todo('does not exit when target is a valid http URL', () => {})
+  it.todo('does not exit when target is a valid https URL', () => {})
+  it.todo('exits with error when target is a file path', () => {})
+  it.todo('exits with error message including command name', () => {})
+  it.todo('exits with custom reason when provided', () => {})
+  it.todo('exits with default reason when not provided', () => {})
 })

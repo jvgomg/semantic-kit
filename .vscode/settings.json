@@ -1,3 +1,8 @@
 {
-  "cSpell.words": ["opentui", "scrollbox"]
+  "cSpell.words": [
+    "opentui",
+    "scrollbox"
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }

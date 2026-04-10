@@ -1,16 +1,20 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "composite": true,
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
+    "rootDir": "./src",
     "outDir": "./dist",
-    "noEmit": false,
     "checkJs": false,
+    "jsx": "react-jsx",
+    "jsxImportSource": "@opentui/react",
+    "baseUrl": ".",
     "paths": {
-      "@webspecs/core": ["../core/dist/index.d.ts"],
-      "@webspecs/cli/*": ["../cli/dist/*"]
+      "@webspecs/core": ["../core/dist/index.d.ts"]
     }
   },
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "build.ts"]
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.ts", "node_modules", "dist"]
 }

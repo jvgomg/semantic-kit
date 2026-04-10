@@ -1,3 +1,4 @@
+/// <reference path="./types/structured-data-testing-tool.d.ts" />
 import { fetchHtmlContent } from './fetch.js'
 import type { SchemaTestResult } from './results.js'
 

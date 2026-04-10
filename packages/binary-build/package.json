@@ -6,5 +6,12 @@
   "exports": {
     ".": "./index.ts"
   },
-  "description": "Shared binary build utilities for webspecs packages"
+  "description": "Shared binary build utilities for webspecs packages",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "pretty": "prettier --write .",
+    "pretty:check": "prettier --check .",
+    "clean": "rm -rf tsconfig.tsbuildinfo"
+  }
 }
