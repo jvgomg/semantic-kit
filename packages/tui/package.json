@@ -30,7 +30,6 @@
     "interactive",
     "bun"
   ],
-  "sideEffects": false,
   "files": [
     "dist/**/*.js",
     "dist/**/*.d.ts",
